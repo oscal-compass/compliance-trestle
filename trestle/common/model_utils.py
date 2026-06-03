@@ -156,7 +156,7 @@ class ModelUtils:
     @staticmethod
     def _get_primary_model_instance(
         primary_model_type: Type[Any], abs_path: pathlib.Path
-    ) -> Optional[Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel], Any]]:
+    ) -> OscalBaseModel | List[OscalBaseModel] | Dict[str, OscalBaseModel] | Any | None:
         """
         Load primary model instance from file, handling both OscalBaseModel and Pydantic built-in types.
 
@@ -198,7 +198,7 @@ class ModelUtils:
             # Split files for simple fields are stored as {"field-name": value}
             # Extract just the value for Pydantic built-in types
             if isinstance(data, dict) and len(data) == 1:
-                return list(data.values())[0]
+                return next(iter(data.values()))
             return data
 
     @staticmethod
@@ -427,6 +427,91 @@ class ModelUtils:
         model.oscal_write(full_model_path)
 
     @staticmethod
+    def _is_union_type(model_type: Type[Any]) -> bool:
+        """Check if a type is a Union type."""
+        origin = get_origin(model_type)
+        return origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
+
+    @staticmethod
+    def _handle_collection_field(model_type: Type[Any], alias: str, full_alias: str) -> Type[Any]:
+        """Handle collection field type resolution."""
+        inner_model = utils.get_inner_type(model_type)
+        is_union = ModelUtils._is_union_type(inner_model)
+
+        if alias.isdigit():
+            # For numeric indices, keep Union types as-is for deserialization
+            return inner_model if is_union else _get_model_type_from_union(inner_model, alias)
+
+        # Try to match alias against Union variants
+        resolved_inner_model = _get_model_type_from_union(inner_model, alias)
+        if ModelUtils._is_matching_variant(resolved_inner_model, alias):
+            # If alias matches a variant's class name, keep the Union for deserialization
+            return inner_model if is_union else resolved_inner_model
+
+        # Filesystem item paths use the singular collection alias
+        singular_alias = ModelUtils.get_singular_alias(full_alias.rsplit('.', 1)[0])
+        if alias == singular_alias:
+            # Keep Union type for file paths that match the singular alias
+            return inner_model if is_union else resolved_inner_model
+
+        raise TrestleError(f'Model type {model_type} has no collection item for alias {alias}')
+
+    @staticmethod
+    def _is_matching_variant(resolved_model: Type[Any], alias: str) -> bool:
+        """Check if resolved model matches the alias as a variant."""
+        return (
+            isinstance(resolved_model, type)
+            and issubclass(resolved_model, OscalBaseModel)
+            and alias == str_utils.classname_to_alias(resolved_model.__name__, AliasMode.JSON)
+        )
+
+    @staticmethod
+    def _handle_non_collection_field(model_type: Type[Any], alias: str) -> Type[Any]:
+        """Handle non-collection field type resolution."""
+        resolved_model = _get_model_type_from_union(model_type, alias)
+        if not (isinstance(resolved_model, type) and issubclass(resolved_model, OscalBaseModel)):
+            raise TrestleError(f'Model type {model_type} does not support alias_to_field_map for alias {alias}')
+
+        field_map = resolved_model.alias_to_field_map()
+        if alias in field_map:
+            return field_map[alias].annotation
+
+        if alias == str_utils.classname_to_alias(resolved_model.__name__, AliasMode.JSON):
+            return resolved_model
+
+        raise TrestleError(f'Model type {model_type} does not support alias_to_field_map for alias {alias}')
+
+    @staticmethod
+    def _normalize_optional_type(model_type: Type[Any]) -> Type[Any]:
+        """Normalize Optional[T] to T for terminal return values."""
+        if not ModelUtils._is_union_type(model_type):
+            return model_type
+
+        args = get_args(model_type)
+        non_none_args = [arg for arg in args if arg is not type(None)]
+        if len(non_none_args) == 1:
+            return non_none_args[0]
+
+        return model_type
+
+    @staticmethod
+    def _validate_and_get_module(relative_path: pathlib.Path) -> Tuple[str, pathlib.Path]:
+        """Validate path and get module name and relative path."""
+        if len(relative_path.parts) < 2:
+            raise TrestleError(
+                'Insufficient path length to be a valid relative path w.r.t trestle workspace root directory.'
+            )
+
+        model_dir = relative_path.parts[0]
+        model_relative_path = pathlib.Path(*relative_path.parts[2:])
+
+        if model_dir not in const.MODEL_DIR_LIST:
+            raise TrestleError(f'No valid trestle model type directory (e.g. catalogs) found for {model_dir}.')
+
+        module_name = const.MODEL_DIR_TO_MODEL_MODULE[model_dir]
+        return module_name, model_relative_path
+
+    @staticmethod
     def get_relative_model_type(relative_path: pathlib.Path) -> Tuple[Type[OscalBaseModel], str]:
         """
         Given the relative path of a file with respect to 'trestle_root' return the oscal model type.
@@ -437,18 +522,7 @@ class ModelUtils:
             Type of Oscal Model for the provided model
             Alias of that oscal model.
         """
-        if len(relative_path.parts) < 2:
-            raise TrestleError(
-                'Insufficient path length to be a valid relative path w.r.t trestle workspace root directory.'
-            )
-        model_dir = relative_path.parts[0]
-        model_relative_path = pathlib.Path(*relative_path.parts[2:])  # catalogs, profiles, etc
-
-        if model_dir in const.MODEL_DIR_LIST:
-            module_name = const.MODEL_DIR_TO_MODEL_MODULE[model_dir]
-        else:
-            raise TrestleError(f'No valid trestle model type directory (e.g. catalogs) found for {model_dir}.')
-
+        module_name, model_relative_path = ModelUtils._validate_and_get_module(relative_path)
         model_type, model_alias = ModelUtils.get_root_model(module_name)
         full_alias = model_alias
 
@@ -459,56 +533,11 @@ class ModelUtils:
                 full_alias = f'{full_alias}.{model_alias}'
 
                 if utils.is_collection_field_type(model_type):
-                    inner_model = utils.get_inner_type(model_type)
-                    # Check if inner_model is a Union type
-                    origin = get_origin(inner_model)
-                    is_union = origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
+                    model_type = ModelUtils._handle_collection_field(model_type, alias, full_alias)
+                else:
+                    model_type = ModelUtils._handle_non_collection_field(model_type, alias)
 
-                    if alias.isdigit():
-                        # For numeric indices, keep Union types as-is for deserialization
-                        model_type = inner_model if is_union else _get_model_type_from_union(inner_model, alias)
-                        continue
-
-                    # Try to match alias against Union variants
-                    resolved_inner_model = _get_model_type_from_union(inner_model, alias)
-                    if (
-                        isinstance(resolved_inner_model, type)
-                        and issubclass(resolved_inner_model, OscalBaseModel)
-                        and alias == str_utils.classname_to_alias(resolved_inner_model.__name__, AliasMode.JSON)
-                    ):
-                        # If alias matches a variant's class name, keep the Union for deserialization
-                        # e.g., 'group' matches both Group1 and Group2 after stripping digits
-                        model_type = inner_model if is_union else resolved_inner_model
-                        continue
-                    # Filesystem item paths use the singular collection alias, e.g. roles/00000__role.json
-                    singular_alias = ModelUtils.get_singular_alias(full_alias.rsplit('.', 1)[0])
-                    if alias == singular_alias:
-                        # Keep Union type for file paths that match the singular alias
-                        model_type = inner_model if is_union else resolved_inner_model
-                        continue
-                    raise TrestleError(f'Model type {model_type} has no collection item for alias {alias}')
-
-                resolved_model = _get_model_type_from_union(model_type, alias)
-                if isinstance(resolved_model, type) and issubclass(resolved_model, OscalBaseModel):
-                    field_map = resolved_model.alias_to_field_map()
-                    if alias in field_map:
-                        model_type = field_map[alias].annotation
-                        continue
-                    if alias == str_utils.classname_to_alias(resolved_model.__name__, AliasMode.JSON):
-                        model_type = resolved_model
-                        continue
-
-                raise TrestleError(f'Model type {model_type} does not support alias_to_field_map for alias {alias}')
-
-        # Normalize Optional[T] to T for terminal return values, including Optional[list[T]]
-        origin = get_origin(model_type)
-        if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
-            args = get_args(model_type)
-            non_none_args = [arg for arg in args if arg is not type(None)]
-            if len(non_none_args) == 1:
-                model_type = non_none_args[0]
-
-        return model_type, full_alias
+        return ModelUtils._normalize_optional_type(model_type), full_alias
 
     @staticmethod
     def get_stripped_model_type(
@@ -848,9 +877,6 @@ class ModelUtils:
                 expected_alias = str_utils.classname_to_alias(model_type.__name__, AliasMode.JSON)
                 if path_part == expected_alias:
                     model_types.append(model_type)
-                    continue
-
-            continue
 
         original_last_alias = path_parts[-1]
         last_alias = original_last_alias
