@@ -146,7 +146,7 @@ def is_validation(component_type) -> bool:
 
 
 def synthesize_rule_key(
-    component_title: str, component_type, rule_id: str, check_id: Union[str, None], target_component: Union[str, None]
+    component_title: str, component_type, rule_id: str, check_id: str | None, target_component: str | None
 ) -> tuple:
     """Synthesize rule_key."""
     type_str = _get_component_type_string(component_type)
@@ -539,6 +539,22 @@ class CsvToOscalComponentDefinition(TaskBase):
                 else:
                     control_implementation.set_parameters = None
 
+    def _has_content(self, implemented_requirement: ImplementedRequirement) -> bool:
+        """Check if implemented requirement has props or statements."""
+        return len(as_list(implemented_requirement.props)) > 0 or len(as_list(implemented_requirement.statements)) > 0
+
+    def _filter_implemented_requirements_by_rule(
+        self, implemented_requirements: List[ImplementedRequirement], rule_id: str
+    ) -> List[ImplementedRequirement]:
+        """Filter implemented requirements by removing the specified rule."""
+        new_implemented_requirements = []
+        for implemented_requirement in implemented_requirements:
+            self._delete_ir_props(implemented_requirement, rule_id)
+            self._delete_ir_statements(implemented_requirement, rule_id)
+            if self._has_content(implemented_requirement):
+                new_implemented_requirements.append(implemented_requirement)
+        return new_implemented_requirements
+
     def _delete_rule_implemented_requirement(self, component: DefinedComponent, rule_id: str) -> None:
         """Delete rule implemented_requirement."""
         control_implementations = component.control_implementations
@@ -546,14 +562,9 @@ class CsvToOscalComponentDefinition(TaskBase):
         new_control_implementations = []
         for control_implementation in self._control_implementation_generator(control_implementations):
             if control_implementation.implemented_requirements:
-                implemented_requirements = control_implementation.implemented_requirements
-                # Pydantic v2: Build new list to avoid empty list validation error
-                new_implemented_requirements = []
-                for implemented_requirement in implemented_requirements:
-                    self._delete_ir_props(implemented_requirement, rule_id)
-                    self._delete_ir_statements(implemented_requirement, rule_id)
-                    if len(as_list(implemented_requirement.props)) or len(as_list(implemented_requirement.statements)):
-                        new_implemented_requirements.append(implemented_requirement)
+                new_implemented_requirements = self._filter_implemented_requirements_by_rule(
+                    control_implementation.implemented_requirements, rule_id
+                )
                 # Pydantic v2: implemented_requirements is required with min_length=1
                 # Only include control_implementation if it has implemented_requirements
                 if new_implemented_requirements:
@@ -892,6 +903,60 @@ class CsvToOscalComponentDefinition(TaskBase):
             if control_implementation:
                 yield tokens
 
+    def _process_target_requirement(
+        self, implemented_requirement: ImplementedRequirement, rule_id: str, smt_id: str
+    ) -> Optional[ImplementedRequirement]:
+        """Process the target implemented requirement by removing the rule."""
+        implemented_requirement.statements = _OscalHelper.remove_rule_statement(
+            implemented_requirement.statements, rule_id, smt_id
+        )
+        # Get new props list after removing rule (handle None case)
+        new_props = (
+            _OscalHelper.remove_rule(implemented_requirement.props, rule_id) if implemented_requirement.props else []
+        )
+        # Only keep this requirement if it has props or statements
+        if new_props or implemented_requirement.statements:
+            # Only assign if new_props is not empty (Pydantic v2 requires min_length=1)
+            if new_props:
+                implemented_requirement.props = new_props
+            return implemented_requirement
+        return None
+
+    def _filter_implemented_requirements(
+        self, control_implementation: ControlImplementation, control_id: str, rule_id: str, smt_id: str
+    ) -> List[ImplementedRequirement]:
+        """Filter implemented requirements, removing the specified rule."""
+        new_implemented_requirements = []
+        for implemented_requirement in self._implemented_requirement_generator(
+            control_implementation.implemented_requirements
+        ):
+            if implemented_requirement.control_id == control_id:
+                processed = self._process_target_requirement(implemented_requirement, rule_id, smt_id)
+                if processed:
+                    new_implemented_requirements.append(processed)
+            else:
+                new_implemented_requirements.append(implemented_requirement)
+        return new_implemented_requirements
+
+    def _remove_empty_control_implementation(
+        self, component_title: str, component_type: str, source: str, description: str
+    ) -> None:
+        """Remove control implementation from component if it's empty."""
+        component = self._cd_mgr.get_component(component_title, component_type, None)
+        if not component.control_implementations:
+            return
+
+        new_control_implementations = [
+            ci
+            for ci in component.control_implementations
+            if not (ci.source == source and ci.description == description)
+        ]
+        # Only assign if list is not empty (Pydantic v2 requires min_length=1)
+        if new_control_implementations:
+            component.control_implementations = new_control_implementations
+        else:
+            component.control_implementations = None
+
     def control_mappings_del(self, del_control_mappings: List[str]) -> None:
         """Control mappings delete."""
         for tokens in self._control_mappings_generator(del_control_mappings):
@@ -901,51 +966,22 @@ class CsvToOscalComponentDefinition(TaskBase):
             source = tokens[3]
             description = tokens[4]
             smt_id = tokens[5]
-            # ctl-id
             control_id = derive_control_id(smt_id)
+
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
-            # Build new list of implemented requirements
-            new_implemented_requirements = []
-            for implemented_requirement in self._implemented_requirement_generator(
-                control_implementation.implemented_requirements
-            ):
-                if implemented_requirement.control_id == control_id:
-                    implemented_requirement.statements = _OscalHelper.remove_rule_statement(
-                        implemented_requirement.statements, rule_id, smt_id
-                    )
-                    # Get new props list after removing rule (handle None case)
-                    new_props = (
-                        _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
-                        if implemented_requirement.props
-                        else []
-                    )
-                    # Only keep this requirement if it has props or statements
-                    if new_props or implemented_requirement.statements:
-                        # Only assign if new_props is not empty (Pydantic v2 requires min_length=1)
-                        if new_props:
-                            implemented_requirement.props = new_props
-                        new_implemented_requirements.append(implemented_requirement)
-                else:
-                    new_implemented_requirements.append(implemented_requirement)
+
+            new_implemented_requirements = self._filter_implemented_requirements(
+                control_implementation, control_id, rule_id, smt_id
+            )
+
             # Update the list - it must have at least 1 item per OSCAL schema
             if new_implemented_requirements:
                 control_implementation.implemented_requirements = new_implemented_requirements
             else:
                 # If no implemented requirements left, remove the control_implementation from component
-                component = self._cd_mgr.get_component(component_title, component_type, None)
-                if component.control_implementations:
-                    new_control_implementations = [
-                        ci
-                        for ci in component.control_implementations
-                        if not (ci.source == source and ci.description == description)
-                    ]
-                    # Only assign if list is not empty (Pydantic v2 requires min_length=1)
-                    if new_control_implementations:
-                        component.control_implementations = new_control_implementations
-                    else:
-                        component.control_implementations = None
+                self._remove_empty_control_implementation(component_title, component_type, source, description)
 
     def control_mappings_add(self, add_control_mappings: List[str]) -> None:
         """Control mappings add."""
@@ -1008,22 +1044,36 @@ class _OscalHelper:
             set_parameter_list.append(set_parameter)
 
     @staticmethod
+    def _should_keep_statement(statement: Statement) -> bool:
+        """Check if statement should be kept based on its props."""
+        return statement.props is not None and len(statement.props) > 0
+
+    @staticmethod
+    def _process_target_statement(statement: Statement, rule_id: str) -> Optional[Statement]:
+        """Process the target statement by removing the rule."""
+        # Get new props after removing rule (handle None case)
+        new_props = _OscalHelper.remove_rule(statement.props, rule_id) if statement.props else []
+        # Only return statement if new_props is not empty (Pydantic v2 requires min_length=1)
+        if new_props:
+            statement.props = new_props
+            return statement
+        # If props becomes empty, don't include this statement
+        return None
+
+    @staticmethod
     def remove_rule_statement(statements: List[Statement], rule_id: str, smt_id: str) -> List[Statement]:
         """Remove rule from statements."""
-        rval = statements
-        if statements:
-            rval = []
-            for statement in statements:
-                if statement.statement_id == smt_id:
-                    # Get new props after removing rule (handle None case)
-                    new_props = _OscalHelper.remove_rule(statement.props, rule_id) if statement.props else []
-                    # Only assign if new_props is not empty (Pydantic v2 requires min_length=1)
-                    if new_props:
-                        statement.props = new_props
-                        rval.append(statement)
-                    # If props becomes empty, don't add this statement
-                elif statement.props is not None and len(statement.props):
-                    rval.append(statement)
+        if not statements:
+            return statements
+
+        rval = []
+        for statement in statements:
+            if statement.statement_id == smt_id:
+                processed_statement = _OscalHelper._process_target_statement(statement, rule_id)
+                if processed_statement:
+                    rval.append(processed_statement)
+            elif _OscalHelper._should_keep_statement(statement):
+                rval.append(statement)
         return rval
 
     @staticmethod
@@ -1388,6 +1438,38 @@ class _CdMgr:
                     )
                     self._cd_controls_map[key] = prop
 
+    def _process_statement_props(
+        self, statement: Statement, component: DefinedComponent, control_implementation: ControlImplementation
+    ) -> None:
+        """Process properties for a single statement."""
+        if not statement.props:
+            return
+
+        for prop in statement.props:
+            if prop.name == RULE_ID:
+                self._add_control_mapping_entry(prop, statement, component, control_implementation)
+
+    def _add_control_mapping_entry(
+        self,
+        prop: Property,
+        statement: Statement,
+        component: DefinedComponent,
+        control_implementation: ControlImplementation,
+    ) -> None:
+        """Add a control mapping entry to the map."""
+        # In Pydantic v2, prop.value and component.type are StringDatatype (RootModel)
+        rule_id = prop.value.root if hasattr(prop.value, 'root') else prop.value
+        component_type_str = _get_component_type_string(component.type)
+        key = (
+            component.title,
+            component_type_str,
+            rule_id,
+            control_implementation.source,
+            control_implementation.description,
+            statement.statement_id,
+        )
+        self._cd_controls_map[key] = prop
+
     def accounting_control_mappings_statements(
         self,
         component: DefinedComponent,
@@ -1395,23 +1477,11 @@ class _CdMgr:
         implemented_requirement: ImplementedRequirement,
     ) -> None:
         """Accounting, control mappings statements."""
-        if implemented_requirement.statements:
-            for statement in implemented_requirement.statements:
-                if statement.props:
-                    for prop in statement.props:
-                        if prop.name == RULE_ID:
-                            # In Pydantic v2, prop.value and component.type are StringDatatype (RootModel)
-                            rule_id = prop.value.root if hasattr(prop.value, 'root') else prop.value
-                            component_type_str = _get_component_type_string(component.type)
-                            key = (
-                                component.title,
-                                component_type_str,
-                                rule_id,
-                                control_implementation.source,
-                                control_implementation.description,
-                                statement.statement_id,
-                            )
-                            self._cd_controls_map[key] = prop
+        if not implemented_requirement.statements:
+            return
+
+        for statement in implemented_requirement.statements:
+            self._process_statement_props(statement, component, control_implementation)
 
     def _get_rule_id(self, component: DefinedComponent, param_id: str) -> str:
         """Get rule_id for given param_id."""

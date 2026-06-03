@@ -562,17 +562,28 @@ class TaniumOscalFactory:
         analysis.append(f'cache: requests={self._property_manager.requests} hits={self._property_manager.hits}')
         return analysis
 
+    def _get_matching_inventory_items(self, component_uuid: str) -> List[InventoryItem]:
+        """Get inventory items that match the given component UUID."""
+        inventory_items = []
+        for inventory_item in self.inventory:
+            if self._inventory_item_matches_component(inventory_item, component_uuid):
+                inventory_items.append(inventory_item)
+        return inventory_items
+
+    def _inventory_item_matches_component(self, inventory_item: InventoryItem, component_uuid: str) -> bool:
+        """Check if inventory item has an implemented component matching the UUID."""
+        for implemented_component in inventory_item.implemented_components:
+            if implemented_component.component_uuid == component_uuid:
+                return True
+        return False
+
     def _get_local_definitions(self, system_component: SystemComponent) -> LocalDefinitions1:
         """Get local definitions."""
         rval = LocalDefinitions1()
         for component in self.components:
             if component.uuid == system_component.uuid:
                 rval.components = [component]
-                inventory_items = []
-                for inventory_item in self.inventory:
-                    for implemented_component in inventory_item.implemented_components:
-                        if implemented_component.component_uuid == system_component.uuid:
-                            inventory_items.append(inventory_item)
+                inventory_items = self._get_matching_inventory_items(system_component.uuid)
                 # In Pydantic v2, inventory_items must have at least 1 item if set
                 if inventory_items:
                     rval.inventory_items = inventory_items
