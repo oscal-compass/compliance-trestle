@@ -583,5 +583,5 @@ class OscalRootModel(RootModel[Any]):
         )
         new_fields_for_model = OscalBaseModel._build_fields_dict.__func__(cls, excluded_fields)
 
-        new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)  # type: ignore
+        new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)
         return cast(Type[OscalBaseModel], new_model)
