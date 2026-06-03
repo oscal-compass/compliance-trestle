@@ -336,7 +336,7 @@ class SSPMarkdownWriter:
             if by_comp.implementation_status:
                 status = by_comp.implementation_status.state
 
-            rules, rule_props = ControlInterface.get_rule_list_for_item(by_comp)
+            rules, _ = ControlInterface.get_rule_list_for_item(by_comp)
 
             if prose or write_empty_responses:
                 if subheader:
