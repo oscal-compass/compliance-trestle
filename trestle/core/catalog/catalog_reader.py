@@ -369,12 +369,8 @@ class CatalogReader:
         props, props_by_id = ControlReader.get_props_list(control_id, control_part_id_map, yaml_header)
         # add the props at control level
         if props:
-            # Only assign if we have existing props, otherwise reconcile_props will handle it
-            if imp_req.props:
-                ControlInterface.reconcile_props(imp_req, props)
-            else:
-                # If no existing props, reconcile_props will create the list
-                ControlInterface.reconcile_props(imp_req, props)
+            # reconcile_props handles both existing and non-existing props
+            ControlInterface.reconcile_props(imp_req, props)
             imp_req.props = none_if_empty(imp_req.props)
 
         # add the props at the part level

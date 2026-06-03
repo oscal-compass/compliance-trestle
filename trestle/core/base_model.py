@@ -167,6 +167,46 @@ class OscalBaseModel(TrestleBaseModel):
             return super().__eq__(other)
 
     @classmethod
+    def _validate_stripped_fields_params(
+        cls, stripped_fields: Optional[List[str]], stripped_fields_aliases: Optional[List[str]]
+    ) -> None:
+        """Validate that exactly one of stripped_fields or stripped_fields_aliases is provided."""
+        if stripped_fields is not None and stripped_fields_aliases is not None:
+            raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
+        if stripped_fields is None and stripped_fields_aliases is None:
+            raise err.TrestleError('Exactly one of "stripped_fields" or "stripped_fields_aliases" must be provided')
+
+    @classmethod
+    def _resolve_excluded_fields(
+        cls, stripped_fields: Optional[List[str]], stripped_fields_aliases: Optional[List[str]]
+    ) -> List[str]:
+        """Resolve the list of field names to exclude from aliases or direct field names."""
+        if stripped_fields is not None:
+            return stripped_fields
+
+        # At this point, stripped_fields_aliases must be non-None due to validation
+        if stripped_fields_aliases is None:
+            return []
+
+        # Map aliases to field names
+        alias_to_name = {}
+        for field_name, field_info in cls.model_fields.items():
+            alias = field_info.alias if field_info.alias else field_name
+            alias_to_name[alias] = field_name
+
+        try:
+            return [alias_to_name[key] for key in stripped_fields_aliases]
+        except KeyError as e:
+            raise err.TrestleError(f'Field {str(e)} does not exist in the model')
+
+    @classmethod
+    def _build_new_field_definition(cls, field_name: str, field_info: FieldInfo) -> tuple:
+        """Build a field definition tuple for create_model."""
+        if field_info.is_required():
+            return (field_info.annotation, Field(..., title=field_name, alias=field_info.alias))
+        return (Optional[field_info.annotation], Field(None, title=field_name, alias=field_info.alias))
+
+    @classmethod
     def create_stripped_model_type(
         cls, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
     ) -> Type['OscalBaseModel']:
@@ -187,44 +227,15 @@ class OscalBaseModel(TrestleBaseModel):
             TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.
             TrestleError: If incorrect aliases or field names are provided.
         """
-        if stripped_fields is not None and stripped_fields_aliases is not None:
-            raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
-        if stripped_fields is None and stripped_fields_aliases is None:
-            raise err.TrestleError('Exactly one of "stripped_fields" or "stripped_fields_aliases" must be provided')
+        cls._validate_stripped_fields_params(stripped_fields, stripped_fields_aliases)
+        excluded_fields = cls._resolve_excluded_fields(stripped_fields, stripped_fields_aliases)
 
-        # create alias to field_name mapping
-        excluded_fields = []
-        if stripped_fields is not None:
-            excluded_fields = stripped_fields
-        elif stripped_fields_aliases is not None:
-            # In Pydantic v2, we need to map aliases to field names differently
-            alias_to_name = {}
-            for field_name, field_info in cls.model_fields.items():
-                alias = field_info.alias if field_info.alias else field_name
-                alias_to_name[alias] = field_name
-            try:
-                excluded_fields = [alias_to_name[key] for key in stripped_fields_aliases]
-            except KeyError as e:
-                raise err.TrestleError(f'Field {str(e)} does not exist in the model')
-
-        current_fields = cls.model_fields
-        new_fields_for_model = {}
         # Build field list
-        for field_name, field_info in current_fields.items():
-            if field_name in excluded_fields:
-                continue
-            # Validate name in the field
-            # Check behaviour with an alias
-            if field_info.is_required():
-                new_fields_for_model[field_name] = (
-                    field_info.annotation,
-                    Field(..., title=field_name, alias=field_info.alias),
-                )
-            else:
-                new_fields_for_model[field_name] = (
-                    Optional[field_info.annotation],
-                    Field(None, title=field_name, alias=field_info.alias),
-                )
+        new_fields_for_model = {}
+        for field_name, field_info in cls.model_fields.items():
+            if field_name not in excluded_fields:
+                new_fields_for_model[field_name] = cls._build_new_field_definition(field_name, field_info)
+
         new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)  # type: ignore
         # TODO: This typing cast should NOT be necessary. Potentially fixable with a fix to pydantic. Issue #175
         return cast(Type[OscalBaseModel], new_model)
@@ -554,4 +565,43 @@ class OscalRootModel(RootModel[Any]):
         cls, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
     ) -> Type['OscalBaseModel']:
         """Create a stripped model type."""
-        return OscalBaseModel.create_stripped_model_type.__func__(cls, stripped_fields, stripped_fields_aliases)
+        # Validate parameters
+        if stripped_fields is not None and stripped_fields_aliases is not None:
+            raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
+        if stripped_fields is None and stripped_fields_aliases is None:
+            raise err.TrestleError('Exactly one of "stripped_fields" or "stripped_fields_aliases" must be provided')
+
+        # Resolve excluded fields using cls (which could be OscalRootModel)
+        if stripped_fields is not None:
+            excluded_fields = stripped_fields
+        elif stripped_fields_aliases is not None:
+            # Map aliases to field names
+            alias_to_name = {}
+            for field_name, field_info in cls.model_fields.items():
+                alias = field_info.alias if field_info.alias else field_name
+                alias_to_name[alias] = field_name
+
+            try:
+                excluded_fields = [alias_to_name[key] for key in stripped_fields_aliases]
+            except KeyError as e:
+                raise err.TrestleError(f'Field {str(e)} does not exist in the model')
+        else:
+            excluded_fields = []
+
+        # Build field list
+        new_fields_for_model = {}
+        for field_name, field_info in cls.model_fields.items():
+            if field_name not in excluded_fields:
+                if field_info.is_required():
+                    new_fields_for_model[field_name] = (
+                        field_info.annotation,
+                        Field(..., title=field_name, alias=field_info.alias),
+                    )
+                else:
+                    new_fields_for_model[field_name] = (
+                        Optional[field_info.annotation],
+                        Field(None, title=field_name, alias=field_info.alias),
+                    )
+
+        new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)  # type: ignore
+        return cast(Type[OscalBaseModel], new_model)

@@ -103,7 +103,7 @@ class ComponentGenerate(AuthorCommonCommand):
         self, context: ControlContext, component: comp.DefinedComponent, markdown_dir_path: pathlib.Path
     ) -> int:
         """Create markdown for the component using its source profiles."""
-        logger.info(f'Generating markdown for component {component.title}')
+        logger.debug(f'Generating markdown for component {component.title}')
         context.comp_name = component.title
         context.component = component
         context.uri_name_map = {}
