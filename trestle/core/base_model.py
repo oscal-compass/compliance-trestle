@@ -207,6 +207,22 @@ class OscalBaseModel(TrestleBaseModel):
         return (Optional[field_info.annotation], Field(None, title=field_name, alias=field_info.alias))
 
     @classmethod
+    def _build_fields_dict(cls, excluded_fields: List[str]) -> Dict[str, tuple[Any, Any]]:
+        """Build dictionary of fields excluding specified field names.
+
+        Args:
+            excluded_fields: List of field names to exclude from the model.
+
+        Returns:
+            Dictionary mapping field names to their field definitions.
+        """
+        new_fields = {}
+        for field_name, field_info in cls.model_fields.items():
+            if field_name not in excluded_fields:
+                new_fields[field_name] = cls._build_new_field_definition(field_name, field_info)
+        return new_fields
+
+    @classmethod
     def create_stripped_model_type(
         cls, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
     ) -> Type['OscalBaseModel']:
@@ -229,12 +245,7 @@ class OscalBaseModel(TrestleBaseModel):
         """
         cls._validate_stripped_fields_params(stripped_fields, stripped_fields_aliases)
         excluded_fields = cls._resolve_excluded_fields(stripped_fields, stripped_fields_aliases)
-
-        # Build field list
-        new_fields_for_model = {}
-        for field_name, field_info in cls.model_fields.items():
-            if field_name not in excluded_fields:
-                new_fields_for_model[field_name] = cls._build_new_field_definition(field_name, field_info)
+        new_fields_for_model = cls._build_fields_dict(excluded_fields)
 
         new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)  # type: ignore
         # TODO: This typing cast should NOT be necessary. Potentially fixable with a fix to pydantic. Issue #175
