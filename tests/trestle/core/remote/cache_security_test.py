@@ -874,6 +874,26 @@ class TestSSRFBypassVulnerabilities:
         with pytest.raises(TrestleError, match='0.0.0.0/8'):
             SFTPFetcher(tmp_path, 'sftp://0.0.0.0/data')
 
+    def test_sftp_blocks_ipv4_mapped_ipv6_rfc1918(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that SFTPFetcher blocks IPv4-mapped IPv6 RFC 1918 addresses when configured.
+
+        This mirrors test_blocks_ipv4_mapped_ipv6_rfc1918 for SFTP to ensure BYPASS-4
+        from the advisory is covered for both HTTPSFetcher and SFTPFetcher.
+        """
+        test_utils.ensure_trestle_config_dir(tmp_path)
+        monkeypatch.setenv('TRESTLE_BLOCK_PRIVATE_IPS', 'true')
+
+        # Mock DNS resolution to return IPv4-mapped IPv6 private address
+        def mock_getaddrinfo(hostname, port):
+            # Return ::ffff:10.0.0.1 (IPv4-mapped IPv6 for RFC 1918)
+            return [(socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::ffff:10.0.0.1', 22, 0, 0))]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block IPv4-mapped IPv6 private address when TRESTLE_BLOCK_PRIVATE_IPS is set
+        with pytest.raises(TrestleError, match='10.0.0.0/8'):
+            SFTPFetcher(tmp_path, 'sftp://[::ffff:10.0.0.1]/data')
+
     def test_multiple_ipv4_mapped_addresses(self, tmp_path: pathlib.Path, monkeypatch) -> None:
         """Test handling of multiple IPv4-mapped IPv6 addresses in DNS response."""
         test_utils.ensure_trestle_config_dir(tmp_path)
