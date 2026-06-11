@@ -708,4 +708,209 @@ def test_url_validator_invalid_ip_address(monkeypatch) -> None:
         validator.validate_url('https://example.com/path')
 
 
+class TestSSRFBypassVulnerabilities:
+    """Test fixes for SSRF bypass vulnerabilities (GHSA-h47f-gmjp-m7rr)."""
+
+    def test_blocks_ipv4_mapped_ipv6_cloud_metadata(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that IPv4-mapped IPv6 cloud metadata addresses are blocked."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+
+        # Mock DNS resolution to return IPv4-mapped IPv6 address
+        def mock_getaddrinfo(hostname, port):
+            # Return ::ffff:169.254.169.254 (IPv4-mapped IPv6 for AWS metadata)
+            return [(socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::ffff:169.254.169.254', 443, 0, 0))]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block IPv4-mapped IPv6 cloud metadata address
+        # The metadata endpoint check catches it first with "cloud metadata endpoints" message
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            HTTPSFetcher(tmp_path, 'https://[::ffff:169.254.169.254]/latest/meta-data/')
+
+    def test_blocks_ipv4_mapped_ipv6_loopback(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that IPv4-mapped IPv6 loopback addresses are blocked."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+
+        # Mock DNS resolution to return IPv4-mapped IPv6 loopback
+        def mock_getaddrinfo(hostname, port):
+            # Return ::ffff:127.0.0.1 (IPv4-mapped IPv6 for loopback)
+            return [(socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::ffff:127.0.0.1', 443, 0, 0))]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block IPv4-mapped IPv6 loopback
+        with pytest.raises(TrestleError, match='127.0.0.0/8'):
+            HTTPSFetcher(tmp_path, 'https://[::ffff:127.0.0.1]/admin')
+
+    def test_blocks_ipv4_mapped_ipv6_rfc1918(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that IPv4-mapped IPv6 RFC 1918 addresses are blocked when configured."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+        monkeypatch.setenv('TRESTLE_BLOCK_PRIVATE_IPS', 'true')
+
+        # Mock DNS resolution to return IPv4-mapped IPv6 private address
+        def mock_getaddrinfo(hostname, port):
+            # Return ::ffff:10.0.0.1 (IPv4-mapped IPv6 for RFC 1918)
+            return [(socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::ffff:10.0.0.1', 443, 0, 0))]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block IPv4-mapped IPv6 private address when TRESTLE_BLOCK_PRIVATE_IPS is set
+        with pytest.raises(TrestleError, match='10.0.0.0/8'):
+            HTTPSFetcher(tmp_path, 'https://[::ffff:10.0.0.1]/admin')
+
+    def test_blocks_zero_address_ipv4(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that 0.0.0.0 is blocked (reaches localhost on Linux)."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+
+        # Mock DNS resolution to return 0.0.0.0
+        def mock_getaddrinfo(hostname, port):
+            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 443))]  # noqa: S104 - intentional test for blocked address
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block 0.0.0.0
+        with pytest.raises(TrestleError, match='0.0.0.0/8'):
+            HTTPSFetcher(tmp_path, 'https://0.0.0.0/admin')
+
+    def test_blocks_zero_address_ipv6(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that :: (IPv6 unspecified) is blocked."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+
+        # Mock DNS resolution to return ::
+        def mock_getaddrinfo(hostname, port):
+            return [(socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::', 443, 0, 0))]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block ::
+        with pytest.raises(TrestleError, match='::/128'):
+            HTTPSFetcher(tmp_path, 'https://[::]/admin')
+
+    def test_metadata_endpoint_canonicalization(self) -> None:
+        """Test that metadata endpoint check canonicalizes IPv4-mapped IPv6 addresses.
+
+        Note: This test directly calls a private method (_check_metadata_endpoints) to verify
+        the canonicalization logic in isolation. While this creates coupling to implementation
+        details, it's necessary to test this specific security-critical path without requiring
+        full DNS resolution setup.
+        """
+        from trestle.core.remote.security import URLSecurityValidator
+
+        validator = URLSecurityValidator()
+
+        # Test that bracketed IPv4-mapped IPv6 literal is canonicalized and blocked
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            # This should be canonicalized to 169.254.169.254 and blocked
+            validator._check_metadata_endpoints('::ffff:169.254.169.254')
+
+    def test_canonicalize_ip_method(self) -> None:
+        """Test the _canonicalize_ip method directly."""
+        import ipaddress
+        from trestle.core.remote.security import URLSecurityValidator
+
+        validator = URLSecurityValidator()
+
+        # Test IPv4-mapped IPv6 canonicalization
+        ipv6_mapped = ipaddress.ip_address('::ffff:169.254.169.254')
+        canonical = validator._canonicalize_ip(ipv6_mapped)
+        assert isinstance(canonical, ipaddress.IPv4Address)
+        assert str(canonical) == '169.254.169.254'
+
+        # Test regular IPv6 is unchanged
+        ipv6_regular = ipaddress.ip_address('2001:db8::1')
+        canonical = validator._canonicalize_ip(ipv6_regular)
+        assert isinstance(canonical, ipaddress.IPv6Address)
+        assert str(canonical) == '2001:db8::1'
+
+        # Test IPv4 is unchanged
+        ipv4 = ipaddress.ip_address('192.0.2.1')
+        canonical = validator._canonicalize_ip(ipv4)
+        assert isinstance(canonical, ipaddress.IPv4Address)
+        assert str(canonical) == '192.0.2.1'
+
+    def test_version_check_prevents_type_error(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that version checking prevents TypeError when comparing IPv4 and IPv6."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+
+        # Mock DNS to return both IPv4 and IPv6 addresses
+        def mock_getaddrinfo(hostname, port):
+            return [
+                (socket.AF_INET, socket.SOCK_STREAM, 6, '', ('127.0.0.1', 443)),
+                (socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::1', 443, 0, 0)),
+            ]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block both without TypeError
+        with pytest.raises(TrestleError, match='127.0.0.0/8|::1/128'):
+            HTTPSFetcher(tmp_path, 'https://localhost/admin')
+
+    def test_sftp_blocks_ipv4_mapped_ipv6_cloud_metadata(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that SFTPFetcher also blocks IPv4-mapped IPv6 cloud metadata."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+
+        # Mock DNS resolution to return IPv4-mapped IPv6 address
+        def mock_getaddrinfo(hostname, port):
+            return [(socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::ffff:169.254.169.254', 22, 0, 0))]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block IPv4-mapped IPv6 cloud metadata address
+        # The metadata endpoint check catches it first with "cloud metadata endpoints" message
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            SFTPFetcher(tmp_path, 'sftp://[::ffff:169.254.169.254]/data')
+
+    def test_sftp_blocks_zero_address(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that SFTPFetcher blocks 0.0.0.0."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+
+        # Mock DNS resolution to return 0.0.0.0
+        def mock_getaddrinfo(hostname, port):
+            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 22))]  # noqa: S104 - intentional test for blocked address
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block 0.0.0.0
+        with pytest.raises(TrestleError, match='0.0.0.0/8'):
+            SFTPFetcher(tmp_path, 'sftp://0.0.0.0/data')
+
+    def test_sftp_blocks_ipv4_mapped_ipv6_rfc1918(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test that SFTPFetcher blocks IPv4-mapped IPv6 RFC 1918 addresses when configured.
+
+        This mirrors test_blocks_ipv4_mapped_ipv6_rfc1918 for SFTP to ensure BYPASS-4
+        from the advisory is covered for both HTTPSFetcher and SFTPFetcher.
+        """
+        test_utils.ensure_trestle_config_dir(tmp_path)
+        monkeypatch.setenv('TRESTLE_BLOCK_PRIVATE_IPS', 'true')
+
+        # Mock DNS resolution to return IPv4-mapped IPv6 private address
+        def mock_getaddrinfo(hostname, port):
+            # Return ::ffff:10.0.0.1 (IPv4-mapped IPv6 for RFC 1918)
+            return [(socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::ffff:10.0.0.1', 22, 0, 0))]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block IPv4-mapped IPv6 private address when TRESTLE_BLOCK_PRIVATE_IPS is set
+        with pytest.raises(TrestleError, match='10.0.0.0/8'):
+            SFTPFetcher(tmp_path, 'sftp://[::ffff:10.0.0.1]/data')
+
+    def test_multiple_ipv4_mapped_addresses(self, tmp_path: pathlib.Path, monkeypatch) -> None:
+        """Test handling of multiple IPv4-mapped IPv6 addresses in DNS response."""
+        test_utils.ensure_trestle_config_dir(tmp_path)
+
+        # Mock DNS to return multiple IPv4-mapped IPv6 addresses
+        def mock_getaddrinfo(hostname, port):
+            return [
+                (socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::ffff:169.254.169.254', 443, 0, 0)),
+                (socket.AF_INET6, socket.SOCK_STREAM, 6, '', ('::ffff:127.0.0.1', 443, 0, 0)),
+            ]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+        # Should block on first blocked address (169.254.0.0/16)
+        # Using | pattern for robustness - either network match indicates proper blocking
+        with pytest.raises(TrestleError, match='169.254.0.0/16|127.0.0.0/8'):
+            HTTPSFetcher(tmp_path, 'https://evil.example.com/data')
+
+
 # Made with Bob

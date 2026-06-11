@@ -50,10 +50,12 @@ logger = logging.getLogger(__name__)
 # Always blocked - zero legitimate use for OSCAL fetching
 # These ranges are blocked regardless of configuration
 ALWAYS_BLOCKED_NETWORKS = [
-    ipaddress.ip_network('127.0.0.0/8'),  # Loopback
+    ipaddress.ip_network('127.0.0.0/8'),  # IPv4 loopback
     ipaddress.ip_network('::1/128'),  # IPv6 loopback
-    ipaddress.ip_network('169.254.0.0/16'),  # Link-local (includes metadata endpoints)
+    ipaddress.ip_network('169.254.0.0/16'),  # IPv4 link-local (includes metadata endpoints)
     ipaddress.ip_network('fe80::/10'),  # IPv6 link-local
+    ipaddress.ip_network('0.0.0.0/8'),  # IPv4 "this network", reaches localhost on Linux
+    ipaddress.ip_network('::/128'),  # IPv6 unspecified address
 ]
 
 # RFC 1918 private ranges - optionally blocked based on configuration
@@ -119,10 +121,30 @@ class URLSecurityValidator:
 
         for ip_str in ip_addresses:
             ip_addr = self._parse_ip_address(ip_str, hostname)
+            # Canonicalize IPv4-mapped IPv6 addresses before validation
+            ip_addr = self._canonicalize_ip(ip_addr)
             self._check_blocked_networks(ip_addr, hostname)
             self._check_private_networks(ip_addr, hostname)
 
         self._check_suspicious_ports(parsed, url)
+
+    def _canonicalize_ip(
+        self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address
+    ) -> ipaddress.IPv4Address | ipaddress.IPv6Address:
+        """Canonicalize IPv4-mapped IPv6 addresses to their IPv4 form.
+
+        IPv4-mapped IPv6 addresses (::ffff:a.b.c.d) are converted to their canonical
+        IPv4 form to ensure consistent validation against IPv4 network ranges.
+
+        Args:
+            ip_addr: The IP address to canonicalize
+
+        Returns:
+            The canonical IP address (IPv4 if it was IPv4-mapped IPv6, otherwise unchanged)
+        """
+        if isinstance(ip_addr, ipaddress.IPv6Address) and ip_addr.ipv4_mapped is not None:
+            return ip_addr.ipv4_mapped
+        return ip_addr
 
     def _parse_and_validate_url(self, url: str) -> parse.ParseResult:
         """Parse and validate basic URL structure."""
@@ -140,8 +162,26 @@ class URLSecurityValidator:
         return parsed
 
     def _check_metadata_endpoints(self, hostname: str) -> None:
-        """Check if hostname is a blocked metadata endpoint."""
-        if hostname in METADATA_HOSTNAMES:
+        """Check if hostname is a blocked metadata endpoint.
+
+        Canonicalizes bracketed IPv6 literal hostnames to handle IPv4-mapped
+        IPv6 addresses (e.g., [::ffff:169.254.169.254]) before checking.
+
+        Note: This method is for URL-literal hostnames only (i.e., when the hostname
+        in the URL itself is an IPv6 literal). DNS-resolved IPs are canonicalized
+        upstream in validate_url via _canonicalize_ip before hostname-level checks.
+        """
+        # Canonicalize bracketed IPv6 literal hostnames
+        canonical = hostname.strip('[]')
+        try:
+            canonical_ip = ipaddress.ip_address(canonical)
+            if isinstance(canonical_ip, ipaddress.IPv6Address) and canonical_ip.ipv4_mapped:
+                canonical = str(canonical_ip.ipv4_mapped)
+        except ValueError:
+            # Not an IP literal, use original hostname
+            canonical = hostname
+
+        if canonical in METADATA_HOSTNAMES:
             raise TrestleError(
                 f'Access to cloud metadata endpoints is not allowed: {hostname}. '
                 'This is a security restriction to prevent SSRF attacks.'
@@ -177,9 +217,21 @@ class URLSecurityValidator:
             raise TrestleError(f'Invalid IP address {ip_str} for hostname {hostname}: {e}') from e
 
     def _check_blocked_networks(self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address, hostname: str) -> None:
-        """Check if IP is in always-blocked networks (Tier 1)."""
+        """Check if IP is in always-blocked networks (Tier 1).
+
+        Note: ip_addr should already be canonicalized by validate_url before calling this method.
+        """
+        # Defensive check: ensure IPv4-mapped IPv6 addresses are canonicalized
+        # This protects against future refactoring that might skip canonicalization
+        if isinstance(ip_addr, ipaddress.IPv6Address) and ip_addr.ipv4_mapped is not None:
+            raise TrestleError(
+                f'Internal error: IP address {ip_addr} should have been canonicalized before network checks. '
+                'IPv4-mapped IPv6 addresses must be converted to IPv4 form.'
+            )
+
         for network in ALWAYS_BLOCKED_NETWORKS:
-            if ip_addr in network:
+            # Only check if IP version matches network version to avoid TypeError
+            if ip_addr.version == network.version and ip_addr in network:
                 raise TrestleError(
                     f'Access to {network} addresses is blocked: {hostname} resolves to {ip_addr}. '
                     f'This range includes loopback, link-local, and cloud metadata endpoints. '
@@ -194,9 +246,20 @@ class URLSecurityValidator:
             self._warn_private_ip(ip_addr, hostname)
 
     def _block_private_ip(self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address, hostname: str) -> None:
-        """Block access to private IP addresses when configured."""
+        """Block access to private IP addresses when configured.
+
+        Note: ip_addr should already be canonicalized by validate_url before calling this method.
+        """
+        # Defensive check: ensure IPv4-mapped IPv6 addresses are canonicalized
+        if isinstance(ip_addr, ipaddress.IPv6Address) and ip_addr.ipv4_mapped is not None:
+            raise TrestleError(
+                f'Internal error: IP address {ip_addr} should have been canonicalized before network checks. '
+                'IPv4-mapped IPv6 addresses must be converted to IPv4 form.'
+            )
+
         for network in PRIVATE_IP_NETWORKS:
-            if ip_addr in network:
+            # Only check if IP version matches network version to avoid TypeError
+            if ip_addr.version == network.version and ip_addr in network:
                 raise TrestleError(
                     f'Access to private IP addresses is blocked: {hostname} resolves to {ip_addr} '
                     f'which is in private network {network}. '
@@ -205,9 +268,20 @@ class URLSecurityValidator:
                 )
 
     def _warn_private_ip(self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address, hostname: str) -> None:
-        """Log warning when accessing private IP addresses."""
+        """Log warning when accessing private IP addresses.
+
+        Note: ip_addr should already be canonicalized by validate_url before calling this method.
+        """
+        # Defensive check: ensure IPv4-mapped IPv6 addresses are canonicalized
+        if isinstance(ip_addr, ipaddress.IPv6Address) and ip_addr.ipv4_mapped is not None:
+            raise TrestleError(
+                f'Internal error: IP address {ip_addr} should have been canonicalized before network checks. '
+                'IPv4-mapped IPv6 addresses must be converted to IPv4 form.'
+            )
+
         for network in PRIVATE_IP_NETWORKS:
-            if ip_addr in network:
+            # Only check if IP version matches network version to avoid TypeError
+            if ip_addr.version == network.version and ip_addr in network:
                 logger.warning(
                     f'Accessing private IP address: {hostname} resolves to {ip_addr} in network {network}. '
                     f'This is allowed by default to support private GitLab/internal OSCAL repositories. '
