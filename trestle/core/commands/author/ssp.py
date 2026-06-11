@@ -615,12 +615,11 @@ class SSPAssemble(AuthorCommonCommand):
                 comp_titles = [x.title for x in comp_dict.values()]
                 diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles and x.title not in leveraged_comps]
                 if diffs:
-                    for diff in diffs:
-                        logger.warning(
-                            f'Component named: {diff.title} was removed from system components from ssp '
-                            'because the corresponding component is not in '
-                            'the specified compdefs '
-                        )
+                    logger.warning(
+                        f'{len(diffs)} component(s) were removed from system components from ssp '
+                        'because the corresponding component(s) are not in '
+                        'the specified compdefs'
+                    )
                     index_list = [ssp_sys_imp_comps.index(value) for value in diffs if value in ssp_sys_imp_comps]
                     delete_list_from_list(ssp.system_implementation.components, index_list)
 

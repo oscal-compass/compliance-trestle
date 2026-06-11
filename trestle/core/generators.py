@@ -115,7 +115,7 @@ def _handle_enum_types(type_: Any) -> Union[Methods, TaskValidValues, Observatio
     return None
 
 
-def _handle_simple_types(type_: Any) -> Union[Base64, datetime, bool, None]:
+def _handle_simple_types(type_: Any) -> Base64 | datetime | bool | None:
     """Check and return sample value for simple types."""
     if type_ is Base64:
         return sample_base64
@@ -145,7 +145,7 @@ def _extract_int_constraints(metadata: tuple) -> tuple[int, int]:
     return floor, multiple_of
 
 
-def _handle_annotated_int(type_: Any) -> Union[int, None]:
+def _handle_annotated_int(type_: Any) -> int | None:
     """Handle Annotated[int, ...] types with constraints."""
     from typing import Annotated
 
@@ -211,7 +211,7 @@ def _is_constrained_string(type_: Any) -> bool:
     )
 
 
-def _handle_constrained_int_v1(type_: Any) -> Union[int, None]:
+def _handle_constrained_int_v1(type_: Any) -> int | None:
     """Handle Pydantic v1 ConstrainedIntValue types."""
     if not (hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__):
         return None
@@ -225,8 +225,13 @@ def _handle_constrained_int_v1(type_: Any) -> Union[int, None]:
     return (floor + 1) * multiple
 
 
-def _handle_special_types(type_: Any, field_name: str) -> Union[str, dict, None]:
-    """Handle special types like EmailStr, AnyUrl, dict."""
+def _handle_special_types(type_: Any, field_name: str) -> str | dict | None:
+    """Handle special types like EmailStr, AnyUrl, dict.
+
+    Args:
+        type_: The type to check
+        field_name: Field name (unused, kept for API compatibility)
+    """
     type_name = getattr(type_, '__name__', str(type_))
 
     if type_ is EmailStr or 'EmailStr' in type_name:
@@ -241,7 +246,7 @@ def _handle_special_types(type_: Any, field_name: str) -> Union[str, dict, None]
     return None
 
 
-def generate_sample_value_by_type(type_: Any, field_name: str) -> Union[datetime, bool, int, str, float, Enum, Base64]:
+def generate_sample_value_by_type(type_: Any, field_name: str) -> datetime | bool | int | str | float | Enum | Base64:
     """Given a type, return sample value."""
     # Check enum types
     enum_result = _handle_enum_types(type_)
@@ -462,18 +467,14 @@ def generate_sample_model(
                 return model(root=sample_value)  # type: ignore
             else:
                 # Non-union root type
-                # Check if root_type is a simple type (int, float, str, bool, datetime)
-                if root_type in (int, float, str, bool, datetime):
-                    sample_value = generate_sample_value_by_type(root_type, '')
-                    return model(root=sample_value)  # type: ignore
                 # Check if it's another RootModel or OscalBaseModel
-                elif safe_is_sub(root_type, OscalBaseModel) or (
+                if safe_is_sub(root_type, OscalBaseModel) or (
                     hasattr(root_type, 'model_fields') and 'root' in root_type.model_fields
                 ):
                     sample_value = generate_sample_model(root_type, include_optional=include_optional, depth=depth - 1)
                     return model(root=sample_value)  # type: ignore
                 else:
-                    # For other types, try to generate a sample value
+                    # For all other types (including simple types), generate a sample value
                     sample_value = generate_sample_value_by_type(root_type, '')
                     return model(root=sample_value)  # type: ignore
 

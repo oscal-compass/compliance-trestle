@@ -458,7 +458,7 @@ class Element:
             if type_str == 'list':
                 class_name = self._elem.root[0].__class__.__name__
             elif type_str == 'dict':
-                class_name = list(self._elem.root.values())[0].__class__.__name__
+                class_name = next(iter(self._elem.root.values())).__class__.__name__
         return class_name
 
     def get(self) -> OscalBaseModel:

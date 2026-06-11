@@ -541,7 +541,7 @@ class ControlInterface:
             new_params[rule_id] = []
             for param in rule_params:
                 if 'name' not in param:
-                    logger.warning(f'Parameter for rule_id {rule_id} has no matching name.  Ignoring the param.')
+                    logger.warning('Parameter for rule has no matching name. Ignoring the param.')
                 else:
                     param['description'] = param.get('description', '')
                     param['options'] = param.get('options', '')

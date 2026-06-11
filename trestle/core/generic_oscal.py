@@ -203,7 +203,7 @@ class GenericComponent(TrestleBaseModel):
         class_dict.pop('status', None)
         # Clean up empty lists to avoid Pydantic v2 validation errors with min_length constraints
         # Convert empty lists to None for optional fields
-        for key in list(class_dict.keys()):
+        for key in class_dict.keys():
             if isinstance(class_dict[key], list) and len(class_dict[key]) == 0:
                 class_dict[key] = None
         def_comp = comp.DefinedComponent(**class_dict)
@@ -363,7 +363,7 @@ class GenericImplementedRequirement(TrestleBaseModel):
             class_dict['statements'] = new_stat_list
         # Clean up empty lists to avoid Pydantic v2 validation errors with min_length constraints
         # Convert empty lists to None for optional fields
-        for key in list(class_dict.keys()):
+        for key in class_dict.keys():
             if isinstance(class_dict[key], list) and len(class_dict[key]) == 0:
                 class_dict[key] = None
         return ossp.ImplementedRequirement(**class_dict)
