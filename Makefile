@@ -55,13 +55,13 @@ pre-commit-update: ## Update pre-commit hooks to latest versions
 .PHONY: code-format code-lint code-lint-fix code-typing code-check mdformat
 
 code-format: ## Format code with ruff
-	hatch fmt --formatter
+	hatch check fmt --fix
 
 code-lint: ## Check code style with ruff (no fixes)
-	hatch fmt --linter --check
+	hatch check code
 
 code-lint-fix: ## Fix code style issues with ruff
-	hatch fmt --linter
+	hatch check code --fix
 
 code-typing: ## Run mypy type checking
 	hatch run -- mypy --pretty trestle
@@ -79,7 +79,7 @@ mdformat: ## Format markdown files
 # Testing (via hatch test)
 # ============================================================================
 
-.PHONY: test test-all test-cov test-cov-xml test-bdist
+.PHONY: test test-all test-cov test-cov-seq test-cov-xml test-cov-xml-seq test-bdist
 
 test: ## Run tests (stops on first failure)
 	hatch test
@@ -87,10 +87,17 @@ test: ## Run tests (stops on first failure)
 test-all: ## Run all tests in parallel
 	hatch test --all
 
-test-cov: ## Run tests with coverage report
+test-cov: ## Run tests with coverage report (parallel, faster but may corrupt data files)
 	hatch test --cover
 
-test-cov-xml: test-cov ## Run tests with coverage and generate XML report
+test-cov-seq: ## Run tests with coverage report (sequential, slower but reliable - RECOMMENDED)
+	rm -rf .coverage .coverage_tmp .coverage.*
+	hatch run pytest --cov --cov-config=pyproject.toml --cov-report=term-missing --cov-report=html
+
+test-cov-xml: test-cov ## Run tests with coverage and generate XML report (parallel, may fail)
+	hatch run coverage xml
+
+test-cov-xml-seq: test-cov-seq ## Run tests with coverage and generate XML report (sequential - RECOMMENDED)
 	hatch run coverage xml
 
 test-bdist: clean ## Test binary distribution (wheel install)
