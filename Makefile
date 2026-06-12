@@ -87,17 +87,10 @@ test: ## Run tests (stops on first failure)
 test-all: ## Run all tests in parallel
 	hatch test --all
 
-test-cov: ## Run tests with coverage report (parallel, faster but may corrupt data files)
+test-cov: ## Run tests with coverage report (parallel)
 	hatch test --cover
 
-test-cov-seq: ## Run tests with coverage report (sequential, slower but reliable - RECOMMENDED)
-	rm -rf .coverage .coverage_tmp .coverage.*
-	hatch run pytest --cov --cov-config=pyproject.toml --cov-report=term-missing --cov-report=html
-
-test-cov-xml: test-cov ## Run tests with coverage and generate XML report (parallel, may fail)
-	hatch run coverage xml
-
-test-cov-xml-seq: test-cov-seq ## Run tests with coverage and generate XML report (sequential - RECOMMENDED)
+test-cov-xml: test-cov ## Run tests with coverage and generate XML report (parallel)
 	hatch run coverage xml
 
 test-bdist: clean ## Test binary distribution (wheel install)
