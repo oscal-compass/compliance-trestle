@@ -211,20 +211,6 @@ def _is_constrained_string(type_: Any) -> bool:
     )
 
 
-def _handle_constrained_int_v1(type_: Any) -> int | None:
-    """Handle Pydantic v1 ConstrainedIntValue types."""
-    if not (hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__):
-        return None
-
-    multiple = type_.multiple_of if type_.multiple_of else 1
-    floor = type_.ge if type_.ge else 0
-    floor = type_.gt + 1 if type_.gt else floor
-
-    if math.remainder(floor, multiple) == 0:
-        return floor
-    return (floor + 1) * multiple
-
-
 def _handle_special_types(type_: Any, field_name: str) -> str | dict | None:
     """Handle special types like EmailStr, AnyUrl, dict.
 
@@ -274,11 +260,6 @@ def generate_sample_value_by_type(type_: Any, field_name: str) -> datetime | boo
     # Check constrained strings
     if _is_constrained_string(type_):
         return _handle_constrained_string(type_, field_name)
-
-    # Check Pydantic v1 constrained int
-    constrained_int = _handle_constrained_int_v1(type_)
-    if constrained_int is not None:
-        return constrained_int
 
     # Check enum subclasses
     if safe_is_sub(type_, Enum):

@@ -452,3 +452,90 @@ def test_oscal_serialize_canonical_json() -> None:
     assert serialized == simple_catalog_obj.oscal_serialize_json_bytes(canonical=True).decode(const.FILE_ENCODING)
     assert '\n' not in serialized
     assert simple_catalog_obj.metadata.title == new_catalog.metadata.title
+
+
+def test_robust_datetime_serialization_error_paths() -> None:
+    """Test error handling in robust_datetime_serialization."""
+    from trestle.core.base_model import robust_datetime_serialization
+
+    # Test with naive datetime (no timezone)
+    naive_dt = datetime.now()
+    with pytest.raises(err.TrestleError, match='Missing timezone in datetime'):
+        robust_datetime_serialization(naive_dt)
+
+    # Test with datetime with microseconds = 0 (seconds format)
+    dt_no_micro = datetime(2024, 1, 1, 12, 0, 0, 0, tzinfo=timezone.utc)
+    result = robust_datetime_serialization(dt_no_micro)
+    assert '+00:00' in result
+    assert '.' not in result  # No milliseconds
+
+    # Test with datetime with microseconds != 0 (milliseconds format)
+    dt_with_micro = datetime(2024, 1, 1, 12, 0, 0, 123456, tzinfo=timezone.utc)
+    result = robust_datetime_serialization(dt_with_micro)
+    assert '+00:00' in result
+    assert '.' in result  # Has milliseconds
+
+
+def test_eq_non_trestle_base_model() -> None:
+    """Test __eq__ with non-TrestleBaseModel objects."""
+    catalog = simple_catalog()
+
+    # Compare with non-TrestleBaseModel object
+    assert catalog != 'not a model'
+    assert catalog != 123
+    assert catalog is not None
+    assert catalog != {'uuid': catalog.uuid}
+
+
+def test_resolve_excluded_fields_empty() -> None:
+    """Test _resolve_excluded_fields with None stripped_fields_aliases."""
+    from trestle.oscal.catalog import Catalog
+
+    # Test with stripped_fields provided (normal path)
+    result = Catalog._resolve_excluded_fields(['metadata'], None)
+    assert result == ['metadata']
+
+    # Test with stripped_fields_aliases provided
+    result = Catalog._resolve_excluded_fields(None, ['metadata'])
+    assert result == ['metadata']
+
+
+def test_oscal_read_key_error() -> None:
+    """Test oscal_read with missing top-level key."""
+    import tempfile
+    import json
+
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        # Write JSON without the expected top-level key
+        json.dump({'wrong_key': {'uuid': 'test', 'metadata': {}}}, f)
+        temp_path = pathlib.Path(f.name)
+
+    try:
+        with pytest.raises(err.TrestleError, match='does not have top level key'):
+            oscatalog.Catalog.oscal_read(temp_path)
+    finally:
+        temp_path.unlink()
+
+
+def test_is_collection_container() -> None:
+    """Test is_collection_container method."""
+    # Test with a regular model (not a collection container)
+    assert not oscatalog.Catalog.is_collection_container()
+    assert not common.Metadata.is_collection_container()
+
+    # Create a dynamic model that wraps a list
+    from pydantic import create_model, Field
+    from typing import List
+
+    # This simulates what happens in trestle when decomposing models
+    list_model = create_model('TestListModel', __base__=OscalBaseModel, root=(List[str], Field(...)))
+
+    # This should be detected as a collection container
+    assert list_model.is_collection_container()
+
+    # Test get_collection_type
+    assert list_model.get_collection_type() == list
+
+    # Test error when calling get_collection_type on non-collection
+    with pytest.raises(err.TrestleError, match='not wrapping a collection type'):
+        oscatalog.Catalog.get_collection_type()

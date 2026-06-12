@@ -21,9 +21,9 @@ import pkgutil
 import sys
 import uuid
 from datetime import date, datetime
-from typing import Any, List
+from typing import Any, List, Union
 
-from pydantic import constr, EmailStr, AnyUrl
+from pydantic import Field, EmailStr, AnyUrl
 
 import pytest
 
@@ -161,3 +161,110 @@ def test_gen_party() -> None:
     """Test generation of a party."""
     my_party = gens.generate_sample_model(common.Party, include_optional=True, depth=-1)
     assert my_party
+
+
+def test_is_enum_method() -> None:
+    """Test is_enum_method function."""
+    from trestle.oscal.common import Methods
+
+    # Test with Methods enum in Union
+    union_type = Union[Methods, str]
+    assert gens.is_enum_method(union_type) is True
+
+    # Test with non-Methods type
+    assert gens.is_enum_method(str) is False
+    assert gens.is_enum_method(int) is False
+
+
+def test_is_enum_task_valid_value() -> None:
+    """Test is_enum_task_valid_value function."""
+    from trestle.oscal.common import TaskValidValues
+
+    # Test with TaskValidValues enum in Union
+    union_type = Union[TaskValidValues, str]
+    assert gens.is_enum_task_valid_value(union_type) is True
+
+    # Test with non-TaskValidValues type
+    assert gens.is_enum_task_valid_value(str) is False
+
+
+def test_is_enum_observation_type_valid_value() -> None:
+    """Test is_enum_observation_type_valid_value function."""
+    from trestle.oscal.common import ObservationTypeValidValues
+
+    # Test with ObservationTypeValidValues enum in Union
+    union_type = Union[ObservationTypeValidValues, str]
+    assert gens.is_enum_observation_type_valid_value(union_type) is True
+
+    # Test with non-ObservationTypeValidValues type
+    assert gens.is_enum_observation_type_valid_value(str) is False
+
+
+def test_handle_enum_types() -> None:
+    """Test _handle_enum_types function."""
+    from trestle.oscal.common import Methods, TaskValidValues, ObservationTypeValidValues
+
+    # Test Methods enum
+    union_type = Union[Methods, str]
+    result = gens._handle_enum_types(union_type)
+    assert result == gens.sample_method
+
+    # Test TaskValidValues enum
+    union_type = Union[TaskValidValues, str]
+    result = gens._handle_enum_types(union_type)
+    assert result == gens.sample_task_valid_value
+
+    # Test ObservationTypeValidValues enum
+    union_type = Union[ObservationTypeValidValues, str]
+    result = gens._handle_enum_types(union_type)
+    assert result == gens.sample_observation_type_valid_value
+
+    # Test non-enum type
+    result = gens._handle_enum_types(str)
+    assert result is None
+
+
+def test_handle_constrained_string_oscal_version() -> None:
+    """Test _handle_constrained_string with oscal_version field."""
+    result = gens._handle_constrained_string(str, 'oscal_version')
+    assert result == oscal.OSCAL_VERSION
+
+
+def test_handle_constrained_string_member_of_organization() -> None:
+    """Test _handle_constrained_string with member_of_organization field."""
+    result = gens._handle_constrained_string(str, 'member_of_organizations')
+    assert result == const.SAMPLE_UUID_STR
+
+
+def test_generate_sample_value_enum_path() -> None:
+    """Test generate_sample_value_by_type with enum types."""
+    from trestle.oscal.common import Methods
+
+    # Test that enum path is taken
+    union_type = Union[Methods, str]
+    result = gens.generate_sample_value_by_type(union_type, 'test_field')
+    assert result == gens.sample_method
+
+
+def test_generate_sample_value_dict_type() -> None:
+    """Test generate_sample_value_by_type with dict type."""
+    result = gens.generate_sample_value_by_type(dict, 'test_field')
+    assert result == {}
+
+
+def test_generate_sample_value_plain_string_oscal_version() -> None:
+    """Test generate_sample_value_by_type with plain str type and oscal_version field."""
+    result = gens.generate_sample_value_by_type(str, 'oscal_version')
+    assert result == oscal.OSCAL_VERSION
+
+
+def test_generate_sample_value_enum_subclass() -> None:
+    """Test generate_sample_value_by_type with Enum subclass."""
+    from enum import Enum
+
+    class TestEnum(Enum):
+        VALUE1 = 'value1'
+        VALUE2 = 'value2'
+
+    result = gens.generate_sample_value_by_type(TestEnum, 'test_field')
+    assert result == TestEnum.VALUE1
