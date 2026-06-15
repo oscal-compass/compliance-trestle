@@ -39,8 +39,7 @@ plugins:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
       404: [ '*#trestle.*' ]
-    # Treat 429 (Too Many Requests) as warning instead of error
-    warn_on_error:
+      # Treat 429 (Too Many Requests) as warning instead of error
       429: [ '*' ]
     # Add URLs here that should be completely ignored by htmlproofer:
     ignore_urls:
