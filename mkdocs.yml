@@ -39,10 +39,11 @@ plugins:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
       404: [ '*#trestle.*' ]
-    # These URLs work from the browser but fail when accesssed via htmlproofer:
+      # Treat 429 (Too Many Requests) as warning instead of error
+      429: [ '*' ]
+    # Add URLs here that should be completely ignored by htmlproofer:
     ignore_urls:
-        - 'https://www.fedramp.gov/documents-templates/'
-        - 'https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg'
+        - 'https://example.com/placeholder'
 - mkdocstrings:
     default_handler: python
     handlers:
