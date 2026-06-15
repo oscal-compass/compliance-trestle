@@ -34,12 +34,13 @@ plugins:
     enabled: true
     validate_rendered_template: false
     validate_external_urls: true
-    raise_error_after_finish: false
+    # Fail on errors except for 429 (rate limiting)
+    raise_error_after_finish: true
     raise_error_excludes:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
       404: [ '*#trestle.*' ]
-      # Treat 429 (Too Many Requests) as warning instead of error
+      # Don't fail on 429 (Too Many Requests) - rate limiting is expected
       429: [ '*' ]
     # Add URLs here that should be completely ignored by htmlproofer:
     ignore_urls:
