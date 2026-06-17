@@ -1,5 +1,5 @@
 # -*- mode:python; coding:utf-8 -*-
-# Copyright (c) 2026 IBM Corp. All rights reserved.
+# Copyright (c) 2026 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ class PoamValidator:
     """Validate POAM spreadsheet data before transformation."""
 
     VALID_RISK_RATINGS = ['Low', 'Moderate', 'High', 'N/A']
-    VALID_YES_NO_PENDING = ['Yes', 'No', 'Pending', '']
+    VALID_YES_NO_PENDING = ['Yes', 'No', 'Pending']
     CONTROL_PATTERN = re.compile(r'^[A-Z]{2}-\d+(\(\d+\))?$')
 
     def __init__(self, validate_mode: str = 'warn') -> None:
@@ -579,10 +579,11 @@ class PoamBuilder:
         title = _safe_strip(row_data.get(PoamXlsxHelper.WEAKNESS_NAME, ''))
         description = _safe_strip(row_data.get(PoamXlsxHelper.WEAKNESS_DESCRIPTION, ''))
         statement_raw = row_data.get(PoamXlsxHelper.OVERALL_REMEDIATION_PLAN, description)
-        if statement_raw and isinstance(statement_raw, str):
-            statement = statement_raw.strip()
+        # Convert to string and strip, handling both string and non-string values
+        if statement_raw:
+            statement = str(statement_raw).strip() if isinstance(statement_raw, str) else str(statement_raw)
         else:
-            statement = statement_raw if statement_raw else description
+            statement = description
         status = RiskStatus(__root__='open')  # Default status for Open POA&M Items sheet
 
         # Properties
@@ -951,6 +952,7 @@ class XlsxToOscalPoam(TaskBase):
             # Validate row
             errors = validator.validate_row(row_num, row_data)
             if errors and self._validate_mode == 'on':
+                logger.warning(f'Skipping row {row_num} due to validation errors')
                 continue  # Skip invalid rows in strict mode; errors already stored in validator
 
             # Extract POAM ID
