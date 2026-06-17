@@ -90,13 +90,20 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-### v3: stable (actively developed)
+### v4: stable (actively developed)
+
+- supports NIST OSCAL 1.2.1 as well as previous versions
+- supports newly released Mapping Model
+
+### v3: stable (maintenance mode)
 
 - supports NIST OSCAL 1.1.3 as well as previous versions
+- limited support until June 30, 2026
 
-### v2: stable (maintenance mode)
+### v2: stable (deprecated)
 
 - supports NIST OSCAL 1.0.4 as well as previous versions
+- no longer supported
 
 ## Community meetings and communications
 
@@ -105,6 +112,10 @@ Please refer to the community [README](https://github.com/oscal-compass/communit
 ## Contributing to Trestle
 
 Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/latest/contributing/mkdocs_contributing/) to get started.
+
+## Security
+
+For information about security features, best practices, and how to report security vulnerabilities, please see our [Security Policy](SECURITY.md).
 
 ## Code of Conduct
 

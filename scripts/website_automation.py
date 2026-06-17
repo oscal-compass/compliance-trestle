@@ -33,15 +33,14 @@ def write_module_doc_metafile(dump_location: pathlib.Path, module_name: str) -> 
     """Create a markdown file which allows mkdocstrings to index an individual module."""
     write_file = dump_location / (module_name.replace('.', '/') + '.md')
     write_file.parent.mkdir(parents=True, exist_ok=True)
-    fh = write_file.open('w', encoding='utf8')
-    # yaml header
-    fh.write('---\n')
-    fh.write(f'title: {module_name}\n')
-    fh.write(f'description: Documentation for {module_name} module\n')
-    fh.write('---\n\n')
-    fh.write(f'::: {module_name}\n')  # noqa: E231
-    fh.write('handler: python\n')
-    fh.close()
+    with write_file.open('w', encoding='utf8') as fh:
+        # yaml header
+        fh.write('---\n')
+        fh.write(f'title: {module_name}\n')
+        fh.write(f'description: Documentation for {module_name} module\n')
+        fh.write('---\n\n')
+        fh.write(f'::: {module_name}\n')  # noqa: E231
+        fh.write('handler: python\n')
 
 
 def get_key(var: Dict[str, Any]) -> str:
@@ -72,11 +71,12 @@ def create_module_markdowns(base_path: pathlib.Path, base_module: str, dump_loca
 def md_txt(original: pathlib.Path, md_ed_license: pathlib.Path):
     """Convert the apache license into a markdown file by wrapping the content in a text escape block."""
     assert original.exists()
-    orig_data = original.open('r', encoding='utf8').read()
-    md_fh = md_ed_license.open('w', encoding='utf8')
-    md_fh.write('```text\n')
-    md_fh.write(orig_data)
-    md_fh.write('\n```\n')
+    with original.open('r', encoding='utf8') as orig_fh:
+        orig_data = orig_fh.read()
+    with md_ed_license.open('w', encoding='utf8') as md_fh:
+        md_fh.write('```text\n')
+        md_fh.write(orig_data)
+        md_fh.write('\n```\n')
 
 
 def cleanup_directory(dump_location: pathlib.Path):

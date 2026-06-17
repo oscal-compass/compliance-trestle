@@ -318,9 +318,22 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
         ControlInterface.param_to_str(param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
         == 'organization-defined events'
     )
-    param = control.params[0]
-    param.values = None
-    param.select = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['choice 1', 'choice 2'])
+    # Replace the first parameter with a Parameter2 that has select instead of values
+    old_param = control.params[0]
+    new_param = common.Parameter2(
+        id=old_param.id,
+        class_=old_param.class_,
+        depends_on=old_param.depends_on,
+        props=old_param.props,
+        links=old_param.links,
+        label=old_param.label,
+        usage=old_param.usage,
+        constraints=old_param.constraints,
+        guidelines=old_param.guidelines,
+        select=common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['choice 1', 'choice 2']),
+        remarks=old_param.remarks,
+    )
+    control.params[0] = new_param
     param_dict = ControlInterface.get_control_param_dict(control, False)
     assert (
         ControlInterface.param_to_str(param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)

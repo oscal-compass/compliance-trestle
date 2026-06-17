@@ -174,11 +174,11 @@ def test_generic_oscal() -> None:
     """Test generic oscal conversions."""
     generic_component = generic.GenericComponent.generate()
     def_comp = generic_component.as_defined_component()
-    assert def_comp.description == ''
+    assert def_comp.description == const.REPLACE_ME
 
     generic_cont_imp = generic.GenericControlImplementation.generate()
     cont_imp = generic_cont_imp.as_ssp()
-    assert cont_imp.description == ''
+    assert cont_imp.description == const.REPLACE_ME
 
 
 def test_component_generate_missing_control(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:

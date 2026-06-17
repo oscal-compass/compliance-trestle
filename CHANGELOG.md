@@ -2,6 +2,546 @@
 
 <!-- version list -->
 
+## v4.0.3 (2026-05-20)
+
+### Bug Fixes
+
+- Add cross-platform install docs and conventional-pr make target
+  ([#2202](https://github.com/oscal-compass/compliance-trestle/pull/2202),
+  [`cc76c3a`](https://github.com/oscal-compass/compliance-trestle/commit/cc76c3a9b7afdba10dac2c9553df52dc8e5f7ac9))
+
+- Address PR review comments on multi-train release support
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`a013ac8`](https://github.com/oscal-compass/compliance-trestle/commit/a013ac826e7df7bb7c9a645b6a0bdc561de2efa4))
+
+- Apply mdformat to maintenance_releases.md
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`a013ac8`](https://github.com/oscal-compass/compliance-trestle/commit/a013ac826e7df7bb7c9a645b6a0bdc561de2efa4))
+
+- Codeql issue Bad HTML filtering regexp
+  ([#2226](https://github.com/oscal-compass/compliance-trestle/pull/2226),
+  [`7e39242`](https://github.com/oscal-compass/compliance-trestle/commit/7e39242351fa81420938bbb70282093ab6be8d1b))
+
+- Cognitive complexity
+  ([`53de5e7`](https://github.com/oscal-compass/compliance-trestle/commit/53de5e75332888ea54f5da41d4c7859bb1d608e1))
+
+- Convert negative security checks to positive allowlists
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`a013ac8`](https://github.com/oscal-compass/compliance-trestle/commit/a013ac826e7df7bb7c9a645b6a0bdc561de2efa4))
+
+- Correct act install SHA to commit SHA (not tag object SHA)
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`a013ac8`](https://github.com/oscal-compass/compliance-trestle/commit/a013ac826e7df7bb7c9a645b6a0bdc561de2efa4))
+
+- Correct path security validator behaviour on mac os
+  ([`34ca6ad`](https://github.com/oscal-compass/compliance-trestle/commit/34ca6adbf5208c05f50ffd4448907c73bbf93194))
+
+- Correct path security validator behaviour on mac os
+  ([`140acb2`](https://github.com/oscal-compass/compliance-trestle/commit/140acb2c052a1a2cfed1e2e22adbc2f8b79332ab))
+
+- Handle dotted dir in to_trash_path
+  ([#2209](https://github.com/oscal-compass/compliance-trestle/pull/2209),
+  [`7244d97`](https://github.com/oscal-compass/compliance-trestle/commit/7244d97fa4afb115340a9b01f8ba994f44b7397d))
+
+- Handle dotted directory paths in trash resolution
+  ([#2209](https://github.com/oscal-compass/compliance-trestle/pull/2209),
+  [`7244d97`](https://github.com/oscal-compass/compliance-trestle/commit/7244d97fa4afb115340a9b01f8ba994f44b7397d))
+
+- Handle dotted trash path edge cases
+  ([#2209](https://github.com/oscal-compass/compliance-trestle/pull/2209),
+  [`7244d97`](https://github.com/oscal-compass/compliance-trestle/commit/7244d97fa4afb115340a9b01f8ba994f44b7397d))
+
+- Handle missing metadata in version
+  ([#2186](https://github.com/oscal-compass/compliance-trestle/pull/2186),
+  [`4f6c77c`](https://github.com/oscal-compass/compliance-trestle/commit/4f6c77c2abc72dce1bf0d5e417b7fed171b85d5a))
+
+- Improve test coverage
+  ([`53de5e7`](https://github.com/oscal-compass/compliance-trestle/commit/53de5e75332888ea54f5da41d4c7859bb1d608e1))
+
+- Improve test coverage to 100% for security.py
+  ([`89f4e53`](https://github.com/oscal-compass/compliance-trestle/commit/89f4e53d159e8ff901da4d7c3b51c9556bd32ec0))
+
+- Improve validation
+  ([`2dd1cce`](https://github.com/oscal-compass/compliance-trestle/commit/2dd1cce6b9a671dc2fcaed794158d5c16ed17dc5))
+
+- Jinja write
+  ([`2dd1cce`](https://github.com/oscal-compass/compliance-trestle/commit/2dd1cce6b9a671dc2fcaed794158d5c16ed17dc5))
+
+- Pin act install to v0.2.87 and fix mdformat table padding
+  ([#2202](https://github.com/oscal-compass/compliance-trestle/pull/2202),
+  [`cc76c3a`](https://github.com/oscal-compass/compliance-trestle/commit/cc76c3a9b7afdba10dac2c9553df52dc8e5f7ac9))
+
+- Pre-configure act image to avoid interactive prompt in CI
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`a013ac8`](https://github.com/oscal-compass/compliance-trestle/commit/a013ac826e7df7bb7c9a645b6a0bdc561de2efa4))
+
+- Preserve dotted catalog names in validate -a
+  ([#2146](https://github.com/oscal-compass/compliance-trestle/pull/2146),
+  [`bc638c0`](https://github.com/oscal-compass/compliance-trestle/commit/bc638c040ea5bb1f3500b626307bba21be78b618))
+
+- The HTTPSFetcher
+  ([`53de5e7`](https://github.com/oscal-compass/compliance-trestle/commit/53de5e75332888ea54f5da41d4c7859bb1d608e1))
+
+- Update stale OSCAL reference links
+  ([#2209](https://github.com/oscal-compass/compliance-trestle/pull/2209),
+  [`7244d97`](https://github.com/oscal-compass/compliance-trestle/commit/7244d97fa4afb115340a9b01f8ba994f44b7397d))
+
+- Write security against .. in remove cache path
+  ([`89f4e53`](https://github.com/oscal-compass/compliance-trestle/commit/89f4e53d159e8ff901da4d7c3b51c9556bd32ec0))
+
+- **deps**: Bump actions/cache from 5.0.4 to 5.0.5
+  ([#2204](https://github.com/oscal-compass/compliance-trestle/pull/2204),
+  [`521008f`](https://github.com/oscal-compass/compliance-trestle/commit/521008f2382b80f4352de39c65b04809f1eafb3f))
+
+- **deps**: Bump actions/checkout from 6.0.1 to 6.0.2
+  ([#2075](https://github.com/oscal-compass/compliance-trestle/pull/2075),
+  [`4d9c832`](https://github.com/oscal-compass/compliance-trestle/commit/4d9c83211348f75c4c0be5a2f191d7c406ae7bd5))
+
+- **deps**: Bump actions/create-github-app-token from 3.1.1 to 3.2.0
+  ([#2229](https://github.com/oscal-compass/compliance-trestle/pull/2229),
+  [`7f42431`](https://github.com/oscal-compass/compliance-trestle/commit/7f4243186633ac1ce801dd2475825df049d6ff15))
+
+- **deps**: Bump actions/setup-python from 6.1.0 to 6.2.0
+  ([#2075](https://github.com/oscal-compass/compliance-trestle/pull/2075),
+  [`4d9c832`](https://github.com/oscal-compass/compliance-trestle/commit/4d9c83211348f75c4c0be5a2f191d7c406ae7bd5))
+
+- **deps**: Bump cryptography from 46.0.3 to 46.0.4
+  ([#2075](https://github.com/oscal-compass/compliance-trestle/pull/2075),
+  [`4d9c832`](https://github.com/oscal-compass/compliance-trestle/commit/4d9c83211348f75c4c0be5a2f191d7c406ae7bd5))
+
+- **deps**: Bump github/codeql-action from 4.35.1 to 4.35.2
+  ([#2205](https://github.com/oscal-compass/compliance-trestle/pull/2205),
+  [`84ab5de`](https://github.com/oscal-compass/compliance-trestle/commit/84ab5de6a749161ec8b5edcfb28c10c0a019c699))
+
+- **deps**: Bump github/codeql-action from 4.35.2 to 4.35.5
+  ([#2230](https://github.com/oscal-compass/compliance-trestle/pull/2230),
+  [`da6598f`](https://github.com/oscal-compass/compliance-trestle/commit/da6598fb454fc7563c4d7f47ae437e352da12e87))
+
+- **deps**: Bump paramiko from 4.0.0 to 5.0.0
+  ([#2223](https://github.com/oscal-compass/compliance-trestle/pull/2223),
+  [`21cd0e4`](https://github.com/oscal-compass/compliance-trestle/commit/21cd0e4e4909b9429a9e4c2b4623f530a062bbd9))
+
+- **deps**: Bump SonarSource/sonarqube-scan-action from 7.1.0 to 8.0.0
+  ([#2215](https://github.com/oscal-compass/compliance-trestle/pull/2215),
+  [`66693b4`](https://github.com/oscal-compass/compliance-trestle/commit/66693b41633a992c54d86b67027ab5dc4e6ec0a2))
+
+- **ssp**: Handle optional by_components in assemble merge
+  ([#2190](https://github.com/oscal-compass/compliance-trestle/pull/2190),
+  [`ce730e1`](https://github.com/oscal-compass/compliance-trestle/commit/ce730e17b56bf254533a23ec30090e4f4f279fe7))
+
+### Chores
+
+- **ci**: Prevent concurrent gh-pages deployments
+  ([#2075](https://github.com/oscal-compass/compliance-trestle/pull/2075),
+  [`4d9c832`](https://github.com/oscal-compass/compliance-trestle/commit/4d9c83211348f75c4c0be5a2f191d7c406ae7bd5))
+
+### Code Style
+
+- Fix markdown formatting nits via mdformat
+  ([#2134](https://github.com/oscal-compass/compliance-trestle/pull/2134),
+  [`28cf20c`](https://github.com/oscal-compass/compliance-trestle/commit/28cf20cc5f5bda20165a0efa6ca253b17f5147b6))
+
+### Continuous Integration
+
+- Add act-based local workflow testing
+  ([#2202](https://github.com/oscal-compass/compliance-trestle/pull/2202),
+  [`cc76c3a`](https://github.com/oscal-compass/compliance-trestle/commit/cc76c3a9b7afdba10dac2c9553df52dc8e5f7ac9))
+
+- Add act-based local workflow testing and CI validation
+  ([#2202](https://github.com/oscal-compass/compliance-trestle/pull/2202),
+  [`cc76c3a`](https://github.com/oscal-compass/compliance-trestle/commit/cc76c3a9b7afdba10dac2c9553df52dc8e5f7ac9))
+
+- Add multi-train release support for maintenance branches
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`a013ac8`](https://github.com/oscal-compass/compliance-trestle/commit/a013ac826e7df7bb7c9a645b6a0bdc561de2efa4))
+
+- Add Snyk exception for paramiko cryptographic algorithm issue
+  ([#2218](https://github.com/oscal-compass/compliance-trestle/pull/2218),
+  [`34b1d60`](https://github.com/oscal-compass/compliance-trestle/commit/34b1d6087575ab9cc6f928d605bf5f247cb9ee1e))
+
+- Fix merge commit validation and document release environment setup
+  ([#2218](https://github.com/oscal-compass/compliance-trestle/pull/2218),
+  [`34b1d60`](https://github.com/oscal-compass/compliance-trestle/commit/34b1d6087575ab9cc6f928d605bf5f247cb9ee1e))
+
+### Documentation
+
+- Add code review policy and update security insights #1844
+  ([#2134](https://github.com/oscal-compass/compliance-trestle/pull/2134),
+  [`28cf20c`](https://github.com/oscal-compass/compliance-trestle/commit/28cf20cc5f5bda20165a0efa6ca253b17f5147b6))
+
+- Implement code review policy #1844
+  ([#2134](https://github.com/oscal-compass/compliance-trestle/pull/2134),
+  [`28cf20c`](https://github.com/oscal-compass/compliance-trestle/commit/28cf20cc5f5bda20165a0efa6ca253b17f5147b6))
+
+- Sync maintainers with core team and update security insights
+  ([#2134](https://github.com/oscal-compass/compliance-trestle/pull/2134),
+  [`28cf20c`](https://github.com/oscal-compass/compliance-trestle/commit/28cf20cc5f5bda20165a0efa6ca253b17f5147b6))
+
+### Testing
+
+- Cover missing metadata version in version command
+  ([#2186](https://github.com/oscal-compass/compliance-trestle/pull/2186),
+  [`4f6c77c`](https://github.com/oscal-compass/compliance-trestle/commit/4f6c77c2abc72dce1bf0d5e417b7fed171b85d5a))
+
+
+## v4.0.2 (2026-04-17)
+
+### Bug Fixes
+
+- Align OSCAL version references and fix CONTRIBUTING.md typos
+  ([#2141](https://github.com/oscal-compass/compliance-trestle/pull/2141),
+  [`7b614c6`](https://github.com/oscal-compass/compliance-trestle/commit/7b614c60d648ada2c4da7f0b9b735968c85d8e7f))
+
+- Allow empty parameter labels in OSCAL imports
+  ([#2177](https://github.com/oscal-compass/compliance-trestle/pull/2177),
+  [`0e354a5`](https://github.com/oscal-compass/compliance-trestle/commit/0e354a512f14af74685dc33d51bf519367871765))
+
+- Correct additional CONTRIBUTING.md typos
+  ([#2141](https://github.com/oscal-compass/compliance-trestle/pull/2141),
+  [`7b614c6`](https://github.com/oscal-compass/compliance-trestle/commit/7b614c60d648ada2c4da7f0b9b735968c85d8e7f))
+
+- Cryptography ([#2199](https://github.com/oscal-compass/compliance-trestle/pull/2199),
+  [`cb54edf`](https://github.com/oscal-compass/compliance-trestle/commit/cb54edf85923521fa340f7d3316a7cda9e87c000))
+
+- Datetime.datetime.utcnow() is deprecated
+  ([#2173](https://github.com/oscal-compass/compliance-trestle/pull/2173),
+  [`87fe40b`](https://github.com/oscal-compass/compliance-trestle/commit/87fe40ba2d417601b525b05f64bf7679fa154a89))
+
+- Invalid escape sequence warning while runnign tests
+  ([#2172](https://github.com/oscal-compass/compliance-trestle/pull/2172),
+  [`0848cb4`](https://github.com/oscal-compass/compliance-trestle/commit/0848cb43c6470afe5aac1bdb4e40dd43bc4dae2f))
+
+- Invalid escape sequence warning while running tests
+  ([#2172](https://github.com/oscal-compass/compliance-trestle/pull/2172),
+  [`0848cb4`](https://github.com/oscal-compass/compliance-trestle/commit/0848cb43c6470afe5aac1bdb4e40dd43bc4dae2f))
+
+- Switch from rev4 to rev5 in test files
+  ([#2116](https://github.com/oscal-compass/compliance-trestle/pull/2116),
+  [`64639b0`](https://github.com/oscal-compass/compliance-trestle/commit/64639b0ffc4b37645ebf3c9d6956dc96960faf41))
+
+- Update to sonarqube replacement action
+  ([`90e731a`](https://github.com/oscal-compass/compliance-trestle/commit/90e731a3f9f8eb1a853cf0ab596a8331fb705c00))
+
+- Use timezone-aware datetimes in cache _time_since_modification
+  ([#2130](https://github.com/oscal-compass/compliance-trestle/pull/2130),
+  [`16cde53`](https://github.com/oscal-compass/compliance-trestle/commit/16cde5344a3a866c85db375fac67df093c9fbd42))
+
+- **cache**: Avoid duplicate file read in get_raw
+  ([#2166](https://github.com/oscal-compass/compliance-trestle/pull/2166),
+  [`921145b`](https://github.com/oscal-compass/compliance-trestle/commit/921145b58ab2e5cbad947caa7917b7e558b915bb))
+
+- **deps**: Bump actions/cache from 5.0.3 to 5.0.4
+  ([#2176](https://github.com/oscal-compass/compliance-trestle/pull/2176),
+  [`a9bb479`](https://github.com/oscal-compass/compliance-trestle/commit/a9bb479b68e856bab42b4028c35da7b9ef4739a8))
+
+- **deps**: Bump actions/create-github-app-token from 2.2.1 to 3.0.0
+  ([#2157](https://github.com/oscal-compass/compliance-trestle/pull/2157),
+  [`42557af`](https://github.com/oscal-compass/compliance-trestle/commit/42557af3d5f86ad2602975ccaee3c84e2d80b512))
+
+- **deps**: Bump actions/create-github-app-token from 3.0.0 to 3.1.1
+  ([#2196](https://github.com/oscal-compass/compliance-trestle/pull/2196),
+  [`f2abb5c`](https://github.com/oscal-compass/compliance-trestle/commit/f2abb5cfae3a79e74fe0e142c3e19e53b8ce26b9))
+
+- **deps**: Bump actions/upload-artifact from 7.0.0 to 7.0.1
+  ([#2198](https://github.com/oscal-compass/compliance-trestle/pull/2198),
+  [`bccc714`](https://github.com/oscal-compass/compliance-trestle/commit/bccc71445619e6162b0048f741e94a10bd0504b7))
+
+- **deps**: Bump cryptography from 46.0.5 to 46.0.6
+  ([#2180](https://github.com/oscal-compass/compliance-trestle/pull/2180),
+  [`4bf82c0`](https://github.com/oscal-compass/compliance-trestle/commit/4bf82c0afd77c7208b63c27abde197c24b66655c))
+
+- **deps**: Bump cryptography from 46.0.6 to 46.0.7
+  ([#2194](https://github.com/oscal-compass/compliance-trestle/pull/2194),
+  [`11bacba`](https://github.com/oscal-compass/compliance-trestle/commit/11bacba9d3605b8a0f7784b9bef5a699c4592028))
+
+- **deps**: Bump github/codeql-action from 4.32.6 to 4.34.1
+  ([#2175](https://github.com/oscal-compass/compliance-trestle/pull/2175),
+  [`72b0e2d`](https://github.com/oscal-compass/compliance-trestle/commit/72b0e2dd4484ccf2538dbb04392cb4b36e1e95e1))
+
+- **deps**: Bump github/codeql-action from 4.34.1 to 4.35.1
+  ([#2183](https://github.com/oscal-compass/compliance-trestle/pull/2183),
+  [`8c5784e`](https://github.com/oscal-compass/compliance-trestle/commit/8c5784e56a4ee9de2edb4370a153c04af48935f8))
+
+- **deps**: Bump pypa/gh-action-pypi-publish from 1.13.0 to 1.14.0
+  ([#2197](https://github.com/oscal-compass/compliance-trestle/pull/2197),
+  [`66627af`](https://github.com/oscal-compass/compliance-trestle/commit/66627af5e3803a1e2e70be3c08a35980bc845c20))
+
+- **deps**: Bump sigstore/gh-action-sigstore-python from 3.2.0 to 3.3.0
+  ([#2182](https://github.com/oscal-compass/compliance-trestle/pull/2182),
+  [`582171f`](https://github.com/oscal-compass/compliance-trestle/commit/582171f7500179d41991d2d8b54ad67973549511))
+
+- **deps**: Bump SonarSource/sonarqube-scan-action from 7.0.0 to 7.1.0
+  ([#2192](https://github.com/oscal-compass/compliance-trestle/pull/2192),
+  [`49c5ef0`](https://github.com/oscal-compass/compliance-trestle/commit/49c5ef08d651e6786a4265348ac196d17e775bc8))
+
+- **model-utils**: Harden indexed alias resolution path
+  ([#2171](https://github.com/oscal-compass/compliance-trestle/pull/2171),
+  [`36d13be`](https://github.com/oscal-compass/compliance-trestle/commit/36d13be2119bb2580560acb307ea3c27dd178e9e))
+
+- **model-utils**: Resolve indexed terminal alias
+  ([#2171](https://github.com/oscal-compass/compliance-trestle/pull/2171),
+  [`36d13be`](https://github.com/oscal-compass/compliance-trestle/commit/36d13be2119bb2580560acb307ea3c27dd178e9e))
+
+- **model-utils**: Reuse helper for indexed alias resolution
+  ([#2171](https://github.com/oscal-compass/compliance-trestle/pull/2171),
+  [`36d13be`](https://github.com/oscal-compass/compliance-trestle/commit/36d13be2119bb2580560acb307ea3c27dd178e9e))
+
+### Chores
+
+- **ci**: Rerun lint for #2130
+  ([#2130](https://github.com/oscal-compass/compliance-trestle/pull/2130),
+  [`16cde53`](https://github.com/oscal-compass/compliance-trestle/commit/16cde5344a3a866c85db375fac67df093c9fbd42))
+
+- **ci**: Rerun lint for #2166
+  ([#2166](https://github.com/oscal-compass/compliance-trestle/pull/2166),
+  [`921145b`](https://github.com/oscal-compass/compliance-trestle/commit/921145b58ab2e5cbad947caa7917b7e558b915bb))
+
+### Code Style
+
+- **cache-test**: Apply ruff formatting
+  ([#2130](https://github.com/oscal-compass/compliance-trestle/pull/2130),
+  [`16cde53`](https://github.com/oscal-compass/compliance-trestle/commit/16cde5344a3a866c85db375fac67df093c9fbd42))
+
+### Documentation
+
+- Update current OSCAL references to 1.2.1
+  ([#2141](https://github.com/oscal-compass/compliance-trestle/pull/2141),
+  [`7b614c6`](https://github.com/oscal-compass/compliance-trestle/commit/7b614c60d648ada2c4da7f0b9b735968c85d8e7f))
+
+### Refactoring
+
+- **cache**: Simplify get_raw single-read path
+  ([#2166](https://github.com/oscal-compass/compliance-trestle/pull/2166),
+  [`921145b`](https://github.com/oscal-compass/compliance-trestle/commit/921145b58ab2e5cbad947caa7917b7e558b915bb))
+
+### Testing
+
+- **cache**: Add UTC coverage for mtime age calc
+  ([#2130](https://github.com/oscal-compass/compliance-trestle/pull/2130),
+  [`16cde53`](https://github.com/oscal-compass/compliance-trestle/commit/16cde5344a3a866c85db375fac67df093c9fbd42))
+
+- **fs**: Add regression coverage for alias resolution
+  ([#2171](https://github.com/oscal-compass/compliance-trestle/pull/2171),
+  [`36d13be`](https://github.com/oscal-compass/compliance-trestle/commit/36d13be2119bb2580560acb307ea3c27dd178e9e))
+
+
+## v4.0.1 (2026-03-18)
+
+### Bug Fixes
+
+- Hatch caused release pipeline failure
+  ([#2168](https://github.com/oscal-compass/compliance-trestle/pull/2168),
+  [`a430c69`](https://github.com/oscal-compass/compliance-trestle/commit/a430c6962fd721034a27ee073ef0aa519730fc0c))
+
+- Support for OSCAL 1.2.1 Mapping Model
+  ([#2167](https://github.com/oscal-compass/compliance-trestle/pull/2167),
+  [`de1e463`](https://github.com/oscal-compass/compliance-trestle/commit/de1e463d23bdd3da9c38ddbf73788a5628349646))
+
+### Documentation
+
+- Update mapping docs ([#2169](https://github.com/oscal-compass/compliance-trestle/pull/2169),
+  [`288a17f`](https://github.com/oscal-compass/compliance-trestle/commit/288a17fa7082fcf7c0a86a9c27fd3a1ed977c947))
+
+- Update trestle version in docs
+  ([#2169](https://github.com/oscal-compass/compliance-trestle/pull/2169),
+  [`288a17f`](https://github.com/oscal-compass/compliance-trestle/commit/288a17fa7082fcf7c0a86a9c27fd3a1ed977c947))
+
+- Updates for 4.0.0 ([#2169](https://github.com/oscal-compass/compliance-trestle/pull/2169),
+  [`288a17f`](https://github.com/oscal-compass/compliance-trestle/commit/288a17fa7082fcf7c0a86a9c27fd3a1ed977c947))
+
+
+## v4.0.0 (2026-03-16)
+
+### Bug Fixes
+
+- Add missing optional fields to Parameter and Property constructors
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- All tests pass ([#2061](https://github.com/oscal-compass/compliance-trestle/pull/2061),
+  [`f43515b`](https://github.com/oscal-compass/compliance-trestle/commit/f43515b8e755cf192abb6d777794a67701c78c86))
+
+- Allow valid diamond dependencies in profile resolution
+  ([#2072](https://github.com/oscal-compass/compliance-trestle/pull/2072),
+  [`5fdb614`](https://github.com/oscal-compass/compliance-trestle/commit/5fdb614e767eedcd66cd458052fcd2a6057af4b7))
+
+- Close config file handle in task command
+  ([#2117](https://github.com/oscal-compass/compliance-trestle/pull/2117),
+  [`07f9737`](https://github.com/oscal-compass/compliance-trestle/commit/07f9737d5c84775c724bd0069c5bd688d72ab341))
+
+- Close file handles in ocp4 task methods using with statement
+  ([#2126](https://github.com/oscal-compass/compliance-trestle/pull/2126),
+  [`0fb085f`](https://github.com/oscal-compass/compliance-trestle/commit/0fb085f9b31390e8ee64125dbdfd4cf3ded6f3bb))
+
+- Close file handles in OscalBaseModel oscal_write and oscal_read
+  ([#2129](https://github.com/oscal-compass/compliance-trestle/pull/2129),
+  [`4d130fa`](https://github.com/oscal-compass/compliance-trestle/commit/4d130fabe7b2cbb804db55cba72ecb577381acff))
+
+- Close script file handles with context managers
+  ([#2153](https://github.com/oscal-compass/compliance-trestle/pull/2153),
+  [`b429bf1`](https://github.com/oscal-compass/compliance-trestle/commit/b429bf194854e7f8fca1a87341fb898e0e5cbeb1))
+
+- Correct typos in docstrings (hierarchical)
+  ([#2125](https://github.com/oscal-compass/compliance-trestle/pull/2125),
+  [`d9198dc`](https://github.com/oscal-compass/compliance-trestle/commit/d9198dc9624f27fa9e06deb384f6db1ae2c851a1))
+
+- Correct typos in docstrings and error messages
+  ([#2109](https://github.com/oscal-compass/compliance-trestle/pull/2109),
+  [`c4bdf53`](https://github.com/oscal-compass/compliance-trestle/commit/c4bdf53b5343cd3d8152ee384b535c19b24006b2))
+
+- Correct typos in log messages and docstrings
+  ([#2128](https://github.com/oscal-compass/compliance-trestle/pull/2128),
+  [`1bedd65`](https://github.com/oscal-compass/compliance-trestle/commit/1bedd651d412bdec5925d3d1b8f9a63565968013))
+
+- Don't duplicate code ([#2152](https://github.com/oscal-compass/compliance-trestle/pull/2152),
+  [`e1d43d4`](https://github.com/oscal-compass/compliance-trestle/commit/e1d43d4d16b3e67c02ff156f7d8e32465559d5f0))
+
+- Folder name should have "." in it
+  ([#2061](https://github.com/oscal-compass/compliance-trestle/pull/2061),
+  [`f43515b`](https://github.com/oscal-compass/compliance-trestle/commit/f43515b8e755cf192abb6d777794a67701c78c86))
+
+- Improved names ([#2061](https://github.com/oscal-compass/compliance-trestle/pull/2061),
+  [`f43515b`](https://github.com/oscal-compass/compliance-trestle/commit/f43515b8e755cf192abb6d777794a67701c78c86))
+
+- Lint errors ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- Log correct error message in repository import failure
+  ([#2119](https://github.com/oscal-compass/compliance-trestle/pull/2119),
+  [`24e4bff`](https://github.com/oscal-compass/compliance-trestle/commit/24e4bffcfc90af99eb5eafbf67dee34cebc5a2e0))
+
+- Mypy generic oscal control interface
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- Oscal version 1.2.1 ([#2061](https://github.com/oscal-compass/compliance-trestle/pull/2061),
+  [`f43515b`](https://github.com/oscal-compass/compliance-trestle/commit/f43515b8e755cf192abb6d777794a67701c78c86))
+
+- Remediate hatch issue (temp)
+  ([#2099](https://github.com/oscal-compass/compliance-trestle/pull/2099),
+  [`b1cb728`](https://github.com/oscal-compass/compliance-trestle/commit/b1cb728e8e13d8665362a552805da749375ef80a))
+
+- Run hatch version ([#2152](https://github.com/oscal-compass/compliance-trestle/pull/2152),
+  [`e1d43d4`](https://github.com/oscal-compass/compliance-trestle/commit/e1d43d4d16b3e67c02ff156f7d8e32465559d5f0))
+
+- Seems that DMCG 0.55.0 breaks v1 compatibility mode
+  ([#2061](https://github.com/oscal-compass/compliance-trestle/pull/2061),
+  [`f43515b`](https://github.com/oscal-compass/compliance-trestle/commit/f43515b8e755cf192abb6d777794a67701c78c86))
+
+- Sonar complaint about timestamp
+  ([#2152](https://github.com/oscal-compass/compliance-trestle/pull/2152),
+  [`e1d43d4`](https://github.com/oscal-compass/compliance-trestle/commit/e1d43d4d16b3e67c02ff156f7d8e32465559d5f0))
+
+- Sonar complaint re: _timestamp
+  ([#2152](https://github.com/oscal-compass/compliance-trestle/pull/2152),
+  [`e1d43d4`](https://github.com/oscal-compass/compliance-trestle/commit/e1d43d4d16b3e67c02ff156f7d8e32465559d5f0))
+
+- Unpin version for datamodel-code-generator[http]
+  ([#2061](https://github.com/oscal-compass/compliance-trestle/pull/2061),
+  [`f43515b`](https://github.com/oscal-compass/compliance-trestle/commit/f43515b8e755cf192abb6d777794a67701c78c86))
+
+- Update maintainers ([#2105](https://github.com/oscal-compass/compliance-trestle/pull/2105),
+  [`9fe1e76`](https://github.com/oscal-compass/compliance-trestle/commit/9fe1e76c96ffe2e1ddd5c3c78340efa3cedef1a4))
+
+- Updated README.md - breaking change
+  ([#2150](https://github.com/oscal-compass/compliance-trestle/pull/2150),
+  [`7088b3f`](https://github.com/oscal-compass/compliance-trestle/commit/7088b3fae46d2208ab52c43594ad133b0414e0f7))
+
+- Use total_seconds() in model_age to handle multi-day deltas
+  ([#2110](https://github.com/oscal-compass/compliance-trestle/pull/2110),
+  [`20fbd3b`](https://github.com/oscal-compass/compliance-trestle/commit/20fbd3be5e403ff34467d53618c7aa0ca0f0dbe7))
+
+- V4 ([#2061](https://github.com/oscal-compass/compliance-trestle/pull/2061),
+  [`f43515b`](https://github.com/oscal-compass/compliance-trestle/commit/f43515b8e755cf192abb6d777794a67701c78c86))
+
+- Workflow caching issues ([#2152](https://github.com/oscal-compass/compliance-trestle/pull/2152),
+  [`e1d43d4`](https://github.com/oscal-compass/compliance-trestle/commit/e1d43d4d16b3e67c02ff156f7d8e32465559d5f0))
+
+- **deps**: Bump actions/cache from 4.3.0 to 5.0.2
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **deps**: Bump actions/checkout from 6.0.1 to 6.0.2
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **deps**: Bump actions/download-artifact from 6.0.0 to 7.0.0
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **deps**: Bump actions/download-artifact from 7.0.0 to 8.0.0
+  ([#2103](https://github.com/oscal-compass/compliance-trestle/pull/2103),
+  [`0eedd5d`](https://github.com/oscal-compass/compliance-trestle/commit/0eedd5d4ab6d98fac1f90b990d858e047b079dfe))
+
+- **deps**: Bump actions/download-artifact from 8.0.0 to 8.0.1
+  ([#2158](https://github.com/oscal-compass/compliance-trestle/pull/2158),
+  [`589ede3`](https://github.com/oscal-compass/compliance-trestle/commit/589ede382f7fe764d77d629ed971c2eb2518c77e))
+
+- **deps**: Bump actions/setup-python from 6.1.0 to 6.2.0
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **deps**: Bump actions/stale from 10.1.1 to 10.2.0
+  ([#2091](https://github.com/oscal-compass/compliance-trestle/pull/2091),
+  [`ed9f463`](https://github.com/oscal-compass/compliance-trestle/commit/ed9f463b909c0a6e2b09c4921c0e56e36a691f5c))
+
+- **deps**: Bump actions/upload-artifact from 5.0.0 to 6.0.0
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **deps**: Bump actions/upload-artifact from 6.0.0 to 7.0.0
+  ([#2102](https://github.com/oscal-compass/compliance-trestle/pull/2102),
+  [`6bc0e4e`](https://github.com/oscal-compass/compliance-trestle/commit/6bc0e4efeae5b2114ece53e2bfb68245f556be7d))
+
+- **deps**: Bump github/codeql-action from 4.31.10 to 4.31.11
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **deps**: Bump github/codeql-action from 4.31.9 to 4.31.10
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **deps**: Bump github/codeql-action from 4.32.1 to 4.32.3
+  ([#2087](https://github.com/oscal-compass/compliance-trestle/pull/2087),
+  [`9dabd6f`](https://github.com/oscal-compass/compliance-trestle/commit/9dabd6f9d041f06c1cfd224eabefc176403c21d8))
+
+- **deps**: Bump github/codeql-action from 4.32.3 to 4.32.4
+  ([#2090](https://github.com/oscal-compass/compliance-trestle/pull/2090),
+  [`e4f1590`](https://github.com/oscal-compass/compliance-trestle/commit/e4f15906af68a2b71e79cc90683614cab14bdfd4))
+
+- **deps**: Bump github/codeql-action from 4.32.4 to 4.32.6
+  ([#2123](https://github.com/oscal-compass/compliance-trestle/pull/2123),
+  [`2715e84`](https://github.com/oscal-compass/compliance-trestle/commit/2715e8433ba74f76b2ec88b888a7b88f6f7d8d5b))
+
+- **deps**: Bump python-semantic-release/python-semantic-release
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+### Chores
+
+- Progressively eliminate lint exceptions (Phase 1)
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- Progressively eliminate lint exceptions (Phase 2)
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+### Features
+
+- Pythons supported 3.10-3.13
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **ssp**: Add --all-controls flag to include controls without rules
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+- **ssp**: All controls specified in impl-req should be transported
+  ([#2047](https://github.com/oscal-compass/compliance-trestle/pull/2047),
+  [`eee2e78`](https://github.com/oscal-compass/compliance-trestle/commit/eee2e7864ef7ecdad80f1cc9b6fc1f2036f7118c))
+
+
 ## v3.12.0 (2026-02-13)
 
 ### Bug Fixes

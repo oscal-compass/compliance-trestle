@@ -5,11 +5,12 @@ description: An introductory tutorial into trestle's CLI and OSCAL use cases
 
 # trestle CLI Overview and OSCAL usecases
 
-The trestle CLI has three primary use cases:
+The trestle CLI has four primary use cases:
 
 - Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle split`, `trestle merge`.
 - Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
 - Allow governance of markdown documents so they conform to specific style or structure requirements.
+- Canonicalize JSON documents with `trestle canonicalize`. See [Canonicalizing JSON documents](canonicalization.md).
 
 To support each of these use cases trestle creates an opinionated directory structure to manage governed documents.
 
@@ -118,11 +119,11 @@ Users can query the contents of files using `trestle describe`, and probe the co
 
 OSCAL models are rich and contain multiple nested data structures. Given this, a mechanism is required to address _elements_ /_attributes_ within an oscal object.
 
-This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestle's underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL-Reference/models/latest/complete/json-outline/) to understand object names in trestle.
+This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestle's underlying object model name. Users can refer to [NIST's OSCAL model reference](https://pages.nist.gov/OSCAL-Reference/models/) to understand object names in trestle.
 
 ### Rules for element path
 
-1. Element path is an expression of the attribute names, [in json form](https://pages.nist.gov/OSCAL-Reference/models/latest/complete/json-outline/) , concatenated by a period (`.`).
+1. Element path is an expression of the attribute names, [in json form](https://pages.nist.gov/OSCAL-Reference/models/) , concatenated by a period (`.`).
    1. E.g. The metadata in a catalog is referred to as `catalog.metadata`
 1. Element paths are relative to the file.
    1. e.g. For `metadata.json` roles would be referred to as `metadata.roles`, from the catalog file that would be `catalog.metadata.roles`
@@ -267,7 +268,7 @@ In addition, `trestle create` can create new components within an existing file 
 
 For example,
 
-`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle create -f ./catalog.json -e catalog.metadata.roles `
+`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle create -f ./catalog.json -e catalog.metadata.roles`
 
 will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
 
@@ -1412,7 +1413,7 @@ th, td {
 <tr>
 <td>ResourceTitle
 <td><ul>
-    <li>component.title    
+    <li>component.title
     <li>component.description
     <li>component.control-implementation.description + {text}
     </ul>
@@ -1431,7 +1432,7 @@ th, td {
     <li>implemented_requirement.property[name='goal_version'].value
     </ul>
 <td><ul>
-    <li>Value from spreadsheet is not currently used. 
+    <li>Value from spreadsheet is not currently used.
     <li>Value '1.0' is hard coded.
     </ul>
 <tr>
@@ -1449,7 +1450,7 @@ th, td {
     <li>implemented_requirement.set_parameter.values
     </ul>
 <td><ul>
-    <li>The expected text is of the following format: 
+    <li>The expected text is of the following format:
     <li>v0, [v1, v2...]
     <li>The value v0 is used.
     </ul>

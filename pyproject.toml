@@ -29,14 +29,13 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==46.0.5",
-    "paramiko==4.0.0",
+    "cryptography>=46.0.7",
+    "paramiko==5.0.0",
     "ruamel.yaml",
     "furl",
     "pydantic[email]>=2.0.0",
@@ -48,6 +47,7 @@ dependencies = [
     "Jinja2 == 3.1.6",
     "cmarkgfm>=2024.1,<2025.11",
     "orjson",
+    "rfc8785>=0.1.4",
     "requests>=2.32.2",
     "importlib_resources",
 ]
@@ -84,7 +84,7 @@ dev = [
     "pre-commit>=2.4.0",
     "python-semantic-release>=10.4.0",
     "pylint",
-    "datamodel-code-generator[http] == 0.36.0",
+    "datamodel-code-generator[http]<0.55.0",
     "gitpython",
 ]
 
@@ -128,7 +128,7 @@ dependencies = [
 ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.docs]
 features = ["docs"]
@@ -318,6 +318,10 @@ default_bump_level = 0
 [tool.semantic_release.branches.main]
 match = "(main)"
 prerelease_token = "rc"
+prerelease = false
+
+[tool.semantic_release.branches.maintenance]
+match = "^v\\d+$"
 prerelease = false
 
 [tool.semantic_release.remote]

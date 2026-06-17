@@ -29,7 +29,8 @@ from openpyxl import load_workbook
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
-from trestle.oscal.catalog import Group
+from trestle.oscal.catalog import Group1 as CatalogGroup1
+from trestle.oscal.catalog import Group2 as CatalogGroup2
 from trestle.oscal.common import BackMatter
 from trestle.oscal.common import Link
 from trestle.oscal.common import Metadata
@@ -115,10 +116,10 @@ class CatalogHelper:
         self._all_controls = OrderedDict()
 
     def add_group(self, section: str, title: str, props: List[Property], parts: List[Part]) -> None:
-        """Add group."""
+        """Add group - always creates Group1 initially (Pass 1)."""
         numdots = section.count('.')
         if numdots == 0:
-            group = Group(title=f'{title}', id=f'CIS-{section}')
+            group = CatalogGroup1(title=f'{title}', id=f'CIS-{section}')
             if props:
                 group.props = props
             if parts:
@@ -128,15 +129,38 @@ class CatalogHelper:
         else:
             key = '.'.join(section.split('.')[:-1])
             parent = self._all_groups[key]
+            # Parent must be Group1 at this point (Pass 1 - only groups added)
+            if not hasattr(parent, 'groups'):
+                raise RuntimeError(
+                    f'Parent {key} is not Group1 when adding group {section} - this should not happen in Pass 1'
+                )
             if parent.groups is None:
                 parent.groups = []
-            group = Group(title=f'{title}', id=f'CIS-{section}')
+            group = CatalogGroup1(title=f'{title}', id=f'CIS-{section}')
             if props:
                 group.props = props
             if parts:
                 group.parts = parts
             parent.groups.append(group)
             self._all_groups[section] = group
+
+    def prepare_groups_for_controls(self, sections_with_controls: set) -> None:
+        """Prepare groups that will have controls (Pass 1.5).
+
+        For groups that will have controls AND have subgroups, create a controls subgroup.
+        """
+        for section in sections_with_controls:
+            if section in self._all_groups:
+                group = self._all_groups[section]
+                # Check if this is a Group1 with subgroups
+                if hasattr(group, 'groups') and group.groups:
+                    # Create a "controls" subgroup (Group2) for the controls
+                    controls_group_id = f'{group.id}-controls'
+                    controls_group = CatalogGroup2(id=controls_group_id, title=f'{group.title} Controls')
+                    controls_group.controls = []
+                    group.groups.append(controls_group)
+                    # Store reference for quick access in Pass 2
+                    self._all_groups[f'{section}_controls'] = controls_group
 
     def _add_prop(self, control: Control, prop: Property) -> None:
         """Add property to control."""
@@ -154,8 +178,39 @@ class CatalogHelper:
     def add_control(
         self, section: str, recommendation: str, title: str, props: List[Property], parts: List[Part], links: List[Link]
     ) -> None:
-        """Add control."""
-        group = self._all_groups[section]
+        """Add control (Pass 2) - uses prepared group structure."""
+        # Check if there's a controls subgroup for this section
+        controls_key = f'{section}_controls'
+        if controls_key in self._all_groups:
+            # Use the controls subgroup created in Pass 1.5
+            group = self._all_groups[controls_key]
+        else:
+            # No controls subgroup - this group has no other subgroups
+            group = self._all_groups[section]
+
+            # If it's still Group1, convert to Group2
+            if not hasattr(group, 'controls'):
+                group2 = CatalogGroup2(id=group.id, title=group.title)
+                if hasattr(group, 'props') and group.props:
+                    group2.props = group.props
+                if hasattr(group, 'parts') and group.parts:
+                    group2.parts = group.parts
+                if hasattr(group, 'links') and group.links:
+                    group2.links = group.links
+                # Replace in parent or root
+                if section.count('.') == 0:
+                    self._root_group[section] = group2
+                else:
+                    key = '.'.join(section.split('.')[:-1])
+                    parent = self._all_groups[key]
+                    if hasattr(parent, 'groups') and parent.groups:
+                        for i, g in enumerate(parent.groups):
+                            if g.id == group.id:
+                                parent.groups[i] = group2
+                                break
+                self._all_groups[section] = group2
+                group = group2
+
         if group.controls is None:
             group.controls = []
         id_ = f'CIS-{recommendation}'
@@ -347,36 +402,67 @@ class CisXlsxToOscalCatalog(TaskBase):
         return TaskOutcome('success')
 
     def _process_ocp(self, xlsx_helper: XlsxHelper, catalog_helper: CatalogHelper) -> None:
-        """Process OCP."""
-        # transform each row into OSCAL equivalent
+        """Process OCP with three-pass approach for OSCAL 1.2.0."""
+        # Pre-scan: Determine which sections will have controls
+        sections_with_controls = set()
+        for row in xlsx_helper.row_generator():
+            recommendation = xlsx_helper.get(row, 'recommendation #')
+            if recommendation is not None:
+                section = xlsx_helper.get(row, 'section #')
+                sections_with_controls.add(section)
+
+        # Pass 1: Build complete group hierarchy (all Group1)
         for row in xlsx_helper.row_generator():
             section = xlsx_helper.get(row, 'section #')
             recommendation = xlsx_helper.get(row, 'recommendation #')
             title = xlsx_helper.get(row, 'title')
-            # init
-            props = []
-            parts = []
-            links = []
-            # props
-            self._add_property(xlsx_helper, props, row, 'profile')
-            self._add_property(xlsx_helper, props, row, 'status')
-            self._add_property(xlsx_helper, props, row, 'assessment status')
+
             if recommendation is None:
+                # This is a group/section
+                props = []
+                parts = []
                 frag = section
-            else:
-                frag = recommendation
-            # parts
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_smt', row, 'statement')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_rat', row, 'rationale statement')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_imp', row, 'impact statement')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_rem', row, 'remediation procedure')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_aud', row, 'audit procedure')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_inf', row, 'additional information')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Controls')
-            # group or control
-            if recommendation is None:
+                # props
+                self._add_property(xlsx_helper, props, row, 'profile')
+                self._add_property(xlsx_helper, props, row, 'status')
+                self._add_property(xlsx_helper, props, row, 'assessment status')
+                # parts
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_smt', row, 'statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_rat', row, 'rationale statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_imp', row, 'impact statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_rem', row, 'remediation procedure')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_aud', row, 'audit procedure')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_inf', row, 'additional information')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Controls')
                 catalog_helper.add_group(section, title, props, parts)
-            else:
+
+        # Pass 1.5: Prepare groups that will have controls
+        catalog_helper.prepare_groups_for_controls(sections_with_controls)
+
+        # Pass 2: Add controls
+        for row in xlsx_helper.row_generator():
+            section = xlsx_helper.get(row, 'section #')
+            recommendation = xlsx_helper.get(row, 'recommendation #')
+            title = xlsx_helper.get(row, 'title')
+
+            if recommendation is not None:
+                # This is a control
+                props = []
+                parts = []
+                links = []
+                frag = recommendation
+                # props
+                self._add_property(xlsx_helper, props, row, 'profile')
+                self._add_property(xlsx_helper, props, row, 'status')
+                self._add_property(xlsx_helper, props, row, 'assessment status')
+                # parts
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_smt', row, 'statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_rat', row, 'rationale statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_imp', row, 'impact statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_rem', row, 'remediation procedure')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_aud', row, 'audit procedure')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_inf', row, 'additional information')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Controls')
                 self._add_property_boolean(xlsx_helper, props, row, 'v7 IG1')
                 self._add_property_boolean(xlsx_helper, props, row, 'v7 IG2')
                 self._add_property_boolean(xlsx_helper, props, row, 'v7 IG3')
@@ -388,41 +474,77 @@ class CisXlsxToOscalCatalog(TaskBase):
                 catalog_helper.add_control(section, recommendation, title, props, parts, links)
 
     def _process_rhel(self, xlsx_helper: XlsxHelper, catalog_helper: CatalogHelper) -> None:
-        """Process RHEL."""
-        # transform each row into OSCAL equivalent
+        """Process RHEL with three-pass approach for OSCAL 1.2.0."""
+        # Pre-scan: Determine which sections will have controls
+        sections_with_controls = set()
+        for row in xlsx_helper.row_generator():
+            recommendation = xlsx_helper.get(row, 'recommendation #')
+            if recommendation is not None:
+                section = xlsx_helper.get(row, 'section #')
+                sections_with_controls.add(section)
+
+        # Pass 1: Build complete group hierarchy (all Group1)
         for row in xlsx_helper.row_generator():
             section = xlsx_helper.get(row, 'section #')
             recommendation = xlsx_helper.get(row, 'recommendation #')
             title = xlsx_helper.get(row, 'title')
-            # init
-            props = []
-            parts = []
-            links = []
-            # props
-            self._add_property(xlsx_helper, props, row, 'profile')
-            self._add_property(xlsx_helper, props, row, 'assessment status')
+
             if recommendation is None:
+                # This is a group/section
+                props = []
+                parts = []
                 frag = section
-            else:
-                frag = recommendation
-            # parts
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_smt', row, 'statement')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_rat', row, 'rational statement')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_imp', row, 'impact statement')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_rem', row, 'remediation procedure')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_aud', row, 'audit procedure')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_inf', row, 'additional information')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Controls')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_1v8', row, 'CIS Safeguards 1 (v8)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_2v8', row, 'CIS Safeguards 2 (v8)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_3v8', row, 'CIS Safeguards 3 (v8)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_1v7', row, 'CIS Safeguards 1 (v7)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_2v7', row, 'CIS Safeguards 2 (v7)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_3v7', row, 'CIS Safeguards 3 (v7)')
-            # group or control
-            if recommendation is None:
+                # props
+                self._add_property(xlsx_helper, props, row, 'profile')
+                self._add_property(xlsx_helper, props, row, 'assessment status')
+                # parts
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_smt', row, 'statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_rat', row, 'rational statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_imp', row, 'impact statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_rem', row, 'remediation procedure')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_aud', row, 'audit procedure')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_inf', row, 'additional information')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Controls')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_1v8', row, 'CIS Safeguards 1 (v8)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_2v8', row, 'CIS Safeguards 2 (v8)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_3v8', row, 'CIS Safeguards 3 (v8)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_1v7', row, 'CIS Safeguards 1 (v7)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_2v7', row, 'CIS Safeguards 2 (v7)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_3v7', row, 'CIS Safeguards 3 (v7)')
                 catalog_helper.add_group(section, title, props, parts)
-            else:
+
+        # Pass 1.5: Prepare groups that will have controls
+        catalog_helper.prepare_groups_for_controls(sections_with_controls)
+
+        # Pass 2: Add controls
+        for row in xlsx_helper.row_generator():
+            section = xlsx_helper.get(row, 'section #')
+            recommendation = xlsx_helper.get(row, 'recommendation #')
+            title = xlsx_helper.get(row, 'title')
+
+            if recommendation is not None:
+                # This is a control
+                props = []
+                parts = []
+                links = []
+                frag = recommendation
+                # props
+                self._add_property(xlsx_helper, props, row, 'profile')
+                self._add_property(xlsx_helper, props, row, 'assessment status')
+                # parts
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_smt', row, 'statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_rat', row, 'rational statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_imp', row, 'impact statement')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_rem', row, 'remediation procedure')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_aud', row, 'audit procedure')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_inf', row, 'additional information')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Controls')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_1v8', row, 'CIS Safeguards 1 (v8)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_2v8', row, 'CIS Safeguards 2 (v8)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_3v8', row, 'CIS Safeguards 3 (v8)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_1v7', row, 'CIS Safeguards 1 (v7)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_2v7', row, 'CIS Safeguards 2 (v7)')
+                self._add_part(xlsx_helper, parts, f'CIS-{frag}_3v7', row, 'CIS Safeguards 3 (v7)')
                 self._add_property_boolean(xlsx_helper, props, row, 'v7 IG1')
                 self._add_property_boolean(xlsx_helper, props, row, 'v7 IG2')
                 self._add_property_boolean(xlsx_helper, props, row, 'v7 IG3')

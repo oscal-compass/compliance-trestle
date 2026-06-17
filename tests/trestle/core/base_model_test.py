@@ -21,6 +21,8 @@ from uuid import uuid4
 
 import pytest
 
+from pydantic.v1 import ValidationError
+
 import tests.test_utils as test_utils
 
 import trestle.common.const as const
@@ -31,6 +33,7 @@ import trestle.oscal.assessment_plan as ap
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.common as common
 import trestle.oscal.component as component
+import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
 from trestle.core.base_model import OscalBaseModel
 
@@ -88,6 +91,66 @@ def test_is_oscal_base() -> None:
     catalog = simple_catalog()
 
     assert isinstance(catalog, ospydantic.OscalBaseModel)
+
+
+def test_optional_parameter_label_allows_empty_string() -> None:
+    """Optional parameter labels should preserve blank values."""
+    param = common.Parameter1(id='param1', label='', values=['one'])
+
+    assert param.label == ''
+
+
+def test_parameter_selection_label_allows_empty_string() -> None:
+    """Selection-based parameters should also preserve blank labels."""
+    param = common.Parameter2(id='param1', label='', select=common.ParameterSelection(choice=['one']))
+
+    assert param.label == ''
+
+
+def test_required_single_line_title_still_rejects_empty_string() -> None:
+    """Required constrained strings should remain strict."""
+    with pytest.raises(ValidationError):
+        common.Role(id='role1', title='')
+
+
+def test_parameter_label_assignment_allows_empty_string() -> None:
+    """Assignment should behave the same as initialization for parameter labels."""
+    param = common.Parameter1(id='param1', label='label1', values=['one'])
+    param.label = ''
+
+    assert param.label == ''
+
+
+def test_profile_parameter_label_allows_empty_string() -> None:
+    """Profile parameter settings should allow blank labels consistently."""
+    param = profile.SetParameters(param_id='param1', label='', values=['one'])
+
+    assert param.label == ''
+
+
+def test_profile_selection_parameter_label_allows_empty_string() -> None:
+    """Selection-based profile parameter settings should preserve blank labels."""
+    param = profile.SetParameters1(param_id='param1', label='', select=common.ParameterSelection(choice=['one']))
+
+    assert param.label == ''
+
+
+def test_parameter_label_still_rejects_newlines() -> None:
+    """Blank labels are allowed, but newline-containing values remain invalid."""
+    with pytest.raises(ValidationError):
+        common.Parameter1(id='param1', label='\n', values=['one'])
+
+    with pytest.raises(ValidationError):
+        common.Parameter1(id='param1', label='hello\n', values=['one'])
+
+    with pytest.raises(ValidationError):
+        common.Parameter2(id='param1', label='hello\n', select=common.ParameterSelection(choice=['one']))
+
+    with pytest.raises(ValidationError):
+        profile.SetParameters(param_id='param1', label='hello\n', values=['one'])
+
+    with pytest.raises(ValidationError):
+        profile.SetParameters1(param_id='param1', label='hello\n', select=common.ParameterSelection(choice=['one']))
 
 
 def test_no_timezone_exception() -> None:
@@ -325,6 +388,14 @@ def test_oscal_write(tmp_path: pathlib.Path) -> None:
     component2.oscal_write(temp_cd_yaml)
 
     component.ComponentDefinition.oscal_read(temp_cd_yaml)
+
+    temp_cd_canonical_json = pathlib.Path(tmp_path) / 'component_test.canonical.json'
+    component2.oscal_write(temp_cd_canonical_json)
+    canonical_json = temp_cd_canonical_json.read_text(encoding=const.FILE_ENCODING)
+    assert canonical_json == component2.oscal_serialize_json(canonical=True)
+    assert '\n' not in canonical_json
+    component.ComponentDefinition.oscal_read(temp_cd_canonical_json)
+
     # test failure
     with pytest.raises(err.TrestleError):
         component2.oscal_write(tmp_path / 'target.borked')
@@ -352,4 +423,17 @@ def test_oscal_serialize_json() -> None:
     jsoned = json.loads(serialized)
     new_catalog = oscatalog.Catalog.parse_obj(jsoned['catalog'])
 
+    assert simple_catalog_obj.metadata.title == new_catalog.metadata.title
+
+
+def test_oscal_serialize_canonical_json() -> None:
+    """Test Oscal canonical json serialization."""
+    simple_catalog_obj = simple_catalog_utc()
+
+    serialized = simple_catalog_obj.oscal_serialize_json(canonical=True)
+    jsoned = json.loads(serialized)
+    new_catalog = oscatalog.Catalog.parse_obj(jsoned['catalog'])
+
+    assert serialized == simple_catalog_obj.oscal_serialize_json_bytes(canonical=True).decode(const.FILE_ENCODING)
+    assert '\n' not in serialized
     assert simple_catalog_obj.metadata.title == new_catalog.metadata.title

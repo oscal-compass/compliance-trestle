@@ -135,12 +135,34 @@ docs-validate: docs-clean ## Validate documentation (build + link check)
 docs-clean: clean-tmp
 
 # ============================================================================
+# Workflow Testing (via act + podman)
+# ============================================================================
+
+.PHONY: act-lint act-actionlint act-test-dry act-deploy-dry act-conventional-dry
+
+ACT_FLAGS := --container-architecture linux/amd64
+
+act-lint: ## Run the actionlint workflow locally with act
+	act -W .github/workflows/actionlint.yml $(ACT_FLAGS)
+
+act-actionlint: act-lint ## Alias for act-lint
+
+act-test-dry: ## Dry-run the PR test pipeline locally with act
+	act -n -W .github/workflows/python-test.yml $(ACT_FLAGS)
+
+act-deploy-dry: ## Dry-run the deploy pipeline locally with act
+	act -n -W .github/workflows/python-push.yml $(ACT_FLAGS)
+
+act-conventional-dry: ## Dry-run the conventional PR pipeline locally with act
+	act -n -W .github/workflows/conventional-pr.yml $(ACT_FLAGS)
+
+# ============================================================================
 # Utilities
 # ============================================================================
 
 .PHONY: gen-oscal simplified-catalog check-for-changes clean clean-env
 
-gen-oscal: ## Generate OSCAL Python models from JSON schemas
+gen-oscal: clean-tmp ## Generate OSCAL Python models from JSON schemas
 	hatch run python ./scripts/gen_oscal.py
 
 simplified-catalog: ## Generate simplified NIST catalog for testing

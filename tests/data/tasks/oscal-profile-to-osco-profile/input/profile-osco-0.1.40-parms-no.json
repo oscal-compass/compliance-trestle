@@ -28,6 +28,7 @@
     "imports": [
       {
         "href": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+        "include-all": {},
         "exclude-controls": [
           {
             "with-ids": [
