@@ -405,3 +405,51 @@ def test_render_template_supports_trusted_include(tmp_path: pathlib.Path) -> Non
     output = JinjaCmd.render_template(template, {}, tmp_path)
 
     assert output == 'Hello World'
+
+
+def test_md_clean_include_blocks_dangerous_attribute_access(tmp_path: pathlib.Path) -> None:
+    """Test that SandboxedEnvironment blocks dangerous attribute access in md_clean_include."""
+    # Create a malicious markdown file with SSTI payload
+    malicious_md = tmp_path / 'malicious.md'
+    malicious_md.write_text(
+        '---\ntitle: test\n---\n\n# Malicious Content\n\nAttempting dangerous access: {{ "".__class__.__name__ }}\n',
+        encoding='utf-8',
+    )
+
+    # Create template that includes the malicious file
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('# Main Template\n\n{% md_clean_include "malicious.md" %}\n', encoding='utf-8')
+
+    # Attempt to render - should raise SecurityError
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template('template.j2')
+
+    with pytest.raises(Exception) as exc_info:
+        template.render()
+
+    # Verify it's a SecurityError blocking __class__ access
+    assert 'SecurityError' in str(type(exc_info.value).__name__) or '__class__' in str(exc_info.value)
+    assert 'unsafe' in str(exc_info.value).lower() or 'security' in str(exc_info.value).lower()
+
+
+def test_md_clean_include_allows_safe_variable_substitution(tmp_path: pathlib.Path) -> None:
+    """Test that legitimate variable substitution still works in md_clean_include."""
+    # Create markdown file with safe variable substitution
+    content_md = tmp_path / 'content.md'
+    content_md.write_text(
+        '---\ntitle: test\n---\n\n# Content\n\nProduct name: {{ product_name }}\nVersion: {{ version }}\n',
+        encoding='utf-8',
+    )
+
+    # Create template that includes the file
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('# Main Template\n\n{% md_clean_include "content.md" %}\n', encoding='utf-8')
+
+    # Render with safe variables
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template('template.j2')
+    output = template.render(product_name='Trestle', version='3.0')
+
+    # Verify variables were substituted
+    assert 'Product name: Trestle' in output
+    assert 'Version: 3.0' in output
