@@ -20,6 +20,7 @@ import pathlib
 import sys
 from typing import Tuple
 
+import pytest
 from _pytest.monkeypatch import MonkeyPatch
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
@@ -31,16 +32,19 @@ from trestle.cli import Trestle
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 
 
-def write_ed25519_key_pair(tmp_path: pathlib.Path, prefix: str = 'test-key') -> Tuple[pathlib.Path, pathlib.Path]:
+def write_ed25519_key_pair(
+    tmp_path: pathlib.Path, prefix: str = 'test-key', password: bytes = b''
+) -> Tuple[pathlib.Path, pathlib.Path]:
     """Write a temporary Ed25519 private/public key pair."""
     private_key = ed25519.Ed25519PrivateKey.generate()
     private_key_path = tmp_path / f'{prefix}.pem'
     public_key_path = tmp_path / f'{prefix}.pub.pem'
+    encryption_algorithm = serialization.BestAvailableEncryption(password) if password else serialization.NoEncryption()
     private_key_path.write_bytes(
         private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption(),
+            encryption_algorithm=encryption_algorithm,
         )
     )
     public_key_path.write_bytes(
@@ -99,8 +103,122 @@ def test_sign_and_verify_real_nist_800_53_catalog(tmp_path: pathlib.Path, monkey
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
 
 
+def test_verify_rejects_missing_custom_subject_name(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Verify should require the same custom subject name used during signing."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    input_path = tmp_path / 'catalog.json'
+    envelope_path = tmp_path / 'catalog.json.dsse'
+    input_path.write_text('{"a":1}', encoding=const.FILE_ENCODING)
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'sign',
+            '-f',
+            str(input_path),
+            '--key',
+            str(private_key_path),
+            '-o',
+            str(envelope_path),
+            '--subject-name',
+            'custom/catalog.json',
+        ],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(public_key_path)],
+    )
+    assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'verify',
+            '-f',
+            str(input_path),
+            '--signature',
+            str(envelope_path),
+            '--key',
+            str(public_key_path),
+            '--subject-name',
+            'custom/catalog.json',
+        ],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+
+def test_sign_supports_encrypted_private_key(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Sign should accept an encrypted PEM private key password from an environment variable."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path, password=b'test-password')
+    input_path = tmp_path / 'catalog.json'
+    envelope_path = tmp_path / 'catalog.json.dsse'
+    input_path.write_text('{"a":1}', encoding=const.FILE_ENCODING)
+    monkeypatch.setenv('TRESTLE_KEY_PASSWORD', 'test-password')
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'sign',
+            '-f',
+            str(input_path),
+            '--key',
+            str(private_key_path),
+            '--key-password-env',
+            'TRESTLE_KEY_PASSWORD',
+            '-o',
+            str(envelope_path),
+        ],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(public_key_path)],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+
+def test_sign_rejects_missing_key_password_env(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Sign should fail when the requested key password environment variable is unset."""
+    private_key_path, _ = write_ed25519_key_pair(tmp_path, password=b'test-password')
+    input_path = tmp_path / 'catalog.json'
+    envelope_path = tmp_path / 'catalog.json.dsse'
+    input_path.write_text('{"a":1}', encoding=const.FILE_ENCODING)
+    monkeypatch.delenv('TRESTLE_KEY_PASSWORD', raising=False)
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'sign',
+            '-f',
+            str(input_path),
+            '--key',
+            str(private_key_path),
+            '--key-password-env',
+            'TRESTLE_KEY_PASSWORD',
+            '-o',
+            str(envelope_path),
+        ],
+    )
+
+    assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
+    assert not envelope_path.exists()
+
+
 def test_sign_rejects_output_that_matches_input(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Sign should not overwrite the OSCAL JSON input with a DSSE envelope."""
+    """Sign should not overwrite the JSON input with a DSSE envelope."""
     private_key_path, _ = write_ed25519_key_pair(tmp_path)
     input_path = tmp_path / 'catalog.json'
     original_text = '{"a":1}'
@@ -113,8 +231,44 @@ def test_sign_rejects_output_that_matches_input(tmp_path: pathlib.Path, monkeypa
     assert input_path.read_text(encoding=const.FILE_ENCODING) == original_text
 
 
+def test_sign_rejects_output_that_matches_private_key(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Sign should not overwrite the private key with a DSSE envelope."""
+    private_key_path, _ = write_ed25519_key_pair(tmp_path)
+    original_key = private_key_path.read_bytes()
+    input_path = tmp_path / 'catalog.json'
+    input_path.write_text('{"a":1}', encoding=const.FILE_ENCODING)
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(private_key_path)],
+    )
+
+    assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
+    assert private_key_path.read_bytes() == original_key
+
+
+def test_sign_rejects_output_symlink(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Sign should not follow output symlinks when writing a DSSE envelope."""
+    private_key_path, _ = write_ed25519_key_pair(tmp_path)
+    input_path = tmp_path / 'catalog.json'
+    target_path = tmp_path / 'target.dsse'
+    output_path = tmp_path / 'catalog.json.dsse'
+    input_path.write_text('{"a":1}', encoding=const.FILE_ENCODING)
+    try:
+        output_path.symlink_to(target_path)
+    except OSError as error:
+        pytest.skip(f'Symlinks are not available in this environment: {error}')
+
+    monkeypatch.setattr(
+        sys, 'argv', ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(output_path)]
+    )
+
+    assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
+    assert not target_path.exists()
+
+
 def test_verify_rejects_tampered_document(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Verify should fail if the OSCAL JSON changes after signing."""
+    """Verify should fail if the JSON changes after signing."""
     private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
     input_path = tmp_path / 'catalog.json'
     envelope_path = tmp_path / 'catalog.json.dsse'

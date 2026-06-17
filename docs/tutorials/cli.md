@@ -5,13 +5,14 @@ description: An introductory tutorial into trestle's CLI and OSCAL use cases
 
 # trestle CLI Overview and OSCAL usecases
 
-The trestle CLI has five primary use cases:
+The trestle CLI has six primary use cases:
 
 - Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle split`, `trestle merge`.
 - Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
 - Allow governance of markdown documents so they conform to specific style or structure requirements.
 - Canonicalize JSON documents with `trestle canonicalize`. See [Canonicalizing JSON documents](canonicalization.md).
 - Manage experimental commands with `trestle beta`.
+- Sign and verify JSON artifacts with detached DSSE envelopes.
 
 To support each of these use cases trestle creates an opinionated directory structure to manage governed documents.
 
@@ -592,6 +593,60 @@ By default validate will display warning messages and a message indicating the f
 
 The links validator is special because it always returns success that the file is valid - but it will list any inconsistencies it finds between the
 references to links, and corresponding links in the backmatter.
+
+## `trestle sign`
+
+Trestle sign writes a detached DSSE envelope for a JSON file. It canonicalizes the JSON using RFC 8785, computes a SHA-256 digest, records that digest in an in-toto Statement, and signs the Statement with a PEM private key.
+
+Generate an Ed25519 private/public key pair with OpenSSL:
+
+```bash
+openssl genpkey -algorithm ed25519 -out private.pem
+openssl pkey -in private.pem -pubout -out public.pem
+chmod 600 private.pem
+```
+
+The private key is used for signing. Keep it secret. The public key can be shared with users or systems that need to verify signatures.
+
+```bash
+trestle sign \
+  -f catalog.json \
+  --key private.pem \
+  -o catalog.json.dsse
+```
+
+For an encrypted private key, use `--key-password-env`. The option names an environment variable that contains the password, so the password is not passed as a command-line argument.
+
+```bash
+export TRESTLE_KEY_PASSWORD='replace-with-your-password'
+openssl genpkey -algorithm ed25519 -aes-256-cbc -pass env:TRESTLE_KEY_PASSWORD -out private-encrypted.pem
+openssl pkey -in private-encrypted.pem -passin env:TRESTLE_KEY_PASSWORD -pubout -out public.pem
+chmod 600 private-encrypted.pem
+trestle sign \
+  -f catalog.json \
+  --key private-encrypted.pem \
+  --key-password-env TRESTLE_KEY_PASSWORD \
+  -o catalog.json.dsse
+```
+
+RSA PEM keys may also be used.
+
+The `--subject-name` option records a subject name other than the input file name. Verification must use the same subject name.
+
+The signed Statement uses the [OSCAL signing predicate](../predicates/oscal-signing/v1.md).
+
+## `trestle verify`
+
+Trestle verify checks a JSON file against a detached DSSE envelope and a PEM public key. Verification checks the DSSE signature, the predicate fields, and the SHA-256 digest of the RFC 8785 canonical JSON bytes.
+
+```bash
+trestle verify \
+  -f catalog.json \
+  --signature catalog.json.dsse \
+  --key public.pem
+```
+
+If signing used `--subject-name`, pass the same value during verification.
 
 ## `trestle tasks`
 

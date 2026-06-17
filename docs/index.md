@@ -34,6 +34,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Tooling manage authoring and governance of markdown and drawio files withn a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artefacts.
+- Detached signing and verification for JSON artifacts. See the [`trestle sign` and `trestle verify` CLI documentation](tutorials/cli.md#trestle-sign).
 
 ## Important Note:
 

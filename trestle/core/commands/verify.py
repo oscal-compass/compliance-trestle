@@ -30,12 +30,12 @@ logger = logging.getLogger(__name__)
 
 
 class VerifyCmd(CommandBase):
-    """Verify an OSCAL JSON file against a detached DSSE provenance envelope.
+    """Verify a JSON file against a detached DSSE provenance envelope.
 
     Verification performs two checks. First, it verifies the DSSE signature
     over the DSSE pre-authentication encoding for the in-toto Statement payload
-    using the provided PEM public key. Second, it canonicalizes the input OSCAL
-    JSON using RFC 8785, computes its SHA-256 digest, and confirms that the
+    using the provided PEM public key. Second, it canonicalizes the input JSON
+    using RFC 8785, computes its SHA-256 digest, and confirms that the
     digest matches the subject digest recorded in the signed Statement.
 
     Both checks are required: the digest proves the file matches the signed
@@ -47,9 +47,7 @@ class VerifyCmd(CommandBase):
     name = 'verify'
 
     def _init_arguments(self) -> None:
-        self.add_argument(
-            '-f', '--file', help='Path to the OSCAL JSON file to verify.', required=True, type=pathlib.Path
-        )
+        self.add_argument('-f', '--file', help='Path to the JSON file to verify.', required=True, type=pathlib.Path)
         self.add_argument('--signature', help='Path to the detached DSSE envelope.', required=True, type=pathlib.Path)
         self.add_argument(
             '--key', help='Path to the PEM public key for verification.', required=True, type=pathlib.Path
@@ -61,13 +59,13 @@ class VerifyCmd(CommandBase):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        """Verify an OSCAL JSON file."""
+        """Verify a JSON file."""
         try:
             log.set_log_level_from_args(args)
             self.verify(args.file, args.signature, args.key, args.subject_name)
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
-            return handle_generic_command_exception(e, logger, 'Error while verifying OSCAL JSON signature')
+            return handle_generic_command_exception(e, logger, 'Error while verifying JSON signature')
 
     @classmethod
     def verify(
@@ -77,7 +75,7 @@ class VerifyCmd(CommandBase):
         key_path: pathlib.Path,
         subject_name: Optional[str] = None,
     ) -> None:
-        """Verify a detached DSSE provenance envelope for an OSCAL JSON file."""
+        """Verify a detached DSSE provenance envelope for a JSON file."""
         public_key = load_pem_public_key(key_path.resolve())
         envelope = load_dsse_envelope(signature_path.resolve())
         verify_oscal_provenance_envelope(input_path.resolve(), envelope, public_key, subject_name)

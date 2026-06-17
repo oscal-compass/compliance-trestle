@@ -13,11 +13,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Helpers for detached OSCAL JSON provenance signatures."""
+"""Helpers for detached JSON provenance signatures."""
 
 from __future__ import annotations
 
 import base64
+import hmac
 import json
 import pathlib
 from typing import Any, Dict, List, Optional
@@ -36,17 +37,19 @@ OSCAL_PREDICATE_TYPE = 'https://oscal-compass.github.io/compliance-trestle/predi
 CANONICALIZATION_ALGORITHM = 'RFC8785'
 DIGEST_ALGORITHM = 'sha256'
 DIGEST_SOURCE = 'canonical-json'
+MAX_SIGNATURES = 16
 
 
 def _validate_json_path(path: pathlib.Path) -> None:
     if path.suffix.lower() != '.json':
-        raise TrestleError('OSCAL signing is only supported for JSON files.')
+        raise TrestleError('Signing is only supported for JSON files.')
 
 
-def load_pem_private_key_signer(path: pathlib.Path) -> Signer:
+def load_pem_private_key_signer(path: pathlib.Path, password: Optional[str] = None) -> Signer:
     """Load a local PEM private key as a securesystemslib signer."""
+    password_bytes = password.encode(const.FILE_ENCODING) if password is not None else None
     try:
-        private_key = serialization.load_pem_private_key(path.read_bytes(), password=None)
+        private_key = serialization.load_pem_private_key(path.read_bytes(), password=password_bytes)
         return CryptoSigner(private_key)
     except Exception as error:
         raise TrestleError(f'Unable to load private key for signing: {path}') from error
@@ -62,7 +65,7 @@ def load_pem_public_key(path: pathlib.Path) -> Key:
 
 
 def build_in_toto_statement(subject_name: str, digest: str) -> Dict[str, Any]:
-    """Build the in-toto Statement payload for an OSCAL JSON artifact digest."""
+    """Build the in-toto Statement payload for a JSON artifact digest."""
     return {
         '_type': IN_TOTO_STATEMENT_TYPE,
         'subject': [{'name': subject_name, 'digest': {DIGEST_ALGORITHM: digest}}],
@@ -93,7 +96,7 @@ def dsse_pae(payload_type: str, payload: bytes) -> bytes:
 def create_oscal_provenance_envelope(
     input_path: pathlib.Path, signer: Signer, subject_name: Optional[str] = None
 ) -> Dict[str, Any]:
-    """Create a DSSE envelope whose payload is an in-toto Statement for an OSCAL JSON file."""
+    """Create a DSSE envelope whose payload is an in-toto Statement for a JSON file."""
     _validate_json_path(input_path)
     _, canonical_bytes = load_canonical_json_file(input_path)
     digest = sha256_digest_hex(canonical_bytes)
@@ -114,11 +117,15 @@ def sign_in_toto_statement(statement: Dict[str, Any], signer: Signer) -> Dict[st
 
 def write_dsse_envelope(envelope: Dict[str, Any], output_path: pathlib.Path) -> None:
     """Write a DSSE envelope as JSON."""
-    output_path = output_path.resolve()
-    if output_path.exists() and output_path.is_dir():
-        raise TrestleError(f'DSSE output path is a directory: {output_path}')
+    if output_path.is_symlink():
+        raise TrestleError(f'DSSE output path must not be a symlink: {output_path}')
+    if output_path.exists():
+        if output_path.is_dir():
+            raise TrestleError(f'DSSE output path is a directory: {output_path}')
+        raise TrestleError(f'DSSE output path already exists: {output_path}')
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(envelope, indent=2, sort_keys=True) + '\n', encoding=const.FILE_ENCODING)
+    with output_path.open('x', encoding=const.FILE_ENCODING) as write_file:
+        write_file.write(json.dumps(envelope, indent=2, sort_keys=True) + '\n')
 
 
 def load_dsse_envelope(envelope_path: pathlib.Path) -> Dict[str, Any]:
@@ -133,7 +140,7 @@ def load_dsse_envelope(envelope_path: pathlib.Path) -> Dict[str, Any]:
 def verify_oscal_provenance_envelope(
     input_path: pathlib.Path, envelope: Dict[str, Any], public_key: Key, subject_name: Optional[str] = None
 ) -> Dict[str, Any]:
-    """Verify a DSSE in-toto Statement envelope against an OSCAL JSON file."""
+    """Verify a DSSE in-toto Statement envelope against a JSON file."""
     _validate_json_path(input_path)
     _, canonical_bytes = load_canonical_json_file(input_path)
     expected_digest = sha256_digest_hex(canonical_bytes)
@@ -153,11 +160,13 @@ def _verified_payload(envelope: Dict[str, Any], public_key: Key) -> bytes:
     signatures = envelope.get('signatures')
     if not isinstance(signatures, list) or not signatures:
         raise TrestleError('DSSE envelope must contain at least one signature.')
+    if len(signatures) > MAX_SIGNATURES:
+        raise TrestleError(f'DSSE envelope contains more than {MAX_SIGNATURES} signatures.')
 
     verification_errors: List[str] = []
     for signature_entry in signatures:
         try:
-            signature = _signature_from_dsse(signature_entry)
+            signature = _signature_from_dsse(signature_entry, public_key.keyid)
             public_key.verify_signature(signature, pae)
             return payload
         except (TrestleError, UnverifiedSignatureError, VerificationError) as error:
@@ -196,16 +205,30 @@ def _validate_statement(statement: Dict[str, Any], subject_name: str, expected_d
     subjects = statement.get('subject')
     if not isinstance(subjects, list):
         raise TrestleError('in-toto Statement subject must be an array.')
-    for subject in subjects:
-        if not isinstance(subject, dict):
-            continue
-        digest = subject.get('digest')
-        if subject.get('name') == subject_name and isinstance(digest, dict):
-            if digest.get(DIGEST_ALGORITHM) == expected_digest:
-                return
-            raise TrestleError(f'in-toto Statement digest does not match OSCAL JSON: {subject_name}')
+    if len(subjects) != 1:
+        raise TrestleError('in-toto Statement must contain exactly one subject for JSON signing.')
 
-    raise TrestleError(f'in-toto Statement does not contain expected subject: {subject_name}')
+    subject = subjects[0]
+    if not isinstance(subject, dict):
+        raise TrestleError(f'in-toto Statement does not contain expected subject: {subject_name}')
+
+    actual_subject_name = subject.get('name')
+    if actual_subject_name != subject_name:
+        if isinstance(actual_subject_name, str):
+            raise TrestleError(
+                f'in-toto Statement does not contain expected subject: {subject_name}. '
+                f'Found subject: {actual_subject_name}. '
+                'If signing used --subject-name, pass the same value during verification.'
+            )
+        raise TrestleError(f'in-toto Statement does not contain expected subject: {subject_name}')
+
+    digest = subject.get('digest')
+    if not isinstance(digest, dict):
+        raise TrestleError(f'in-toto Statement subject does not contain a digest for: {subject_name}')
+    if hmac.compare_digest(str(digest.get(DIGEST_ALGORITHM)), expected_digest):
+        return
+
+    raise TrestleError(f'in-toto Statement digest does not match JSON file: {subject_name}')
 
 
 def _json_bytes(value: Dict[str, Any]) -> bytes:
@@ -216,13 +239,12 @@ def _dsse_signature(signature: Signature) -> Dict[str, str]:
     return {'keyid': signature.keyid, 'sig': _b64_encode(bytes.fromhex(signature.signature))}
 
 
-def _signature_from_dsse(signature_entry: Any) -> Signature:
+def _signature_from_dsse(signature_entry: Any, verification_keyid: str = '') -> Signature:
     if not isinstance(signature_entry, dict):
         raise TrestleError('DSSE signature entry must be a JSON object.')
-    keyid = signature_entry.get('keyid')
-    if not isinstance(keyid, str) or not keyid:
-        raise TrestleError('DSSE signature entry must contain a keyid.')
-    return Signature(keyid, _b64_decode(signature_entry.get('sig'), 'signature sig').hex())
+    if 'keyid' in signature_entry and not isinstance(signature_entry['keyid'], str):
+        raise TrestleError('DSSE signature entry keyid must be a string.')
+    return Signature(verification_keyid, _b64_decode(signature_entry.get('sig'), 'signature sig').hex())
 
 
 def _b64_encode(data: bytes) -> str:
@@ -233,6 +255,14 @@ def _b64_decode(value: Any, field_name: str) -> bytes:
     if not isinstance(value, str):
         raise TrestleError(f'DSSE {field_name} must be a base64 string.')
     try:
-        return base64.b64decode(value.encode('ascii'), validate=True)
-    except Exception as error:
+        encoded = value.encode('ascii')
+    except UnicodeEncodeError as error:
         raise TrestleError(f'DSSE {field_name} is not valid base64.') from error
+
+    try:
+        return base64.b64decode(encoded, validate=True)
+    except Exception:
+        try:
+            return base64.b64decode(encoded, altchars=b'-_', validate=True)
+        except Exception as error:
+            raise TrestleError(f'DSSE {field_name} is not valid base64.') from error

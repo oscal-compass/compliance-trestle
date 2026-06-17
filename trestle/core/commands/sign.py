@@ -17,6 +17,7 @@
 
 import argparse
 import logging
+import os
 import pathlib
 from typing import Optional
 
@@ -30,9 +31,9 @@ logger = logging.getLogger(__name__)
 
 
 class SignCmd(CommandBase):
-    """Sign an OSCAL JSON file as a detached DSSE provenance envelope.
+    """Sign a JSON file as a detached DSSE provenance envelope.
 
-    This command does not modify the input OSCAL file. It reads the JSON
+    This command does not modify the input JSON file. It reads the JSON
     bytes, canonicalizes them using RFC 8785, computes a SHA-256 digest over
     the canonical JSON, and records that digest in an in-toto Statement. The
     Statement is then signed as a DSSE payload using the provided PEM private
@@ -46,8 +47,13 @@ class SignCmd(CommandBase):
     name = 'sign'
 
     def _init_arguments(self) -> None:
-        self.add_argument('-f', '--file', help='Path to the OSCAL JSON file to sign.', required=True, type=pathlib.Path)
+        self.add_argument('-f', '--file', help='Path to the JSON file to sign.', required=True, type=pathlib.Path)
         self.add_argument('--key', help='Path to the PEM private key for signing.', required=True, type=pathlib.Path)
+        self.add_argument(
+            '--key-password-env',
+            help='Environment variable containing the password for an encrypted PEM private key.',
+            default=None,
+        )
         self.add_argument('-o', '--output', help='Output DSSE envelope file.', required=True, type=pathlib.Path)
         self.add_argument(
             '--subject-name',
@@ -56,13 +62,13 @@ class SignCmd(CommandBase):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        """Sign an OSCAL JSON file."""
+        """Sign a JSON file."""
         try:
             log.set_log_level_from_args(args)
-            self.sign(args.file, args.key, args.output, args.subject_name)
+            self.sign(args.file, args.key, args.output, args.subject_name, args.key_password_env)
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
-            return handle_generic_command_exception(e, logger, 'Error while signing OSCAL JSON')
+            return handle_generic_command_exception(e, logger, 'Error while signing JSON')
 
     @classmethod
     def sign(
@@ -71,13 +77,23 @@ class SignCmd(CommandBase):
         key_path: pathlib.Path,
         output_path: pathlib.Path,
         subject_name: Optional[str] = None,
+        key_password_env: Optional[str] = None,
     ) -> None:
-        """Write a detached DSSE provenance envelope for an OSCAL JSON file."""
+        """Write a detached DSSE provenance envelope for a JSON file."""
         input_path = input_path.resolve()
-        output_path = output_path.resolve()
-        if input_path == output_path:
-            raise TrestleError('DSSE output path must be different from input OSCAL JSON file.')
+        key_path = key_path.resolve()
+        resolved_output_path = output_path.resolve()
+        if input_path == resolved_output_path:
+            raise TrestleError('DSSE output path must be different from input JSON file.')
+        if key_path == resolved_output_path:
+            raise TrestleError('DSSE output path must be different from private key file.')
 
-        signer = load_pem_private_key_signer(key_path.resolve())
+        key_password = None
+        if key_password_env is not None:
+            if key_password_env not in os.environ:
+                raise TrestleError(f'Key password environment variable is not set: {key_password_env}')
+            key_password = os.environ[key_password_env]
+
+        signer = load_pem_private_key_signer(key_path, key_password)
         envelope = create_oscal_provenance_envelope(input_path, signer, subject_name)
         write_dsse_envelope(envelope, output_path)
