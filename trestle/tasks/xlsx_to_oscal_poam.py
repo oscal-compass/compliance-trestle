@@ -860,6 +860,15 @@ class XlsxToOscalPoam(TaskBase):
         logger.info(text1 + text2)
         text2 = 'column "Comments" contains additional comments or notes (optional).'
         logger.info(text1 + text2)
+        logger.info('')
+        logger.info('Notes:')
+        logger.info('  - The POAM template has the following structure, in keeping with FedRAMP xlsx format:')
+        logger.info('    Row 1: Template title')
+        logger.info('    Rows 2-4: Template instructions and metadata (ignored by this task)')
+        logger.info('    Row 5: Column headers')
+        logger.info('    Row 6+: Data rows (POAM items)')
+        logger.info('  - POAM document metadata (title, version, system-id) comes from the configuration file,')
+        logger.info('    not from the Excel template rows 1-4.')
 
     def configure(self) -> bool:
         """
