@@ -14,7 +14,7 @@ jobs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
@@ -28,7 +28,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         submodules: true
     - name: Set up Python
@@ -82,7 +82,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         submodules: true
     - name: Set up Python
@@ -121,7 +121,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         fetch-depth: 0
         submodules: true
@@ -177,7 +177,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         fetch-depth: 0
         submodules: true
@@ -234,7 +234,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         submodules: true
     - name: Set up Python
@@ -255,7 +255,7 @@ jobs:
       with:
         name: coverage
     - name: SonarQube Scan
-      uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
+      uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -284,7 +284,7 @@ jobs:
       - name: Don't mess with line endings
         run: |
           git config --global core.autocrlf false
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           submodules: true
       - name: Set up Python
