@@ -413,11 +413,22 @@ class PoamXlsxHelper:
                 continue
 
             # Try to parse: "Milestone N: Description [by YYYY-MM-DD]"
-            match = re.match(
-                r'(Milestone\s+\d+|M\d+)[:.]?\s*(.+?)(?:\s+by\s+(\d{4}-\d{2}-\d{2}))?$', line, re.IGNORECASE
-            )
+            # Use a safer approach: first extract the date if present, then parse the rest
+            # This avoids catastrophic backtracking from the original pattern
+            date_str = None
+            main_line = line
+
+            # Check if line ends with a date pattern and extract it
+            date_match = re.search(r'\s+by\s+(\d{4}-\d{2}-\d{2})$', line, re.IGNORECASE)
+            if date_match:
+                date_str = date_match.group(1)
+                # Remove the date part from the line
+                main_line = line[: date_match.start()]
+
+            # Now parse the milestone prefix and description without backtracking risk
+            match = re.match(r'(Milestone\s+\d+|M\d+)[:.]?\s*(.+)$', main_line, re.IGNORECASE)
             if match:
-                milestone_num, description, date_str = match.groups()
+                milestone_num, description = match.groups()
                 milestone = {'title': description.strip(), 'description': milestone_num.strip()}
                 if date_str:
                     milestone['timing'] = date_str
