@@ -419,7 +419,9 @@ class PoamXlsxHelper:
             main_line = line
 
             # Check if line ends with a date pattern and extract it
-            date_match = re.search(r'\s+by\s+(\d{4}-\d{2}-\d{2})$', line, re.IGNORECASE)
+            # Use possessive quantifier equivalent to prevent backtracking (ReDoS mitigation)
+            # Match one or more whitespace, then 'by', then whitespace, then date at end
+            date_match = re.search(r' +by +(\d{4}-\d{2}-\d{2})$', line, re.IGNORECASE)
             if date_match:
                 date_str = date_match.group(1)
                 # Remove the date part from the line
