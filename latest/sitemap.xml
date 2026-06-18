@@ -573,6 +573,10 @@
          <lastmod>2026-06-18</lastmod>
     </url>
     <url>
+         <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/xlsx_to_oscal_poam/</loc>
+         <lastmod>2026-06-18</lastmod>
+    </url>
+    <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/xlsx_to_oscal_profile/</loc>
          <lastmod>2026-06-18</lastmod>
     </url>
@@ -618,6 +622,10 @@
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/introduction_to_trestle/</loc>
+         <lastmod>2026-06-18</lastmod>
+    </url>
+    <url>
+         <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/task.xlsx-to-oscal-poam/</loc>
          <lastmod>2026-06-18</lastmod>
     </url>
     <url>
