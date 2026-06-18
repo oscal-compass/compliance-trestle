@@ -441,11 +441,15 @@ class PoamXlsxHelper:
                         main_line = line[:-14].rstrip()
 
             # Now parse the milestone prefix and description without backtracking risk
-            # Use \S to match non-whitespace, preventing overlap with \s* and avoiding ReDoS
-            match = re.match(r'(Milestone\s+\d+|M\d+)[:.]?\s*(\S.*?)$', main_line, re.IGNORECASE)
+            # Match optional separator, skip whitespace, then capture remaining non-empty content
+            match = re.match(r'(Milestone\s+\d+|M\d+)[:.]?\s*([^\s].*)?$', main_line, re.IGNORECASE)
             if match:
                 milestone_num, description = match.groups()
-                milestone = {'title': description.strip(), 'description': milestone_num.strip()}
+                # If no description after prefix, use the entire line as title
+                if description:
+                    milestone = {'title': description.strip(), 'description': milestone_num.strip()}
+                else:
+                    milestone = {'title': main_line.strip(), 'description': 'Milestone'}
                 if date_str:
                     milestone['timing'] = date_str
                 milestones.append(milestone)
