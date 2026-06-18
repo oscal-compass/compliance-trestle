@@ -419,13 +419,26 @@ class PoamXlsxHelper:
             main_line = line
 
             # Check if line ends with a date pattern and extract it
-            # Use possessive quantifier equivalent to prevent backtracking (ReDoS mitigation)
-            # Match one or more whitespace, then 'by', then whitespace, then date at end
-            date_match = re.search(r' +by +(\d{4}-\d{2}-\d{2})$', line, re.IGNORECASE)
-            if date_match:
-                date_str = date_match.group(1)
-                # Remove the date part from the line
-                main_line = line[: date_match.start()]
+            # Use string methods instead of regex to avoid ReDoS vulnerability
+            # Look for " by YYYY-MM-DD" at the end of the line (14 chars: " by 2024-01-15")
+            if len(line) >= 14:
+                # Check last 14 chars for " by YYYY-MM-DD" pattern (case-insensitive)
+                potential_date_part = line[-14:]
+                # Check structure: " by " (4 chars) + "YYYY-MM-DD" (10 chars)
+                # Indices in potential_date_part: 0-3=" by ", 4-7=YYYY, 8=-, 9-10=MM, 11=-, 12-13=DD
+                if (
+                    potential_date_part[:4].lower() == ' by '
+                    and len(potential_date_part) == 14
+                    and potential_date_part[8] == '-'
+                    and potential_date_part[11] == '-'
+                ):
+                    # Validate it's actually a date format
+                    year = potential_date_part[4:8]
+                    month = potential_date_part[9:11]
+                    day = potential_date_part[12:14]
+                    if year.isdigit() and month.isdigit() and day.isdigit():
+                        date_str = f'{year}-{month}-{day}'
+                        main_line = line[:-14].rstrip()
 
             # Now parse the milestone prefix and description without backtracking risk
             match = re.match(r'(Milestone\s+\d+|M\d+)[:.]?\s*(.+)$', main_line, re.IGNORECASE)
