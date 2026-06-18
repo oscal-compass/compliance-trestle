@@ -17,12 +17,12 @@ jobs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
         max_version=$(jq '.PYTHON_MAX' -r version.json)
-        echo "min=$min_version" 
+        echo "min=$min_version"
         echo "max=$max_version"
         echo "min=$min_version" >> $GITHUB_OUTPUT
         echo "max=$max_version" >> $GITHUB_OUTPUT
@@ -52,14 +52,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+    - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: |
           ${{ matrix.pip-cache }}
@@ -134,7 +134,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         fetch-depth: 0
         submodules: true
@@ -142,7 +142,7 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+    - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: |
           ${{ matrix.pip-cache }}
@@ -189,12 +189,12 @@ jobs:
           echo "::error::Branch '$GITHUB_REF_NAME' does not match required pattern ^v[0-9]+$"
           exit 1
         fi
-    - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+    - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
       id: app-token
       with:
         app-id: ${{ secrets.APP_ID }}
         private-key: ${{ secrets.PRIVATE_KEY }}
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         submodules: true
         fetch-depth: 0
@@ -269,7 +269,21 @@ jobs:
       with:
         github_token: ${{ steps.app-token.outputs.token }}
 
+    - name: Ensure non-main releases are not marked latest
+      if: github.ref != 'refs/heads/main' && steps.release.outputs.released == 'true'
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      run: |
+        echo "Un-marking release ${{ steps.release.outputs.tag }} as latest"
+        gh release edit "${{ steps.release.outputs.tag }}" --latest=false
+
     # --- Generate provenance for the ACTUAL RELEASE ARTIFACTS ---
+
+    - name: Generate SLSA build provenance
+      if: steps.release.outputs.released == 'true'
+      uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+      with:
+        subject-path: "dist/*"
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
@@ -278,7 +292,7 @@ jobs:
       if: steps.release.outputs.released == 'true'
 
     # Sign artifacts to be uploaded to github releases after pypi. Pypi signs it's own
-    - uses: sigstore/gh-action-sigstore-python@04cffa1d795717b140764e8b640de88853c92acc # v3.3.0
+    - uses: sigstore/gh-action-sigstore-python@5b79a39c381910c090341a2c9b0bf022c8b387e1 # v3.4.0
       if: steps.release.outputs.released == 'true'
       with:
         inputs: "dist/*"
@@ -288,6 +302,7 @@ jobs:
       if: steps.release.outputs.released == 'true'
       with:
         github_token: ${{ steps.app-token.outputs.token }}
+        tag: ${{ steps.release.outputs.tag }}
 
   merge-main-to-develop:
     name: Merge main -> develop
@@ -298,12 +313,12 @@ jobs:
       cancel-in-progress: true
     if: github.ref == 'refs/heads/main'
     steps:
-    - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+    - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
       id: app-token
       with:
         app-id: ${{ secrets.APP_ID }}
         private-key: ${{ secrets.PRIVATE_KEY }}
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       with:
         submodules: true
         ref: main
