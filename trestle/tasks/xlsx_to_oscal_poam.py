@@ -413,12 +413,68 @@ class PoamXlsxHelper:
                 continue
 
             # Try to parse: "Milestone N: Description [by YYYY-MM-DD]"
-            match = re.match(
-                r'(Milestone\s+\d+|M\d+)[:.]?\s*(.+?)(?:\s+by\s+(\d{4}-\d{2}-\d{2}))?$', line, re.IGNORECASE
-            )
-            if match:
-                milestone_num, description, date_str = match.groups()
-                milestone = {'title': description.strip(), 'description': milestone_num.strip()}
+            # Use a safer approach: first extract the date if present, then parse the rest
+            # This avoids catastrophic backtracking from the original pattern
+            date_str = None
+            main_line = line
+
+            # Check if line ends with a date pattern and extract it
+            # Use string methods instead of regex to avoid ReDoS vulnerability
+            # Look for " by YYYY-MM-DD" at the end of the line (14 chars: " by 2024-01-15")
+            if len(line) >= 14:
+                # Check last 14 chars for " by YYYY-MM-DD" pattern (case-insensitive)
+                potential_date_part = line[-14:]
+                # Check structure: " by " (4 chars) + "YYYY-MM-DD" (10 chars)
+                # Indices in potential_date_part: 0-3=" by ", 4-7=YYYY, 8=-, 9-10=MM, 11=-, 12-13=DD
+                if (
+                    potential_date_part[:4].lower() == ' by '
+                    and len(potential_date_part) == 14
+                    and potential_date_part[8] == '-'
+                    and potential_date_part[11] == '-'
+                ):
+                    # Validate it's actually a date format
+                    year = potential_date_part[4:8]
+                    month = potential_date_part[9:11]
+                    day = potential_date_part[12:14]
+                    if year.isdigit() and month.isdigit() and day.isdigit():
+                        date_str = f'{year}-{month}-{day}'
+                        main_line = line[:-14].rstrip()
+
+            # Parse milestone prefix using string operations to avoid any regex ReDoS risk
+            # This approach is deterministic and has O(n) complexity with no backtracking
+            main_line_lower = main_line.lower()
+            milestone_num = None
+            remainder = ''
+
+            # Check for "Milestone N" or "Milestone N:" or "Milestone N." patterns
+            if main_line_lower.startswith('milestone '):
+                # Find the end of "Milestone" and skip whitespace
+                idx = 9  # len('milestone')
+                while idx < len(main_line) and main_line[idx].isspace():
+                    idx += 1
+                # Now find the end of the number
+                num_start = idx
+                while idx < len(main_line) and main_line[idx].isdigit():
+                    idx += 1
+                if idx > num_start:  # Found at least one digit
+                    milestone_num = main_line[:idx]
+                    remainder = main_line[idx:]
+            # Check for "MN" or "MN:" or "MN." patterns
+            elif len(main_line) > 1 and main_line_lower[0] == 'm' and main_line[1].isdigit():
+                idx = 1
+                while idx < len(main_line) and main_line[idx].isdigit():
+                    idx += 1
+                milestone_num = main_line[:idx]
+                remainder = main_line[idx:]
+
+            if milestone_num:
+                # Strip optional separator and whitespace from remainder
+                description = remainder.lstrip(':. ')
+                # If no description after prefix, use the entire line as title
+                if description:
+                    milestone = {'title': description, 'description': milestone_num.strip()}
+                else:
+                    milestone = {'title': main_line.strip(), 'description': 'Milestone'}
                 if date_str:
                     milestone['timing'] = date_str
                 milestones.append(milestone)
