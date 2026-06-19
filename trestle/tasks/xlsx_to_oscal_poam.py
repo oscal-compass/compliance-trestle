@@ -440,12 +440,34 @@ class PoamXlsxHelper:
                         date_str = f'{year}-{month}-{day}'
                         main_line = line[:-14].rstrip()
 
-            # Parse milestone prefix and description without backtracking risk
-            # Use atomic grouping equivalent: match prefix, then take rest as-is
-            # This pattern has no overlapping quantifiers and cannot cause ReDoS
-            match = re.match(r'(Milestone\s+\d+|M\d+)(.*)$', main_line, re.IGNORECASE)
-            if match:
-                milestone_num, remainder = match.groups()
+            # Parse milestone prefix using string operations to avoid any regex ReDoS risk
+            # This approach is deterministic and has O(n) complexity with no backtracking
+            main_line_lower = main_line.lower()
+            milestone_num = None
+            remainder = ''
+            
+            # Check for "Milestone N" or "Milestone N:" or "Milestone N." patterns
+            if main_line_lower.startswith('milestone '):
+                # Find the end of "Milestone" and skip whitespace
+                idx = 9  # len('milestone')
+                while idx < len(main_line) and main_line[idx].isspace():
+                    idx += 1
+                # Now find the end of the number
+                num_start = idx
+                while idx < len(main_line) and main_line[idx].isdigit():
+                    idx += 1
+                if idx > num_start:  # Found at least one digit
+                    milestone_num = main_line[:idx]
+                    remainder = main_line[idx:]
+            # Check for "MN" or "MN:" or "MN." patterns
+            elif len(main_line) > 1 and main_line_lower[0] == 'm' and main_line[1].isdigit():
+                idx = 1
+                while idx < len(main_line) and main_line[idx].isdigit():
+                    idx += 1
+                milestone_num = main_line[:idx]
+                remainder = main_line[idx:]
+            
+            if milestone_num:
                 # Strip optional separator and whitespace from remainder
                 description = remainder.lstrip(':. ')
                 # If no description after prefix, use the entire line as title
