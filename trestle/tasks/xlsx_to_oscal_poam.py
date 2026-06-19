@@ -440,14 +440,17 @@ class PoamXlsxHelper:
                         date_str = f'{year}-{month}-{day}'
                         main_line = line[:-14].rstrip()
 
-            # Now parse the milestone prefix and description without backtracking risk
-            # Match optional separator, skip whitespace, then capture remaining non-empty content
-            match = re.match(r'(Milestone\s+\d+|M\d+)[:.]?\s*([^\s].*)?$', main_line, re.IGNORECASE)
+            # Parse milestone prefix and description without backtracking risk
+            # Use atomic grouping equivalent: match prefix, then take rest as-is
+            # This pattern has no overlapping quantifiers and cannot cause ReDoS
+            match = re.match(r'(Milestone\s+\d+|M\d+)(.*)$', main_line, re.IGNORECASE)
             if match:
-                milestone_num, description = match.groups()
+                milestone_num, remainder = match.groups()
+                # Strip optional separator and whitespace from remainder
+                description = remainder.lstrip(':. ')
                 # If no description after prefix, use the entire line as title
                 if description:
-                    milestone = {'title': description.strip(), 'description': milestone_num.strip()}
+                    milestone = {'title': description, 'description': milestone_num.strip()}
                 else:
                     milestone = {'title': main_line.strip(), 'description': 'Milestone'}
                 if date_str:
