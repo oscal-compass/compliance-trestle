@@ -22,6 +22,7 @@ import pathlib
 from trestle import __version__
 from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
+from trestle.core import beta_features
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.oscal import OSCAL_VERSION
@@ -53,6 +54,12 @@ class VersionCmd(CommandBase):
 
         return oscal_object.metadata.version
 
+    def _get_beta_state(self, trestle_root: pathlib.Path) -> str:
+        """Get enabled beta feature state for version output."""
+        enabled_features = beta_features.get_enabled_features(trestle_root)
+        enabled_feature_names = ', '.join(sorted(enabled_features)) if enabled_features else 'none'
+        return f'Beta features enabled: {enabled_feature_names}'
+
     def _run(self, args: argparse.Namespace) -> int:
         try:
             status = CmdReturnCodes.COMMAND_ERROR.value
@@ -60,6 +67,7 @@ class VersionCmd(CommandBase):
             if not args.name and not args.type:
                 version_string = f'Trestle version v{__version__} based on OSCAL version {OSCAL_VERSION}'
                 self.out(version_string)
+                self.out(self._get_beta_state(pathlib.Path(args.trestle_root)))
                 status = CmdReturnCodes.SUCCESS.value
 
             if not (args.name and args.type) and (args.name or args.type):

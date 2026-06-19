@@ -4,6 +4,7 @@ nav:
 - OSCAL object model: oscal_object_model.md
 - Website development: website.md
 - Developing trestle plugins: plugins.md
+- Developing beta features: beta_features.md
 - Contributors: https://github.com/oscal-compass/compliance-trestle/graphs/contributors
 - Maintainers: maintainers.md
 - Developer Certificate of Originality: DCO.md
