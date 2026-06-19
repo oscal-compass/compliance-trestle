@@ -445,7 +445,7 @@ class PoamXlsxHelper:
             main_line_lower = main_line.lower()
             milestone_num = None
             remainder = ''
-            
+
             # Check for "Milestone N" or "Milestone N:" or "Milestone N." patterns
             if main_line_lower.startswith('milestone '):
                 # Find the end of "Milestone" and skip whitespace
@@ -466,7 +466,7 @@ class PoamXlsxHelper:
                     idx += 1
                 milestone_num = main_line[:idx]
                 remainder = main_line[idx:]
-            
+
             if milestone_num:
                 # Strip optional separator and whitespace from remainder
                 description = remainder.lstrip(':. ')
