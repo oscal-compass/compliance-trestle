@@ -31,7 +31,7 @@ def test_regenerate_uuids_ssp() -> None:
     """Test regeneration of uuids with updated refs in ssp."""
     orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path)
     new_ssp, uuid_lut, n_refs_updated = ModelUtils.regenerate_uuids(orig_ssp)
-    assert len(uuid_lut.items()) == 36
+    assert len(uuid_lut.items()) == 39
     assert n_refs_updated == 23
 
 
