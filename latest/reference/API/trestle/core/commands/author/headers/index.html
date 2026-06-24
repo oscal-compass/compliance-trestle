@@ -609,7 +609,7 @@
                 <span class=c1># Files in the root directory must be exclused</span>
                 <span class=k>if</span> <span class=n>path</span><span class=o>.</span><span class=n>is_file</span><span class=p>():</span>
                     <span class=k>continue</span>
-                <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_directory_name_allowed</span><span class=p>(</span><span class=n>path</span><span class=p>):</span>
+                <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_directory_name_allowed</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>relative_path</span><span class=p>)):</span>
                     <span class=k>continue</span>
                 <span class=k>if</span> <span class=nb>str</span><span class=p>(</span><span class=n>relative_path</span><span class=p>)</span><span class=o>.</span><span class=n>rstrip</span><span class=p>(</span><span class=s1>&#39;/&#39;</span><span class=p>)</span> <span class=ow>in</span> <span class=n>const</span><span class=o>.</span><span class=n>MODEL_DIR_LIST</span><span class=p>:</span>
                     <span class=k>continue</span>
@@ -781,7 +781,7 @@
             <span class=c1># Files in the root directory must be exclused</span>
             <span class=k>if</span> <span class=n>path</span><span class=o>.</span><span class=n>is_file</span><span class=p>():</span>
                 <span class=k>continue</span>
-            <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_directory_name_allowed</span><span class=p>(</span><span class=n>path</span><span class=p>):</span>
+            <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_directory_name_allowed</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>relative_path</span><span class=p>)):</span>
                 <span class=k>continue</span>
             <span class=k>if</span> <span class=nb>str</span><span class=p>(</span><span class=n>relative_path</span><span class=p>)</span><span class=o>.</span><span class=n>rstrip</span><span class=p>(</span><span class=s1>&#39;/&#39;</span><span class=p>)</span> <span class=ow>in</span> <span class=n>const</span><span class=o>.</span><span class=n>MODEL_DIR_LIST</span><span class=p>:</span>
                 <span class=k>continue</span>

@@ -23,8 +23,7 @@
                   return '';
                 }
               });
-            </script> <p>Create a sample OSCAL model in trestle workspace or create new elements within a given model.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/create.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 41</span>
-<span class=normal> 42</span>
+            </script> <p>Create a sample OSCAL model in trestle workspace or create new elements within a given model.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/create.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 42</span>
 <span class=normal> 43</span>
 <span class=normal> 44</span>
 <span class=normal> 45</span>
@@ -104,7 +103,11 @@
 <span class=normal>119</span>
 <span class=normal>120</span>
 <span class=normal>121</span>
-<span class=normal>122</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CreateCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>122</span>
+<span class=normal>123</span>
+<span class=normal>124</span>
+<span class=normal>125</span>
+<span class=normal>126</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CreateCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Create a sample OSCAL model in trestle workspace or create new elements within a given model.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;create&#39;</span>
@@ -160,6 +163,9 @@
 
         <span class=n>desired_model_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span>
 
+        <span class=c1># Validate output path to prevent path traversal</span>
+        <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>desired_model_dir</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
+
         <span class=n>desired_model_path</span> <span class=o>=</span> <span class=n>desired_model_dir</span> <span class=o>/</span> <span class=p>(</span><span class=n>model_alias</span> <span class=o>+</span> <span class=s1>&#39;.&#39;</span> <span class=o>+</span> <span class=n>args</span><span class=o>.</span><span class=n>extension</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=n>desired_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
@@ -186,8 +192,7 @@
         <span class=n>create_plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>write_action</span><span class=p>)</span>
         <span class=n>create_plan</span><span class=o>.</span><span class=n>execute</span><span class=p>()</span>
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.create.CreateCmd-attributes>Attributes<a href=#trestle.core.commands.create.CreateCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.create.CreateCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;create&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.create.CreateCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.create.CreateCmd-functions>Methods:<a href=#trestle.core.commands.create.CreateCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.create.CreateCmd.create_object class="doc doc-heading"> <code class="highlight language-python"><span class=n>create_object</span><span class=p>(</span><span class=n>model_alias</span><span class=p>,</span> <span class=n>object_type</span><span class=p>,</span> <span class=n>args</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.create.CreateCmd.create_object class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create a top level OSCAL object within the trestle directory, leveraging functionality in add.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/create.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 85</span>
-<span class=normal> 86</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.create.CreateCmd-attributes>Attributes<a href=#trestle.core.commands.create.CreateCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.create.CreateCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;create&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.create.CreateCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.create.CreateCmd-functions>Methods:<a href=#trestle.core.commands.create.CreateCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.create.CreateCmd.create_object class="doc doc-heading"> <code class="highlight language-python"><span class=n>create_object</span><span class=p>(</span><span class=n>model_alias</span><span class=p>,</span> <span class=n>object_type</span><span class=p>,</span> <span class=n>args</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.create.CreateCmd.create_object class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create a top level OSCAL object within the trestle directory, leveraging functionality in add.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/create.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 86</span>
 <span class=normal> 87</span>
 <span class=normal> 88</span>
 <span class=normal> 89</span>
@@ -223,7 +228,11 @@
 <span class=normal>119</span>
 <span class=normal>120</span>
 <span class=normal>121</span>
-<span class=normal>122</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>122</span>
+<span class=normal>123</span>
+<span class=normal>124</span>
+<span class=normal>125</span>
+<span class=normal>126</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>create_object</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>model_alias</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>object_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>TopLevelOscalModel</span><span class=p>],</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Create a top level OSCAL object within the trestle directory, leveraging functionality in add.&quot;&quot;&quot;</span>
     <span class=n>log</span><span class=o>.</span><span class=n>set_log_level_from_args</span><span class=p>(</span><span class=n>args</span><span class=p>)</span>
@@ -234,6 +243,9 @@
     <span class=n>plural_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>model_type_to_model_dir</span><span class=p>(</span><span class=n>model_alias</span><span class=p>)</span>
 
     <span class=n>desired_model_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span>
+
+    <span class=c1># Validate output path to prevent path traversal</span>
+    <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>desired_model_dir</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
 
     <span class=n>desired_model_path</span> <span class=o>=</span> <span class=n>desired_model_dir</span> <span class=o>/</span> <span class=p>(</span><span class=n>model_alias</span> <span class=o>+</span> <span class=s1>&#39;.&#39;</span> <span class=o>+</span> <span class=n>args</span><span class=o>.</span><span class=n>extension</span><span class=p>)</span>
 
