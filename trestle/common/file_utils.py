@@ -106,7 +106,8 @@ def is_directory_name_allowed(name: str) -> bool:
     pathed_name = pathlib.Path(name)
 
     # Defense-in-depth: reject absolute paths
-    if pathed_name.is_absolute():
+    # Check both is_absolute() and if path starts with '/' to handle Unix-style paths on Windows
+    if pathed_name.is_absolute() or name.startswith('/'):
         logger.warning('Task name must not be an absolute path')
         return False
 
