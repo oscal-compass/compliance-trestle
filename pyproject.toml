@@ -296,6 +296,10 @@ warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true
+omit = [
+    "*/tmp*/*.j2",
+    "*/tmp*/*.md.j2",
+]
 
 [tool.semantic_release]
 build_command = """
