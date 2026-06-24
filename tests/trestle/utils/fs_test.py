@@ -590,6 +590,13 @@ def test_is_hidden_windows(tmp_path) -> None:
         ('component-definitions', False),
         ('hello.world', False),
         ('component-definitions/hello', False),
+        # Path traversal attack vectors (CVE-2026-46345 fix)
+        ('/tmp/pwned', False),  # Absolute path
+        ('/etc/passwd', False),  # Absolute path
+        ('../../tmp/pwned', False),  # Leading .. traversal
+        ('subdir/../../../tmp/pwned', False),  # Non-leading .. traversal
+        ('subdir/../../etc/passwd', False),  # Non-leading .. traversal
+        ('normal/../path', False),  # Any .. component
     ],
 )
 def test_allowed_task_name(task_name: str, outcome: bool) -> None:
