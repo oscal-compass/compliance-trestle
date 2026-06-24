@@ -38,6 +38,7 @@ from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.component import ComponentAssemble
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -109,6 +110,9 @@ class SSPGenerate(AuthorCommonCommand):
             compdef_name_list = comma_sep_to_list(args.compdefs)
 
             md_path = trestle_root / args.output
+
+            # Validate output path to prevent path traversal
+            PathSecurityValidator.validate_local_path(md_path, trestle_root)
 
             return self._generate_ssp_markdown(
                 trestle_root,
