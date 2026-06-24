@@ -105,6 +105,16 @@ def is_directory_name_allowed(name: str) -> bool:
     # Task must not self-interfere with a project
     pathed_name = pathlib.Path(name)
 
+    # Defense-in-depth: reject absolute paths
+    if pathed_name.is_absolute():
+        logger.warning('Task name must not be an absolute path')
+        return False
+
+    # Defense-in-depth: reject any path containing ".." components
+    if '..' in pathed_name.parts:
+        logger.warning('Task name must not contain ".." path traversal sequences')
+        return False
+
     root_path = pathed_name.parts[0]
     if root_path in const.MODEL_TYPE_TO_MODEL_DIR.values():
         logger.warning('Task name is the same as an OSCAL schema name.')
