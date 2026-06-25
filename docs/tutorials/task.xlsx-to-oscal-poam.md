@@ -391,7 +391,7 @@ Property(name='poam-id', value=poam_id, ns='https://example.com/ns/poam')
 ## Reference
 
 - [OSCAL POAM Specification](https://pages.nist.gov/OSCAL/concepts/layer/assessment/poam/)
-- [FedRAMP POAM Requirements](https://www.fedramp.gov/assets/resources/templates/FedRAMP-POAM-Template.xlsx)
+- [FedRAMP POAM Requirements](https://www.fedramp.gov/resources/templates/FedRAMP-POAM-Template.xlsx)
 - [NIST SP 800-53 Controls](https://nvd.nist.gov/800-53)
 - [Trestle Documentation](https://oscal-compass.github.io/compliance-trestle/)
 
