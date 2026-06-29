@@ -105,6 +105,10 @@ A collection of demos utilizing trestle can be found in the related project [com
 - supports NIST OSCAL 1.0.4 as well as previous versions
 - no longer supported
 
+## Usage
+
+See oscal-compass lab [big-query](https://github.com/oscal-compass-lab/big-query) for usage info.
+
 ## Community meetings and communications
 
 Please refer to the community [README](https://github.com/oscal-compass/community/blob/main/README.md) for communication details.
