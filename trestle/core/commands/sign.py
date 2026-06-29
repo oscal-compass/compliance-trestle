@@ -23,6 +23,7 @@ from typing import Optional
 
 from trestle.common import log
 from trestle.common.err import TrestleError, handle_generic_command_exception
+from trestle.core.beta_features import beta_feature
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.signing import create_oscal_provenance_envelope, load_pem_private_key_signer, write_dsse_envelope
@@ -61,6 +62,7 @@ class SignCmd(CommandBase):
             default=None,
         )
 
+    @beta_feature('json-signing')
     def _run(self, args: argparse.Namespace) -> int:
         """Sign a JSON file."""
         try:

@@ -55,6 +55,68 @@ def write_ed25519_key_pair(
     return private_key_path, public_key_path
 
 
+@pytest.fixture(autouse=True)
+def enable_json_signing_beta(monkeypatch: MonkeyPatch) -> None:
+    """Enable the JSON signing beta feature for sign/verify command tests."""
+    monkeypatch.setenv('TRESTLE_BETA_FEATURES', 'json-signing')
+
+
+def test_sign_and_verify_require_beta_feature(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Sign and verify commands should be blocked unless the beta feature is enabled."""
+    monkeypatch.delenv('TRESTLE_BETA_FEATURES', raising=False)
+    monkeypatch.setenv('XDG_CONFIG_HOME', str(tmp_path / 'xdg-config'))
+    input_path = tmp_path / 'catalog.json'
+    key_path = tmp_path / 'key.pem'
+    envelope_path = tmp_path / 'catalog.json.dsse'
+
+    monkeypatch.setattr(
+        sys, 'argv', ['trestle', 'sign', '-f', str(input_path), '--key', str(key_path), '-o', str(envelope_path)]
+    )
+    assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(key_path)],
+    )
+    assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
+
+
+def test_sign_and_verify_accept_one_time_beta_flag(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Sign and verify should run with --beta without persisting beta config."""
+    monkeypatch.delenv('TRESTLE_BETA_FEATURES', raising=False)
+    monkeypatch.setenv('XDG_CONFIG_HOME', str(tmp_path / 'xdg-config'))
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    input_path = tmp_path / 'catalog.json'
+    envelope_path = tmp_path / 'catalog.json.dsse'
+    input_path.write_text('{"b":2,"a":1}', encoding=const.FILE_ENCODING)
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        ['trestle', 'sign', '--beta', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'verify',
+            '--beta',
+            '-f',
+            str(input_path),
+            '--signature',
+            str(envelope_path),
+            '--key',
+            str(public_key_path),
+        ],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+    assert not (tmp_path / 'xdg-config').exists()
+
+
 def test_sign_and_verify_round_trip(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Sign should write a DSSE sidecar that verify accepts."""
     private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)

@@ -22,6 +22,7 @@ from typing import Optional
 
 from trestle.common import log
 from trestle.common.err import handle_generic_command_exception
+from trestle.core.beta_features import beta_feature
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.signing import load_dsse_envelope, load_pem_public_key, verify_oscal_provenance_envelope
@@ -58,6 +59,7 @@ class VerifyCmd(CommandBase):
             default=None,
         )
 
+    @beta_feature('json-signing')
     def _run(self, args: argparse.Namespace) -> int:
         """Verify a JSON file."""
         try:

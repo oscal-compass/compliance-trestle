@@ -48,7 +48,18 @@ class BetaFeature:
     deprecation_version: Optional[str] = None
 
 
-BETA_FEATURES: Dict[str, BetaFeature] = {}
+BETA_FEATURES: Dict[str, BetaFeature] = {
+    'json-signing': BetaFeature(
+        name='json-signing',
+        description='Sign and verify JSON artifacts with detached DSSE envelopes.',
+        commands=['trestle sign', 'trestle verify'],
+        since_version='4.0.3',
+        stability='beta',
+        documentation_url='https://oscal-compass.github.io/compliance-trestle/tutorials/cli/#trestle-sign',
+        enabled_by_default=False,
+        deprecation_version=None,
+    )
+}
 
 
 def parse_feature_names(feature_names: str) -> Set[str]:

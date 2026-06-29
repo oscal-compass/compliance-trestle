@@ -598,6 +598,14 @@ references to links, and corresponding links in the backmatter.
 
 Trestle sign writes a detached DSSE envelope for a JSON file. It canonicalizes the JSON using RFC 8785, computes a SHA-256 digest, records that digest in an in-toto Statement, and signs the Statement with a PEM private key.
 
+The sign and verify commands are beta features. Enable them before use:
+
+```bash
+trestle beta enable json-signing
+```
+
+You can also pass `--beta` to `trestle sign` or `trestle verify` to run the beta command one time without writing beta state to config.
+
 Generate an Ed25519 private/public key pair with OpenSSL:
 
 ```bash
