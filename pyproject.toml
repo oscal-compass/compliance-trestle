@@ -313,6 +313,10 @@ relative_files = true
 parallel = true
 concurrency = ["thread", "multiprocessing"]
 sigterm = true
+omit = [
+    "*/tmp*/*.j2",
+    "*/tmp*/*.md.j2",
+]
 
 [tool.semantic_release]
 build_command = """
