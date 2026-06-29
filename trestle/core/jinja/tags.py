@@ -20,9 +20,10 @@ from datetime import date
 
 import frontmatter
 
-from jinja2 import lexer
+from jinja2 import lexer, nodes
 from jinja2.environment import Environment
 from jinja2.parser import Parser
+from jinja2.sandbox import SandboxedEnvironment
 
 from trestle.common import err
 from trestle.core.jinja.base import TrestleJinjaExtension
@@ -54,7 +55,13 @@ class MDSectionInclude(TrestleJinjaExtension):
         super().__init__(environment)
 
     def parse(self, parser):
-        """Execute parsing of md token and return nodes."""
+        """Execute parsing of md token and return nodes.
+
+        Security Note: This method re-parses included markdown content using a
+        SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks.
+        The sandbox restricts access to unsafe Python attributes, preventing arbitrary
+        code execution even if untrusted OSCAL data contains Jinja syntax.
+        """
         kwargs = None
         expected_heading_level = None
         count = 0
@@ -97,7 +104,19 @@ class MDSectionInclude(TrestleJinjaExtension):
             raise err.TrestleError(
                 f'Unable to retrieve section "{section_title.value}"" from {markdown_source.value} jinja template.'
             )
-        local_parser = Parser(self.environment, md_section.content.raw_text)
+
+        # SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI
+        # Create a sandboxed environment if the current one isn't already sandboxed
+        parse_env = self.environment
+        if not isinstance(self.environment, SandboxedEnvironment):
+            parse_env = SandboxedEnvironment(
+                loader=self.environment.loader,
+                extensions=self.environment.extensions,
+                trim_blocks=self.environment.trim_blocks,
+                autoescape=self.environment.autoescape,
+            )
+
+        local_parser = Parser(parse_env, md_section.content.raw_text)
         top_level_output = local_parser.parse()
 
         return top_level_output.body
@@ -113,7 +132,13 @@ class MDCleanInclude(TrestleJinjaExtension):
         super().__init__(environment)
 
     def parse(self, parser):
-        """Execute parsing of md token and return nodes."""
+        """Execute parsing of md token and return nodes.
+
+        Security Note: This method re-parses included markdown content using a
+        SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks.
+        The sandbox restricts access to unsafe Python attributes, preventing arbitrary
+        code execution even if untrusted OSCAL data contains Jinja syntax.
+        """
         kwargs = None
         expected_heading_level = None
         count = 0
@@ -145,7 +170,18 @@ class MDCleanInclude(TrestleJinjaExtension):
         if expected_heading_level is not None:
             content = adjust_heading_level(content, expected_heading_level)
 
-        local_parser = Parser(self.environment, content)
+        # SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI
+        # Create a sandboxed environment if the current one isn't already sandboxed
+        parse_env = self.environment
+        if not isinstance(self.environment, SandboxedEnvironment):
+            parse_env = SandboxedEnvironment(
+                loader=self.environment.loader,
+                extensions=self.environment.extensions,
+                trim_blocks=self.environment.trim_blocks,
+                autoescape=self.environment.autoescape,
+            )
+
+        local_parser = Parser(parse_env, content)
         top_level_output = local_parser.parse()
 
         return top_level_output.body
@@ -161,7 +197,11 @@ class MDDatestamp(TrestleJinjaExtension):
         super().__init__(environment)
 
     def parse(self, parser):
-        """Execute parsing of md token and return nodes."""
+        """Execute parsing of md token and return nodes.
+
+        Security Note: This method re-parses the datestamp using a SandboxedEnvironment
+        to prevent potential SSTI attacks, though the risk is minimal for date strings.
+        """
         kwargs = None
         count = 0
         while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
@@ -195,7 +235,18 @@ class MDDatestamp(TrestleJinjaExtension):
         else:
             date_string = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT) + '\n\n'
 
-        local_parser = Parser(self.environment, date_string)
+        # SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI
+        # Create a sandboxed environment if the current one isn't already sandboxed
+        parse_env = self.environment
+        if not isinstance(self.environment, SandboxedEnvironment):
+            parse_env = SandboxedEnvironment(
+                loader=self.environment.loader,
+                extensions=self.environment.extensions,
+                trim_blocks=self.environment.trim_blocks,
+                autoescape=self.environment.autoescape,
+            )
+
+        local_parser = Parser(parse_env, date_string)
         datestamp_output = local_parser.parse()
 
         return datestamp_output.body

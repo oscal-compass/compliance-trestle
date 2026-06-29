@@ -43,6 +43,7 @@ from trestle.common.list_utils import (
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -108,6 +109,9 @@ class ProfileGenerate(AuthorCommonCommand):
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
 
             markdown_path = trestle_root / args.output
+
+            # Validate output path to prevent path traversal
+            PathSecurityValidator.validate_local_path(markdown_path, trestle_root)
 
             return self.generate_markdown(
                 trestle_root,

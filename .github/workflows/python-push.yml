@@ -17,7 +17,7 @@ jobs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
     steps:
-    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
@@ -52,14 +52,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           ${{ matrix.pip-cache }}
@@ -134,15 +134,15 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         fetch-depth: 0
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           ${{ matrix.pip-cache }}
@@ -194,13 +194,13 @@ jobs:
       with:
         app-id: ${{ secrets.APP_ID }}
         private-key: ${{ secrets.PRIVATE_KEY }}
-    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         submodules: true
         fetch-depth: 0
         token: ${{ steps.app-token.outputs.token }}
     - name: Set up Python ${{ needs.set-versions.outputs.max }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
     - name: Install build tools
@@ -281,7 +281,7 @@ jobs:
 
     - name: Generate SLSA build provenance
       if: steps.release.outputs.released == 'true'
-      uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+      uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
       with:
         subject-path: "dist/*"
 
@@ -318,7 +318,7 @@ jobs:
       with:
         app-id: ${{ secrets.APP_ID }}
         private-key: ${{ secrets.PRIVATE_KEY }}
-    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         submodules: true
         ref: main
