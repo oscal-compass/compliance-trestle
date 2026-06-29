@@ -47,6 +47,7 @@ dependencies = [
     "Jinja2 == 3.1.6",
     "cmarkgfm>=2024.1,<2025.11",
     "orjson",
+    "rfc8785>=0.1.4",
     "requests>=2.32.2",
     "importlib_resources",
 ]
@@ -294,6 +295,10 @@ warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true
+omit = [
+    "*/tmp*/*.j2",
+    "*/tmp*/*.md.j2",
+]
 
 [tool.semantic_release]
 build_command = """
