@@ -17,6 +17,7 @@
 
 import argparse
 import configparser
+import io
 import os
 import pathlib
 from typing import List
@@ -226,14 +227,16 @@ def test_beta_command_help_shows_beta_flag() -> None:
     assert beta_features.BETA_FLAG_HELP in command.parser.format_help()
 
 
-def test_command_plus_docs_rejects_beta_flag_for_non_beta_command(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test CommandPlusDocs rejects beta flag for commands that are not beta-gated."""
-    command = DummyCommandPlusDocs()
+def test_command_plus_docs_warns_beta_flag_for_non_beta_command(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test CommandPlusDocs warns but proceeds when beta flag is passed to a non-beta-gated command."""
+    err_stream = io.StringIO()
+    command = DummyCommandPlusDocs(err=err_stream)
 
     assert (
         command._validate_arguments(argparse.Namespace(beta=True, trestle_root=tmp_trestle_dir))
-        == CmdReturnCodes.INCORRECT_ARGS.value
+        == CmdReturnCodes.SUCCESS.value
     )
+    assert '--beta flag is only effective for beta level commands' in err_stream.getvalue()
 
 
 def test_command_plus_docs_rejects_invalid_oscal_directories(tmp_path: pathlib.Path) -> None:

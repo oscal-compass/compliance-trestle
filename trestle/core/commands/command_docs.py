@@ -57,13 +57,13 @@ class CommandBase(Command):
         return self._validate_beta_argument(args)
 
     def _validate_beta_argument(self, args: argparse.Namespace) -> Optional[int]:
-        """Reject the one-time beta flag on commands that are not beta-gated."""
+        """Warn if the one-time beta flag is passed to a command that is not beta-gated."""
         if self.subcommands or not getattr(args, 'beta', False):
             return None
         if beta_features.get_beta_feature_name(self._run) is not None:
             return None
-        self.err('Error: --beta can only be used with beta commands.')
-        return CmdReturnCodes.INCORRECT_ARGS.value
+        self.err('Warning: --beta flag is only effective for beta level commands.')
+        return None
 
 
 class CommandPlusDocs(CommandBase):

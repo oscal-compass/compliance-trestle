@@ -165,12 +165,12 @@ def test_beta_disable_environment_enabled_feature(monkeypatch: MonkeyPatch) -> N
     execute_command_and_assert('trestle beta disable sample', CmdReturnCodes.COMMAND_ERROR.value, monkeypatch)
 
 
-def test_normal_command_rejects_beta_flag(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:
-    """Test non-beta commands reject the one-time beta flag."""
-    execute_command_and_assert('trestle version --beta', CmdReturnCodes.INCORRECT_ARGS.value, monkeypatch)
+def test_normal_command_warns_beta_flag(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:
+    """Test non-beta commands warn but still succeed when passed the --beta flag."""
+    execute_command_and_assert('trestle version --beta', CmdReturnCodes.SUCCESS.value, monkeypatch)
 
     _, error = capsys.readouterr()
-    assert '--beta can only be used with beta commands' in error
+    assert '--beta flag is only effective for beta level commands' in error
 
 
 def test_normal_command_help_hides_beta_flag(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:

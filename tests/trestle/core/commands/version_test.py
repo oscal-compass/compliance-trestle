@@ -27,8 +27,6 @@ from tests.test_utils import execute_command_and_assert
 from trestle import __version__
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
-from trestle.core import beta_features
-from trestle.core.beta_features import BetaFeature
 from trestle.core.commands.version import VersionCmd
 from trestle.oscal import OSCAL_VERSION
 
@@ -37,37 +35,6 @@ def test_version(monkeypatch: MonkeyPatch) -> None:
     """Test version output."""
     testcmd = 'trestle version'
     execute_command_and_assert(testcmd, 0, monkeypatch)
-
-
-def test_version_shows_no_enabled_beta_features(monkeypatch: MonkeyPatch, capsys) -> None:
-    """Test version output shows beta feature state when none are enabled."""
-    monkeypatch.setattr(beta_features, 'BETA_FEATURES', {})
-    testcmd = 'trestle version'
-
-    execute_command_and_assert(testcmd, 0, monkeypatch)
-
-    output, _ = capsys.readouterr()
-    assert 'Beta features enabled: none' in output
-
-
-def test_version_shows_enabled_beta_features(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:
-    """Test version output shows enabled beta features."""
-    feature = BetaFeature(
-        name='sample',
-        description='Sample beta feature',
-        commands=['trestle sample'],
-        since_version='4.0.0',
-        stability='beta',
-        documentation_url='https://example.com/beta/sample',
-    )
-    monkeypatch.setattr(beta_features, 'BETA_FEATURES', {'sample': feature})
-    assert beta_features.enable_feature('sample', tmp_trestle_dir)
-    testcmd = 'trestle version'
-
-    execute_command_and_assert(testcmd, 0, monkeypatch)
-
-    output, _ = capsys.readouterr()
-    assert 'Beta features enabled: sample' in output
 
 
 def test_oscal_obj_version(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:
@@ -88,7 +55,6 @@ def test_oscal_obj_version(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPat
     execute_command_and_assert(testcmd, 0, monkeypatch)
     output, _ = capsys.readouterr()
     assert f'Trestle version v{__version__} based on OSCAL version {OSCAL_VERSION}' in output
-    assert 'Beta features enabled:' in output
 
     testcmd = 'trestle version -n complex_cat -t catalog'
     execute_command_and_assert(testcmd, 0, monkeypatch)

@@ -202,7 +202,7 @@ trestle beta disable example-feature
 ```
 
 Use `--beta` on a beta command to run it one time without writing beta state to config. Commands that are not beta
-features reject `--beta`.
+features will warn that `--beta` is only effective for beta level commands, but will otherwise proceed normally.
 
 When the current directory is inside a trestle workspace, beta feature state is stored in `.trestle/config.ini`.
 Outside a workspace, trestle uses the user-level beta config file:

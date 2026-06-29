@@ -51,7 +51,7 @@ class ExampleCmd(CommandBase):
 
 When the feature is disabled, the decorator returns a command error and tells the user how to enable the feature.
 The decorator also allows `--beta` to run the beta command one time without writing config. Commands without the
-decorator reject `--beta`.
+decorator will warn that `--beta` is only effective for beta level commands, but will otherwise proceed normally.
 
 ## Configuration
 
