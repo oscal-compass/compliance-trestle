@@ -14,12 +14,14 @@
 # limitations under the License.
 """Starting point for the Trestle CLI."""
 
+import argparse
 import logging
 import pathlib
 
 from trestle.common import const, log
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.author.command import AuthorCmd
+from trestle.core.commands.beta import BetaCmd
 from trestle.core.commands.canonicalize import CanonicalizeCmd
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -47,6 +49,7 @@ class Trestle(CommandBase):
     subcommands = [
         AssembleCmd,
         AuthorCmd,
+        BetaCmd,
         CanonicalizeCmd,
         CreateCmd,
         DescribeCmd,
@@ -74,6 +77,7 @@ class Trestle(CommandBase):
 
     def _init_arguments(self) -> None:
         self.add_argument('-v', '--verbose', help=const.DISPLAY_VERBOSE_OUTPUT, action='count', default=0)
+        self.add_argument('--beta', help=argparse.SUPPRESS, action='store_true')
         self.add_argument(
             '-tr', '--trestle-root', help='Path of trestle root dir', type=pathlib.Path, default=pathlib.Path.cwd()
         )

@@ -5,12 +5,13 @@ description: An introductory tutorial into trestle's CLI and OSCAL use cases
 
 # trestle CLI Overview and OSCAL usecases
 
-The trestle CLI has four primary use cases:
+The trestle CLI has five primary use cases:
 
 - Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle split`, `trestle merge`.
 - Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
 - Allow governance of markdown documents so they conform to specific style or structure requirements.
 - Canonicalize JSON documents with `trestle canonicalize`. See [Canonicalizing JSON documents](canonicalization.md).
+- Manage experimental commands with `trestle beta`.
 
 To support each of these use cases trestle creates an opinionated directory structure to manage governed documents.
 
@@ -150,6 +151,7 @@ This command will return the current version of Trestle and OSCAL it is using.
 Running `trestle version` will return:
 
 > Trestle version v3.x.x based on OSCAL version 1.1.2
+> Beta features enabled: none
 
 It can also be used to retrieve the metadata version of the OSCAL object:
 
@@ -178,6 +180,34 @@ It can also be used to retrieve the metadata version of the OSCAL object:
 Running `trestle version -n nist -t catalog` will return:
 
 > Version of OSCAL object of nist catalog is: 1.1.2
+
+## `trestle beta`
+
+This command manages experimental features that are available for early testing. Beta features are opt-in and may change
+before they become stable.
+
+Use `trestle beta query` to list registered beta features and their current status. Use
+`trestle beta query --verbose` for descriptions, commands, and documentation links.
+
+```bash
+trestle beta query
+trestle beta query --verbose
+```
+
+Use `trestle beta enable <feature>` and `trestle beta disable <feature>` to manage a feature.
+
+```bash
+trestle beta enable example-feature
+trestle beta disable example-feature
+```
+
+Use `--beta` on a beta command to run it one time without writing beta state to config. Commands that are not beta
+features will warn that `--beta` is only effective for beta level commands, but will otherwise proceed normally.
+
+When the current directory is inside a trestle workspace, beta feature state is stored in `.trestle/config.ini`.
+Outside a workspace, trestle uses the user-level beta config file:
+`$XDG_CONFIG_HOME/trestle/beta.ini`, or `~/.config/trestle/beta.ini` when `XDG_CONFIG_HOME` is not set. On Windows,
+the file is `%APPDATA%\trestle\beta.ini`.
 
 ## `trestle init`
 
