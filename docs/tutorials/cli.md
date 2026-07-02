@@ -5,12 +5,14 @@ description: An introductory tutorial into trestle's CLI and OSCAL use cases
 
 # trestle CLI Overview and OSCAL usecases
 
-The trestle CLI has four primary use cases:
+The trestle CLI has six primary use cases:
 
 - Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle split`, `trestle merge`.
 - Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
 - Allow governance of markdown documents so they conform to specific style or structure requirements.
 - Canonicalize JSON documents with `trestle canonicalize`. See [Canonicalizing JSON documents](canonicalization.md).
+- Manage experimental commands with `trestle beta`.
+- Sign and verify JSON artifacts with detached DSSE envelopes.
 
 To support each of these use cases trestle creates an opinionated directory structure to manage governed documents.
 
@@ -150,6 +152,7 @@ This command will return the current version of Trestle and OSCAL it is using.
 Running `trestle version` will return:
 
 > Trestle version v3.x.x based on OSCAL version 1.1.2
+> Beta features enabled: none
 
 It can also be used to retrieve the metadata version of the OSCAL object:
 
@@ -178,6 +181,34 @@ It can also be used to retrieve the metadata version of the OSCAL object:
 Running `trestle version -n nist -t catalog` will return:
 
 > Version of OSCAL object of nist catalog is: 1.1.2
+
+## `trestle beta`
+
+This command manages experimental features that are available for early testing. Beta features are opt-in and may change
+before they become stable.
+
+Use `trestle beta query` to list registered beta features and their current status. Use
+`trestle beta query --verbose` for descriptions, commands, and documentation links.
+
+```bash
+trestle beta query
+trestle beta query --verbose
+```
+
+Use `trestle beta enable <feature>` and `trestle beta disable <feature>` to manage a feature.
+
+```bash
+trestle beta enable example-feature
+trestle beta disable example-feature
+```
+
+Use `--beta` on a beta command to run it one time without writing beta state to config. Commands that are not beta
+features will warn that `--beta` is only effective for beta level commands, but will otherwise proceed normally.
+
+When the current directory is inside a trestle workspace, beta feature state is stored in `.trestle/config.ini`.
+Outside a workspace, trestle uses the user-level beta config file:
+`$XDG_CONFIG_HOME/trestle/beta.ini`, or `~/.config/trestle/beta.ini` when `XDG_CONFIG_HOME` is not set. On Windows,
+the file is `%APPDATA%\trestle\beta.ini`.
 
 ## `trestle init`
 
@@ -562,6 +593,68 @@ By default validate will display warning messages and a message indicating the f
 
 The links validator is special because it always returns success that the file is valid - but it will list any inconsistencies it finds between the
 references to links, and corresponding links in the backmatter.
+
+## `trestle sign`
+
+Trestle sign writes a detached DSSE envelope for a JSON file. It canonicalizes the JSON using RFC 8785, computes a SHA-256 digest, records that digest in an in-toto Statement, and signs the Statement with a PEM private key.
+
+The sign and verify commands are beta features. Enable them before use:
+
+```bash
+trestle beta enable json-signing
+```
+
+You can also pass `--beta` to `trestle sign` or `trestle verify` to run the beta command one time without writing beta state to config.
+
+Generate an Ed25519 private/public key pair with OpenSSL:
+
+```bash
+openssl genpkey -algorithm ed25519 -out private.pem
+openssl pkey -in private.pem -pubout -out public.pem
+chmod 600 private.pem
+```
+
+The private key is used for signing. Keep it secret. The public key can be shared with users or systems that need to verify signatures.
+
+```bash
+trestle sign \
+  -f catalog.json \
+  --key private.pem \
+  -o catalog.json.dsse
+```
+
+For an encrypted private key, use `--key-password-env`. The option names an environment variable that contains the password, so the password is not passed as a command-line argument.
+
+```bash
+export TRESTLE_KEY_PASSWORD='replace-with-your-password'
+openssl genpkey -algorithm ed25519 -aes-256-cbc -pass env:TRESTLE_KEY_PASSWORD -out private-encrypted.pem
+openssl pkey -in private-encrypted.pem -passin env:TRESTLE_KEY_PASSWORD -pubout -out public.pem
+chmod 600 private-encrypted.pem
+trestle sign \
+  -f catalog.json \
+  --key private-encrypted.pem \
+  --key-password-env TRESTLE_KEY_PASSWORD \
+  -o catalog.json.dsse
+```
+
+RSA PEM keys may also be used.
+
+The `--subject-name` option records a subject name other than the input file name. Verification must use the same subject name.
+
+The signed Statement uses the [OSCAL signing predicate](../predicates/oscal-signing/v1.md).
+
+## `trestle verify`
+
+Trestle verify checks a JSON file against a detached DSSE envelope and a PEM public key. Verification checks the DSSE signature, the predicate fields, and the SHA-256 digest of the RFC 8785 canonical JSON bytes.
+
+```bash
+trestle verify \
+  -f catalog.json \
+  --signature catalog.json.dsse \
+  --key public.pem
+```
+
+If signing used `--subject-name`, pass the same value during verification.
 
 ## `trestle tasks`
 
