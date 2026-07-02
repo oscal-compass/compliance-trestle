@@ -2,6 +2,44 @@
 
 <!-- version list -->
 
+## v4.2.0 (2026-07-02)
+
+### Bug Fixes
+
+- --beta to give warning & not part of version
+  ([#2267](https://github.com/oscal-compass/compliance-trestle/pull/2267),
+  [`9199eb6`](https://github.com/oscal-compass/compliance-trestle/commit/9199eb683cadf1912bc4e13a54096f4ea56e0e13))
+
+- Address signing and verification review feedback
+  ([#2253](https://github.com/oscal-compass/compliance-trestle/pull/2253),
+  [`79606a2`](https://github.com/oscal-compass/compliance-trestle/commit/79606a2f40957f68abb6a178e7c03bac31ab5dc0))
+
+- Gate signing commands behind beta feature
+  ([#2253](https://github.com/oscal-compass/compliance-trestle/pull/2253),
+  [`79606a2`](https://github.com/oscal-compass/compliance-trestle/commit/79606a2f40957f68abb6a178e7c03bac31ab5dc0))
+
+- **deps**: Bump actions/attest from 4.1.0 to 4.1.1
+  ([#2276](https://github.com/oscal-compass/compliance-trestle/pull/2276),
+  [`2529230`](https://github.com/oscal-compass/compliance-trestle/commit/2529230b9d358a35bfb90fa98ab9826fd01e9d41))
+
+- **deps**: Bump actions/cache from 5.0.5 to 6.1.0
+  ([#2275](https://github.com/oscal-compass/compliance-trestle/pull/2275),
+  [`7c5d951`](https://github.com/oscal-compass/compliance-trestle/commit/7c5d951d2e3bf49fd961146f1fa58c16d6a8046b))
+
+- **deps**: Bump actions/setup-python from 6.2.0 to 6.3.0
+  ([#2274](https://github.com/oscal-compass/compliance-trestle/pull/2274),
+  [`d16ac11`](https://github.com/oscal-compass/compliance-trestle/commit/d16ac115f2a481416351f7c7be4c3346b448d393))
+
+### Features
+
+- Add OSCAL signing and verification flow
+  ([#2253](https://github.com/oscal-compass/compliance-trestle/pull/2253),
+  [`79606a2`](https://github.com/oscal-compass/compliance-trestle/commit/79606a2f40957f68abb6a178e7c03bac31ab5dc0))
+
+- Add trestle beta command ([#2267](https://github.com/oscal-compass/compliance-trestle/pull/2267),
+  [`9199eb6`](https://github.com/oscal-compass/compliance-trestle/commit/9199eb683cadf1912bc4e13a54096f4ea56e0e13))
+
+
 ## v4.1.0 (2026-06-29)
 
 ### Bug Fixes
