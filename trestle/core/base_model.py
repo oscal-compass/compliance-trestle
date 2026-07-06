@@ -108,19 +108,16 @@ class OscalBaseModel(TrestleBaseModel):
     """
 
     model_config = ConfigDict(
-        # Use orjson for JSON parsing
-        # Note: In Pydantic v2, json_loads is not directly configurable in ConfigDict
-        # We'll handle this in the serialization methods
-        # Pydantic v2: json_encoders is deprecated, use model_serializer or mode='json' in model_dump
-        # Custom datetime serialization is handled in oscal_serialize_json_bytes method
-        # Allow population by field name (populate_by_name in v2)
+        # Allow population by field name
         populate_by_name=True,
-        # Enforce strict schema (extra='forbid' in v2)
+        # Enforce strict schema
         extra='forbid',
         # Validate on assignment of variables to ensure no escapes
         validate_assignment=True,
-        # Configure datetime serialization to use +00:00 instead of Z
+        # Configure timedelta serialization to ISO 8601
         ser_json_timedelta='iso8601',
+        # Note: orjson is used for JSON *output* only (see oscal_serialize_json_bytes).
+        # Pydantic v2 removed json_loads from ConfigDict; parsing is handled by pydantic-core.
     )
 
     @field_serializer('*', mode='wrap', when_used='json')
