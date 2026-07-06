@@ -370,3 +370,43 @@ def test_as_bool(tmp_path: pathlib.Path) -> None:
     assert as_bool('true')
     assert not as_bool('false')
     assert not as_bool(None)
+
+
+def test_get_root_type_name_list() -> None:
+    """list[T] and List[T] origins both return 'List'."""
+    from typing import List
+    from trestle.common.type_utils import _get_root_type_name
+    from trestle.oscal.common import Role
+
+    assert _get_root_type_name(list[Role]) == 'List'
+    assert _get_root_type_name(List[Role]) == 'List'
+
+
+def test_get_root_type_name_dict() -> None:
+    """dict[K, V] and Dict[K, V] origins both return 'Dict'."""
+    from typing import Dict
+    from trestle.common.type_utils import _get_root_type_name
+    from trestle.oscal.common import Role
+
+    assert _get_root_type_name(dict[str, Role]) == 'Dict'
+    assert _get_root_type_name(Dict[str, Role]) == 'Dict'
+
+
+def test_get_root_type_name_plain_type() -> None:
+    """Non-generic types return their __name__ string."""
+    from trestle.common.type_utils import _get_root_type_name
+    from trestle.oscal.common import Role
+
+    assert _get_root_type_name(Role) == 'Role'
+    assert _get_root_type_name(str) == 'str'
+    assert _get_root_type_name(int) == 'int'
+
+
+def test_get_root_type_name_other_generic_returns_none() -> None:
+    """Generic types that are neither list nor dict return None."""
+    from typing import Optional
+    from trestle.common.type_utils import _get_root_type_name
+    from trestle.oscal.common import Role
+
+    # Optional[T] has origin Union, not list or dict
+    assert _get_root_type_name(Optional[Role]) is None

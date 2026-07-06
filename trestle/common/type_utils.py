@@ -64,11 +64,25 @@ def _unwrap_optional_type(singular_type: Type[Any]) -> Type[Any]:
 
 
 def _get_root_type_name(singular_type: Type[Any]) -> Optional[str]:
-    """Get the root type name from a singular type."""
+    """Return a sentinel string identifying the collection kind of *singular_type*.
+
+    Returns 'List' when the type is a list (e.g. ``list[Role]``), 'Dict' when it
+    is a dict, and ``None`` for non-generic or unrecognized types.
+
+    Callers compare the return value against the string literals 'List' and 'Dict'
+    to decide whether a RootModel wraps a collection.  Using identity checks on the
+    origin rather than ``origin.__name__.capitalize()`` avoids relying on CPython's
+    internal string representation of built-in types.
+    """
     origin = typing_get_origin(singular_type)
+    if origin is list:
+        return 'List'
+    if origin is dict:
+        return 'Dict'
     if origin is not None:
-        return origin.__name__.capitalize()
-    # For non-generic types, get the type name
+        # Non-list/dict generic — not a collection kind we handle
+        return None
+    # For non-generic types, return the type name as-is (e.g. 'str', 'Role')
     return getattr(singular_type, '__name__', None)
 
 
