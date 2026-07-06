@@ -25,6 +25,7 @@ from ruamel.yaml import YAML
 
 import trestle.common.const as const
 from trestle.common import common_types, str_utils, type_utils as utils
+from trestle.common.type_utils import is_union_type
 import trestle.common.err as err
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.model_utils import _get_model_type_from_union
@@ -156,9 +157,7 @@ class ElementPath:
             raise TrestleError(f'Unable to resolve model type for element path segment "{current_element_str}"')
         if utils.is_collection_field_type(prev_model):
             origin = utils.get_origin(prev_model)
-            if str(origin) == "<class 'types.UnionType'>" or str(origin) == 'typing.Union':
-                import typing_extensions
-
+            if is_union_type(origin):
                 non_none_args = [arg for arg in typing_extensions.get_args(prev_model) if arg is not type(None)]
                 if len(non_none_args) == 1:
                     return non_none_args[0]

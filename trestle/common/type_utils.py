@@ -15,6 +15,7 @@
 """Utilities for dealing with models."""
 
 import logging
+import types
 from typing import Any, Dict, List, Optional, Tuple, Type, Union, get_args, get_origin as typing_get_origin
 
 import trestle.common.err as err
@@ -25,8 +26,21 @@ import typing_extensions
 
 logger = logging.getLogger(__name__)
 
-# Constant for Python 3.10+ union type string representation
-_UNION_TYPE_STR = "<class 'types.UnionType'>"
+
+def is_union_type(origin: Any) -> bool:
+    """Return True if *origin* is any form of Union (typing.Union or Python 3.10+ X | Y).
+
+    Replaces the fragile string comparison ``str(origin) == "<class 'types.UnionType'>"``
+    with identity checks that are not tied to CPython string internals.
+
+    Background:
+        - ``get_origin(Union[A, B])``  → ``typing.Union``  (the special form)
+        - ``get_origin(A | B)``        → ``types.UnionType`` (the class, Python 3.10+)
+    """
+    if origin is Union:
+        return True
+    # types.UnionType is available on Python 3.10+; guard with hasattr for 3.9 compatibility.
+    return origin is getattr(types, 'UnionType', None)
 
 
 def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
@@ -42,7 +56,7 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
 def _unwrap_optional_type(singular_type: Type[Any]) -> Type[Any]:
     """Unwrap Optional[T] to get T."""
     origin = typing_get_origin(singular_type)
-    if str(origin) == _UNION_TYPE_STR or origin == Union:
+    if is_union_type(origin):
         union_args = [arg for arg in typing_extensions.get_args(singular_type) if arg is not type(None)]
         if len(union_args) == 1:
             return union_args[0]
@@ -109,7 +123,7 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
         return True
 
     # Optional[list[T]] / Union[list[T], None] in Pydantic v2 annotations
-    if str(origin_type) == _UNION_TYPE_STR or origin_type == Union:
+    if is_union_type(origin_type):
         union_args = [arg for arg in typing_extensions.get_args(field_type) if arg is not type(None)]
         return len(union_args) == 1 and is_collection_field_type(union_args[0])
 
@@ -129,7 +143,7 @@ def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, 
     """
     try:
         origin_type = get_origin(collection_field_type)
-        if str(origin_type) == _UNION_TYPE_STR or origin_type == Union:
+        if is_union_type(origin_type):
             union_args = [arg for arg in typing_extensions.get_args(collection_field_type) if arg is not type(None)]
             if len(union_args) == 1:
                 return get_inner_type(union_args[0])
