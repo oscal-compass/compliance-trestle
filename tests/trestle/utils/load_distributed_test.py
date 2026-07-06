@@ -146,3 +146,35 @@ def test_get_primary_model_instance_yaml(tmp_path):
     result = ModelUtils._get_primary_model_instance(AwareDatetime, yaml_file)
 
     assert result == '2024-06-15T12:00:00+00:00'
+
+
+def test_pluralized_alias_to_singular_irregular() -> None:
+    """'props' maps to its irregular singular 'property'."""
+    from trestle.common.model_utils import _pluralized_alias_to_singular
+
+    assert _pluralized_alias_to_singular('props') == 'property'
+
+
+def test_pluralized_alias_to_singular_ies() -> None:
+    """Aliases ending in '-ies' have the suffix replaced with '-y'."""
+    from trestle.common.model_utils import _pluralized_alias_to_singular
+
+    assert _pluralized_alias_to_singular('parties') == 'party'
+    assert _pluralized_alias_to_singular('capabilities') == 'capability'
+
+
+def test_pluralized_alias_to_singular_s() -> None:
+    """Aliases ending in 's' have the trailing 's' stripped."""
+    from trestle.common.model_utils import _pluralized_alias_to_singular
+
+    assert _pluralized_alias_to_singular('role-ids') == 'role-id'
+    assert _pluralized_alias_to_singular('addr-lines') == 'addr-line'
+    assert _pluralized_alias_to_singular('values') == 'value'
+
+
+def test_pluralized_alias_to_singular_no_suffix() -> None:
+    """Aliases with no recognized plural suffix are returned unchanged."""
+    from trestle.common.model_utils import _pluralized_alias_to_singular
+
+    assert _pluralized_alias_to_singular('select') == 'select'
+    assert _pluralized_alias_to_singular('method') == 'method'

@@ -117,6 +117,33 @@ def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] 
     return model_type
 
 
+def _pluralized_alias_to_singular(alias: str) -> str:
+    """Convert a pluralized JSON field alias to its singular form.
+
+    This is a last-resort fallback used only for OSCAL collection fields whose inner
+    type is not an OscalBaseModel subclass (e.g. plain strings, UUIDs, enums).
+    It covers every such field present in the OSCAL 1.x schemas using standard
+    American English pluralization rules:
+
+    Known OSCAL fields that reach this path:
+      'props'                       -> 'property'   (irregular)
+      'addr-lines', 'role-ids', ... -> strip trailing 's'
+      'email-addresses'             -> strip trailing 's'
+      'functions-performed'         -> strip trailing 's' (no plural suffix variant)
+      (no '-ies' endings appear in current OSCAL schemas, but the rule is kept for safety)
+
+    Assumption: OSCAL field aliases follow American English pluralization. If new fields
+    are added that violate this assumption, this function must be updated explicitly.
+    """
+    if alias == 'props':
+        return 'property'
+    if alias.endswith('ies'):
+        return alias[:-3] + 'y'
+    if alias.endswith('s'):
+        return alias[:-1]
+    return alias
+
+
 def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: str, alias_path: str) -> str:
     """Resolve the singular alias for a collection item field."""
     try:
@@ -132,8 +159,8 @@ def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: st
 
         if utils.is_collection_field_type(outer_type):
             inner_type = utils.get_inner_type(outer_type)
-            # For Union types, just pick the first variant - they all have the same base alias
-            # e.g., Group1 and Group2 both become 'group' after stripping digits
+            # For Union types, just pick the first variant — they all share the same base alias.
+            # e.g., Group1 and Group2 both become 'group' after stripping the trailing digit.
             inner_type = _get_model_type_from_union(inner_type, None)
             if isinstance(inner_type, type) and issubclass(inner_type, OscalBaseModel):
                 return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
@@ -142,13 +169,9 @@ def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: st
         if isinstance(singular_type, type) and issubclass(singular_type, OscalBaseModel):
             return str_utils.classname_to_alias(singular_type.__name__, AliasMode.JSON)
 
-        if field_alias == 'props':
-            return 'property'
-        if field_alias.endswith('ies'):
-            return field_alias[:-3] + 'y'
-        if field_alias.endswith('s'):
-            return field_alias[:-1]
-        return field_alias
+        # Last resort: the field holds a collection of plain scalars (strings, UUIDs, enums).
+        # Use English pluralization rules to derive the singular alias.
+        return _pluralized_alias_to_singular(field_alias)
     except Exception as e:
         raise err.TrestleError(f'Error in json path {alias_path}: {e}') from e
 
@@ -951,11 +974,7 @@ class ModelUtils:
                             return _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
                 except Exception:
                     pass
-            if last_alias.endswith('ies'):
-                return last_alias[:-3] + 'y'
-            if last_alias.endswith('s'):
-                return last_alias[:-1]
-            return last_alias
+            return _pluralized_alias_to_singular(last_alias)
 
         parent_model_type = model_types[-2]
         singular_alias = _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
