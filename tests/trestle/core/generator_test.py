@@ -268,3 +268,45 @@ def test_generate_sample_value_enum_subclass() -> None:
 
     result = gens.generate_sample_value_by_type(TestEnum, 'test_field')
     assert result == TestEnum.VALUE1
+
+
+def test_is_constrained_string_plain_str() -> None:
+    """Plain str is recognised as a constrained string."""
+    assert gens._is_constrained_string(str)
+
+
+def test_is_constrained_string_annotated_str() -> None:
+    """Annotated[str, StringConstraints(...)] — the Pydantic v2 form of constr() — is recognised."""
+    from typing import Annotated
+    from pydantic import StringConstraints, constr
+
+    # constr() expands to Annotated[str, StringConstraints(...)] in Pydantic v2
+    assert gens._is_constrained_string(constr(pattern=r'^[0-9]+$'))
+    assert gens._is_constrained_string(Annotated[str, StringConstraints(min_length=1)])
+
+
+def test_is_constrained_string_false_cases() -> None:
+    """Non-string types must not be flagged as constrained strings."""
+    from typing import Annotated
+    from pydantic import StringConstraints
+
+    assert not gens._is_constrained_string(int)
+    assert not gens._is_constrained_string(float)
+    assert not gens._is_constrained_string(list)
+    # Annotated[int, ...] must NOT match even though origin is Annotated
+    assert not gens._is_constrained_string(Annotated[int, StringConstraints()])
+
+
+def test_generate_sample_value_constr_type() -> None:
+    """generate_sample_value_by_type routes constr() types through _handle_constrained_string."""
+    from pydantic import constr
+
+    uuid_pattern = constr(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )
+    result = gens.generate_sample_value_by_type(uuid_pattern, 'some_uuid')
+    assert result == const.SAMPLE_UUID_STR
+
+    plain = constr(min_length=1)
+    result = gens.generate_sample_value_by_type(plain, 'some_field')
+    assert result == const.REPLACE_ME

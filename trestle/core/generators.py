@@ -21,7 +21,7 @@ import typing
 import uuid
 from datetime import date, datetime
 from enum import Enum
-from typing import Any, Dict, ForwardRef, List, Type, TypeVar, Union, cast
+from typing import Annotated, Any, Dict, ForwardRef, List, Type, TypeVar, Union, cast, get_args, get_origin
 
 from pydantic import constr, EmailStr, AnyUrl, AwareDatetime, RootModel
 from pydantic_core import PydanticUndefined
@@ -200,15 +200,19 @@ def _handle_constrained_string(type_: Any, field_name: str) -> str:
 
 
 def _is_constrained_string(type_: Any) -> bool:
-    """Check if type is a constrained string."""
-    return (
-        type_ is str
-        or (hasattr(type_, '__name__') and 'constr' in str(type_).lower())
-        or (
-            hasattr(type_, '__metadata__')
-            and any('pattern' in str(m).lower() for m in getattr(type_, '__metadata__', []))
-        )
-    )
+    """Return True if *type_* is a constrained string (Annotated[str, StringConstraints(...)]).
+
+    In Pydantic v2, ``constr(pattern=...)`` expands to ``Annotated[str, StringConstraints(...)]``.
+    We identify this by checking that the type's origin is ``Annotated`` and its first argument
+    is ``str`` — no fragile string-repr matching required.
+    """
+    if type_ is str:
+        return True
+    # Annotated[str, ...] — the form produced by constr() in Pydantic v2
+    if get_origin(type_) is Annotated:
+        args = get_args(type_)
+        return bool(args) and args[0] is str
+    return False
 
 
 def _handle_special_types(type_: Any, field_name: str) -> str | dict | None:
