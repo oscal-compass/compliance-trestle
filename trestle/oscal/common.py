@@ -108,7 +108,7 @@ class Base64(OscalBaseModel):
 
 
 class Base64Datatype(RootModel[constr(pattern=r'^[0-9A-Za-z+/]+={0,2}$')]):
-    root: constr(pattern=r'^[0-9A-Za-z+/]+={0,2}$') = Field(..., description='Binary data encoded using the Base 64 encoding algorithm as defined by RFC4648.')
+    root: constr(pattern=r'^[0-9A-Za-z+/]+={0,2}$') = Field(..., description='Binary data encoded using the Base 64 encoding algorithm as defined by RFC4648.', json_schema_extra={'contentEncoding': 'base64'})
 
 
 class DateTimeWithTimezoneDatatype(RootModel[AwareDatetime]):

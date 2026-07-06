@@ -210,26 +210,6 @@ oscal_validator_code = """
 """
 
 
-def add_union_validators(class_name, discriminator_field, other_variant):
-    """
-    Generate smart Union validator code for OSCAL 1.2.0 Union types.
-
-    NOTE: Disabled for Pydantic v2. With 'from __future__ import annotations',
-    Pydantic v2 handles Union types automatically without custom validators.
-    Custom validators were causing infinite recursion issues.
-
-    Args:
-        class_name: Name of the current class (e.g., 'Group1', 'Parameter1')
-        discriminator_field: Field that indicates this variant (e.g., 'groups', 'values')
-        other_variant: Name of the other Union variant (e.g., 'Group2', 'Parameter2')
-
-    Returns:
-        Empty string (validators disabled)
-    """
-    # Return empty string - Pydantic v2 handles Unions automatically
-    return ''
-
-
 class RelOrder:
     """Capture relative location of each class in list to its refs and deps."""
 
@@ -931,27 +911,17 @@ def write_oscal(classes, forward_refs, fstem):
 
             out_file.writelines('\n'.join(lines_to_write) + '\n')
 
-            # Add smart Union validators for Group1 and Group2 in catalog/profile
+            # Add Group Union alias after both Group1 and Group2 are defined
             if c.name == 'Group1' and fstem in ['catalog', 'profile']:
-                out_file.write(add_union_validators('Group1', 'groups', 'Group2'))
                 seen_group1 = True
-                # Add Group Union alias after both Group1 and Group2 are defined
                 if seen_group2:
                     out_file.write('# Union alias for Group variants\n')
                     out_file.write('Group = Union[Group1, Group2]\n\n\n')
             if c.name == 'Group2' and fstem in ['catalog', 'profile']:
-                out_file.write(add_union_validators('Group2', 'controls', 'Group1'))
                 seen_group2 = True
-                # Add Group Union alias after both Group1 and Group2 are defined
                 if seen_group1:
                     out_file.write('# Union alias for Group variants\n')
                     out_file.write('Group = Union[Group1, Group2]\n\n\n')
-
-            # Add smart Union validators for Parameter1 and Parameter2 in common
-            if c.name == 'Parameter1' and is_common:
-                out_file.write(add_union_validators('Parameter1', 'values', 'Parameter2'))
-            if c.name == 'Parameter2' and is_common:
-                out_file.write(add_union_validators('Parameter2', 'select', 'Parameter1'))
 
             # add special validator for OscalVersion
             if c.name == 'OscalVersion':

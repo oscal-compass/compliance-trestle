@@ -59,8 +59,8 @@ class Merge1(OscalBaseModel):
     model_config = ConfigDict(
         extra='forbid',
     )
-    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', title='Combination Rule')
-    flat: dict[str, Any] = Field(..., description='Directs that controls appear without any grouping structure.', title='Flat Without Grouping')
+    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', max_length=0, title='Combination Rule')
+    flat: dict[str, Any] = Field(..., description='Directs that controls appear without any grouping structure.', max_length=0, title='Flat Without Grouping')
 
 
 class PositionValidValues(Enum):
@@ -260,7 +260,7 @@ class Merge2(OscalBaseModel):
     model_config = ConfigDict(
         extra='forbid',
     )
-    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', title='Combination Rule')
+    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', max_length=0, title='Combination Rule')
     as_is: BooleanDatatype = Field(..., alias='as-is', description='Indicates that the controls selected should retain their original grouping as defined in the import source.', title='Group As-Is')
 
 
@@ -272,7 +272,7 @@ class Merge3(OscalBaseModel):
     model_config = ConfigDict(
         extra='forbid',
     )
-    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', title='Combination Rule')
+    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', max_length=0, title='Combination Rule')
     custom: Custom = Field(..., description='Provides an alternate grouping structure that selected controls will be placed in.', title='Custom Grouping')
 
 
