@@ -16,14 +16,17 @@
 """Common utilities for the OSCAL models and directories."""
 
 import importlib
+import json
 import logging
 import pathlib
 import re
+import types
 import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union, get_args, get_origin
-import types
+
+from ruamel.yaml import YAML
 
 from pydantic import BaseModel, ConfigDict, RootModel, create_model
 
@@ -183,17 +186,15 @@ class ModelUtils:
         else:
             # For Pydantic built-in types (e.g., AwareDatetime), read the JSON/YAML file directly
             # Split files store fields as {"field-name": value}, so extract just the value
-            import json
-            import yaml
-
             content_type = FileContentType.path_to_content_type(abs_path)
             data = None
             if content_type == FileContentType.JSON:
                 with abs_path.open('r', encoding='utf8') as f:
                     data = json.load(f)
             elif content_type == FileContentType.YAML:
+                _yaml = YAML(typ='safe')
                 with abs_path.open('r', encoding='utf8') as f:
-                    data = yaml.safe_load(f)
+                    data = _yaml.load(f)
 
             # Split files for simple fields are stored as {"field-name": value}
             # Extract just the value for Pydantic built-in types
