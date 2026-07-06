@@ -23,7 +23,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Annotated, Any, Dict, ForwardRef, List, Type, TypeVar, Union, cast, get_args, get_origin
 
-from pydantic import constr, EmailStr, AnyUrl, AwareDatetime, RootModel
+from pydantic import EmailStr, AnyUrl, AwareDatetime, RootModel
 from pydantic_core import PydanticUndefined
 
 import trestle.common.const as const
