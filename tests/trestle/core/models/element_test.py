@@ -170,3 +170,50 @@ def test_element_str(sample_nist_component_def):
     """Test for magic method str."""
     element = Element(sample_nist_component_def)
     assert str(element) == 'ComponentDefinition'
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/models/elements.py
+# ---------------------------------------------------------------------------
+
+
+def test_element_get_at_invalid_parent_path(sample_nist_component_def: component.ComponentDefinition):
+    """Element.get_at line 504 — invalid parent path raises TrestleNotFoundError."""
+    from trestle.common.err import TrestleNotFoundError
+
+    element = Element(sample_nist_component_def)
+    parent_path = ElementPath('component-definition.nonexistent')
+    element_path = ElementPath('nonexistent.title', parent_path)
+    with pytest.raises(TrestleNotFoundError):
+        element.get_at(element_path)
+
+
+def test_element_get_sub_element_obj_wraps_element(sample_nist_component_def: component.ComponentDefinition):
+    """Element._get_sub_element_obj line 542 — Element input is unwrapped to get()."""
+    element = Element(sample_nist_component_def)
+    sub = Element(sample_nist_component_def.metadata)
+    result = element._get_sub_element_obj(sub)
+    assert result == sample_nist_component_def.metadata
+
+
+def test_element_get_sub_element_obj_disallowed_type(sample_nist_component_def: component.ComponentDefinition):
+    """Element._get_sub_element_obj line 536 — disallowed type raises TrestleError."""
+    element = Element(sample_nist_component_def)
+    with pytest.raises(TrestleError):
+        element._get_sub_element_obj(42)
+
+
+def test_element_set_at_invalid_preceding_element(sample_nist_component_def: component.ComponentDefinition):
+    """Element.set_at line 580 — invalid sub element path raises TrestleError."""
+    # To hit line 580 we need a path whose preceding element exists but resolves to None.
+    # Use a path ending in a non-existent attribute so get_preceding_element returns None.
+    metadata_el = Element(sample_nist_component_def.metadata)
+    with pytest.raises(TrestleError):
+        metadata_el.set_at(ElementPath('metadata.nonexistent_field'), sample_nist_component_def.metadata)
+
+
+def test_element_to_json_ignore_wrapper(sample_nist_component_def: component.ComponentDefinition):
+    """Element.to_json line 619 — IGNORE_WRAPPER_ALIAS path uses unwrapped serialization."""
+    element = Element(sample_nist_component_def, Element.IGNORE_WRAPPER_ALIAS)
+    json_str = element.to_json()
+    assert 'metadata' in json_str

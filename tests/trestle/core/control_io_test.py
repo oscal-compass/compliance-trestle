@@ -22,6 +22,7 @@ import pytest
 
 import tests.test_utils as test_utils
 
+import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
@@ -567,3 +568,128 @@ def test_delete_prop(sample_component_definition: comp.ComponentDefinition) -> N
     assert component.props[0].name == 'prop_1'
     ControlInterface._delete_prop(component, 'prop_1')
     assert component.props is None
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/control_reader.py
+# ---------------------------------------------------------------------------
+
+# Markdown for read_control with no title (parsed successfully but has 0 level-1 headers)
+_no_title_md = """---
+x-trestle-global:
+  sort-id: ac-01
+---
+
+just body text without a level-1 heading
+"""
+
+# Markdown for read_editable_content with an # Editable Content section and a known sub-section
+_editable_with_overview_md = """---
+x-trestle-global:
+  sort-id: ac-01
+---
+
+# ac-1 - \\[Access Control\\] Policy and Procedures
+
+## Control Statement
+
+some prose
+
+# Editable Content
+
+## Overview
+
+overview text
+
+"""
+
+
+class _MockContent:
+    """Minimal content mock for ControlMarkdownNode tests."""
+
+    def __init__(self, text=None):
+        self.text = text or []
+
+
+class _MockNode:
+    """Minimal node mock that satisfies _add_node_to_dict signature."""
+
+    def __init__(self, key: str, text=None):
+        self.key = key
+        self.content = _MockContent(text)
+        self.subnodes = []
+
+
+def test_control_reader_bad_header_format(tmp_path: pathlib.Path) -> None:
+    """ControlReader._add_node_to_dict line 91: node.key starting with '#' but bad format raises TrestleError."""
+    context = ControlContext.generate(ContextPurpose.SSP, False, tmp_path, tmp_path)
+    node = _MockNode('#bad_no_space')
+    with pytest.raises(TrestleError, match='Improper header format'):
+        ControlReader._add_node_to_dict('mycomp', '', {}, node, 'ac-1', [], context)
+
+
+def test_control_reader_empty_component_heading(tmp_path: pathlib.Path) -> None:
+    """ControlReader._add_node_to_dict line 97: '### ' heading with no content raises TrestleError."""
+    context = ControlContext.generate(ContextPurpose.SSP, False, tmp_path, tmp_path)
+    node = _MockNode('### ')
+    with pytest.raises(TrestleError, match='but has no content'):
+        ControlReader._add_node_to_dict(None, '', {}, node, 'ac-1', [], context)
+
+
+def test_control_reader_duplicate_component_heading(tmp_path: pathlib.Path) -> None:
+    """ControlReader._add_node_to_dict line 103: duplicate ### heading raises TrestleError."""
+    context = ControlContext.generate(ContextPurpose.SSP, False, tmp_path, tmp_path)
+    node = _MockNode('### My Comp')
+    comp_list = ['mycomp']  # simplified form of 'My Comp' already present
+    with pytest.raises(TrestleError, match='two component headings'):
+        ControlReader._add_node_to_dict(None, '', {}, node, 'ac-1', comp_list, context)
+
+
+def test_control_reader_insert_header_non_string_role(tmp_path: pathlib.Path) -> None:
+    """ControlReader._insert_header_content line 167: non-string role triggers logger.warning, no exception."""
+    from trestle.core.generic_oscal import GenericImplementedRequirement
+
+    imp_req = GenericImplementedRequirement.generate()
+    header = {const.TRESTLE_PROPS_TAG: {const.RESPONSIBLE_ROLES: [{'dict-role': 'not-a-string'}]}}
+    # Should not raise – bad roles are warned and skipped
+    ControlReader._insert_header_content(imp_req, header, 'ac-1')
+    assert imp_req.responsible_roles is None
+
+
+def test_control_reader_insert_header_string_role(tmp_path: pathlib.Path) -> None:
+    """ControlReader._insert_header_content lines 163-165: string role is added to responsible_roles."""
+    from trestle.core.generic_oscal import GenericImplementedRequirement
+
+    imp_req = GenericImplementedRequirement.generate()
+    header = {const.TRESTLE_PROPS_TAG: {const.RESPONSIBLE_ROLES: ['admin role']}}
+    ControlReader._insert_header_content(imp_req, header, 'ac-1')
+    assert imp_req.responsible_roles is not None
+    assert imp_req.responsible_roles[0].role_id == 'admin_role'
+
+
+def test_get_label_from_implementation_header_bad_format() -> None:
+    """ControlReader._get_label_from_implementation_header line 191: bad header raises TrestleError."""
+    with pytest.raises(TrestleError, match='cannot be parsed'):
+        ControlReader._get_label_from_implementation_header('Implementation a.')
+
+
+def test_control_reader_read_control_no_title(tmp_path: pathlib.Path) -> None:
+    """ControlReader.read_control line 467: no level-1 title raises TrestleError."""
+    md_file = tmp_path / 'ac-1.md'
+    md_file.write_text(_no_title_md)
+    with pytest.raises(TrestleError, match='no control title'):
+        ControlReader.read_control(md_file, False)
+
+
+def test_control_reader_read_editable_missing_required_section(tmp_path: pathlib.Path) -> None:
+    """ControlReader.read_editable_content line 413: missing required section raises TrestleError."""
+    md_file = tmp_path / 'ac-1.md'
+    md_file.write_text(_editable_with_overview_md)
+    with pytest.raises(TrestleError, match='missing required sections'):
+        ControlReader.read_editable_content(
+            md_file,
+            required_sections_list=['nonexistent_section'],
+            part_label_to_id_map={},
+            cli_section_dict={},
+            write_mode=False,
+        )

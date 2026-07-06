@@ -849,3 +849,56 @@ def test_validate_mapping_missing_map_sources(
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
     test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/links_validator.py
+# ---------------------------------------------------------------------------
+
+
+def test_links_validator_no_back_matter() -> None:
+    """LinksValidator.model_is_valid: model with no back_matter hits the else branch (links stays [])."""
+    from trestle.core.links_validator import LinksValidator
+
+    validator = LinksValidator()
+    cat_obj = generate_sample_model(Catalog)
+    cat_obj.back_matter = None
+    # should always return True even with no back_matter
+    assert validator.model_is_valid(cat_obj, True, None)
+
+
+def test_links_validator_duplicate_uuids_quiet() -> None:
+    """LinksValidator.model_is_valid: duplicate resource UUIDs covered in both quiet and non-quiet mode."""
+    from trestle.core.links_validator import LinksValidator
+    from uuid import uuid4
+
+    validator = LinksValidator()
+    dup_uuid = str(uuid4())
+    cat_obj = generate_sample_model(Catalog)
+    res1 = common.Resource(uuid=dup_uuid)
+    res2 = common.Resource(uuid=dup_uuid)
+    from trestle.oscal.common import BackMatter
+
+    cat_obj.back_matter = BackMatter(resources=[res1, res2])
+    # quiet=False triggers the logger.warning branch (line 59-60)
+    assert validator.model_is_valid(cat_obj, False, None)
+    # quiet=True skips the warning but still hits the debug branch (line 61)
+    assert validator.model_is_valid(cat_obj, True, None)
+
+
+def test_links_validator_refs_not_in_resources_quiet() -> None:
+    """LinksValidator: refs not in resources and resources not in refs, both quiet modes."""
+    from trestle.core.links_validator import LinksValidator
+    from uuid import uuid4
+
+    validator = LinksValidator()
+    # Build a catalog with a resource UUID that is NOT referenced anywhere in the model
+    orphan_uuid = str(uuid4())
+    cat_obj = generate_sample_model(Catalog)
+    from trestle.oscal.common import BackMatter, Resource
+
+    cat_obj.back_matter = BackMatter(resources=[Resource(uuid=orphan_uuid)])
+    # quiet=False exercises the logger.warning branch for unreferenced resources
+    assert validator.model_is_valid(cat_obj, False, None)
+    # quiet=True should also return True
+    assert validator.model_is_valid(cat_obj, True, None)

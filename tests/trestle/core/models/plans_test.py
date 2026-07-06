@@ -178,3 +178,21 @@ def test_plan_repr():
     repr_str = repr(plan)
     assert 'Plan' in repr_str
     assert 'actions=' in repr_str
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/models/plans.py
+# ---------------------------------------------------------------------------
+
+
+def test_plan_equality_diff_actions_logs_debug(tmp_path):
+    """Plan.__eq__: lines 92-94 — debug logging when actions differ."""
+    import logging
+
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    plan1 = Plan()
+    plan2 = Plan()
+    plan1.add_action(CreatePathAction(tmp_path / 'a.json'))
+    plan2.add_action(CreatePathAction(tmp_path / 'b.json'))
+    # __eq__ with differing actions hits the debug logging block (lines 92-94) and returns False
+    assert plan1 != plan2

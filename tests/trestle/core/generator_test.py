@@ -310,3 +310,117 @@ def test_generate_sample_value_constr_type() -> None:
     plain = constr(min_length=1)
     result = gens.generate_sample_value_by_type(plain, 'some_field')
     assert result == const.REPLACE_ME
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/generators.py
+# ---------------------------------------------------------------------------
+
+
+def test_extract_int_constraints_with_gt() -> None:
+    """_extract_int_constraints: line 139 — gt branch sets floor = gt+1."""
+    from trestle.core.generators import _extract_int_constraints
+
+    class MockGt:
+        gt = 5
+        ge = None
+        multiple_of = None
+
+    floor, multiple_of = _extract_int_constraints([MockGt()])
+    assert floor == 6
+    assert multiple_of == 1
+
+
+def test_handle_annotated_int_floor_not_multiple() -> None:
+    """_handle_annotated_int: line 165 — non-zero remainder returns (floor+1)*multiple_of."""
+    from typing import Annotated
+    from trestle.core.generators import _handle_annotated_int
+
+    # Build an Annotated[int, ...] where floor is NOT a multiple of multiple_of
+    # e.g. ge=1, multiple_of=3 → floor=1, remainder(1,3)!=0 → return (1+1)*3 = 6
+    class _Ge:
+        ge = 1
+        gt = None
+        multiple_of = None
+
+    class _Mo:
+        ge = None
+        gt = None
+        multiple_of = 3
+
+    type_ = Annotated[int, _Ge(), _Mo()]
+    result = _handle_annotated_int(type_)
+    assert result is not None
+    assert result % 3 == 0
+
+
+def test_generate_sample_value_bare_list() -> None:
+    """generate_sample_model: line 274-276 — bare list type raises TrestleError."""
+    with pytest.raises(err.TrestleError):
+        gens.generate_sample_value_by_type(list, 'foo')
+
+
+def test_generate_sample_value_returns_replace_me() -> None:
+    """generate_sample_value_by_type: line 287 — unrecognised type returns REPLACE_ME."""
+    # 'object' is not str/int/float/bool/datetime/Enum/special — falls through to return REPLACE_ME
+    result = gens.generate_sample_value_by_type(object, 'foo')
+    assert result == const.REPLACE_ME
+
+
+def test_get_constrained_int_value_not_multiple() -> None:
+    """_get_constrained_int_value: line 302 — non-divisible floor returns (floor+1)*multiple_of."""
+    from trestle.core.generators import _get_constrained_int_value
+
+    class _Ge:
+        ge = 1
+        gt = None
+        multiple_of = None
+
+    class _Mo:
+        ge = None
+        gt = None
+        multiple_of = 4
+
+    # floor=1, multiple_of=4 → remainder(1,4)!=0 → (1+1)*4 = 8
+    result = _get_constrained_int_value([_Ge(), _Mo()])
+    assert result == 8
+
+
+def test_generate_sample_model_include_all_optional() -> None:
+    """generate_sample_model: lines 463-465 — include_optional includes include_all field."""
+    # prof.Import1 has an optional 'include_all' field; with include_optional=True it should be populated
+    import trestle.oscal.profile as prof_mod
+
+    result = gens.generate_sample_model(prof_mod.Import1, include_optional=True)
+    assert result is not None
+
+
+def test_generate_sample_model_list_any_inner_type() -> None:
+    """generate_sample_model: line 610 — List[Any] inner type returns [REPLACE_ME]."""
+    from typing import Any, List
+
+    result = gens.generate_sample_model(List[Any])
+    assert result == [const.REPLACE_ME]
+
+
+def test_generate_sample_model_dict_any_inner_type() -> None:
+    """generate_sample_model: lines 615-616 — Dict[str, Any] inner type returns {REPLACE_ME: REPLACE_ME}."""
+    from typing import Any, Dict
+
+    result = gens.generate_sample_model(Dict[str, Any])
+    assert result == {const.REPLACE_ME: const.REPLACE_ME}
+
+
+def test_generate_sample_model_unhandled_collection_type() -> None:
+    """generate_sample_model: line 653 — completely unhandled collection type raises TrestleError."""
+    with pytest.raises(err.TrestleError, match='Unhandled collection type'):
+        gens.generate_sample_model(set)
+
+
+def test_generate_sample_model_returns_list_instance() -> None:
+    """generate_sample_model: line 655 — model_type=list returns list instance."""
+    # Use a list[str] type annotation to hit line 655
+    from typing import List
+
+    result = gens.generate_sample_model(List[str])
+    assert isinstance(result, list)

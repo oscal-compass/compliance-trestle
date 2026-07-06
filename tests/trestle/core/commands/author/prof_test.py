@@ -1508,3 +1508,127 @@ def test_profile_values_included_if_replaced(tmp_trestle_dir: pathlib.Path, monk
 
     # grabs 6 parameter in line and test out the value is in there
     assert 'Test value' in set_params[6].values
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/commands/author/prof.py
+# ---------------------------------------------------------------------------
+
+
+def test_profile_generate_statement_in_sections_dict(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileGenerate.generate_markdown lines 154-155: sections_dict with 'statement' returns error."""
+    cat_name = 'simplified_nist_catalog'
+    prof_name = 'comp_prof'
+    test_utils.load_from_json(tmp_trestle_dir, cat_name, cat_name, cat.Catalog)
+    test_utils.load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    prof_path = ModelUtils.get_model_path_for_name_and_class(tmp_trestle_dir, prof_name, prof.Profile)
+    from trestle.core.commands.common.return_codes import CmdReturnCodes
+
+    rc = ProfileGenerate().generate_markdown(
+        trestle_root=tmp_trestle_dir,
+        profile_path=prof_path,
+        markdown_path=tmp_trestle_dir / 'md_out',
+        yaml_header={},
+        overwrite_header_values=False,
+        sections_dict={'statement': 'The Statement'},
+        required_sections=None,
+    )
+    assert rc == CmdReturnCodes.COMMAND_ERROR.value
+
+
+def test_profile_assemble_update_alter_adds_existing_adds(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileAssemble._update_alter_adds line 231: existing alter.adds are extended."""
+    existing_add = prof.Add(parts=None, position='ending')
+    new_add = prof.Add(parts=None, position='starting')
+    alter1 = prof.Alter(control_id='ac-1', adds=[existing_add])
+    alter_dict = {'ac-1': alter1}
+    new_alter = prof.Alter(control_id='ac-1', adds=[new_add])
+    ProfileAssemble._update_alter_adds(None, [new_alter], alter_dict)
+    assert len(alter_dict['ac-1'].adds) == 2
+
+
+def test_profile_assemble_replace_modify_no_profile_modify(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileAssemble._replace_modify_set_params line 285: creates profile.modify when absent."""
+    from trestle.core.generators import generate_sample_model
+
+    profile = generate_sample_model(prof.Profile)
+    profile.modify = None
+    param_dict = {'ac-1_prm_1': {'values': ['myval'], 'id': 'ac-1_prm_1'}}
+    param_map = {'ac-1_prm_1': 'ac-1'}
+    changed = ProfileAssemble._replace_modify_set_params(profile, param_dict, param_map)
+    assert changed
+    assert profile.modify is not None
+
+
+def test_profile_assemble_replace_modify_set_params_with_select(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileAssemble._replace_modify_set_params lines 301-302: select creates SetParameters1."""
+    from trestle.core.generators import generate_sample_model
+    from trestle.oscal.common import ParameterSelection
+
+    profile = generate_sample_model(prof.Profile)
+    profile.modify = prof.Modify()
+    param_dict = {'ac-1_prm_1': {'select': {'how-many': 'one', 'choice': ['opt1', 'opt2']}, 'id': 'ac-1_prm_1'}}
+    param_map = {'ac-1_prm_1': 'ac-1'}
+    changed = ProfileAssemble._replace_modify_set_params(profile, param_dict, param_map)
+    assert changed
+    assert profile.modify.set_parameters[0].__class__.__name__ == 'SetParameters1'
+
+
+def test_profile_inherit_is_inherited_no_export() -> None:
+    """ProfileInherit._is_inherited line 619: comp with no export returns False."""
+    from trestle.core.generators import generate_sample_model
+    import trestle.oscal.ssp as ssp_mod
+
+    by_comp = generate_sample_model(ssp_mod.ByComponent)
+    by_comp.export = None
+    assert not ProfileInherit._is_inherited([by_comp])
+
+
+def test_profile_inherit_is_inherited_has_responsibilities() -> None:
+    """ProfileInherit._is_inherited line 622: comp with export.responsibilities returns False."""
+    from trestle.core.generators import generate_sample_model
+    import trestle.oscal.ssp as ssp_mod
+
+    by_comp = generate_sample_model(ssp_mod.ByComponent)
+    by_comp.export = generate_sample_model(ssp_mod.Export)
+    by_comp.export.responsibilities = [generate_sample_model(ssp_mod.Responsibility)]
+    assert not ProfileInherit._is_inherited([by_comp])
+
+
+def test_profile_inherit_is_inherited_no_provided() -> None:
+    """ProfileInherit._is_inherited line 625: comp with no export.provided returns False."""
+    from trestle.core.generators import generate_sample_model
+    import trestle.oscal.ssp as ssp_mod
+
+    by_comp = generate_sample_model(ssp_mod.ByComponent)
+    by_comp.export = generate_sample_model(ssp_mod.Export)
+    by_comp.export.responsibilities = None
+    by_comp.export.provided = None
+    assert not ProfileInherit._is_inherited([by_comp])
+
+
+def test_profile_inherit_is_inherited_not_implemented() -> None:
+    """ProfileInherit._is_inherited line 628: comp not in 'implemented' state returns False."""
+    from trestle.core.generators import generate_sample_model
+    import trestle.oscal.ssp as ssp_mod
+    from trestle.oscal.common import ImplementationStatus
+
+    by_comp = generate_sample_model(ssp_mod.ByComponent)
+    by_comp.export = generate_sample_model(ssp_mod.Export)
+    by_comp.export.responsibilities = None
+    by_comp.export.provided = [generate_sample_model(ssp_mod.Provided)]
+    by_comp.implementation_status = ImplementationStatus(state='partial')
+    assert not ProfileInherit._is_inherited([by_comp])
+
+
+def test_profile_inherit_create_profile_import_empty_include() -> None:
+    """ProfileInherit._create_profile_import lines 664-670: empty include_with_ids uses Import1 with include_all."""
+    result = ProfileInherit._create_profile_import(set(), {'ac-1', 'ac-2'}, 'my_catalog')
+    assert result.__class__.__name__ == 'Import1'
+    assert result.include_all is not None
+
+
+def test_profile_inherit_load_leveraged_ssp_not_found(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileInherit._load_leveraged_ssp lines 680-681: missing SSP raises TrestleError."""
+    with pytest.raises(TrestleError, match='not found'):
+        ProfileInherit._load_leveraged_ssp(tmp_trestle_dir, 'nonexistent_ssp')
