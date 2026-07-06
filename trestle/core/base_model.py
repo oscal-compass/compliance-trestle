@@ -52,7 +52,27 @@ logger = logging.getLogger(__name__)
 
 
 class FieldWrapper:
-    """Wrapper for FieldInfo that includes the field name for Pydantic v2 compatibility."""
+    """Wrapper for FieldInfo that includes the field name for Pydantic v2 compatibility.
+
+    **Why this exists:** In Pydantic v1, ``ModelField`` carried both the field name and its
+    metadata. Pydantic v2 replaced ``ModelField`` with ``FieldInfo``, which no longer stores
+    the field name — only ``model_fields`` (a ``dict[name, FieldInfo]``) knows the mapping.
+    ``FieldWrapper`` re-attaches that name so downstream code can treat it as a drop-in for
+    the old ``ModelField``.
+
+    **Call-site inventory (update when adding / removing uses):**
+    * ``OscalBaseModel.alias_to_field_map`` — constructs wrappers from ``model_fields``
+    * ``OscalBaseModel.get_field_value_by_alias`` — checks ``isinstance(x, FieldWrapper)``
+
+    **TODO (migration):** If a future Pydantic release re-exposes the field name on
+    ``FieldInfo`` directly, ``FieldWrapper`` can be removed. At that point:
+    1. Replace every ``FieldWrapper(name, info)`` construction with plain ``info``.
+    2. Replace ``attr_field.name`` accesses with whatever the new ``FieldInfo`` attribute is.
+    3. Drop the ``isinstance(attr_field, FieldWrapper)`` guard in
+       ``get_field_value_by_alias``.
+    4. Remove this class.
+    Track the upstream issue at https://github.com/pydantic/pydantic/issues.
+    """
 
     def __init__(self, name: str, field_info: FieldInfo) -> None:
         """Initialize with field name and FieldInfo."""
