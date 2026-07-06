@@ -539,3 +539,87 @@ def test_is_collection_container() -> None:
     # Test error when calling get_collection_type on non-collection
     with pytest.raises(err.TrestleError, match='not wrapping a collection type'):
         oscatalog.Catalog.get_collection_type()
+
+
+def test_eq_same_name_same_content() -> None:
+    """Test __eq__ for dynamically created models with same class name and identical content."""
+    from pydantic import Field, create_model
+    from typing import Optional
+    from trestle.core.base_model import OscalBaseModel
+
+    # Two separate create_model() calls with the same name — the scenario that
+    # arises with create_stripped_model_type().
+    model_a = create_model('MyModel', __base__=OscalBaseModel, x=(Optional[str], Field(None)))
+    model_b = create_model('MyModel', __base__=OscalBaseModel, x=(Optional[str], Field(None)))
+
+    assert model_a is not model_b, 'sanity: they are different class objects'
+    assert model_a(x='hello') == model_b(x='hello')
+    assert model_a(x=None) == model_b(x=None)
+
+
+def test_eq_same_name_different_content() -> None:
+    """Test __eq__ for dynamically created models with same class name but different field values."""
+    from pydantic import Field, create_model
+    from typing import Optional
+    from trestle.core.base_model import OscalBaseModel
+
+    model_a = create_model('MyModel', __base__=OscalBaseModel, x=(Optional[str], Field(None)))
+
+    assert model_a(x='hello') != model_a(x='world')
+    assert model_a(x='hello') != model_a(x=None)
+
+
+def test_eq_different_class_names() -> None:
+    """Test __eq__ returns False when class names differ, even if content is identical."""
+    from pydantic import Field, create_model
+    from typing import Optional
+    from trestle.core.base_model import OscalBaseModel
+
+    model_foo = create_model('Foo', __base__=OscalBaseModel, x=(Optional[str], Field(None)))
+    model_bar = create_model('Bar', __base__=OscalBaseModel, x=(Optional[str], Field(None)))
+
+    assert model_foo(x='hello') != model_bar(x='hello')
+
+
+def test_eq_stripped_model() -> None:
+    """Test __eq__ works correctly for stripped model instances (the primary use-case)."""
+    import trestle.oscal.catalog as oscatalog
+
+    catalog = simple_catalog()
+
+    # Create two independently stripped instances — different class objects, same name & content
+    stripped_a = catalog.stripped_instance(stripped_fields_aliases=['metadata'])
+    stripped_b = catalog.stripped_instance(stripped_fields_aliases=['metadata'])
+
+    assert stripped_a == stripped_b
+    assert type(stripped_a) is not type(stripped_b), 'sanity: different class objects from separate calls'
+
+
+def test_serialize_oscal_fields_datetime() -> None:
+    """Test that serialize_oscal_fields emits +00:00 timezone offset (not Z) for datetime fields."""
+    import trestle.oscal.common as common
+    import json
+    from datetime import datetime, timezone
+
+    dt = datetime(2024, 6, 15, 10, 30, 0, tzinfo=timezone.utc)
+    # Use a model that has a datetime field (Remarks wraps markup, use OnDate which has AwareDatetime)
+    on_date = common.OnDate(date=dt)
+    serialized = json.loads(on_date.model_dump_json(by_alias=True))
+
+    date_str = serialized['date']
+    assert '+00:00' in date_str, f'Expected +00:00 in datetime output, got: {date_str}'
+    assert not date_str.endswith('Z'), f'datetime should not end with Z, got: {date_str}'
+
+
+def test_serialize_oscal_fields_anyurl() -> None:
+    """Test that serialize_oscal_fields converts AnyUrl fields to plain strings."""
+    import trestle.oscal.common as common
+    import json
+
+    # Property has an optional AnyUrl 'ns' field
+    prop = common.Property(name='test', value='val', ns='https://example.com/ns')  # type: ignore[arg-type]
+    serialized = json.loads(prop.model_dump_json(by_alias=True, exclude_none=True))
+
+    ns_val = serialized.get('ns')
+    assert isinstance(ns_val, str), f'AnyUrl should serialize to str, got {type(ns_val)}'
+    assert ns_val == 'https://example.com/ns', f'Unexpected ns value: {ns_val}'

@@ -140,25 +140,26 @@ class OscalBaseModel(TrestleBaseModel):
         """Override equality to compare model content for dynamically created models.
 
         Pydantic v2 changed equality behavior to be stricter - it checks isinstance(other, self.__class__)
-        which fails for dynamically created models from different create_model() calls.
+        which fails for dynamically created models from different create_model() calls (e.g.
+        stripped models returned by create_stripped_model_type).
 
-        This override restores Pydantic v1 behavior: compare by class name and content,
-        allowing dynamically created models with identical structure to be equal.
+        This override restores Pydantic v1 behavior: compare by class name and field values,
+        allowing dynamically created models with the same name and identical content to be equal.
+
+        Uses __dict__ for field comparison — it holds the already-in-memory field values
+        and avoids the O(n) deep serialization cost of model_dump().
         """
-        # Check if other is a Pydantic model
         if not isinstance(other, TrestleBaseModel):
             return False
 
-        # Compare by class name (not class object identity) and content
         if self.__class__.__name__ != other.__class__.__name__:
             return False
 
-        # Compare the actual content using model_dump
-        try:
-            return self.model_dump() == other.model_dump()
-        except Exception:
-            # Fallback to default comparison if model_dump fails
-            return super().__eq__(other)
+        # Compare field values directly from __dict__ — no serialization needed.
+        # __pydantic_fields_set__ is excluded; we compare only the field values themselves.
+        self_fields = {k: v for k, v in self.__dict__.items() if not k.startswith('__')}
+        other_fields = {k: v for k, v in other.__dict__.items() if not k.startswith('__')}
+        return self_fields == other_fields
 
     @classmethod
     def _validate_stripped_fields_params(
