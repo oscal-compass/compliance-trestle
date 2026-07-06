@@ -33,7 +33,7 @@ from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
 
-from pydantic import ConfigDict, Field, RootModel, create_model, field_serializer
+from pydantic import AnyUrl, ConfigDict, Field, RootModel, create_model, field_serializer
 from pydantic.fields import FieldInfo
 from pydantic_core import from_json
 
@@ -121,23 +121,20 @@ class OscalBaseModel(TrestleBaseModel):
     )
 
     @field_serializer('*', mode='wrap', when_used='json')
-    def serialize_datetime_fields(self, value: Any, handler: Any, _info: Any) -> Any:
-        """Custom serializer for datetime fields to use +00:00 format instead of Z."""
-        from pydantic import AnyUrl
+    def serialize_oscal_fields(self, value: Any, handler: Any, _info: Any) -> Any:
+        """Targeted serializer for the two OSCAL-specific output concerns.
 
-        # Handle AnyUrl types - convert to string before default handler
+        - datetime → robust_datetime_serialization (+00:00 offset, not Z)
+        - AnyUrl   → str  (Pydantic v2 AnyUrl is no longer a str subclass)
+
+        All other field types are passed straight through to Pydantic's default
+        handler via handler(value), so only these two types incur extra work.
+        """
+        if isinstance(value, datetime.datetime):
+            return robust_datetime_serialization(value)
         if isinstance(value, AnyUrl):
             return str(value)
-
-        # Let the default handler process the value first
-        result = handler(value)
-
-        # If it's a datetime that was serialized to a string ending with 'Z', convert it
-        if isinstance(result, str) and result.endswith('Z'):
-            # Replace Z with +00:00
-            result = result[:-1] + '+00:00'
-
-        return result
+        return handler(value)
 
     def __eq__(self, other: object) -> bool:
         """Override equality to compare model content for dynamically created models.
