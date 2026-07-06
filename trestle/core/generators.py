@@ -284,7 +284,7 @@ def generate_sample_value_by_type(type_: Any, field_name: str) -> datetime | boo
 
 
 def _get_constrained_int_value(metadata: list) -> int:
-    """Extract constraints from field metadata and return a valid int value.
+    """Return a valid int value satisfying the constraints in field metadata.
 
     Args:
         metadata: List of constraint objects from field_info.metadata
@@ -292,25 +292,7 @@ def _get_constrained_int_value(metadata: list) -> int:
     Returns:
         An integer value that satisfies all constraints (ge, gt, multiple_of)
     """
-    import math
-
-    ge_val = None
-    gt_val = None
-    multiple_of = 1
-
-    for constraint in metadata:
-        if hasattr(constraint, 'ge') and constraint.ge is not None:
-            ge_val = constraint.ge
-        if hasattr(constraint, 'gt') and constraint.gt is not None:
-            gt_val = constraint.gt
-        if hasattr(constraint, 'multiple_of') and constraint.multiple_of is not None:
-            multiple_of = constraint.multiple_of
-
-    # Calculate floor value
-    floor = ge_val if ge_val is not None else 0
-    floor = gt_val + 1 if gt_val is not None else floor
-
-    # Return value that satisfies constraints
+    floor, multiple_of = _extract_int_constraints(metadata)
     if math.remainder(floor, multiple_of) == 0:
         return int(floor)
     return int((floor + 1) * multiple_of)
