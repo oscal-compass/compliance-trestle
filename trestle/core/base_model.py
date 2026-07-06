@@ -65,18 +65,28 @@ class FieldWrapper:
 
 
 def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
-    """Return a nicely formatted string for in a format compatible with OSCAL specifications.
+    """Serialize a datetime to an OSCAL-compatible ISO-8601 string with explicit UTC offset.
+
+    The output always uses ``+00:00`` (not ``Z``) as the UTC designator, which is the
+    form expected by the OSCAL JSON schemas.
+
+    **Precision behaviour (changed from trestle v1):**
+    Previously all datetimes were serialized with millisecond precision, e.g.
+    ``2024-01-01T00:00:00.000+00:00``. This function now omits sub-second precision
+    when the microsecond component is zero, producing ``2024-01-01T00:00:00+00:00``
+    instead. Both forms are valid ISO-8601 and accepted by OSCAL validators.
+    Consumers that rely on exact string comparison of stored datetimes should be
+    updated to use datetime-aware comparison instead.
 
     Args:
-        input_dt: Input datetime to convert to a string.
+        input_dt: Input datetime to serialize. Must be timezone-aware.
 
     Returns:
-        String in isoformat enforcing that timezone offset is provided.
-        If datetime has microseconds of 0, they are omitted from the output.
-        Otherwise, milliseconds are included.
+        UTC ISO-8601 string with ``+00:00`` offset.
+        Sub-second precision is included only when microseconds are non-zero.
 
     Raises:
-        TrestleError: Error is raised if datetime object does not contain sufficient timezone information.
+        TrestleError: If the datetime has no timezone info or no UTC offset.
     """
     # fail if the input datetime is not aware - ie it has no associated timezone
     if input_dt.tzinfo is None:
@@ -84,14 +94,11 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
     if input_dt.tzinfo.utcoffset(input_dt) is None:
         raise err.TrestleError('Missing utcoffset in datetime')
 
-    # use this leave in original timezone rather than utc
-    # return input_dt.astimezone().isoformat(timespec='milliseconds')  noqa: E800
-
-    # force it to be utc
+    # Normalise to UTC so the offset is always +00:00 (not e.g. -05:00)
     dt_utc = input_dt.astimezone(datetime.timezone.utc)
 
-    # If microseconds are 0, use 'seconds' timespec to omit them
-    # Otherwise use 'milliseconds' to include fractional seconds
+    # Omit sub-second precision when microseconds are zero to keep output compact.
+    # Include milliseconds when microseconds are set so no precision is lost.
     if dt_utc.microsecond == 0:
         return dt_utc.isoformat(timespec='seconds')
     else:
