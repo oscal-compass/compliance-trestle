@@ -80,7 +80,14 @@ def is_ordered_sublist(needle: List[str], haystack: List[str]) -> bool:
     needle=['a','b','c'], haystack=['x','y','a','b','c','z'], result = True
     needle=['a','b','c'], haystack=['x','y','a','b','z','c'], result = False
     """
-    return ' '.join(needle) in ' '.join(haystack)
+    n_items = len(needle)
+    # an empty needle is trivially contained; a needle longer than the haystack cannot be
+    if n_items == 0:
+        return True
+    for start in range(len(haystack) - n_items + 1):
+        if haystack[start:start + n_items] == needle:
+            return True
+    return False
 
 
 def join_key_to_list_dicts(dict1: Dict[str, List[Any]], dict2: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
