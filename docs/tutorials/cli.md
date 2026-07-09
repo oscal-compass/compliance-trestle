@@ -651,10 +651,75 @@ Trestle verify checks a JSON file against a detached DSSE envelope and a PEM pub
 trestle verify \
   -f catalog.json \
   --signature catalog.json.dsse \
-  --key public.pem
+  --public-key public.pem
 ```
 
 If signing used `--subject-name`, pass the same value during verification.
+
+## `trestle sign-manifest`
+
+Trestle sign-manifest writes a detached DSSE envelope for a JSON package manifest. The manifest lists related JSON artifacts. Trestle canonicalizes each artifact using RFC 8785, records each SHA-256 digest in an in-toto Statement, and signs the package Statement with a PEM private key.
+
+The sign-manifest and verify-manifest commands are beta features. Enable them before use:
+
+```bash
+trestle beta enable json-manifest-signing
+```
+
+Example package manifest:
+
+```json
+{
+  "primaryArtifact": "ssp.json",
+  "artifacts": [
+    {
+      "name": "ssp.json",
+      "uri": "ssp/ssp.json",
+      "mediaType": "application/oscal+json"
+    },
+    {
+      "name": "profile.json",
+      "uri": "profiles/profile.json",
+      "mediaType": "application/oscal+json"
+    },
+    {
+      "name": "catalog.json",
+      "uri": "catalogs/catalog.json",
+      "mediaType": "application/oscal+json"
+    }
+  ]
+}
+```
+
+The manifest format is defined by the [OSCAL Package Manifest v1 JSON Schema](../predicates/oscal-package/manifest-v1.schema.json).
+
+Trestle also requires `primaryArtifact` to name one listed artifact, artifact names to be unique, and each `uri` to identify an existing local JSON file within the manifest directory. Invalid JSON and duplicate JSON keys are rejected.
+
+Sign the package manifest:
+
+```bash
+trestle sign-manifest \
+  --manifest package.json \
+  --key private.pem \
+  -o package.dsse
+```
+
+For an encrypted private key, use `--key-password-env` as with `trestle sign`.
+
+The signed package Statement uses the [OSCAL package predicate](../predicates/oscal-package/v1.md).
+
+## `trestle verify-manifest`
+
+Trestle verify-manifest checks a JSON package manifest against a detached DSSE envelope and a PEM public key. Verification checks the package DSSE signature, requires the manifest metadata and artifact set to match the signed package Statement, and confirms that each current JSON artifact digest matches its signed digest.
+
+```bash
+trestle verify-manifest \
+  --manifest package.json \
+  --signature package.dsse \
+  --public-key public.pem
+```
+
+This first manifest signing flow verifies package digests only. Per-document signature requirements are expected to be added in a later workflow.
 
 ## `trestle tasks`
 
