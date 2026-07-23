@@ -97,7 +97,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
             self._results_factory.ingest_xml(resource)
         else:
             return None
-        results = Results(root=[])
+        results = Results.model_construct(root=[])
         results.root.append(self._results_factory.result)
         return results
 
@@ -125,7 +125,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
                                     self._results_factory.ingest(resource)
         except json.decoder.JSONDecodeError:
             return None
-        results = Results(root=[])
+        results = Results.model_construct(root=[])
         results.root.append(self._results_factory.result)
         return results
 
@@ -138,7 +138,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
             self._results_factory.ingest(resource)
         except Exception as e:
             raise e
-        results = Results(root=[])
+        results = Results.model_construct(root=[])
         results.root.append(self._results_factory.result)
         return results
 

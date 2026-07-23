@@ -111,7 +111,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
             self._results_factory.ingest_xml(resource)
         else:
             return None
-        results = Results(root=[])
+        results = Results.model_construct(root=[])
         results.root.append(self._results_factory.result)
         return results
 
@@ -147,7 +147,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
                 self._ingest_auditree(jdata)
         except json.decoder.JSONDecodeError:
             return None
-        results = Results(root=[])
+        results = Results.model_construct(root=[])
         results.root.append(self._results_factory.result)
         return results
 
@@ -160,7 +160,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
             self._results_factory.ingest(resource)
         except Exception as e:
             raise RuntimeError(e)
-        results = Results(root=[])
+        results = Results.model_construct(root=[])
         results.root.append(self._results_factory.result)
         return results
 

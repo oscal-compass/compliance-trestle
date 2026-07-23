@@ -20,9 +20,10 @@ import pathlib
 from typing import List
 
 import orjson
-from pydantic import RootModel
+from pydantic import Field, RootModel
 from ruamel.yaml import YAML
 
+import trestle.common.err as err
 import trestle.common.const as const
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import robust_datetime_serialization
@@ -31,9 +32,19 @@ from trestle.oscal.assessment_results import Result
 
 
 class Results(RootModel[List[Result]]):
-    """Transformer results as a list."""
+    """Transformer results as a list.
 
-    root: List[Result] = []
+    The OSCAL schema requires at least one Result (minItems: 1), enforced here via
+    ``min_length=1`` so that ``model_validate`` (used by ``oscal_read``) rejects an
+    empty list loaded from a file.
+
+    When building a Results incrementally (as all transformer implementations do),
+    use ``Results.model_construct(root=[])`` followed by ``.root.append(...)``.
+    ``model_construct`` intentionally bypasses Pydantic field validation, so an
+    empty list is allowed during construction before items are appended.
+    """
+
+    root: List[Result] = Field(default=[], min_length=1)
 
     def oscal_dict(self):
         """Return an 'oscal wrapped' dictionary."""
@@ -92,8 +103,11 @@ class Results(RootModel[List[Result]]):
             path: The output file location for the oscal object.
 
         Raises:
-            err.TrestleError: If a unknown file extension is provided.
+            err.TrestleError: If Results contains no items (OSCAL minItems: 1 violation).
+            err.TrestleError: If an unknown file extension is provided.
         """
+        if not self.root:
+            raise err.TrestleError('Results must contain at least one Result before writing (OSCAL minItems: 1)')
         content_type = FileContentType.to_content_type(path.suffix)
 
         if content_type == FileContentType.YAML:

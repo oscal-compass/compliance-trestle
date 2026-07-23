@@ -41,7 +41,7 @@ class DummyResultsTransformer(ResultsTransformer):
     def transform(self, blob: str) -> Results:
         """Transform the blob."""
         # Pydantic v2: RootModel uses 'root' instead of '__root__'
-        return Results(root=[])
+        return Results.model_construct(root=[])
 
 
 def test_basic_transformer_operations() -> None:
@@ -57,7 +57,7 @@ def test_results_transformer() -> None:
     tf.register_transformer('dummy', DummyResultsTransformer)
     transformer: ResultsTransformer = tf.get('dummy')
     # Pydantic v2: RootModel uses 'root' instead of '__root__'
-    assert transformer.transform('foo') == Results(root=[])
+    assert transformer.transform('foo') == Results.model_construct(root=[])
 
 
 def test_transformer_not_registered() -> None:
