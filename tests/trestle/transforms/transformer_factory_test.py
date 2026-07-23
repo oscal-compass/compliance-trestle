@@ -19,10 +19,24 @@ import pytest
 
 import trestle.common.err as err
 from trestle.core.base_model import OscalBaseModel
+from trestle.oscal.assessment_results import Result
 from trestle.oscal.common import RoleId
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer, TransformerBase
 from trestle.transforms.transformer_singleton import transformer_factory as tf
+
+
+def _make_result() -> Result:
+    """Return a minimal valid Result fixture."""
+    return Result.model_validate(
+        {
+            'uuid': 'a1d20136-37e0-42aa-9834-4e9d8c36d798',
+            'title': 'Test Result',
+            'description': 'Minimal result for testing.',
+            'start': '2023-06-02T08:31:20-04:00',
+            'reviewed-controls': {'control-selections': [{'include-controls': [{'control-id': 'ac-6.1'}]}]},
+        }
+    )
 
 
 class DummyTransformer(TransformerBase):
@@ -40,8 +54,7 @@ class DummyResultsTransformer(ResultsTransformer):
 
     def transform(self, blob: str) -> Results:
         """Transform the blob."""
-        # Pydantic v2: RootModel uses 'root' instead of '__root__'
-        return Results.model_construct(root=[])
+        return Results(root=[_make_result()])
 
 
 def test_basic_transformer_operations() -> None:
@@ -56,8 +69,7 @@ def test_results_transformer() -> None:
     """Test results transformer."""
     tf.register_transformer('dummy', DummyResultsTransformer)
     transformer: ResultsTransformer = tf.get('dummy')
-    # Pydantic v2: RootModel uses 'root' instead of '__root__'
-    assert transformer.transform('foo') == Results.model_construct(root=[])
+    assert transformer.transform('foo') == Results(root=[_make_result()])
 
 
 def test_transformer_not_registered() -> None:
