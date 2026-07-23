@@ -33,7 +33,7 @@ from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
 
-from pydantic import AnyUrl, ConfigDict, Field, RootModel, create_model, field_serializer
+from pydantic import AnyUrl, ConfigDict, Field, RootModel, ValidationError, create_model, field_serializer
 from pydantic.fields import FieldInfo
 from pydantic_core import from_json
 
@@ -438,6 +438,8 @@ class OscalBaseModel(TrestleBaseModel):
             parsed = cls.model_validate(obj[alias])
         except KeyError:
             raise err.TrestleError(f'Provided oscal file does not have top level key key: {alias}')
+        except ValidationError as e:
+            raise err.TrestleError(_format_validation_error(path, e))
         except Exception as e:
             raise err.TrestleError(f'Error parsing file {path} {str(e)}')
 
@@ -558,6 +560,81 @@ class OscalBaseModel(TrestleBaseModel):
         if annotation is None:
             raise err.TrestleError('root field has no annotation (Pydantic v2 RootModel)')
         return get_origin(annotation)
+
+
+def _format_validation_error(path: pathlib.Path, exc: ValidationError) -> str:
+    """Translate a pydantic ValidationError into actionable human-readable lines.
+
+    Produces one deduplicated line per unique (field-path, error-type) pair:
+        <json-path>: <plain-english problem> (got: <value>)
+
+    Pydantic union-variant labels (e.g. "ConfidenceScore1", "list[Mapping]")
+    are stripped from paths — they are internal type names, not OSCAL field names.
+    """
+    import re as _re
+
+    def _loc_to_path(loc: tuple) -> str:
+        parts: list[str] = []
+        for seg in loc:
+            if isinstance(seg, int):
+                parts.append(f'[{seg}]')
+            else:
+                s = str(seg)
+                # Skip pydantic union-variant labels: uppercase class names or "list[...]"
+                if _re.match(r'^[A-Z]|^list\[', s):
+                    continue
+                parts.append(s)
+        result = ''
+        for part in parts:
+            if part.startswith('['):
+                result += part
+            elif result:
+                result += '.' + part
+            else:
+                result = part
+        return result or '(root)'
+
+    def _human_message(error: dict) -> str:
+        etype = error['type']
+        ctx = error.get('ctx', {})
+        if etype == 'missing':
+            return 'required field is missing'
+        if etype == 'extra_forbidden':
+            return f'unexpected field — remove "{error["loc"][-1]}"'
+        if etype == 'model_type':
+            cls_name = ctx.get('class_name', 'object')
+            return f'must be a JSON object ({cls_name}), not {type(error["input"]).__name__}'
+        if etype in ('string_pattern_mismatch', 'string_pattern'):
+            pattern = ctx.get('pattern', '')
+            if len(pattern) > 40:
+                return 'value does not match the required format (e.g. UUID or token)'
+            return f'value does not match required pattern: {pattern}'
+        if etype in ('datetime_from_date_parsing', 'datetime_parsing'):
+            detail = ctx.get('error', error['msg'])
+            return f'invalid date/time — {detail}'
+        if etype == 'list_type':
+            return 'must be a JSON array'
+        if etype == 'enum':
+            allowed = ctx.get('expected', '')
+            return f'invalid value; allowed: {allowed}'
+        return error['msg']
+
+    lines = [f'Schema validation failed — {path}:']
+    seen: set[tuple] = set()
+    for error in exc.errors():
+        loc_str = _loc_to_path(error['loc'])
+        etype = error['type']
+        key = (loc_str, etype)
+        if key in seen:
+            continue
+        seen.add(key)
+        msg = _human_message(error)
+        raw = error.get('input')
+        input_repr = repr(raw)
+        if len(input_repr) > 60:
+            input_repr = input_repr[:57] + '...'
+        lines.append(f'  {loc_str}: {msg} (got: {input_repr})')
+    return '\n'.join(lines)
 
 
 class OscalRootModel(RootModel[Any]):

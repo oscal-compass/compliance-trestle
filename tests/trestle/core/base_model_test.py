@@ -35,7 +35,7 @@ import trestle.oscal.common as common
 import trestle.oscal.component as component
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
-from trestle.core.base_model import OscalBaseModel
+from trestle.core.base_model import OscalBaseModel, _format_validation_error
 
 
 def test_echo_tmp_path(tmp_path) -> None:
@@ -623,3 +623,31 @@ def test_serialize_oscal_fields_anyurl() -> None:
     ns_val = serialized.get('ns')
     assert isinstance(ns_val, str), f'AnyUrl should serialize to str, got {type(ns_val)}'
     assert ns_val == 'https://example.com/ns', f'Unexpected ns value: {ns_val}'
+
+
+class TestFormatValidationError:
+    """Unit tests for _format_validation_error()."""
+
+    def test_pattern_message_is_humanized(self) -> None:
+        """Pattern validation errors should use the friendly message path."""
+        with pytest.raises(ValidationError) as exc_info:
+            common.Parameter1(id='param1', label='ok', values=['bad\nvalue'])
+
+        message = _format_validation_error(pathlib.Path('sample.json'), exc_info.value)
+        assert 'value does not match required pattern:' in message
+
+    def test_datetime_parse_error_is_humanized(self) -> None:
+        """Datetime parsing errors should use the invalid date/time wording."""
+        with pytest.raises(ValidationError) as exc_info:
+            common.OnDate(date='not-a-date')
+
+        message = _format_validation_error(pathlib.Path('sample.json'), exc_info.value)
+        assert 'invalid date/time' in message
+
+    def test_enum_error_is_humanized(self) -> None:
+        """Enum validation errors should report allowed values."""
+        with pytest.raises(ValidationError) as exc_info:
+            common.ParameterSelection(how_many='bogus', choice=['one'])
+
+        message = _format_validation_error(pathlib.Path('sample.json'), exc_info.value)
+        assert 'invalid value; allowed:' in message

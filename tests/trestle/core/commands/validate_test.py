@@ -99,11 +99,11 @@ def test_validation_happy(
 @pytest.mark.parametrize(
     'name, mode, parent, status',
     [
-        ('my_test_model', '-f', False, 1),
+        ('my_test_model', '-f', False, 4),
         ('my_test_model', '-n', False, 4),
-        ('my_test_model', '-f', True, 1),
-        ('my_test_model', '-t', False, 1),
-        ('my_test_model', '-a', False, 1),
+        ('my_test_model', '-f', True, 4),
+        ('my_test_model', '-t', False, 4),
+        ('my_test_model', '-a', False, 4),
         ('foo', '-n', False, 4),
         ('my_test_model', '-x', False, 4),
     ],
@@ -236,7 +236,7 @@ def test_oscal_version_incorrect_validator(tmp_trestle_dir: pathlib.Path, monkey
     testcmd = f'trestle validate -f {mycat_path}'
     monkeypatch.setattr(sys, 'argv', testcmd.split())
     rc = Trestle().run()
-    assert rc == 1
+    assert rc == 4
 
 
 def test_oscal_incorrect_fields_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -250,7 +250,7 @@ def test_oscal_incorrect_fields_validator(tmp_trestle_dir: pathlib.Path, monkeyp
     testcmd = f'trestle validate -f {catalog}'
     monkeypatch.setattr(sys, 'argv', testcmd.split())
     rc = Trestle().run()
-    assert rc == 1
+    assert rc == 4
 
 
 def test_validate_direct(sample_catalog_minimal: Catalog, tmp_trestle_dir: pathlib.Path) -> None:
@@ -752,7 +752,7 @@ def test_validate_mapping_missing_uuid(
 
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
-    test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
+    test_utils.execute_command_and_assert(validate_command, 4, monkeypatch)
 
 
 def test_validate_mapping_missing_relationship(
@@ -776,7 +776,7 @@ def test_validate_mapping_missing_relationship(
 
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
-    test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
+    test_utils.execute_command_and_assert(validate_command, 4, monkeypatch)
 
 
 def test_validate_mapping_missing_provenance(
@@ -800,7 +800,7 @@ def test_validate_mapping_missing_provenance(
 
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
-    test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
+    test_utils.execute_command_and_assert(validate_command, 4, monkeypatch)
 
 
 def test_validate_mapping_invalid_confidence_score_type(
@@ -824,7 +824,7 @@ def test_validate_mapping_invalid_confidence_score_type(
 
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
-    test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
+    test_utils.execute_command_and_assert(validate_command, 4, monkeypatch)
 
 
 def test_validate_mapping_missing_map_sources(
@@ -848,7 +848,7 @@ def test_validate_mapping_missing_map_sources(
 
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
-    test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
+    test_utils.execute_command_and_assert(validate_command, 4, monkeypatch)
 
 
 # ---------------------------------------------------------------------------
