@@ -35,7 +35,7 @@ import orjson
 
 from pydantic import AnyUrl, ConfigDict, Field, RootModel, ValidationError, create_model, field_serializer
 from pydantic.fields import FieldInfo
-from pydantic_core import from_json
+from pydantic_core import ErrorDetails, from_json
 
 from ruamel.yaml import YAML
 
@@ -573,7 +573,7 @@ def _format_validation_error(path: pathlib.Path, exc: ValidationError) -> str:
     """
     import re as _re
 
-    def _loc_to_path(loc: tuple) -> str:
+    def _loc_to_path(loc: tuple[int | str, ...]) -> str:
         parts: list[str] = []
         for seg in loc:
             if isinstance(seg, int):
@@ -594,7 +594,7 @@ def _format_validation_error(path: pathlib.Path, exc: ValidationError) -> str:
                 result = part
         return result or '(root)'
 
-    def _human_message(error: dict) -> str:
+    def _human_message(error: ErrorDetails) -> str:
         etype = error['type']
         ctx = error.get('ctx', {})
         if etype == 'missing':
@@ -620,7 +620,7 @@ def _format_validation_error(path: pathlib.Path, exc: ValidationError) -> str:
         return error['msg']
 
     lines = [f'Schema validation failed — {path}:']
-    seen: set[tuple] = set()
+    seen: set[tuple[str, str]] = set()
     for error in exc.errors():
         loc_str = _loc_to_path(error['loc'])
         etype = error['type']
