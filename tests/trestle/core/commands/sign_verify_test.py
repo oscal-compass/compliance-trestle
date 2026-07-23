@@ -77,7 +77,7 @@ def test_sign_and_verify_require_beta_feature(tmp_path: pathlib.Path, monkeypatc
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(key_path)],
+        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--public-key', str(key_path)],
     )
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
 
@@ -109,7 +109,7 @@ def test_sign_and_verify_accept_one_time_beta_flag(tmp_path: pathlib.Path, monke
             str(input_path),
             '--signature',
             str(envelope_path),
-            '--key',
+            '--public-key',
             str(public_key_path),
         ],
     )
@@ -138,7 +138,16 @@ def test_sign_and_verify_round_trip(tmp_path: pathlib.Path, monkeypatch: MonkeyP
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(public_key_path)],
+        [
+            'trestle',
+            'verify',
+            '-f',
+            str(input_path),
+            '--signature',
+            str(envelope_path),
+            '--public-key',
+            str(public_key_path),
+        ],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
 
@@ -160,7 +169,16 @@ def test_sign_and_verify_real_nist_800_53_catalog(tmp_path: pathlib.Path, monkey
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(public_key_path)],
+        [
+            'trestle',
+            'verify',
+            '-f',
+            str(input_path),
+            '--signature',
+            str(envelope_path),
+            '--public-key',
+            str(public_key_path),
+        ],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
 
@@ -193,7 +211,16 @@ def test_verify_rejects_missing_custom_subject_name(tmp_path: pathlib.Path, monk
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(public_key_path)],
+        [
+            'trestle',
+            'verify',
+            '-f',
+            str(input_path),
+            '--signature',
+            str(envelope_path),
+            '--public-key',
+            str(public_key_path),
+        ],
     )
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
 
@@ -207,7 +234,7 @@ def test_verify_rejects_missing_custom_subject_name(tmp_path: pathlib.Path, monk
             str(input_path),
             '--signature',
             str(envelope_path),
-            '--key',
+            '--public-key',
             str(public_key_path),
             '--subject-name',
             'custom/catalog.json',
@@ -245,7 +272,16 @@ def test_sign_supports_encrypted_private_key(tmp_path: pathlib.Path, monkeypatch
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(public_key_path)],
+        [
+            'trestle',
+            'verify',
+            '-f',
+            str(input_path),
+            '--signature',
+            str(envelope_path),
+            '--public-key',
+            str(public_key_path),
+        ],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
 
@@ -346,7 +382,16 @@ def test_verify_rejects_tampered_document(tmp_path: pathlib.Path, monkeypatch: M
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'verify', '-f', str(input_path), '--signature', str(envelope_path), '--key', str(public_key_path)],
+        [
+            'trestle',
+            'verify',
+            '-f',
+            str(input_path),
+            '--signature',
+            str(envelope_path),
+            '--public-key',
+            str(public_key_path),
+        ],
     )
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
 
@@ -375,7 +420,7 @@ def test_verify_rejects_wrong_key(tmp_path: pathlib.Path, monkeypatch: MonkeyPat
             str(input_path),
             '--signature',
             str(envelope_path),
-            '--key',
+            '--public-key',
             str(wrong_public_key_path),
         ],
     )
@@ -439,7 +484,7 @@ def test_verify_rejects_non_json_input(tmp_path: pathlib.Path, monkeypatch: Monk
             str(non_json_input_path),
             '--signature',
             str(envelope_path),
-            '--key',
+            '--public-key',
             str(public_key_path),
             '--subject-name',
             input_path.name,

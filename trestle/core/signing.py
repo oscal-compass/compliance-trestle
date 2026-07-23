@@ -150,6 +150,16 @@ def verify_oscal_provenance_envelope(
     return statement
 
 
+def verify_dsse_payload(envelope: Dict[str, Any], public_key: Key) -> bytes:
+    """Verify a DSSE envelope signature and return its payload bytes."""
+    return _verified_payload(envelope, public_key)
+
+
+def load_in_toto_statement(payload: bytes) -> Dict[str, Any]:
+    """Load a verified DSSE payload as an in-toto Statement object."""
+    return _load_statement(payload)
+
+
 def _verified_payload(envelope: Dict[str, Any], public_key: Key) -> bytes:
     payload_type = envelope.get('payloadType')
     if payload_type != DSSE_PAYLOAD_TYPE:
