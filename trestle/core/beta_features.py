@@ -58,7 +58,17 @@ BETA_FEATURES: Dict[str, BetaFeature] = {
         documentation_url='https://oscal-compass.github.io/compliance-trestle/tutorials/cli/#trestle-sign',
         enabled_by_default=False,
         deprecation_version=None,
-    )
+    ),
+    'json-manifest-signing': BetaFeature(
+        name='json-manifest-signing',
+        description='Sign and verify JSON package manifests for JSON artifacts with detached DSSE envelopes.',
+        commands=['trestle sign-manifest', 'trestle verify-manifest'],
+        since_version='4.0.3',
+        stability='beta',
+        documentation_url='https://oscal-compass.github.io/compliance-trestle/tutorials/cli/#trestle-sign-manifest',
+        enabled_by_default=False,
+        deprecation_version=None,
+    ),
 }
 
 
