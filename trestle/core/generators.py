@@ -37,7 +37,6 @@ from trestle.oscal.common import Base64
 from trestle.oscal.common import Base64Datatype
 from trestle.oscal.common import Methods
 from trestle.oscal.common import ObservationTypeValidValues
-from trestle.oscal.common import OscalVersion
 from trestle.oscal.common import TaskValidValues
 from trestle.oscal.ssp import DateDatatype, DateAuthorized
 
@@ -433,16 +432,27 @@ def generate_sample_model(
                 sample_value = generate_sample_model(first_type, include_optional=include_optional, depth=depth - 1)
                 return model(root=sample_value)  # type: ignore
             else:
-                # Non-union root type
-                # Check if it's another RootModel or OscalBaseModel
-                if safe_is_sub(root_type, OscalBaseModel) or (
-                    hasattr(root_type, 'model_fields') and 'root' in root_type.model_fields
-                ):
+                # Non-union root type.
+                # Derive a field-name context from the current model's class name so that
+                # field-name-sensitive handlers (e.g. oscal_version → OSCAL_VERSION) fire
+                # correctly even when the value is buried inside a chain of RootModels.
+                field_name_ctx = str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
+
+                if safe_is_sub(root_type, OscalBaseModel):
                     sample_value = generate_sample_model(root_type, include_optional=include_optional, depth=depth - 1)
                     return model(root=sample_value)  # type: ignore
+                elif hasattr(root_type, 'model_fields') and 'root' in root_type.model_fields:
+                    # Nested RootModel (e.g. OscalVersion → StringDatatype → constr).
+                    # Resolve the leaf value directly using our field-name context so the
+                    # context is not lost through another recursive call.
+                    leaf_fi = root_type.model_fields['root']
+                    leaf_type = leaf_fi.annotation
+                    leaf_value = generate_sample_value_by_type(leaf_type, field_name_ctx)
+                    sample_value = root_type(root=leaf_value)
+                    return model(root=sample_value)  # type: ignore
                 else:
-                    # For all other types (including simple types), generate a sample value
-                    sample_value = generate_sample_value_by_type(root_type, '')
+                    # For all other types (including simple types), generate a sample value.
+                    sample_value = generate_sample_value_by_type(root_type, field_name_ctx)
                     return model(root=sample_value)  # type: ignore
 
     model_dict = {}
@@ -451,9 +461,6 @@ def generate_sample_model(
     # the only type of collection possible after OSCAL 1.0.0 is list
     if safe_is_sub(model, OscalBaseModel):
         for field in model.model_fields:
-            if model_type in [OscalVersion]:
-                model_dict[field] = OSCAL_VERSION
-                break
             # Special handling for include_all field - only skip if it's optional
             field_info = model.model_fields[field]
             if field == 'include_all':
