@@ -281,7 +281,7 @@ jobs:
 
     - name: Generate SLSA build provenance
       if: steps.release.outputs.released == 'true'
-      uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
       with:
         subject-path: "dist/*"
 
