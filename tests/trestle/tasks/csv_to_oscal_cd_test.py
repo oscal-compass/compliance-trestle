@@ -1528,7 +1528,7 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     assert component.props[1].value == 'validation-check-id'
     assert component.props[2].name == 'Check_Description'
     assert component.props[2].value == 'validation-check-description'
-    assert component.control_implementations is None or len(component.control_implementations) == 0
+    assert component.control_implementations is None
 
 
 @set_cwd_unsafe(root_dir)
