@@ -183,7 +183,7 @@ class CatalogWriter:
                     if new_dict[const.GUIDELINES] is None:
                         new_dict.pop(const.GUIDELINES)
                     if const.AGGREGATES in [prop.name for prop in as_list(orig_param.props)]:
-                        new_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)
+                        new_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN, None)
             else:
                 # if the profile doesnt change this param at all, show it in the header with values
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)

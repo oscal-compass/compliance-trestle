@@ -5,11 +5,14 @@ description: An introductory tutorial into trestle's CLI and OSCAL use cases
 
 # trestle CLI Overview and OSCAL usecases
 
-The trestle CLI has three primary use cases:
+The trestle CLI has six primary use cases:
 
 - Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle split`, `trestle merge`.
 - Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
 - Allow governance of markdown documents so they conform to specific style or structure requirements.
+- Canonicalize JSON documents with `trestle canonicalize`. See [Canonicalizing JSON documents](canonicalization.md).
+- Manage experimental commands with `trestle beta`.
+- Sign and verify JSON artifacts with detached DSSE envelopes.
 
 To support each of these use cases trestle creates an opinionated directory structure to manage governed documents.
 
@@ -118,11 +121,11 @@ Users can query the contents of files using `trestle describe`, and probe the co
 
 OSCAL models are rich and contain multiple nested data structures. Given this, a mechanism is required to address _elements_ /_attributes_ within an oscal object.
 
-This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestle's underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL-Reference/models/latest/complete/json-outline/) to understand object names in trestle.
+This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestle's underlying object model name. Users can refer to [NIST's OSCAL model reference](https://pages.nist.gov/OSCAL-Reference/models/) to understand object names in trestle.
 
 ### Rules for element path
 
-1. Element path is an expression of the attribute names, [in json form](https://pages.nist.gov/OSCAL-Reference/models/latest/complete/json-outline/) , concatenated by a period (`.`).
+1. Element path is an expression of the attribute names, [in json form](https://pages.nist.gov/OSCAL-Reference/models/) , concatenated by a period (`.`).
    1. E.g. The metadata in a catalog is referred to as `catalog.metadata`
 1. Element paths are relative to the file.
    1. e.g. For `metadata.json` roles would be referred to as `metadata.roles`, from the catalog file that would be `catalog.metadata.roles`
@@ -149,6 +152,7 @@ This command will return the current version of Trestle and OSCAL it is using.
 Running `trestle version` will return:
 
 > Trestle version v3.x.x based on OSCAL version 1.1.2
+> Beta features enabled: none
 
 It can also be used to retrieve the metadata version of the OSCAL object:
 
@@ -177,6 +181,34 @@ It can also be used to retrieve the metadata version of the OSCAL object:
 Running `trestle version -n nist -t catalog` will return:
 
 > Version of OSCAL object of nist catalog is: 1.1.2
+
+## `trestle beta`
+
+This command manages experimental features that are available for early testing. Beta features are opt-in and may change
+before they become stable.
+
+Use `trestle beta query` to list registered beta features and their current status. Use
+`trestle beta query --verbose` for descriptions, commands, and documentation links.
+
+```bash
+trestle beta query
+trestle beta query --verbose
+```
+
+Use `trestle beta enable <feature>` and `trestle beta disable <feature>` to manage a feature.
+
+```bash
+trestle beta enable example-feature
+trestle beta disable example-feature
+```
+
+Use `--beta` on a beta command to run it one time without writing beta state to config. Commands that are not beta
+features will warn that `--beta` is only effective for beta level commands, but will otherwise proceed normally.
+
+When the current directory is inside a trestle workspace, beta feature state is stored in `.trestle/config.ini`.
+Outside a workspace, trestle uses the user-level beta config file:
+`$XDG_CONFIG_HOME/trestle/beta.ini`, or `~/.config/trestle/beta.ini` when `XDG_CONFIG_HOME` is not set. On Windows,
+the file is `%APPDATA%\trestle\beta.ini`.
 
 ## `trestle init`
 
@@ -267,7 +299,7 @@ In addition, `trestle create` can create new components within an existing file 
 
 For example,
 
-`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle create -f ./catalog.json -e catalog.metadata.roles `
+`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle create -f ./catalog.json -e catalog.metadata.roles`
 
 will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
 
@@ -561,6 +593,133 @@ By default validate will display warning messages and a message indicating the f
 
 The links validator is special because it always returns success that the file is valid - but it will list any inconsistencies it finds between the
 references to links, and corresponding links in the backmatter.
+
+## `trestle sign`
+
+Trestle sign writes a detached DSSE envelope for a JSON file. It canonicalizes the JSON using RFC 8785, computes a SHA-256 digest, records that digest in an in-toto Statement, and signs the Statement with a PEM private key.
+
+The sign and verify commands are beta features. Enable them before use:
+
+```bash
+trestle beta enable json-signing
+```
+
+You can also pass `--beta` to `trestle sign` or `trestle verify` to run the beta command one time without writing beta state to config.
+
+Generate an Ed25519 private/public key pair with OpenSSL:
+
+```bash
+openssl genpkey -algorithm ed25519 -out private.pem
+openssl pkey -in private.pem -pubout -out public.pem
+chmod 600 private.pem
+```
+
+The private key is used for signing. Keep it secret. The public key can be shared with users or systems that need to verify signatures.
+
+```bash
+trestle sign \
+  -f catalog.json \
+  --key private.pem \
+  -o catalog.json.dsse
+```
+
+For an encrypted private key, use `--key-password-env`. The option names an environment variable that contains the password, so the password is not passed as a command-line argument.
+
+```bash
+export TRESTLE_KEY_PASSWORD='replace-with-your-password'
+openssl genpkey -algorithm ed25519 -aes-256-cbc -pass env:TRESTLE_KEY_PASSWORD -out private-encrypted.pem
+openssl pkey -in private-encrypted.pem -passin env:TRESTLE_KEY_PASSWORD -pubout -out public.pem
+chmod 600 private-encrypted.pem
+trestle sign \
+  -f catalog.json \
+  --key private-encrypted.pem \
+  --key-password-env TRESTLE_KEY_PASSWORD \
+  -o catalog.json.dsse
+```
+
+RSA PEM keys may also be used.
+
+The `--subject-name` option records a subject name other than the input file name. Verification must use the same subject name.
+
+The signed Statement uses the [OSCAL signing predicate](../predicates/oscal-signing/v1.md).
+
+## `trestle verify`
+
+Trestle verify checks a JSON file against a detached DSSE envelope and a PEM public key. Verification checks the DSSE signature, the predicate fields, and the SHA-256 digest of the RFC 8785 canonical JSON bytes.
+
+```bash
+trestle verify \
+  -f catalog.json \
+  --signature catalog.json.dsse \
+  --public-key public.pem
+```
+
+If signing used `--subject-name`, pass the same value during verification.
+
+## `trestle sign-manifest`
+
+Trestle sign-manifest writes a detached DSSE envelope for a JSON package manifest. The manifest lists related JSON artifacts. Trestle canonicalizes each artifact using RFC 8785, records each SHA-256 digest in an in-toto Statement, and signs the package Statement with a PEM private key.
+
+The sign-manifest and verify-manifest commands are beta features. Enable them before use:
+
+```bash
+trestle beta enable json-manifest-signing
+```
+
+Example package manifest:
+
+```json
+{
+  "primaryArtifact": "ssp.json",
+  "artifacts": [
+    {
+      "name": "ssp.json",
+      "uri": "ssp/ssp.json",
+      "mediaType": "application/oscal+json"
+    },
+    {
+      "name": "profile.json",
+      "uri": "profiles/profile.json",
+      "mediaType": "application/oscal+json"
+    },
+    {
+      "name": "catalog.json",
+      "uri": "catalogs/catalog.json",
+      "mediaType": "application/oscal+json"
+    }
+  ]
+}
+```
+
+The manifest format is defined by the [OSCAL Package Manifest v1 JSON Schema](../predicates/oscal-package/manifest-v1.schema.json).
+
+Trestle also requires `primaryArtifact` to name one listed artifact, artifact names to be unique, and each `uri` to identify an existing local JSON file within the manifest directory. Invalid JSON and duplicate JSON keys are rejected.
+
+Sign the package manifest:
+
+```bash
+trestle sign-manifest \
+  --manifest package.json \
+  --key private.pem \
+  -o package.dsse
+```
+
+For an encrypted private key, use `--key-password-env` as with `trestle sign`.
+
+The signed package Statement uses the [OSCAL package predicate](../predicates/oscal-package/v1.md).
+
+## `trestle verify-manifest`
+
+Trestle verify-manifest checks a JSON package manifest against a detached DSSE envelope and a PEM public key. Verification checks the package DSSE signature, requires the manifest metadata and artifact set to match the signed package Statement, and confirms that each current JSON artifact digest matches its signed digest.
+
+```bash
+trestle verify-manifest \
+  --manifest package.json \
+  --signature package.dsse \
+  --public-key public.pem
+```
+
+This first manifest signing flow verifies package digests only. Per-document signature requirements are expected to be added in a later workflow.
 
 ## `trestle tasks`
 
@@ -1412,7 +1571,7 @@ th, td {
 <tr>
 <td>ResourceTitle
 <td><ul>
-    <li>component.title    
+    <li>component.title
     <li>component.description
     <li>component.control-implementation.description + {text}
     </ul>
@@ -1431,7 +1590,7 @@ th, td {
     <li>implemented_requirement.property[name='goal_version'].value
     </ul>
 <td><ul>
-    <li>Value from spreadsheet is not currently used. 
+    <li>Value from spreadsheet is not currently used.
     <li>Value '1.0' is hard coded.
     </ul>
 <tr>
@@ -1449,7 +1608,7 @@ th, td {
     <li>implemented_requirement.set_parameter.values
     </ul>
 <td><ul>
-    <li>The expected text is of the following format: 
+    <li>The expected text is of the following format:
     <li>v0, [v1, v2...]
     <li>The value v0 is used.
     </ul>

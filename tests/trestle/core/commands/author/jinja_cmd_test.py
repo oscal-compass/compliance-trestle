@@ -16,12 +16,16 @@
 import os
 import pathlib
 import shutil
+from types import SimpleNamespace
+
+import pytest
 
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 
-from trestle.core.commands.author.jinja import _number_captions
+from trestle.common.err import TrestleError
+from trestle.core.commands.author.jinja import JinjaCmd, _number_captions
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
@@ -295,3 +299,157 @@ def test_jinja_with_template_only(
         node1 = tree.get_node_for_key('# A')
         node2 = tree.get_node_for_key('# C')
         assert node1.subnodes[0].key == node2.subnodes[0].key
+
+
+def test_jinja_path_traversal_protection(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test that path traversal attacks are blocked in jinja command."""
+    from trestle.core.remote.security import PathSecurityValidator
+
+    # Test path validation directly to ensure 100% coverage of the validation code
+    # Test 1: Path traversal with ../ should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / '../../../etc/passwd'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+    assert 'Path traversal blocked' in str(exc_info.value)
+
+    # Test 2: Path traversal with multiple ../ should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / 'subdir/../../poc.txt'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 3: Absolute path should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = pathlib.Path('/tmp/attack.md')
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 4: Complex traversal should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / 'a/b/c/../../../../etc/passwd'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 5: Valid relative path should succeed
+    output_file = tmp_trestle_dir / 'output/valid.md'
+    PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)  # Should not raise
+
+
+def test_jinja_docs_profile_path_traversal_protection(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that path traversal attacks are blocked in jinja docs-profile mode."""
+    from trestle.core.remote.security import PathSecurityValidator
+
+    # Test validation for multi-file output paths
+    # Test 1: Path traversal in output directory should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / '../../../etc/ac-1.md'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+    assert 'Path traversal blocked' in str(exc_info.value)
+
+    # Test 2: Complex path traversal should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / 'controls/../../tmp/ac-1.md'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 3: Directory creation path traversal should fail
+    with pytest.raises(TrestleError) as exc_info:
+        group_dir = tmp_trestle_dir / '../../../etc/malicious'
+        PathSecurityValidator.validate_local_path(group_dir, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 4: Valid relative path should succeed
+    output_file = tmp_trestle_dir / 'controls_output/ac/ac-1.md'
+    PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)  # Should not raise
+
+
+def test_render_template_does_not_recursively_evaluate_untrusted_data(tmp_path: pathlib.Path) -> None:
+    """Test that rendered attacker-controlled data is not re-evaluated as Jinja."""
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('Title: {{ ssp.metadata.title }}', encoding='utf-8')
+
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template(template_path.name)
+
+    lut = {
+        'ssp': SimpleNamespace(
+            metadata=SimpleNamespace(title="{{ namespace.__init__.__globals__.os.system('touch poc.txt') }}")
+        )
+    }
+
+    output = JinjaCmd.render_template(template, lut, tmp_path)
+
+    assert output.startswith('Title: {{ namespace.__init__.__globals__.os.system(')
+    assert 'touch poc.txt' in output
+    assert '{{' in output
+    assert '}}' in output
+    assert '&' in output
+    assert not (tmp_path / 'poc.txt').exists()
+
+
+def test_render_template_supports_trusted_include(tmp_path: pathlib.Path) -> None:
+    """Test that trusted template includes continue to work."""
+    include_path = tmp_path / 'partial.j2'
+    include_path.write_text('World', encoding='utf-8')
+
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text("Hello {% include 'partial.j2' %}", encoding='utf-8')
+
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template(template_path.name)
+
+    output = JinjaCmd.render_template(template, {}, tmp_path)
+
+    assert output == 'Hello World'
+
+
+def test_md_clean_include_blocks_dangerous_attribute_access(tmp_path: pathlib.Path) -> None:
+    """Test that SandboxedEnvironment blocks dangerous attribute access in md_clean_include."""
+    # Create a malicious markdown file with SSTI payload
+    malicious_md = tmp_path / 'malicious.md'
+    malicious_md.write_text(
+        '---\ntitle: test\n---\n\n# Malicious Content\n\nAttempting dangerous access: {{ "".__class__.__name__ }}\n',
+        encoding='utf-8',
+    )
+
+    # Create template that includes the malicious file
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('# Main Template\n\n{% md_clean_include "malicious.md" %}\n', encoding='utf-8')
+
+    # Attempt to render - should raise SecurityError
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template('template.j2')
+
+    with pytest.raises(Exception) as exc_info:
+        template.render()
+
+    # Verify it's a SecurityError blocking __class__ access
+    assert 'SecurityError' in str(type(exc_info.value).__name__) or '__class__' in str(exc_info.value)
+    assert 'unsafe' in str(exc_info.value).lower() or 'security' in str(exc_info.value).lower()
+
+
+def test_md_clean_include_allows_safe_variable_substitution(tmp_path: pathlib.Path) -> None:
+    """Test that legitimate variable substitution still works in md_clean_include."""
+    # Create markdown file with safe variable substitution
+    content_md = tmp_path / 'content.md'
+    content_md.write_text(
+        '---\ntitle: test\n---\n\n# Content\n\nProduct name: {{ product_name }}\nVersion: {{ version }}\n',
+        encoding='utf-8',
+    )
+
+    # Create template that includes the file
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('# Main Template\n\n{% md_clean_include "content.md" %}\n', encoding='utf-8')
+
+    # Render with safe variables
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template('template.j2')
+    output = template.render(product_name='Trestle', version='3.0')
+
+    # Verify variables were substituted
+    assert 'Product name: Trestle' in output
+    assert 'Version: 3.0' in output

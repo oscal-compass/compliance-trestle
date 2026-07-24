@@ -30,6 +30,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Tooling manage authoring and governance of markdown and drawio files within a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artifacts.
+- Detached signing and verification for JSON artifacts.
 
 ## Why Trestle
 
@@ -113,6 +114,10 @@ Please refer to the community [README](https://github.com/oscal-compass/communit
 
 Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/latest/contributing/mkdocs_contributing/) to get started.
 
+## Security
+
+For information about security features, best practices, and how to report security vulnerabilities, please see our [Security Policy](SECURITY.md).
+
 ## Code of Conduct
 
 Participation in the OSCAL Compass community is governed by the [Code of Conduct](https://github.com/oscal-compass/community/blob/main/CODE_OF_CONDUCT.md).
@@ -123,7 +128,7 @@ If you would like to see the detailed LICENSE click [here](LICENSE).
 Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
-# Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
+# Copyright (c) 2026 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

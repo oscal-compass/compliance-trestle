@@ -38,6 +38,7 @@ from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.component import ComponentAssemble
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -109,6 +110,9 @@ class SSPGenerate(AuthorCommonCommand):
             compdef_name_list = comma_sep_to_list(args.compdefs)
 
             md_path = trestle_root / args.output
+
+            # Validate output path to prevent path traversal
+            PathSecurityValidator.validate_local_path(md_path, trestle_root)
 
             return self._generate_ssp_markdown(
                 trestle_root,
@@ -452,17 +456,20 @@ class SSPAssemble(AuthorCommonCommand):
                         # compile all new uuids for new component definitions
                         comp_uuids = [x.uuid for x in comp_dict.values()]
                         for imp_requirement in as_list(ssp.control_implementation.implemented_requirements):
+                            imp_requirement.by_components = as_list(imp_requirement.by_components)
                             to_delete = []
                             for i, by_comp in enumerate(imp_requirement.by_components):
                                 if by_comp.component_uuid not in comp_uuids:
                                     logger.warning(
                                         f'By_component {by_comp.component_uuid} removed from implemented requirement '
-                                        f'{imp_requirement.control_id} because the corresponding component is not in '
+                                        f'{imp_requirement.control_id} ({imp_requirement.uuid}) because the corresponding '
+                                        'component is not in '
                                         'the specified compdefs '
                                     )
                                     to_delete.append(i)
                             if to_delete:
                                 delete_list_from_list(imp_requirement.by_components, to_delete)
+                            imp_requirement.by_components = none_if_empty(imp_requirement.by_components)
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
             ssp_comp.props = as_list(gen_comp.props)
             ssp_comp.props.extend(all_ci_props)
