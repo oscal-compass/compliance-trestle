@@ -17,7 +17,7 @@ jobs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
     steps:
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
@@ -52,7 +52,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
@@ -134,7 +134,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 0
         submodules: true
@@ -194,7 +194,7 @@ jobs:
       with:
         app-id: ${{ secrets.APP_ID }}
         private-key: ${{ secrets.PRIVATE_KEY }}
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         submodules: true
         fetch-depth: 0
@@ -318,7 +318,7 @@ jobs:
       with:
         app-id: ${{ secrets.APP_ID }}
         private-key: ${{ secrets.PRIVATE_KEY }}
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         submodules: true
         ref: main
