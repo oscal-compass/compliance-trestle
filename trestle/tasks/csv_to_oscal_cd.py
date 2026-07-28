@@ -1224,33 +1224,25 @@ class _CdMgr:
 
     def get_component(self, component_title: str, component_type: str, component_description: str) -> DefinedComponent:
         """Get component."""
-        # Normalize component_type to lowercase to match enum values
-        normalized_type = component_type.lower().strip()
-        # Convert string to enum member for Pydantic v2
         from trestle.oscal.component import DefinedComponentTypeValidValues
         from trestle.oscal.common import StringDatatype
 
         try:
-            type_enum = DefinedComponentTypeValidValues(normalized_type)
+            type_enum = DefinedComponentTypeValidValues(component_type)
         except ValueError:
             # If not a valid enum value, wrap in StringDatatype for Pydantic v2
-            type_enum = StringDatatype(normalized_type)
+            type_enum = StringDatatype(component_type)
 
         for component in self._component_definition.components:
-            # Compare types: handle both enum and StringDatatype cases
             # Pydantic v2: component.type can be either enum or StringDatatype
             type_matches = False
             if isinstance(component.type, DefinedComponentTypeValidValues):
-                # Component type is enum, compare directly
                 type_matches = component.type == type_enum
             elif isinstance(component.type, StringDatatype):
-                # Component type is StringDatatype, unwrap and compare
                 if isinstance(type_enum, DefinedComponentTypeValidValues):
-                    # Comparing StringDatatype to enum: compare string values
-                    type_matches = component.type.root.lower() == type_enum.value.lower()
+                    type_matches = component.type.root == type_enum.value
                 else:
-                    # Both are StringDatatype: compare root values
-                    type_matches = component.type.root.lower() == type_enum.root.lower()
+                    type_matches = component.type.root == type_enum.root
 
             if component.title == component_title and type_matches:
                 logger.debug(f'located component: title={component.title} type={component.type}')
@@ -1266,34 +1258,26 @@ class _CdMgr:
 
     def find_component(self, component_title: str, component_type: str) -> DefinedComponent:
         """Find component."""
-        # Normalize component_type to lowercase to match enum values
-        normalized_type = component_type.lower().strip()
-        # Convert string to enum member for Pydantic v2
         from trestle.oscal.component import DefinedComponentTypeValidValues
         from trestle.oscal.common import StringDatatype
 
         try:
-            type_enum = DefinedComponentTypeValidValues(normalized_type)
+            type_enum = DefinedComponentTypeValidValues(component_type)
         except ValueError:
             # If not a valid enum value, wrap in StringDatatype for Pydantic v2
-            type_enum = StringDatatype(normalized_type)
+            type_enum = StringDatatype(component_type)
 
         rval = None
         for component in self._component_definition.components:
-            # Compare types: handle both enum and StringDatatype cases
             # Pydantic v2: component.type can be either enum or StringDatatype
             type_matches = False
             if isinstance(component.type, DefinedComponentTypeValidValues):
-                # Component type is enum, compare directly
                 type_matches = component.type == type_enum
             elif isinstance(component.type, StringDatatype):
-                # Component type is StringDatatype, unwrap and compare
                 if isinstance(type_enum, DefinedComponentTypeValidValues):
-                    # Comparing StringDatatype to enum: compare string values
-                    type_matches = component.type.root.lower() == type_enum.value.lower()
+                    type_matches = component.type.root == type_enum.value
                 else:
-                    # Both are StringDatatype: compare root values
-                    type_matches = component.type.root.lower() == type_enum.root.lower()
+                    type_matches = component.type.root == type_enum.root
 
             if component.title == component_title and type_matches:
                 logger.debug(f'located component: title={component.title} type={component.type}')
