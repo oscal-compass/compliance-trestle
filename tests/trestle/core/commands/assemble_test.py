@@ -176,8 +176,7 @@ def test_assemble_missing_root_model_file_raises(tmp_trestle_dir: pathlib.Path) 
 
     with pytest.raises(err.TrestleError, match='No top level model file at'):
         AssembleCmd.assemble_model(
-            'catalog',
-            argparse.Namespace(trestle_root=tmp_trestle_dir, name=model_name, extension='json', verbose=0),
+            'catalog', argparse.Namespace(trestle_root=tmp_trestle_dir, name=model_name, extension='json', verbose=0)
         )
 
 

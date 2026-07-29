@@ -77,7 +77,12 @@ class AssembleCmd(CommandPlusDocs):
             # contruct path to the model file name
             root_model_dir = trestle_root / ModelUtils.model_type_to_model_dir(model_alias)
 
-            model_file_type = file_utils.get_contextual_file_type(root_model_dir / model_name)
+            try:
+                model_file_type = file_utils.get_contextual_file_type(root_model_dir / model_name)
+            except TrestleError:
+                # No files found in the model directory; construct a representative path for the error message
+                root_model_filepath = root_model_dir / model_name / f'{model_alias}.json'
+                raise TrestleError(f'No top level model file at {root_model_filepath}')
 
             model_file_name = f'{model_alias}{FileContentType.to_file_extension(model_file_type)}'
             root_model_filepath = root_model_dir / model_name / model_file_name
