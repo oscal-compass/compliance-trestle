@@ -28,6 +28,7 @@ from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators
 from trestle.core.commands.add import Add
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
@@ -93,6 +94,9 @@ class CreateCmd(CommandPlusDocs):
         plural_path = ModelUtils.model_type_to_model_dir(model_alias)
 
         desired_model_dir = trestle_root / plural_path / args.output
+
+        # Validate output path to prevent path traversal
+        PathSecurityValidator.validate_local_path(desired_model_dir, trestle_root)
 
         desired_model_path = desired_model_dir / (model_alias + '.' + args.extension)
 
