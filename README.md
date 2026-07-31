@@ -94,7 +94,7 @@ A collection of demos utilizing trestle can be found in the related project [com
 ### v5: stable (actively developed)
 
 - supports NIST OSCAL 1.2.1 as well as previous versions
-- employs pydantic in v2 mode
+- uses pydantic in v2 mode
 
 ### v4: stable (maintenance mode)
 
