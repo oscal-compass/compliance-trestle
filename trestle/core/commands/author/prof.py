@@ -235,29 +235,35 @@ class ProfileAssemble(AuthorCommonCommand):
             alter_dict[new_alter.control_id] = alter
 
     @staticmethod
+    def _create_alter_dict(existing_alters: List[prof.Alter]) -> Dict[str, prof.Alter]:
+        """Create dictionary of alters by control_id, removing existing adds."""
+        alter_dict = {}
+        for alter in existing_alters:
+            alter.adds = None
+            alter_dict[alter.control_id] = alter
+        return alter_dict
+
+    @staticmethod
+    def _filter_valid_alters(alters: List[prof.Alter]) -> List[prof.Alter]:
+        """Filter alters to keep only those with adds or removes."""
+        return list(filter(lambda alt: alt.adds or alt.removes, alters))
+
+    @staticmethod
     def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> bool:
         """Replace the alter adds in the orig_profile with the new ones and return True if changed."""
         changed = False
         if not profile.modify:
-            profile.modify = prof.Modify(alters=alters)
-            if alters:
-                changed = True
+            # In Pydantic v2, Modify.alters has min_length=1, so use None for empty list
+            profile.modify = prof.Modify(alters=alters if alters else None)
+            changed = bool(alters)
         elif not profile.modify.alters:
-            profile.modify.alters = alters
-            if alters:
-                changed = True
+            # In Pydantic v2, only set alters if not empty (min_length=1)
+            profile.modify.alters = alters if alters else None
+            changed = bool(alters)
         else:
-            alter_dict = {}
-            # if an alter has adds - remove them up front and build dict of alters by control id
-            for alter in profile.modify.alters:
-                alter.adds = None
-                alter_dict[alter.control_id] = alter
-            # now go through new alters and add them to each control in dict by control id
+            alter_dict = ProfileAssemble._create_alter_dict(profile.modify.alters)
             ProfileAssemble._update_alter_adds(profile, alters, alter_dict)
-            # get the new list of alters from the dict and update profile
-            new_alters = list(alter_dict.values())
-            # special case, if all adds were deleted remove such alters completely
-            new_alters = list(filter(lambda alt: alt.adds or alt.removes, new_alters))
+            new_alters = ProfileAssemble._filter_valid_alters(list(alter_dict.values()))
             if profile.modify.alters != new_alters:
                 changed = True
             profile.modify.alters = none_if_empty(new_alters)
@@ -287,7 +293,8 @@ class ProfileAssemble(AuthorCommonCommand):
                     set_param_dict = {'param_id': key}
                     if param.label:
                         set_param_dict['label'] = param.label
-                    if param.props:
+                    # Pydantic v2: Only add props if not empty (props has min_length=1)
+                    if param.props and len(param.props) > 0:
                         set_param_dict['props'] = param.props
                     # Add either values or select, not both
                     if hasattr(param, 'select') and param.select:
@@ -299,10 +306,14 @@ class ProfileAssemble(AuthorCommonCommand):
                         new_set_params.append(prof.SetParameters(**set_param_dict))
             if profile.modify.set_parameters != new_set_params:
                 changed = True
-            # sort the params first by control sorting then by param_id
-            profile.modify.set_parameters = sorted(
-                new_set_params, key=lambda param: (param_map[param.param_id], param.param_id)
-            )
+            # Pydantic v2: Only assign set_parameters if not empty (has min_length=1)
+            if new_set_params:
+                # sort the params first by control sorting then by param_id
+                profile.modify.set_parameters = sorted(
+                    new_set_params, key=lambda param: (param_map[param.param_id], param.param_id)
+                )
+            else:
+                profile.modify.set_parameters = None
         if profile.modify:
             profile.modify.set_parameters = none_if_empty(profile.modify.set_parameters)
         return changed
@@ -381,7 +392,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 part
                 for alter in found_alters
                 for add in as_list(alter.adds)
-                for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)  # type: ignore
+                for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)
             ]:
                 raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
 
@@ -619,6 +630,57 @@ class ProfileInherit(AuthorCommonCommand):
         return True
 
     @staticmethod
+    def _compute_control_sets(
+        catalog_api: CatalogAPI, leveraged_ssp: ssp.SystemSecurityPlan
+    ) -> tuple[Set[str], Set[str]]:
+        """Compute include and exclude control ID sets based on SSP inheritance.
+
+        Returns:
+            Tuple of (include_with_ids, exclude_with_ids)
+        """
+        exclude_with_ids: Set[str] = set()
+        components_by_id = ProfileInherit._create_components_by_id(leveraged_ssp)
+        catalog_control_ids: Set[str] = set(catalog_api._catalog_interface.get_control_ids())
+
+        for control_id in catalog_control_ids:
+            if control_id not in components_by_id:
+                continue
+            by_comps = components_by_id[control_id]
+            if by_comps is not None and ProfileInherit._is_inherited(by_comps):
+                exclude_with_ids.add(control_id)
+
+        include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
+        return include_with_ids, exclude_with_ids
+
+    @staticmethod
+    def _create_profile_import(include_with_ids: Set[str], exclude_with_ids: Set[str], local_path: str) -> prof.Import:
+        """Create appropriate Import variant based on control ID sets."""
+        if include_with_ids:
+            return prof.Import2(
+                href=const.TRESTLE_HREF_HEADING + local_path,
+                include_controls=[prof.SelectControl(with_ids=sorted(include_with_ids))],
+                exclude_controls=[prof.SelectControl(with_ids=sorted(exclude_with_ids))] if exclude_with_ids else None,
+            )
+        else:
+            # All controls are excluded, use Import1 with include_all
+            return prof.Import1(
+                href=const.TRESTLE_HREF_HEADING + local_path,
+                include_all=common.IncludeAll(),
+                exclude_controls=[prof.SelectControl(with_ids=sorted(exclude_with_ids))] if exclude_with_ids else None,
+            )
+
+    @staticmethod
+    def _load_leveraged_ssp(trestle_root: pathlib.Path, leveraged_ssp_name: str) -> ssp.SystemSecurityPlan:
+        """Load and validate the leveraged SSP."""
+        try:
+            leveraged_ssp, _ = load_validate_model_name(
+                trestle_root, leveraged_ssp_name, ssp.SystemSecurityPlan, FileContentType.JSON
+            )
+            return leveraged_ssp
+        except TrestleNotFoundError as e:
+            raise TrestleError(f'SSP {leveraged_ssp_name} not found: {e}')
+
+    @staticmethod
     def _create_components_by_id(leveraged_ssp: ssp.SystemSecurityPlan) -> Dict[str, List[ssp.ByComponent]]:
         components_by_id: Dict[str, List[ssp.ByComponent]] = {}
         for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
@@ -664,8 +726,24 @@ class ProfileInherit(AuthorCommonCommand):
 
         include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
 
-        orig_prof_import.include_controls = [prof.SelectControl(with_ids=sorted(include_with_ids))]
-        orig_prof_import.exclude_controls = [prof.SelectControl(with_ids=sorted(exclude_with_ids))]
+        # In Pydantic v2, SelectControl.with_ids has min_length=1, so we must check for empty sets
+        # Import1 has include_all, Import2 has include_controls
+        # We need to handle both types appropriately
+        if hasattr(orig_prof_import, 'include_controls'):
+            # This is Import2
+            if include_with_ids:
+                orig_prof_import.include_controls = [prof.SelectControl(with_ids=sorted(include_with_ids))]
+            # If include_with_ids is empty, we can't set include_controls (min_length=1)
+            # This shouldn't happen in practice for Import2, but if it does, we skip setting it
+        elif hasattr(orig_prof_import, 'include_all'):
+            # This is Import1 - it already has include_all, no need to modify it
+            pass
+
+        # Set exclude_controls if there are any to exclude
+        if exclude_with_ids:
+            orig_prof_import.exclude_controls = [prof.SelectControl(with_ids=sorted(exclude_with_ids))]
+        else:
+            orig_prof_import.exclude_controls = None
 
     def initialize_profile(
         self,
@@ -695,28 +773,17 @@ class ProfileInherit(AuthorCommonCommand):
             on inheritance information.
         """
         try:
-            result_profile: prof.Profile
-            existing_profile: Optional[prof.Profile] = None
-
+            # Load existing profile if it exists
             existing_profile_path = ModelUtils.get_model_path_for_name_and_class(
                 trestle_root, output_prof_name, prof.Profile
             )
-
-            # If a profile exists at the output path, use that as a starting point for a new profile.
-            # else create a new profile with minimal structure to avoid Import1 generation
+            existing_profile: Optional[prof.Profile] = None
             if existing_profile_path is not None:
                 existing_profile, _ = load_validate_model_name(
                     trestle_root, output_prof_name, prof.Profile, FileContentType.JSON
                 )
-                result_profile = copy.deepcopy(existing_profile)
-            else:
-                # Create a minimal profile with Import2 structure to avoid generate_sample_model creating Import1
-                result_profile = prof.Profile(
-                    uuid=str(uuid.uuid4()),
-                    metadata=gens.generate_sample_model(common.Metadata),
-                    imports=[],  # Will be set below with Import2
-                )
 
+            # Validate parent profile exists
             parent_prof_path = ModelUtils.get_model_path_for_name_and_class(
                 trestle_root, parent_prof_name, prof.Profile
             )
@@ -725,44 +792,29 @@ class ProfileInherit(AuthorCommonCommand):
                     f'Profile {parent_prof_name} does not exist.  An existing profile must be provided.'
                 )
 
-            local_path = f'profiles/{parent_prof_name}/profile.json'
-
-            leveraged_ssp: ssp.SystemSecurityPlan
-            try:
-                leveraged_ssp, _ = load_validate_model_name(
-                    trestle_root, leveraged_ssp_name, ssp.SystemSecurityPlan, FileContentType.JSON
-                )
-            except TrestleNotFoundError as e:
-                raise TrestleError(f'SSP {leveraged_ssp_name} not found: {e}')
-
+            # Load leveraged SSP and resolve catalog
+            leveraged_ssp = ProfileInherit._load_leveraged_ssp(trestle_root, leveraged_ssp_name)
             prof_resolver = ProfileResolver()
             catalog = prof_resolver.get_resolved_profile_catalog(
                 trestle_root, parent_prof_path, show_value_warnings=True
             )
             catalog_api = CatalogAPI(catalog=catalog)
 
-            # Determine which controls to include and exclude based on the SSP
-            exclude_with_ids: Set[str] = set()
-            components_by_id: Dict[str, List[ssp.ByComponent]] = ProfileInherit._create_components_by_id(leveraged_ssp)
-            catalog_control_ids: Set[str] = set(catalog_api._catalog_interface.get_control_ids())
+            # Compute control sets and create import
+            include_with_ids, exclude_with_ids = ProfileInherit._compute_control_sets(catalog_api, leveraged_ssp)
+            local_path = f'profiles/{parent_prof_name}/profile.json'
+            profile_import = ProfileInherit._create_profile_import(include_with_ids, exclude_with_ids, local_path)
 
-            for control_id in catalog_control_ids:
-                if control_id not in components_by_id:
-                    continue
-                by_comps: Optional[List[ssp.ByComponent]] = components_by_id[control_id]
-                if by_comps is not None and ProfileInherit._is_inherited(by_comps):
-                    exclude_with_ids.add(control_id)
-
-            include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
-
-            # Create Import2 variant with the computed control lists
-            profile_import: prof.Import = prof.Import2(
-                href=const.TRESTLE_HREF_HEADING + local_path,
-                include_controls=[prof.SelectControl(with_ids=sorted(include_with_ids))],
-                exclude_controls=[prof.SelectControl(with_ids=sorted(exclude_with_ids))] if exclude_with_ids else None,
-            )
-
-            result_profile.imports = [profile_import]
+            # Create or update result profile
+            if existing_profile:
+                result_profile = copy.deepcopy(existing_profile)
+                result_profile.imports = [profile_import]
+            else:
+                result_profile = prof.Profile(
+                    uuid=str(uuid.uuid4()),
+                    metadata=gens.generate_sample_model(common.Metadata),
+                    imports=[profile_import],
+                )
 
             if version:
                 result_profile.metadata.version = version

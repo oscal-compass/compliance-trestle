@@ -126,23 +126,34 @@ def row_property_builder(row: int, name: str, value, ns: str, class_: str, remar
     return prop
 
 
-def is_validation(component_type: str) -> bool:
+def _get_component_type_string(component_type) -> str:
+    """Extract string value from component type (handles StringDatatype RootModel and enum)."""
+    from trestle.oscal.common import StringDatatype
+    from trestle.oscal.component import DefinedComponentTypeValidValues
+
+    if isinstance(component_type, StringDatatype):
+        return component_type.root
+    elif isinstance(component_type, DefinedComponentTypeValidValues):
+        return component_type.value
+    else:
+        return str(component_type)
+
+
+def is_validation(component_type) -> bool:
     """Check for validation component."""
-    return component_type.lower().strip() == validation
+    type_str = _get_component_type_string(component_type)
+    return type_str.lower().strip() == validation
 
 
 def synthesize_rule_key(
-    component_title: str,
-    component_type: str,
-    rule_id: str,
-    check_id: Union[str, None],
-    target_component: Union[str, None],
+    component_title: str, component_type, rule_id: str, check_id: str | None, target_component: str | None
 ) -> tuple:
     """Synthesize rule_key."""
+    type_str = _get_component_type_string(component_type)
     if is_validation(component_type):
-        rval = (component_title, component_type, rule_id, check_id, target_component)
+        rval = (component_title, type_str, rule_id, check_id, target_component)
     else:
-        rval = (component_title, component_type, rule_id, None, None)
+        rval = (component_title, type_str, rule_id, None, None)
     return rval
 
 
@@ -466,19 +477,28 @@ class CsvToOscalComponentDefinition(TaskBase):
             # component
             component = self._cd_mgr.get_component(component_title, component_type, description)
             # props
-            component.props = self._delete_rule_props(component, rule_id)
+            deleted_props = self._delete_rule_props(component, rule_id)
+            # In Pydantic v2, props with min_length=1 cannot be empty list, must be None
+            component.props = deleted_props if deleted_props else None
 
     def _delete_rule_props(self, component: DefinedComponent, rule_id: str) -> List[Property]:
         """Delete rule props."""
         props = []
+        # In Pydantic v2, props with min_length=1 becomes None when empty, not []
+        if component.props is None:
+            return props
         rule_set = _RuleSetHelper.get_rule_set(component.props, rule_id)
         for prop in component.props:
             if prop.remarks != rule_set:
                 props.append(prop)
             elif prop.name in self._csv_mgr.get_parameter_id_column_names():
-                self._delete_rule_set_parameter(component, prop.value)
+                # In Pydantic v2, prop.value is StringDatatype (RootModel)
+                prop_value = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                self._delete_rule_set_parameter(component, prop_value)
             elif prop.name == RULE_ID:
-                self._delete_rule_implemented_requirement(component, prop.value)
+                # In Pydantic v2, prop.value is StringDatatype (RootModel)
+                prop_value = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                self._delete_rule_implemented_requirement(component, prop_value)
         return props
 
     def _control_implementation_generator(
@@ -508,49 +528,82 @@ class CsvToOscalComponentDefinition(TaskBase):
         control_implementations = component.control_implementations
         for control_implementation in self._control_implementation_generator(control_implementations):
             if control_implementation.set_parameters:
-                set_parameters = control_implementation.set_parameters
-                control_implementation.set_parameters = []
-                for set_parameter in set_parameters:
+                # Build new list with parameters that don't match parameter_id
+                new_set_parameters = []
+                for set_parameter in control_implementation.set_parameters:
                     if set_parameter.param_id != parameter_id:
-                        _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
-                if not len(control_implementation.set_parameters):
+                        _OscalHelper.add_set_parameter(new_set_parameters, set_parameter)
+                # Only update if we have parameters, otherwise set to None
+                if new_set_parameters:
+                    control_implementation.set_parameters = new_set_parameters
+                else:
                     control_implementation.set_parameters = None
+
+    def _has_content(self, implemented_requirement: ImplementedRequirement) -> bool:
+        """Check if implemented requirement has props or statements."""
+        return len(as_list(implemented_requirement.props)) > 0 or len(as_list(implemented_requirement.statements)) > 0
+
+    def _filter_implemented_requirements_by_rule(
+        self, implemented_requirements: List[ImplementedRequirement], rule_id: str
+    ) -> List[ImplementedRequirement]:
+        """Filter implemented requirements by removing the specified rule."""
+        new_implemented_requirements = []
+        for implemented_requirement in implemented_requirements:
+            self._delete_ir_props(implemented_requirement, rule_id)
+            self._delete_ir_statements(implemented_requirement, rule_id)
+            if self._has_content(implemented_requirement):
+                new_implemented_requirements.append(implemented_requirement)
+        return new_implemented_requirements
 
     def _delete_rule_implemented_requirement(self, component: DefinedComponent, rule_id: str) -> None:
         """Delete rule implemented_requirement."""
         control_implementations = component.control_implementations
-        component.control_implementations = []
+        # Pydantic v2: Build new list to avoid empty list validation error
+        new_control_implementations = []
         for control_implementation in self._control_implementation_generator(control_implementations):
             if control_implementation.implemented_requirements:
-                implemented_requirements = control_implementation.implemented_requirements
-                control_implementation.implemented_requirements = []
-                for implemented_requirement in implemented_requirements:
-                    self._delete_ir_props(implemented_requirement, rule_id)
-                    self._delete_ir_statements(implemented_requirement, rule_id)
-                    if len(as_list(implemented_requirement.props)) or len(as_list(implemented_requirement.statements)):
-                        control_implementation.implemented_requirements.append(implemented_requirement)
-            if len(as_list(control_implementation.implemented_requirements)):
-                component.control_implementations.append(control_implementation)
+                new_implemented_requirements = self._filter_implemented_requirements_by_rule(
+                    control_implementation.implemented_requirements, rule_id
+                )
+                # Pydantic v2: implemented_requirements is required with min_length=1
+                # Only include control_implementation if it has implemented_requirements
+                if new_implemented_requirements:
+                    control_implementation.implemented_requirements = new_implemented_requirements
+                    new_control_implementations.append(control_implementation)
+        # Pydantic v2: Only assign if not empty to avoid validation error
+        if new_control_implementations:
+            component.control_implementations = new_control_implementations
+        else:
+            component.control_implementations = None
 
     def _delete_ir_statements(self, implemented_requirement: ImplementedRequirement, rule_id: str) -> None:
         """Delete implemented-requirement statements."""
         if implemented_requirement.statements:
             statements = implemented_requirement.statements
-            implemented_requirement.statements = []
+            new_statements = []
             for statement in statements:
-                statement.props = self._delete_props(statement.props, rule_id)
-                if not len(statement.props):
+                # Pydantic v2: Check if result is empty before assigning to avoid validation error
+                deleted_props = self._delete_props(statement.props, rule_id)
+                if deleted_props:
+                    statement.props = deleted_props
+                else:
                     statement.props = None
                 if statement.props:
-                    implemented_requirement.statements.append(statement)
-            if not len(implemented_requirement.statements):
+                    new_statements.append(statement)
+            # Only set if not empty to avoid Pydantic v2 validation error
+            if new_statements:
+                implemented_requirement.statements = new_statements
+            else:
                 implemented_requirement.statements = None
 
     def _delete_ir_props(self, implemented_requirement: ImplementedRequirement, rule_id: str) -> None:
         """Delete implemented-requirement props."""
         if implemented_requirement.props:
-            implemented_requirement.props = self._delete_props(implemented_requirement.props, rule_id)
-            if not len(implemented_requirement.props):
+            # Pydantic v2: Check if result is empty before assigning to avoid validation error
+            deleted_props = self._delete_props(implemented_requirement.props, rule_id)
+            if deleted_props:
+                implemented_requirement.props = deleted_props
+            else:
                 implemented_requirement.props = None
 
     def _delete_props(self, props: List[Property], rule_id: str) -> List[property]:
@@ -571,9 +624,10 @@ class CsvToOscalComponentDefinition(TaskBase):
             component_description = self._csv_mgr.get_value(rule_key, COMPONENT_DESCRIPTION)
             # component
             component = self._cd_mgr.get_component(component_title, component_type, component_description)
-            # props
-            component.props = as_list(component.props)
-            component.props = component.props + self._create_rule_props(rule_key)
+            # props - build list before assignment to avoid empty list validation error
+            new_props = self._create_rule_props(rule_key)
+            props_list = as_list(component.props) + new_props
+            component.props = props_list
             # additional props, when not validation component
             if not self._is_validation(rule_key):
                 # control implementation
@@ -583,8 +637,9 @@ class CsvToOscalComponentDefinition(TaskBase):
                 # set-parameters
                 set_parameters = self._create_set_parameters(rule_key)
                 if set_parameters:
-                    control_implementation.set_parameters = as_list(control_implementation.set_parameters)
-                    _OscalHelper.add_set_parameters(control_implementation.set_parameters, set_parameters)
+                    set_params_list = as_list(control_implementation.set_parameters)
+                    _OscalHelper.add_set_parameters(set_params_list, set_parameters)
+                    control_implementation.set_parameters = set_params_list
                 # control-mappings
                 control_mappings = self._csv_mgr.get_value(rule_key, CONTROL_ID_LIST).split()
                 self._add_rule_prop(control_implementation, control_mappings, rule_key)
@@ -609,8 +664,8 @@ class CsvToOscalComponentDefinition(TaskBase):
             )
             part_id = derive_part_id(control_mapping)
             if part_id is None:
-                implemented_requirement.props = as_list(implemented_requirement.props)
-                implemented_requirement.props.append(prop)
+                props = as_list(implemented_requirement.props) + [prop]
+                implemented_requirement.props = props
             else:
                 statement = self._get_statement(implemented_requirement, part_id)
                 statement.props.append(prop)
@@ -651,14 +706,16 @@ class CsvToOscalComponentDefinition(TaskBase):
         self, component: DefinedComponent, source: str, description: str
     ) -> ControlImplementation:
         """Find or create control implementation."""
-        component.control_implementations = as_list(component.control_implementations)
-        for control_implementation in component.control_implementations:
+        control_implementations = as_list(component.control_implementations)
+        for control_implementation in control_implementations:
             if control_implementation.source == source and control_implementation.description == description:
                 return control_implementation
-        control_implementation = ControlImplementation(
+        # Use model_construct to bypass validation for empty implemented_requirements list
+        control_implementation = ControlImplementation.model_construct(
             uuid=str(uuid.uuid4()), source=source, description=description, implemented_requirements=[]
         )
-        component.control_implementations.append(control_implementation)
+        control_implementations.append(control_implementation)
+        component.control_implementations = control_implementations
         return control_implementation
 
     def _str_to_list(self, value: str) -> List[str]:
@@ -716,12 +773,14 @@ class CsvToOscalComponentDefinition(TaskBase):
 
     def _get_statement(self, implemented_requirement: ImplementedRequirement, part_id: str) -> Statement:
         """Find or create statement."""
-        implemented_requirement.statements = as_list(implemented_requirement.statements)
-        for statement in implemented_requirement.statements:
+        statements = as_list(implemented_requirement.statements)
+        for statement in statements:
             if statement.statement_id == part_id:
                 return statement
-        statement = Statement(uuid=str(uuid.uuid4()), statement_id=part_id, description='', props=[])
-        implemented_requirement.statements.append(statement)
+        # Use model_construct to bypass validation for empty props list
+        statement = Statement.model_construct(uuid=str(uuid.uuid4()), statement_id=part_id, description='', props=[])
+        statements.append(statement)
+        implemented_requirement.statements = statements
         return statement
 
     def rules_mod(self, mod_rules: List[str]) -> None:
@@ -772,13 +831,16 @@ class CsvToOscalComponentDefinition(TaskBase):
                 component_title, component_type, source, description
             )
             if control_implementation:
-                set_parameters = control_implementation.set_parameters
-                control_implementation.set_parameters = []
-                for set_parameter in self._set_parameter_generator(set_parameters):
+                # Build new list with parameters that don't match param_id
+                new_set_parameters = []
+                for set_parameter in self._set_parameter_generator(control_implementation.set_parameters):
                     if set_parameter.param_id == param_id:
                         continue
-                    _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
-                if control_implementation.set_parameters == []:
+                    _OscalHelper.add_set_parameter(new_set_parameters, set_parameter)
+                # Only update if we have parameters, otherwise set to None
+                if new_set_parameters:
+                    control_implementation.set_parameters = new_set_parameters
+                else:
                     control_implementation.set_parameters = None
 
     def set_params_add(self, add_set_params: List[str]) -> None:
@@ -794,12 +856,13 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
-            control_implementation.set_parameters = as_list(control_implementation.set_parameters)
             # add
+            set_params_list = as_list(control_implementation.set_parameters)
             rule_key = synthesize_rule_key(component_title, component_type, rule_id, None, None)
             values = [self._csv_mgr.get_default_value_by_id(rule_key, param_id)]
             set_parameter = SetParameter(param_id=param_id, values=values)
-            _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
+            _OscalHelper.add_set_parameter(set_params_list, set_parameter)
+            control_implementation.set_parameters = set_params_list
 
     def set_params_mod(self, mod_set_params: List[str]) -> None:
         """Set parameters modify."""
@@ -840,6 +903,60 @@ class CsvToOscalComponentDefinition(TaskBase):
             if control_implementation:
                 yield tokens
 
+    def _process_target_requirement(
+        self, implemented_requirement: ImplementedRequirement, rule_id: str, smt_id: str
+    ) -> Optional[ImplementedRequirement]:
+        """Process the target implemented requirement by removing the rule."""
+        implemented_requirement.statements = _OscalHelper.remove_rule_statement(
+            implemented_requirement.statements, rule_id, smt_id
+        )
+        # Get new props list after removing rule (handle None case)
+        new_props = (
+            _OscalHelper.remove_rule(implemented_requirement.props, rule_id) if implemented_requirement.props else []
+        )
+        # Only keep this requirement if it has props or statements
+        if new_props or implemented_requirement.statements:
+            # Only assign if new_props is not empty (Pydantic v2 requires min_length=1)
+            if new_props:
+                implemented_requirement.props = new_props
+            return implemented_requirement
+        return None
+
+    def _filter_implemented_requirements(
+        self, control_implementation: ControlImplementation, control_id: str, rule_id: str, smt_id: str
+    ) -> List[ImplementedRequirement]:
+        """Filter implemented requirements, removing the specified rule."""
+        new_implemented_requirements = []
+        for implemented_requirement in self._implemented_requirement_generator(
+            control_implementation.implemented_requirements
+        ):
+            if implemented_requirement.control_id == control_id:
+                processed = self._process_target_requirement(implemented_requirement, rule_id, smt_id)
+                if processed:
+                    new_implemented_requirements.append(processed)
+            else:
+                new_implemented_requirements.append(implemented_requirement)
+        return new_implemented_requirements
+
+    def _remove_empty_control_implementation(
+        self, component_title: str, component_type: str, source: str, description: str
+    ) -> None:
+        """Remove control implementation from component if it's empty."""
+        component = self._cd_mgr.get_component(component_title, component_type, None)
+        if not component.control_implementations:
+            return
+
+        new_control_implementations = [
+            ci
+            for ci in component.control_implementations
+            if not (ci.source == source and ci.description == description)
+        ]
+        # Only assign if list is not empty (Pydantic v2 requires min_length=1)
+        if new_control_implementations:
+            component.control_implementations = new_control_implementations
+        else:
+            component.control_implementations = None
+
     def control_mappings_del(self, del_control_mappings: List[str]) -> None:
         """Control mappings delete."""
         for tokens in self._control_mappings_generator(del_control_mappings):
@@ -849,23 +966,22 @@ class CsvToOscalComponentDefinition(TaskBase):
             source = tokens[3]
             description = tokens[4]
             smt_id = tokens[5]
-            # ctl-id
             control_id = derive_control_id(smt_id)
+
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
-            implemented_requirements = control_implementation.implemented_requirements
-            control_implementation.implemented_requirements = []
-            for implemented_requirement in self._implemented_requirement_generator(implemented_requirements):
-                if implemented_requirement.control_id == control_id:
-                    implemented_requirement.statements = _OscalHelper.remove_rule_statement(
-                        implemented_requirement.statements, rule_id, smt_id
-                    )
-                    implemented_requirement.props = _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
-                    if len(as_list(implemented_requirement.props)) or len(as_list(implemented_requirement.statements)):
-                        control_implementation.implemented_requirements.append(implemented_requirement)
-                else:
-                    control_implementation.implemented_requirements.append(implemented_requirement)
+
+            new_implemented_requirements = self._filter_implemented_requirements(
+                control_implementation, control_id, rule_id, smt_id
+            )
+
+            # Update the list - it must have at least 1 item per OSCAL schema
+            if new_implemented_requirements:
+                control_implementation.implemented_requirements = new_implemented_requirements
+            else:
+                # If no implemented requirements left, remove the control_implementation from component
+                self._remove_empty_control_implementation(component_title, component_type, source, description)
 
     def control_mappings_add(self, add_control_mappings: List[str]) -> None:
         """Control mappings add."""
@@ -889,11 +1005,18 @@ class CsvToOscalComponentDefinition(TaskBase):
             name = RULE_ID
             prop = Property(name=name, value=rule_id, ns=ns, class_=self.get_class(name))
             if smt_id == control_id:
-                implemented_requirement.props = as_list(implemented_requirement.props)
-                implemented_requirement.props.append(prop)
+                # Initialize props if None, or use existing list
+                if implemented_requirement.props is None:
+                    implemented_requirement.props = [prop]
+                else:
+                    implemented_requirement.props.append(prop)
             else:
                 statement = self._get_statement(implemented_requirement, smt_id)
-                statement.props.append(prop)
+                # Initialize props if None, or use existing list
+                if statement.props is None:
+                    statement.props = [prop]
+                else:
+                    statement.props.append(prop)
 
 
 class _OscalHelper:
@@ -921,16 +1044,36 @@ class _OscalHelper:
             set_parameter_list.append(set_parameter)
 
     @staticmethod
+    def _should_keep_statement(statement: Statement) -> bool:
+        """Check if statement should be kept based on its props."""
+        return statement.props is not None and len(statement.props) > 0
+
+    @staticmethod
+    def _process_target_statement(statement: Statement, rule_id: str) -> Optional[Statement]:
+        """Process the target statement by removing the rule."""
+        # Get new props after removing rule (handle None case)
+        new_props = _OscalHelper.remove_rule(statement.props, rule_id) if statement.props else []
+        # Only return statement if new_props is not empty (Pydantic v2 requires min_length=1)
+        if new_props:
+            statement.props = new_props
+            return statement
+        # If props becomes empty, don't include this statement
+        return None
+
+    @staticmethod
     def remove_rule_statement(statements: List[Statement], rule_id: str, smt_id: str) -> List[Statement]:
         """Remove rule from statements."""
-        rval = statements
-        if statements:
-            rval = []
-            for statement in statements:
-                if statement.statement_id == smt_id:
-                    statement.props = _OscalHelper.remove_rule(statement.props, rule_id)
-                if statement.props is not None and len(statement.props):
-                    rval.append(statement)
+        if not statements:
+            return statements
+
+        rval = []
+        for statement in statements:
+            if statement.statement_id == smt_id:
+                processed_statement = _OscalHelper._process_target_statement(statement, rule_id)
+                if processed_statement:
+                    rval.append(processed_statement)
+            elif _OscalHelper._should_keep_statement(statement):
+                rval.append(statement)
         return rval
 
     @staticmethod
@@ -1063,7 +1206,10 @@ class _CdMgr:
             metadata.version = version
         else:
             metadata = Metadata(title=title, last_modified=timestamp, oscal_version=OSCAL_VERSION, version=version)
-            self._component_definition = ComponentDefinition(uuid=str(uuid.uuid4()), metadata=metadata, components=[])
+            # Use model_construct to bypass validation for empty components list
+            self._component_definition = ComponentDefinition.model_construct(
+                uuid=str(uuid.uuid4()), metadata=metadata, components=[]
+            )
         #
         self._max_rule_set_number = -1
         self._cd_rules_map = {}
@@ -1078,16 +1224,33 @@ class _CdMgr:
 
     def get_component(self, component_title: str, component_type: str, component_description: str) -> DefinedComponent:
         """Get component."""
+        from trestle.oscal.component import DefinedComponentTypeValidValues
+        from trestle.oscal.common import StringDatatype
+
+        try:
+            type_enum = DefinedComponentTypeValidValues(component_type)
+        except ValueError:
+            # If not a valid enum value, wrap in StringDatatype for Pydantic v2
+            type_enum = StringDatatype(component_type)
+
         for component in self._component_definition.components:
-            if component.title == component_title and component.type == component_type:
+            # Pydantic v2: component.type can be either enum or StringDatatype
+            type_matches = False
+            if isinstance(component.type, DefinedComponentTypeValidValues):
+                type_matches = component.type == type_enum
+            elif isinstance(component.type, StringDatatype):
+                if isinstance(type_enum, DefinedComponentTypeValidValues):
+                    type_matches = component.type.root == type_enum.value
+                else:
+                    type_matches = component.type.root == type_enum.root
+
+            if component.title == component_title and type_matches:
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 return component
-        component = DefinedComponent(
-            uuid=str(uuid.uuid4()),
-            type=component_type,
-            title=component_title,
-            description=component_description,
-            control_implementations=[],
+        # Pydantic v2: Use model_construct without control_implementations
+        # It will be added later when rules are processed
+        component = DefinedComponent.model_construct(
+            uuid=str(uuid.uuid4()), type=type_enum, title=component_title, description=component_description
         )
         self._component_definition.components.append(component)
         logger.debug(f'created component: title={component.title} type={component.type}')
@@ -1095,9 +1258,28 @@ class _CdMgr:
 
     def find_component(self, component_title: str, component_type: str) -> DefinedComponent:
         """Find component."""
+        from trestle.oscal.component import DefinedComponentTypeValidValues
+        from trestle.oscal.common import StringDatatype
+
+        try:
+            type_enum = DefinedComponentTypeValidValues(component_type)
+        except ValueError:
+            # If not a valid enum value, wrap in StringDatatype for Pydantic v2
+            type_enum = StringDatatype(component_type)
+
         rval = None
         for component in self._component_definition.components:
-            if component.title == component_title and component.type == component_type:
+            # Pydantic v2: component.type can be either enum or StringDatatype
+            type_matches = False
+            if isinstance(component.type, DefinedComponentTypeValidValues):
+                type_matches = component.type == type_enum
+            elif isinstance(component.type, StringDatatype):
+                if isinstance(type_enum, DefinedComponentTypeValidValues):
+                    type_matches = component.type.root == type_enum.value
+                else:
+                    type_matches = component.type.root == type_enum.root
+
+            if component.title == component_title and type_matches:
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 rval = component
                 break
@@ -1125,12 +1307,25 @@ class _CdMgr:
         """Remove empty components."""
         component_definition = self._component_definition
         components = component_definition.components
-        component_definition.components = []
+        # Build new components list to avoid Pydantic v2 validation on empty list
+        new_components = []
         for component in components:
-            if component.props is None or len(component.props) == 0:
-                if component.control_implementations is None or len(component.control_implementations) == 0:
-                    continue
-            component_definition.components.append(component)
+            # Check if component has no props (None or empty list)
+            has_no_props = component.props is None or len(component.props) == 0
+            # Check if component has no control_implementations (None or empty list)
+            has_no_control_impls = (
+                component.control_implementations is None or len(component.control_implementations) == 0
+            )
+            # Skip component if it has neither props nor control_implementations
+            if has_no_props and has_no_control_impls:
+                continue
+            new_components.append(component)
+        # Update components list (could be empty, which sets it to None, or non-empty list)
+        if new_components:
+            component_definition.components = new_components
+        else:
+            # If all components were removed, set to None (can't set to empty list due to min_length=1)
+            component_definition.components = None
 
     def get_max_rule_set_number(self) -> int:
         """Get max rule set number."""
@@ -1165,7 +1360,9 @@ class _CdMgr:
         if component.props:
             for prop in component.props:
                 if prop.name == RULE_ID:
-                    key = synthesize_rule_key(component.title, component.type, prop.value, None, None)
+                    # In Pydantic v2, prop.value is StringDatatype (RootModel), need to unwrap it
+                    prop_value = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                    key = synthesize_rule_key(component.title, component.type, prop_value, None, None)
                     value = prop.remarks
                     self._cd_rules_map[key] = value
                     logger.debug(f'cd: {key} {self._cd_rules_map[key]}')
@@ -1180,9 +1377,11 @@ class _CdMgr:
         if control_implementation.set_parameters:
             for set_parameter in control_implementation.set_parameters:
                 rule_id = self._get_rule_id(component, set_parameter.param_id)
+                # In Pydantic v2, component.type is StringDatatype (RootModel), need to unwrap it
+                component_type_str = _get_component_type_string(component.type)
                 key = (
                     component.title,
-                    component.type,
+                    component_type_str,
                     rule_id,
                     control_implementation.source,
                     control_implementation.description,
@@ -1210,16 +1409,50 @@ class _CdMgr:
         if implemented_requirement.props:
             for prop in implemented_requirement.props:
                 if prop.name == RULE_ID:
-                    rule_id = prop.value
+                    # In Pydantic v2, prop.value and component.type are StringDatatype (RootModel)
+                    rule_id = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                    component_type_str = _get_component_type_string(component.type)
                     key = (
                         component.title,
-                        component.type,
+                        component_type_str,
                         rule_id,
                         control_implementation.source,
                         control_implementation.description,
                         implemented_requirement.control_id,
                     )
                     self._cd_controls_map[key] = prop
+
+    def _process_statement_props(
+        self, statement: Statement, component: DefinedComponent, control_implementation: ControlImplementation
+    ) -> None:
+        """Process properties for a single statement."""
+        if not statement.props:
+            return
+
+        for prop in statement.props:
+            if prop.name == RULE_ID:
+                self._add_control_mapping_entry(prop, statement, component, control_implementation)
+
+    def _add_control_mapping_entry(
+        self,
+        prop: Property,
+        statement: Statement,
+        component: DefinedComponent,
+        control_implementation: ControlImplementation,
+    ) -> None:
+        """Add a control mapping entry to the map."""
+        # In Pydantic v2, prop.value and component.type are StringDatatype (RootModel)
+        rule_id = prop.value.root if hasattr(prop.value, 'root') else prop.value
+        component_type_str = _get_component_type_string(component.type)
+        key = (
+            component.title,
+            component_type_str,
+            rule_id,
+            control_implementation.source,
+            control_implementation.description,
+            statement.statement_id,
+        )
+        self._cd_controls_map[key] = prop
 
     def accounting_control_mappings_statements(
         self,
@@ -1228,21 +1461,11 @@ class _CdMgr:
         implemented_requirement: ImplementedRequirement,
     ) -> None:
         """Accounting, control mappings statements."""
-        if implemented_requirement.statements:
-            for statement in implemented_requirement.statements:
-                if statement.props:
-                    for prop in statement.props:
-                        if prop.name == RULE_ID:
-                            rule_id = prop.value
-                            key = (
-                                component.title,
-                                component.type,
-                                rule_id,
-                                control_implementation.source,
-                                control_implementation.description,
-                                statement.statement_id,
-                            )
-                            self._cd_controls_map[key] = prop
+        if not implemented_requirement.statements:
+            return
+
+        for statement in implemented_requirement.statements:
+            self._process_statement_props(statement, component, control_implementation)
 
     def _get_rule_id(self, component: DefinedComponent, param_id: str) -> str:
         """Get rule_id for given param_id."""
@@ -1251,9 +1474,11 @@ class _CdMgr:
             map_ = {}
             rule_set = None
             for prop in component.props:
+                # In Pydantic v2, prop.value is StringDatatype (RootModel), need to unwrap it
+                prop_value = prop.value.root if hasattr(prop.value, 'root') else prop.value
                 if prop.name == 'Rule_Id':
-                    map_[prop.remarks] = prop.value
-                elif prop.name == 'Parameter_Id' and prop.value == param_id:
+                    map_[prop.remarks] = prop_value
+                elif prop.name == 'Parameter_Id' and prop_value == param_id:
                     rule_set = prop.remarks
             if rule_set:
                 rule_id = map_[rule_set]
@@ -1388,32 +1613,36 @@ class CsvColumn:
         return any(name.startswith(cname) for cname in CsvColumn._columns_parameter)
 
     @staticmethod
+    def _get_column_names(column_list: List[str]) -> List[str]:
+        """Generic method to get column names from a list.
+
+        Args:
+            column_list: The list of column names to return
+
+        Returns:
+            A copy of the column list
+        """
+        return list(column_list)
+
+    @staticmethod
     def get_required_column_names() -> List[str]:
         """Get required column names."""
-        rval = []
-        rval += CsvColumn._columns_required
-        return rval
+        return CsvColumn._get_column_names(CsvColumn._columns_required)
 
     @staticmethod
     def get_optional_column_names() -> List[str]:
         """Get optional column names."""
-        rval = []
-        rval += CsvColumn._columns_optional
-        return rval
+        return CsvColumn._get_column_names(CsvColumn._columns_optional)
 
     @staticmethod
     def get_parameter_column_names() -> List[str]:
         """Get parameter column names."""
-        rval = []
-        rval += CsvColumn._columns_parameters
-        return rval
+        return CsvColumn._get_column_names(CsvColumn._columns_parameters)
 
     @staticmethod
     def get_required_column_names_validation() -> List[str]:
         """Get required column names validation."""
-        rval = []
-        rval += CsvColumn._columns_required_validation
-        return rval
+        return CsvColumn._get_column_names(CsvColumn._columns_required_validation)
 
     _rule_property_column_names = [
         f'{RULE_ID}',
@@ -1451,22 +1680,26 @@ class CsvColumn:
     _columns_filtered = _columns_required_filtered + _columns_optional_filtered
 
     @staticmethod
+    def _get_filtered_column_names(column_names: List[str]) -> List[str]:
+        """Get filtered column names excluding predefined filtered columns.
+
+        Args:
+            column_names: The list of column names to filter
+
+        Returns:
+            List of column names that are not in the filtered list
+        """
+        return [name for name in column_names if name not in CsvColumn._columns_filtered]
+
+    @staticmethod
     def get_filtered_required_column_names() -> List[str]:
         """Get filtered required column names."""
-        rval = []
-        for column_name in CsvColumn.get_required_column_names():
-            if column_name not in CsvColumn._columns_filtered:
-                rval.append(column_name)
-        return rval
+        return CsvColumn._get_filtered_column_names(CsvColumn.get_required_column_names())
 
     @staticmethod
     def get_filtered_optional_column_names() -> List[str]:
         """Get filtered optional column names."""
-        rval = []
-        for column_name in CsvColumn.get_optional_column_names():
-            if column_name not in CsvColumn._columns_filtered:
-                rval.append(column_name)
-        return rval
+        return CsvColumn._get_filtered_column_names(CsvColumn.get_optional_column_names())
 
     _check_property_column_names = [f'{RULE_ID}', f'{CHECK_ID}', f'{CHECK_DESCRIPTION}', f'{TARGET_COMPONENT}']
 

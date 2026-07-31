@@ -1,0 +1,32 @@
+{
+  "profile": {
+    "uuid": "11111111-0000-4000-8000-000000000004",
+    "metadata": {
+      "title": "Invalid by-item-name profile",
+      "last-modified": "2022-06-01T00:00:00+00:00",
+      "version": "1.0",
+      "oscal-version": "1.0.4"
+    },
+    "imports": [
+      {
+        "href": "some-catalog.json",
+        "include-all": {}
+      }
+    ],
+    "merge": {
+      "flat": {}
+    },
+    "modify": {
+      "alters": [
+        {
+          "control-id": "ac-1",
+          "removes": [
+            {
+              "by-item-name": "assessment-objective"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

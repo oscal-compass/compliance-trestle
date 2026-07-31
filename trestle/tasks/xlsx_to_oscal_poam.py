@@ -640,7 +640,7 @@ class PoamBuilder:
             statement = str(statement_raw).strip() if isinstance(statement_raw, str) else str(statement_raw)
         else:
             statement = description
-        status = RiskStatus(__root__='open')  # Default status for Open POA&M Items sheet
+        status = RiskStatus(root='open')  # Default status for Open POA&M Items sheet
 
         # Properties
         props = []

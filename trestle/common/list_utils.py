@@ -22,7 +22,15 @@ from trestle.common.err import TrestleError
 
 
 def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
-    """Convert list or None object to itself or an empty list if none."""
+    """Convert list or None object to itself or an empty list if none.
+
+    Use this for safe iteration and list operations.
+
+    For Pydantic v2 models with min_length constraints, use this pattern:
+        temp_list = as_list(obj.field)  # Get working list
+        temp_list.append(item)           # Modify it
+        obj.field = none_if_empty(temp_list)  # Assign back, converting [] to None
+    """
     return list_or_none if list_or_none else []
 
 
@@ -58,8 +66,17 @@ def as_dict(dict_or_none: Optional[Dict[TG, TG2]]) -> Dict[TG, TG2]:
     return dict_or_none if dict_or_none else {}
 
 
-def none_if_empty(list_: List[TG]) -> Optional[List[TG]]:
-    """Convert to None if empty list."""
+def none_if_empty(list_: Optional[List[TG]]) -> Optional[List[TG]]:
+    """Convert to None if empty list, preserving None input.
+
+    This is the complement to as_list() for Pydantic v2 compatibility.
+    Use after building a list to ensure empty lists become None for fields with min_length constraints.
+
+    Pattern for Pydantic v2 field assignment:
+        temp_list = as_list(obj.field)  # Get list ([] if None)
+        temp_list.append(item)           # Modify
+        obj.field = none_if_empty(temp_list)  # Assign (None if empty)
+    """
     return list_ if list_ else None
 
 

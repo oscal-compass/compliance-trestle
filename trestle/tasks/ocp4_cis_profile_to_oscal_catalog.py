@@ -23,10 +23,11 @@ import traceback
 import uuid
 from typing import List, Optional, Tuple, ValuesView
 
-from pydantic.v1 import BaseModel, Field
+from pydantic import BaseModel, Field
 
 import trestle
 from trestle.common import const
+from trestle.common.list_utils import as_list, none_if_empty
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
@@ -137,29 +138,33 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
         # get root nodes
         root_nodes = self._get_root_nodes()
         # groups and controls
-        root = CatalogGroup1(title='root', groups=[])
+        root = CatalogGroup1(title='root')
+        root_groups = []
         for node in root_nodes:
             depth = self._depth(node.name)
             # Use Group2 for groups that will have controls, Group1 for groups that will have subgroups
             if depth == 2:
                 group = CatalogGroup2(title=f'{node.name} {node.description}')
-            else:
-                group = CatalogGroup1(title=f'{node.name} {node.description}')
-            root.groups.append(group)
-            if depth == 3:
-                self._add_groups(group, node.name, depth)
-            if depth == 2:
+                root_groups.append(group)
                 self._add_controls(group, node.name, depth)
+            elif depth == 3:
+                group = CatalogGroup1(title=f'{node.name} {node.description}')
+                root_groups.append(group)
+                self._add_groups(group, node.name, depth)
+        root.groups = none_if_empty(root_groups)
         # metadata
         metadata = Metadata(
             title=self._title, last_modified=self._timestamp, oscal_version=OSCAL_VERSION, version=trestle.__version__
         )
         # metadata links
         if metadata_links is not None:
-            metadata.links = []
+            links = []
             for item in metadata_links.split():
                 link = Link(href=item)
-                metadata.links.append(link)
+                links.append(link)
+            # Only set if not empty to avoid Pydantic v2 validation error
+            if links:
+                metadata.links = links
         # catalog
         catalog = Catalog(uuid=_uuid(), metadata=metadata, groups=root.groups)
         # write OSCAL ComponentDefinition to file
@@ -237,7 +242,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             depth = len(dots)
         return depth
 
-    def _add_controls(self, group: CatalogGroup1, prefix: str, depth: int):
+    def _add_controls(self, group: CatalogGroup2, prefix: str, depth: int):
         """Add controls to group."""
         controls = []
         for key in sorted(self._node_map.keys()):
@@ -250,8 +255,8 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
                     title = f'{node.name} {node.description}'
                     control = Control(id=id_, title=title)
                     controls.append(control)
-        if len(controls) > 0:
-            group.controls = controls
+        # Use none_if_empty for Pydantic v2 min_length constraint
+        group.controls = none_if_empty(controls)
 
     def _add_groups(self, group: CatalogGroup1, prefix: str, depth: int):
         """Add sub-groups to group."""
@@ -271,8 +276,8 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             groups.append(sub_group)
             sub_prefix = node.name
             self._add_controls(sub_group, sub_prefix, depth)
-        if len(groups) > 0:
-            group.groups = groups
+        # Use none_if_empty for Pydantic v2 min_length constraint
+        group.groups = none_if_empty(groups)
 
 
 def _uuid() -> str:

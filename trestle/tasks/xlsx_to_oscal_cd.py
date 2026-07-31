@@ -23,6 +23,7 @@ import traceback
 import uuid
 from typing import Dict, List, Optional
 
+from trestle.common.list_utils import as_list
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Parties1
@@ -147,7 +148,10 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 continue
             # component
             component_name = self.xlsx_helper.get_component_name(row)
-            component_type = 'Service'
+            # Use enum member for Pydantic v2
+            from trestle.oscal.component import DefinedComponentTypeValidValues
+
+            component_type = DefinedComponentTypeValidValues.service
             defined_component = self._get_defined_component(component_name, component_type)
             # parameter
             parameter_name, parameter_description = self.xlsx_helper.get_parameter_name_and_description(row)
@@ -162,13 +166,15 @@ class XlsxToOscalComponentDefinition(TaskBase):
             key = source + key_sep + description
             control_implementation = ci_map.get(key)
             if not control_implementation:
-                ci_map[key] = ControlImplementation(
+                # Use model_construct to bypass validation - implemented_requirements will be populated immediately after
+                ci_map[key] = ControlImplementation.model_construct(
                     uuid=str(uuid.uuid4()), source=source, description=description, implemented_requirements=[]
                 )
                 control_implementation = ci_map[key]
-                if defined_component.control_implementations is None:
-                    defined_component.control_implementations = []
-                defined_component.control_implementations.append(control_implementation)
+                # Use temporary list to avoid assigning empty list to field with min_length constraint
+                ci_list = as_list(defined_component.control_implementations)
+                ci_list.append(control_implementation)
+                defined_component.control_implementations = ci_list
             # implemented requirements
             self._add_implemented_requirements(
                 row, control_implementation, controls, component_name, parameter_name, responsible_roles, goal_name_id
@@ -259,11 +265,11 @@ class XlsxToOscalComponentDefinition(TaskBase):
         if parameter_name is not None:
             parameter_name = parameter_name.replace(' ', '_')
             if parameter_values is not None:
-                set_parameters = [SetParameter(param_id=parameter_name, values=parameter_values)]
-                if control_implementation.set_parameters is None:
-                    control_implementation.set_parameters = []
-                # set_parameters is a list
-                control_implementation.set_parameters.extend(set_parameters)
+                # Use temporary list to avoid assigning empty list to field with min_length constraint
+                sp_list = as_list(control_implementation.set_parameters)
+                set_parameter = SetParameter(param_id=parameter_name, values=parameter_values)
+                sp_list.append(set_parameter)
+                control_implementation.set_parameters = sp_list
 
     def _add_set_parameter_default(
         self, parameter_name: str, parameter_value_default: str, implemented_requirement: ImplementedRequirement
@@ -272,24 +278,33 @@ class XlsxToOscalComponentDefinition(TaskBase):
         if parameter_name is not None:
             parameter_name = parameter_name.replace(' ', '_')
             if parameter_value_default is not None:
-                if implemented_requirement.set_parameters is None:
-                    implemented_requirement.set_parameters = []
+                # Use temporary list to avoid assigning empty list to field with min_length constraint
+                sp_list = as_list(implemented_requirement.set_parameters)
                 values = [parameter_value_default]
                 set_parameter = SetParameter(param_id=parameter_name, values=values)
-                set_parameters = [set_parameter]
-                # set_parameters is a list
-                implemented_requirement.set_parameters.extend(set_parameters)
+                sp_list.append(set_parameter)
+                implemented_requirement.set_parameters = sp_list
 
-    def _get_defined_component(self, component_name: str, component_type: str) -> DefinedComponent:
+    def _get_defined_component(self, component_name: str, component_type) -> DefinedComponent:
         """Get defined component."""
-        key = component_name + key_sep + component_type
+        # Handle both string and enum types
+        from trestle.oscal.component import DefinedComponentTypeValidValues
+
+        if isinstance(component_type, DefinedComponentTypeValidValues):
+            type_value = component_type.value
+            type_enum = component_type
+        else:
+            type_value = component_type
+            type_enum = component_type
+
+        key = component_name + key_sep + type_value
         defined_component = self.defined_components.get(key)
         if not defined_component:
             # create new component
             component_title = component_name
             component_description = component_name
             defined_component = DefinedComponent(
-                uuid=str(uuid.uuid4()), description=component_description, title=component_title, type=component_type
+                uuid=str(uuid.uuid4()), description=component_description, title=component_title, type=type_enum
             )
             self.defined_components[key] = defined_component
         return defined_component

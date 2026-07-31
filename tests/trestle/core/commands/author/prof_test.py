@@ -23,6 +23,7 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from pydantic import AnyUrl
 from ruamel.yaml import YAML
 
 from tests import test_utils
@@ -151,9 +152,9 @@ def edit_files(control_path: pathlib.Path, change_parameters: bool, guid_dict: D
         assert file_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     if control_path.stem == 'ac-1':
         assert test_utils.replace_line_in_file_after_tag(
-            control_path, 'prop with ns', '    ns: https://my_new_namespace\n'
+            control_path, 'prop with ns', '    ns: https://my_new_namespace/\n'
         )
-        assert file_utils.insert_text_in_file(control_path, 'prop with no ns', '    ns: https://my_added_namespace\n')
+        assert file_utils.insert_text_in_file(control_path, 'prop with no ns', '    ns: https://my_added_namespace/\n')
     if change_parameters:
         # delete profile values for 4, then replace value for 3 with new value
         assert test_utils.substitute_text_in_file(control_path, 'officer', 'new value')
@@ -301,9 +302,11 @@ def test_profile_generate_assemble(
     assert ModelUtils.model_age(profile) < test_utils.NEW_MODEL_AGE_SECONDS
     # get the set_params from the assembled profile
     set_params = profile.modify.set_parameters
+
     if set_parameters_flag:
         assert set_params[2].values[0] == 'new value'
-        assert set_params[1].props[0].ns == const.TRESTLE_GENERIC_NS
+        # Pydantic v2: Compare AnyUrl objects directly
+        assert set_params[1].props[0].ns == AnyUrl(const.TRESTLE_GENERIC_NS)
         assert len(set_params) == 14
     else:
         # the original profile did not have ns set for this display name
@@ -316,15 +319,18 @@ def test_profile_generate_assemble(
     assert set_params[0].values[0] == 'all personnel'
     assert set_params[0].props[0].name == const.DISPLAY_NAME
     assert set_params[0].props[0].value.startswith('Pretty')
-    assert set_params[0].props[0].ns == const.TRESTLE_GENERIC_NS
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert set_params[0].props[0].ns == AnyUrl(const.TRESTLE_GENERIC_NS)
     assert set_params[1].param_id == 'ac-1_prm_2'
     assert set_params[1].values[0] == 'Organization-level'
     assert set_params[1].values[1] == 'System-level'
     assert set_params[1].props[0].name == const.DISPLAY_NAME
     assert set_params[2].param_id == 'ac-1_prm_3'
+
     add = profile.modify.alters[0].adds[0]
-    assert add.props[0].ns == 'https://my_new_namespace'
-    assert add.props[1].ns == 'https://my_added_namespace'
+    # Pydantic v2: Compare AnyUrl objects directly (with trailing slashes as Pydantic normalizes URLs)
+    assert add.props[0].ns == AnyUrl('https://my_new_namespace/')
+    assert add.props[1].ns == AnyUrl('https://my_added_namespace/')
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 
@@ -1086,6 +1092,8 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile/profile.json'
+    # When there are controls to include, Import2 is used
+    assert isinstance(result_prof.imports[0], prof.Import2)
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 2
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
@@ -1100,6 +1108,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_more/profile.json'
+    assert isinstance(result_prof.imports[0], prof.Import2)
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 3
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
@@ -1114,6 +1123,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_less/profile.json'
+    assert isinstance(result_prof.imports[0], prof.Import2)
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 1
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
@@ -1128,7 +1138,10 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_single/profile.json'
-    assert len(result_prof.imports[0].include_controls[0].with_ids) == 0
+    # When all controls are excluded (include_with_ids is empty), Import1 with include_all is used
+    # In Pydantic v2, we can't have empty with_ids list (min_length=1)
+    assert isinstance(result_prof.imports[0], prof.Import1)
+    assert result_prof.imports[0].include_all is not None
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
 
@@ -1165,28 +1178,27 @@ def test_profile_generate_assemble_parameter_aggregation(
 
     nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
 
-    appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.01'}
-    second_appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.02'}
-    third_appended_prop = {'name': 'alt-identifier', 'value': 'this_is_an_identifier'}
+    appended_prop = com.Property(name='aggregates', value='at-02_odp.01')
+    second_appended_prop = com.Property(name='aggregates', value='at-02_odp.02')
+    third_appended_prop = com.Property(name='alt-identifier', value='this_is_an_identifier')
     ac_1 = nist_cat.groups[0].controls[0]
-    ac_1.params[6].props = []
-    ac_1.params[6].props.append(appended_prop)
-    ac_1.params[6].props.append(second_appended_prop)
-    ac_1.params[6].props.append(third_appended_prop)
-    appended_extra_param = {
-        'id': 'at-02_odp.01',
-        'props': [{'name': 'label', 'value': 'AT-02_ODP[01]', 'class': 'sp800-53a'}],
-        'label': 'frequency',
-        'values': ['value-1', 'value-2'],
-        'guidelines': [{'prose': 'blah'}],
-    }
-    second_appended_extra_param = {
-        'id': 'at-02_odp.02',
-        'props': [{'name': 'label', 'value': 'AT-02_ODP[02]', 'class': 'sp800-53a'}],
-        'label': 'frequency',
-        'values': ['value-3', 'value-4'],
-        'guidelines': [{'prose': 'blah'}],
-    }
+    # Pydantic v2: Can't assign empty list to field with min_length=1, create list directly
+    ac_1.params[6].props = [appended_prop, second_appended_prop, third_appended_prop]
+    # Pydantic v2: Create proper Parameter objects instead of dicts to avoid serialization warnings
+    appended_extra_param = com.Parameter1(
+        id='at-02_odp.01',
+        props=[com.Property(name='label', value='AT-02_ODP[01]', class_='sp800-53a')],
+        label='frequency',
+        values=['value-1', 'value-2'],
+        guidelines=[com.ParameterGuideline(prose='blah')],
+    )
+    second_appended_extra_param = com.Parameter1(
+        id='at-02_odp.02',
+        props=[com.Property(name='label', value='AT-02_ODP[02]', class_='sp800-53a')],
+        label='frequency',
+        values=['value-3', 'value-4'],
+        guidelines=[com.ParameterGuideline(prose='blah')],
+    )
     ac_1.params.append(appended_extra_param)
     ac_1.params.append(second_appended_extra_param)
 
@@ -1281,7 +1293,11 @@ def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, mo
     }
 
     at_2 = nist_cat.groups[1].controls[1]
-    at_2.parts.append(assesment_objectives)
+    # Convert dict to Part object for Pydantic v2
+    from trestle.oscal.common import Part
+
+    assessment_part = Part.model_validate(assesment_objectives)
+    at_2.parts.append(assessment_part)
     ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
@@ -1492,3 +1508,127 @@ def test_profile_values_included_if_replaced(tmp_trestle_dir: pathlib.Path, monk
 
     # grabs 6 parameter in line and test out the value is in there
     assert 'Test value' in set_params[6].values
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/commands/author/prof.py
+# ---------------------------------------------------------------------------
+
+
+def test_profile_generate_statement_in_sections_dict(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileGenerate.generate_markdown lines 154-155: sections_dict with 'statement' returns error."""
+    cat_name = 'simplified_nist_catalog'
+    prof_name = 'comp_prof'
+    test_utils.load_from_json(tmp_trestle_dir, cat_name, cat_name, cat.Catalog)
+    test_utils.load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    prof_path = ModelUtils.get_model_path_for_name_and_class(tmp_trestle_dir, prof_name, prof.Profile)
+    from trestle.core.commands.common.return_codes import CmdReturnCodes
+
+    rc = ProfileGenerate().generate_markdown(
+        trestle_root=tmp_trestle_dir,
+        profile_path=prof_path,
+        markdown_path=tmp_trestle_dir / 'md_out',
+        yaml_header={},
+        overwrite_header_values=False,
+        sections_dict={'statement': 'The Statement'},
+        required_sections=None,
+    )
+    assert rc == CmdReturnCodes.COMMAND_ERROR.value
+
+
+def test_profile_assemble_update_alter_adds_existing_adds(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileAssemble._update_alter_adds line 231: existing alter.adds are extended."""
+    existing_add = prof.Add(parts=None, position='ending')
+    new_add = prof.Add(parts=None, position='starting')
+    alter1 = prof.Alter(control_id='ac-1', adds=[existing_add])
+    alter_dict = {'ac-1': alter1}
+    new_alter = prof.Alter(control_id='ac-1', adds=[new_add])
+    ProfileAssemble._update_alter_adds(None, [new_alter], alter_dict)
+    assert len(alter_dict['ac-1'].adds) == 2
+
+
+def test_profile_assemble_replace_modify_no_profile_modify(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileAssemble._replace_modify_set_params line 285: creates profile.modify when absent."""
+    from trestle.core.generators import generate_sample_model
+
+    profile = generate_sample_model(prof.Profile)
+    profile.modify = None
+    param_dict = {'ac-1_prm_1': {'values': ['myval'], 'id': 'ac-1_prm_1'}}
+    param_map = {'ac-1_prm_1': 'ac-1'}
+    changed = ProfileAssemble._replace_modify_set_params(profile, param_dict, param_map)
+    assert changed
+    assert profile.modify is not None
+
+
+def test_profile_assemble_replace_modify_set_params_with_select(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileAssemble._replace_modify_set_params lines 301-302: select creates SetParameters1."""
+    from trestle.core.generators import generate_sample_model
+    from trestle.oscal.common import ParameterSelection
+
+    profile = generate_sample_model(prof.Profile)
+    profile.modify = prof.Modify()
+    param_dict = {'ac-1_prm_1': {'select': {'how-many': 'one', 'choice': ['opt1', 'opt2']}, 'id': 'ac-1_prm_1'}}
+    param_map = {'ac-1_prm_1': 'ac-1'}
+    changed = ProfileAssemble._replace_modify_set_params(profile, param_dict, param_map)
+    assert changed
+    assert profile.modify.set_parameters[0].__class__.__name__ == 'SetParameters1'
+
+
+def test_profile_inherit_is_inherited_no_export() -> None:
+    """ProfileInherit._is_inherited line 619: comp with no export returns False."""
+    from trestle.core.generators import generate_sample_model
+    import trestle.oscal.ssp as ssp_mod
+
+    by_comp = generate_sample_model(ssp_mod.ByComponent)
+    by_comp.export = None
+    assert not ProfileInherit._is_inherited([by_comp])
+
+
+def test_profile_inherit_is_inherited_has_responsibilities() -> None:
+    """ProfileInherit._is_inherited line 622: comp with export.responsibilities returns False."""
+    from trestle.core.generators import generate_sample_model
+    import trestle.oscal.ssp as ssp_mod
+
+    by_comp = generate_sample_model(ssp_mod.ByComponent)
+    by_comp.export = generate_sample_model(ssp_mod.Export)
+    by_comp.export.responsibilities = [generate_sample_model(ssp_mod.Responsibility)]
+    assert not ProfileInherit._is_inherited([by_comp])
+
+
+def test_profile_inherit_is_inherited_no_provided() -> None:
+    """ProfileInherit._is_inherited line 625: comp with no export.provided returns False."""
+    from trestle.core.generators import generate_sample_model
+    import trestle.oscal.ssp as ssp_mod
+
+    by_comp = generate_sample_model(ssp_mod.ByComponent)
+    by_comp.export = generate_sample_model(ssp_mod.Export)
+    by_comp.export.responsibilities = None
+    by_comp.export.provided = None
+    assert not ProfileInherit._is_inherited([by_comp])
+
+
+def test_profile_inherit_is_inherited_not_implemented() -> None:
+    """ProfileInherit._is_inherited line 628: comp not in 'implemented' state returns False."""
+    from trestle.core.generators import generate_sample_model
+    import trestle.oscal.ssp as ssp_mod
+    from trestle.oscal.common import ImplementationStatus
+
+    by_comp = generate_sample_model(ssp_mod.ByComponent)
+    by_comp.export = generate_sample_model(ssp_mod.Export)
+    by_comp.export.responsibilities = None
+    by_comp.export.provided = [generate_sample_model(ssp_mod.Provided)]
+    by_comp.implementation_status = ImplementationStatus(state='partial')
+    assert not ProfileInherit._is_inherited([by_comp])
+
+
+def test_profile_inherit_create_profile_import_empty_include() -> None:
+    """ProfileInherit._create_profile_import lines 664-670: empty include_with_ids uses Import1 with include_all."""
+    result = ProfileInherit._create_profile_import(set(), {'ac-1', 'ac-2'}, 'my_catalog')
+    assert result.__class__.__name__ == 'Import1'
+    assert result.include_all is not None
+
+
+def test_profile_inherit_load_leveraged_ssp_not_found(tmp_trestle_dir: pathlib.Path) -> None:
+    """ProfileInherit._load_leveraged_ssp lines 680-681: missing SSP raises TrestleError."""
+    with pytest.raises(TrestleError, match='not found'):
+        ProfileInherit._load_leveraged_ssp(tmp_trestle_dir, 'nonexistent_ssp')

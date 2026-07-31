@@ -80,8 +80,9 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     # load_list is expected to return a list of array, instead of an instance of Groups class
     expected_groups = actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')
 
-    # FIXME confirm this is correct.  __root__ was not needed prior to updating oscal to dev branch
-    assert actual_groups == expected_groups.__root__
+    # Pydantic v2: RootModel uses 'root' instead of '__root__'
+    # FIXME confirm this is correct.  root was not needed prior to updating oscal to dev branch
+    assert actual_groups == expected_groups.root
 
 
 def test_load_distributed(testdata_dir, tmp_trestle_dir):
@@ -114,3 +115,66 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
         actual_model_type, actual_model_alias, actual_model_instance = ModelUtils.load_distributed(
             catalog_file, tmp_trestle_dir, Dict
         )
+
+
+def test_get_primary_model_instance_json(tmp_path):
+    """_get_primary_model_instance reads a plain JSON value for non-OscalBaseModel types."""
+    import json
+    from trestle.common.model_utils import ModelUtils
+
+    # Write a split-file style JSON: {"field-name": value}
+    json_file = tmp_path / 'field.json'
+    json_file.write_text(json.dumps({'last-modified': '2024-01-01T00:00:00+00:00'}), encoding='utf8')
+
+    # AwareDatetime has no oscal_read — the else branch is taken
+    from pydantic import AwareDatetime
+
+    result = ModelUtils._get_primary_model_instance(AwareDatetime, json_file)
+
+    assert result == '2024-01-01T00:00:00+00:00'
+
+
+def test_get_primary_model_instance_yaml(tmp_path):
+    """_get_primary_model_instance reads a plain YAML value for non-OscalBaseModel types."""
+    from trestle.common.model_utils import ModelUtils
+
+    yaml_file = tmp_path / 'field.yaml'
+    yaml_file.write_text('last-modified: "2024-06-15T12:00:00+00:00"\n', encoding='utf8')
+
+    from pydantic import AwareDatetime
+
+    result = ModelUtils._get_primary_model_instance(AwareDatetime, yaml_file)
+
+    assert result == '2024-06-15T12:00:00+00:00'
+
+
+def test_pluralized_alias_to_singular_irregular() -> None:
+    """'props' maps to its irregular singular 'property'."""
+    from trestle.common.model_utils import _pluralized_alias_to_singular
+
+    assert _pluralized_alias_to_singular('props') == 'property'
+
+
+def test_pluralized_alias_to_singular_ies() -> None:
+    """Aliases ending in '-ies' have the suffix replaced with '-y'."""
+    from trestle.common.model_utils import _pluralized_alias_to_singular
+
+    assert _pluralized_alias_to_singular('parties') == 'party'
+    assert _pluralized_alias_to_singular('capabilities') == 'capability'
+
+
+def test_pluralized_alias_to_singular_s() -> None:
+    """Aliases ending in 's' have the trailing 's' stripped."""
+    from trestle.common.model_utils import _pluralized_alias_to_singular
+
+    assert _pluralized_alias_to_singular('role-ids') == 'role-id'
+    assert _pluralized_alias_to_singular('addr-lines') == 'addr-line'
+    assert _pluralized_alias_to_singular('values') == 'value'
+
+
+def test_pluralized_alias_to_singular_no_suffix() -> None:
+    """Aliases with no recognized plural suffix are returned unchanged."""
+    from trestle.common.model_utils import _pluralized_alias_to_singular
+
+    assert _pluralized_alias_to_singular('select') == 'select'
+    assert _pluralized_alias_to_singular('method') == 'method'
