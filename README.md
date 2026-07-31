@@ -91,15 +91,21 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-### v4: stable (actively developed)
+### v5: stable (actively developed)
+
+- supports NIST OSCAL 1.2.1 as well as previous versions
+- employs pydantic in v2 mode
+
+### v4: stable (maintenance mode)
 
 - supports NIST OSCAL 1.2.1 as well as previous versions
 - supports newly released Mapping Model
+- limited support until January 31, 2027
 
-### v3: stable (maintenance mode)
+### v3: stable (deprecated)
 
 - supports NIST OSCAL 1.1.3 as well as previous versions
-- limited support until June 30, 2026
+- no longer supported
 
 ### v2: stable (deprecated)
 
