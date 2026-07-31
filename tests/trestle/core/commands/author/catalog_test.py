@@ -415,9 +415,13 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
     # In OSCAL 1.2.0, the path includes both parent Group1 and child Group2
     parent_group_id = sample_catalog_rich_controls.groups[0].id  # Group1 'xy'
     group_id = sample_catalog_rich_controls.groups[0].groups[0].id  # Group2 'xy-controls'
+    # In Pydantic v2, props field has min_length=1, so cannot set to empty list
+    # Create list with the property directly
+    withdrawn_prop = Property(name='status', value='Withdrawn')
     if not control_b.props:
-        control_b.props = []
-    control_b.props.append(Property(name='status', value='Withdrawn'))
+        control_b.props = [withdrawn_prop]
+    else:
+        control_b.props.append(withdrawn_prop)
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     catalog_api = CatalogAPI(catalog=sample_catalog_rich_controls, context=context)
     catalog_api.write_catalog_as_markdown()

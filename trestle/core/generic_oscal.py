@@ -17,10 +17,10 @@ from __future__ import annotations
 
 import copy
 import logging
-from typing import List, Optional
+from typing import Annotated, List, Optional
 from uuid import uuid4
 
-from pydantic.v1 import Field, constr
+from pydantic import Field, StringConstraints
 
 import trestle.oscal.component as comp
 import trestle.oscal.ssp as ossp
@@ -32,6 +32,23 @@ from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# Reusable constrained string type aliases — replaces deprecated constr()
+# ---------------------------------------------------------------------------
+_UUID_PATTERN = r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'  # noqa FS003
+_NCNAME_PATTERN = (
+    r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF'
+    r'\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]'
+    r'[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF'
+    r'\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD'
+    r'\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+)
+_NON_WHITESPACE_PATTERN = r'^\S(.*\S)?$'
+
+UuidStr = Annotated[str, StringConstraints(pattern=_UUID_PATTERN)]
+NcNameStr = Annotated[str, StringConstraints(pattern=_NCNAME_PATTERN)]
+NonWhitespaceStr = Annotated[str, StringConstraints(pattern=_NON_WHITESPACE_PATTERN)]
+
 IMPLEMENTED_REQUIREMENTS = 'implemented_requirements'
 
 
@@ -39,17 +56,13 @@ class GenericByComponent(TrestleBaseModel):
     """Generic ByComponent for SSP and DefinedComponent."""
 
     # only in SSP
-    component_uuid: constr(  # type: ignore[valid-type]
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'  # noqa FS003
-    ) = Field(
+    component_uuid: UuidStr = Field(
         ...,
         alias='component_uuid',
         description='A machine-oriented identifier reference to the component that is implemeting a given control.',
         title='Component Universally Unique Identifier Reference',
     )
-    uuid: constr(  # type: ignore[valid-type]
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'  # noqa FS003
-    ) = Field(
+    uuid: UuidStr = Field(
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this by-component entry elsewhere in this or other OSCAL instances. The locally defined UUID of the by-component entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
@@ -110,18 +123,13 @@ class GenericByComponent(TrestleBaseModel):
 class GenericStatement(TrestleBaseModel):
     """Generic statement for SSP and DefinedComp."""
 
-    statement_id: constr(  # type: ignore[valid-type]
-        # noqa E251
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa FS003 E501
-    ) = Field(
+    statement_id: NcNameStr = Field(
         ...,
         alias='statement_id',
         description='A human-oriented identifier reference to a control statement.',
         title='Control Statement Reference',
     )
-    uuid: constr(  # type: ignore[valid-type]
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'  # noqa FS003 F722
-    ) = Field(
+    uuid: UuidStr = Field(
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',  # noqa E501
@@ -148,6 +156,8 @@ class GenericStatement(TrestleBaseModel):
         for by_comp in as_list(self.by_components):
             new_by_comp = by_comp.as_ssp()
             by_comps.append(new_by_comp)
+        # Convert empty list to None to satisfy Pydantic v2 min_length constraints
+        by_comps = none_if_empty(by_comps)
         return ossp.Statement(
             **{
                 'statement-id': self.statement_id,
@@ -164,17 +174,15 @@ class GenericStatement(TrestleBaseModel):
 class GenericComponent(TrestleBaseModel):
     """Generic component for SSP SystemComponent and DefinedComponent."""
 
-    uuid: constr(  # type: ignore[valid-type]
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'  # noqa FS003 F722
-    ) = Field(
+    uuid: UuidStr = Field(
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
         title='Component Identifier',
     )
-    type: constr(  # type: ignore[valid-type]
-        regex=r'^\S(.*\S)?$'  # noqa A003 F722
-    ) = Field(..., description='A category describing the purpose of the component.', title='Component Type')
+    type: NonWhitespaceStr = Field(
+        ..., description='A category describing the purpose of the component.', title='Component Type'
+    )
     title: str = Field(..., description='A human readable name for the component.', title='Component Title')
     description: str = Field(
         ...,
@@ -199,6 +207,11 @@ class GenericComponent(TrestleBaseModel):
         status = self.status
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('status', None)
+        # Clean up empty lists to avoid Pydantic v2 validation errors with min_length constraints
+        # Convert empty lists to None for optional fields
+        for key in class_dict.keys():
+            if isinstance(class_dict[key], list) and len(class_dict[key]) == 0:
+                class_dict[key] = None
         def_comp = comp.DefinedComponent(**class_dict)
         ControlInterface.insert_status_in_props(def_comp, status)  # type: ignore[type-var]
         return def_comp
@@ -262,10 +275,7 @@ class GenericComponent(TrestleBaseModel):
 class GenericSetParameter(TrestleBaseModel):
     """Generic SetParameter for SSP and DefinedComponent."""
 
-    param_id: constr(  # type: ignore[valid-type]
-        # noqa E251
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa E501
-    ) = Field(
+    param_id: NcNameStr = Field(
         ...,
         alias='param-id',
         # noqa E251
@@ -289,18 +299,13 @@ class GenericSetParameter(TrestleBaseModel):
 class GenericImplementedRequirement(TrestleBaseModel):
     """Generic ImplementedRequirement for SSP and DefinedComponent."""
 
-    uuid: constr(  # type: ignore[valid-type]
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'  # noqa FS003 F722
-    ) = Field(
+    uuid: UuidStr = Field(
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a specific control implementation elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
         title='Control Implementation Identifier',
     )
-    control_id: constr(  # type: ignore[valid-type]
-        # noqa E251
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa E501
-    ) = Field(
+    control_id: NcNameStr = Field(
         ...,
         alias='control-id',
         # noqa E251
@@ -335,6 +340,14 @@ class GenericImplementedRequirement(TrestleBaseModel):
         """Convert component form of imp req to generic."""
         class_dict = copy.deepcopy(imp_req.__dict__)
         class_dict['control-id'] = class_dict.pop('control_id', None)
+        # Convert comp.Statement objects to GenericStatement objects
+        if 'statements' in class_dict and class_dict['statements']:
+            generic_statements = []
+            for stmt in class_dict['statements']:
+                # comp.Statement and GenericStatement have the same fields, so we can convert directly
+                generic_stmt = GenericStatement(**stmt.__dict__)
+                generic_statements.append(generic_stmt)
+            class_dict['statements'] = generic_statements
         return cls(**class_dict)
 
     def as_ssp(self) -> ossp.ImplementedRequirement:
@@ -346,6 +359,11 @@ class GenericImplementedRequirement(TrestleBaseModel):
             new_stat_list.append(statement.as_ssp())
         if new_stat_list:
             class_dict['statements'] = new_stat_list
+        # Clean up empty lists to avoid Pydantic v2 validation errors with min_length constraints
+        # Convert empty lists to None for optional fields
+        for key in class_dict.keys():
+            if isinstance(class_dict[key], list) and len(class_dict[key]) == 0:
+                class_dict[key] = None
         return ossp.ImplementedRequirement(**class_dict)
 
 
@@ -353,9 +371,7 @@ class GenericControlImplementation(TrestleBaseModel):
     """Generic control implementation for SSP and CompDef."""
 
     # not in ssp
-    uuid: constr(  # type: ignore[valid-type]
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'  # noqa FS003 F722
-    ) = Field(
+    uuid: UuidStr = Field(
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a set of implemented controls elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation set can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
@@ -430,4 +446,5 @@ class GenericControlImplementation(TrestleBaseModel):
         return ossp.ControlImplementation(**class_dict)
 
 
-GenericComponent.update_forward_refs()
+# Pydantic v2: update_forward_refs() → model_rebuild()
+GenericComponent.model_rebuild()

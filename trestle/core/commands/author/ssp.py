@@ -17,6 +17,7 @@ import argparse
 import logging
 import os
 import pathlib
+import sys
 from typing import Any, Dict, List, Optional, Set
 
 from ruamel.yaml import YAML
@@ -282,32 +283,35 @@ class SSPAssemble(AuthorCommonCommand):
             for dest_by_comp in as_list(stat.by_components):
                 if dest_by_comp.component_uuid == by_comp.component_uuid:
                     dest_by_comp.description = by_comp.description
-                    dest_by_comp.props = as_list(dest_by_comp.props)
-                    dest_by_comp.props.extend(as_list(statement.props))
+                    props_list = as_list(dest_by_comp.props)
+                    props_list.extend(as_list(statement.props))
+                    dest_by_comp.props = none_if_empty(props_list)
                     dest_by_comp.props = none_if_empty(ControlInterface.clean_props(by_comp.props))
                     dest_by_comp.implementation_status = by_comp.implementation_status
                     dest_by_comp.set_parameters = none_if_empty(set_params)
                     found = True
                     break
             if not found:
-                stat.by_components = as_list(stat.by_components)
+                by_comps_list = as_list(stat.by_components)
+                by_comps_list.append(by_comp)
                 by_comp.set_parameters = none_if_empty(set_params)
-                stat.by_components.append(by_comp)
+                stat.by_components = none_if_empty(by_comps_list)
 
     @staticmethod
     def _merge_statement(
-        imp_req: ossp.ImplementedRequirement, statement: generic.GenericStatement, set_params: List[ossp.SetParameter]
+        imp_req: ossp.ImplementedRequirement, statement: ossp.Statement, set_params: List[ossp.SetParameter]
     ) -> None:
-        """Merge the generic statement into the statements of the imp_req."""
+        """Merge the statement into the statements of the imp_req."""
         # if the statement id is already in the imp_req, merge its by_comps into the existing statement
         for stat in as_list(imp_req.statements):
             if stat.statement_id == statement.statement_id:
                 SSPAssemble._merge_by_comps(stat, statement, set_params)
                 return
-        # otherwise just ad the statement - but only if it has by_comps
+        # otherwise just add the statement - but only if it has by_comps
         if statement.by_components:
-            imp_req.statements = as_list(imp_req.statements)
-            imp_req.statements.append(statement)
+            statements_list = as_list(imp_req.statements)
+            statements_list.append(statement)
+            imp_req.statements = none_if_empty(statements_list)
 
     @staticmethod
     def _merge_imp_req_into_imp_req(
@@ -387,25 +391,37 @@ class SSPAssemble(AuthorCommonCommand):
             by_comp.set_parameters = none_if_empty(control_set_params)
             by_comp.implementation_status = ControlInterface.get_status_from_props(gen_imp_req)  # type: ignore
             by_comp.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
-            imp_req.by_components = as_list(imp_req.by_components)
-            imp_req.by_components.append(by_comp)
+            by_comps_list = as_list(imp_req.by_components)
+            by_comps_list.append(by_comp)
+            imp_req.by_components = none_if_empty(by_comps_list)
+        else:
+            # Convert empty by_components list back to None to satisfy min_length constraint
+            imp_req.by_components = none_if_empty(imp_req.by_components)
         # each statement in ci corresponds to by_comp in an ssp imp req
         # so insert the new by_comp directly into the ssp, generating parts as needed
-        imp_req.statements = as_list(imp_req.statements)
         for statement in as_list(gen_imp_req.statements):
             if ControlInterface.item_has_rules(statement):  # type: ignore
-                imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
-                by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
+                stmt_imp_req = CatalogReader._get_imp_req_for_statement(
+                    ssp, gen_imp_req.control_id, statement.statement_id
+                )
+                by_comp = CatalogReader._get_by_comp_from_imp_req(stmt_imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
                 rules_list, _ = ControlInterface.get_rule_list_for_item(statement)  # type: ignore
                 by_comp.set_parameters = none_if_empty(
                     SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
                 )
-        imp_req.statements = none_if_empty(imp_req.statements)
-        ssp.control_implementation.implemented_requirements = as_list(
-            ssp.control_implementation.implemented_requirements
-        )
+                # In Pydantic v2, modifications to objects in lists don't persist unless the list is reassigned
+                # Find the statement and reassign its by_components list to trigger Pydantic validation
+                for stmt in as_list(stmt_imp_req.statements):
+                    if stmt.statement_id == statement.statement_id:
+                        # Reassign the by_components list to ensure changes persist in Pydantic v2
+                        stmt.by_components = none_if_empty(as_list(stmt.by_components))
+                # Reassign the statements list to ensure changes persist in Pydantic v2
+                stmt_imp_req.statements = none_if_empty(as_list(stmt_imp_req.statements))
+        # In Pydantic v2, we need to create a new list to trigger validation and ensure changes persist
+        impl_reqs_list = list(ssp.control_implementation.implemented_requirements)
+        ssp.control_implementation.implemented_requirements = impl_reqs_list
 
     @staticmethod
     def _merge_imp_req_into_ssp(
@@ -434,7 +450,10 @@ class SSPAssemble(AuthorCommonCommand):
         """Merge the original generic comp defs into the ssp."""
         all_comps: List[ossp.SystemComponent] = []
         # determine if this is a new and empty ssp
-        new_ssp = not ssp.control_implementation.implemented_requirements
+        # Treat SSP as new if it has no implemented_requirements or only has placeholder REPLACE_ME entries
+        new_ssp = not ssp.control_implementation.implemented_requirements or all(
+            imp_req.control_id == const.REPLACE_ME for imp_req in ssp.control_implementation.implemented_requirements
+        )
         for _, gen_comp in comp_dict.items():
             context.comp_name = gen_comp.title
             all_ci_props: List[com.Property] = []
@@ -456,9 +475,10 @@ class SSPAssemble(AuthorCommonCommand):
                         # compile all new uuids for new component definitions
                         comp_uuids = [x.uuid for x in comp_dict.values()]
                         for imp_requirement in as_list(ssp.control_implementation.implemented_requirements):
-                            imp_requirement.by_components = as_list(imp_requirement.by_components)
+                            # Work with by_components list without triggering Pydantic validation on empty list
+                            by_comps = as_list(imp_requirement.by_components)
                             to_delete = []
-                            for i, by_comp in enumerate(imp_requirement.by_components):
+                            for i, by_comp in enumerate(by_comps):
                                 if by_comp.component_uuid not in comp_uuids:
                                     logger.warning(
                                         f'By_component {by_comp.component_uuid} removed from implemented requirement '
@@ -468,12 +488,16 @@ class SSPAssemble(AuthorCommonCommand):
                                     )
                                     to_delete.append(i)
                             if to_delete:
-                                delete_list_from_list(imp_requirement.by_components, to_delete)
-                            imp_requirement.by_components = none_if_empty(imp_requirement.by_components)
+                                delete_list_from_list(by_comps, to_delete)
+                            # Only assign back if the list is non-empty or was originally non-None
+                            # This avoids Pydantic v2 validation error when assigning empty list with min_length=1
+                            if by_comps or imp_requirement.by_components is not None:
+                                imp_requirement.by_components = none_if_empty(by_comps)
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
-            ssp_comp.props = as_list(gen_comp.props)
-            ssp_comp.props.extend(all_ci_props)
-            ssp_comp.props = none_if_empty(ControlInterface.clean_props(ssp_comp.props))
+            # Build props list without triggering Pydantic validation on empty list
+            props_list = as_list(gen_comp.props)
+            props_list.extend(all_ci_props)
+            ssp_comp.props = none_if_empty(ControlInterface.clean_props(props_list))
             all_comps.append(ssp_comp)
 
         ssp.system_implementation.components = none_if_empty(all_comps)
@@ -481,18 +505,18 @@ class SSPAssemble(AuthorCommonCommand):
     def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> bool:
         """Find all roles referenced by imp reqs and create role in metadata as needed."""
         metadata = ssp.metadata
-        metadata.roles = as_list(metadata.roles)
-        known_role_ids = [role.id for role in metadata.roles]
+        roles_list = as_list(metadata.roles)
+        known_role_ids = [role.id for role in roles_list]
         changed = False
         for imp_req in ssp.control_implementation.implemented_requirements:
             role_ids = [resp_role.role_id for resp_role in as_list(imp_req.responsible_roles)]
             for role_id in role_ids:
                 if role_id not in known_role_ids:
                     role = com.Role(id=role_id, title=role_id)
-                    metadata.roles.append(role)
+                    roles_list.append(role)
                     known_role_ids.append(role_id)
                     changed = True
-        metadata.roles = none_if_empty(metadata.roles)
+        metadata.roles = none_if_empty(roles_list)
         return changed
 
     @staticmethod
@@ -595,12 +619,11 @@ class SSPAssemble(AuthorCommonCommand):
                 comp_titles = [x.title for x in comp_dict.values()]
                 diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles and x.title not in leveraged_comps]
                 if diffs:
-                    for diff in diffs:
-                        logger.warning(
-                            f'Component named: {diff.title} was removed from system components from ssp '
-                            'because the corresponding component is not in '
-                            'the specified compdefs '
-                        )
+                    logger.warning(
+                        f'{len(diffs)} component(s) were removed from system components from ssp '
+                        'because the corresponding component(s) are not in '
+                        'the specified compdefs'
+                    )
                     index_list = [ssp_sys_imp_comps.index(value) for value in diffs if value in ssp_sys_imp_comps]
                     delete_list_from_list(ssp.system_implementation.components, index_list)
 
@@ -614,11 +637,19 @@ class SSPAssemble(AuthorCommonCommand):
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
-                ssp.control_implementation.implemented_requirements = []
                 ssp.control_implementation.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
-                ssp.system_implementation.components = []
+                # Don't set components to empty list - let _merge_comp_defs handle it
+                # to avoid Pydantic v2 validation on empty list
                 self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
+
+                # Remove any placeholder implemented_requirements with control_id='REPLACE_ME'
+                # that were created by generate_sample_model
+                ssp.control_implementation.implemented_requirements = [
+                    imp_req
+                    for imp_req in ssp.control_implementation.implemented_requirements
+                    if imp_req.control_id != const.REPLACE_ME
+                ]
 
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
                 import_profile.href = const.REPLACE_ME
@@ -820,7 +851,7 @@ class SSPFilter(AuthorCommonCommand):
                         if by_comp.component_uuid in comp_uuids:
                             new_by_comps.append(by_comp)
                     imp_req.by_components = none_if_empty(new_by_comps)
-                    new_imp_reqs.append(imp_req)
+
                     new_statements: List[ossp.Statement] = []
                     for statement in as_list(imp_req.statements):
                         new_by_comps: List[ossp.ByComponent] = []
@@ -830,6 +861,10 @@ class SSPFilter(AuthorCommonCommand):
                         statement.by_components = none_if_empty(new_by_comps)
                         new_statements.append(statement)
                     imp_req.statements = none_if_empty(new_statements)
+
+                    # Only add imp_req if it has valid content
+                    if imp_req.by_components is not None or imp_req.statements is not None:
+                        new_imp_reqs.append(imp_req)
                 ssp.control_implementation.implemented_requirements = new_imp_reqs
                 # now remove any unused components from the ssp
                 new_comp_list: List[ossp.SystemComponent] = []

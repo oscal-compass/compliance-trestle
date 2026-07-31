@@ -10,7 +10,7 @@
         "components": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "type": "Service",
+            "type": "service",
             "title": "ocp4",
             "description": "ocp4",
             "status": {
@@ -147,7 +147,7 @@
       "reviewed-controls": {
         "control-selections": [
           {
-            "include-controls": []
+            "include-all": {}
           }
         ]
       },

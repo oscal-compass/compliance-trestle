@@ -332,7 +332,7 @@ def test_builder_create_risk():
     assert risk.title == 'Test Weakness'
     assert risk.description == 'Test Description'
     assert risk.statement == 'Test remediation'
-    assert risk.status.__root__ == 'open'
+    assert risk.status.root.root == 'open'
     assert risk.props is not None
     assert risk.deadline is not None
 

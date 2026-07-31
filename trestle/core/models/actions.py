@@ -95,7 +95,18 @@ class Action(ABC):
             return False
         if self.get_type() is not other.get_type():
             return False
-        is_eq = self.__dict__ == other.__dict__
+        # Compare only the relevant attributes, excluding internal state flags and writer
+        self_dict = {
+            k: v
+            for k, v in self.__dict__.items()
+            if not k.startswith('_has_') and k != '_writer' and k != '_lastStreamPos'
+        }
+        other_dict = {
+            k: v
+            for k, v in other.__dict__.items()
+            if not k.startswith('_has_') and k != '_writer' and k != '_lastStreamPos'
+        }
+        is_eq = self_dict == other_dict
         return is_eq
 
     @abstractmethod

@@ -80,9 +80,6 @@
         ],
         "include-all": {}
       }
-    ],
-    "modify": {
-      "set-parameters": []
-    }
+    ]
   }
 }

@@ -22,7 +22,9 @@ import multiprocessing
 import os
 import traceback
 import uuid
-from typing import Any, Dict, List, Optional, ValuesView
+from typing import Any, Dict, List, Optional, Union, ValuesView
+
+from pydantic import AnyUrl
 
 from trestle.common.list_utils import join_key_to_list_dicts
 from trestle.oscal.assessment_results import LocalDefinitions1
@@ -36,6 +38,7 @@ from trestle.oscal.common import Property
 from trestle.oscal.common import ReviewedControls
 from trestle.oscal.common import Status
 from trestle.oscal.common import SubjectReference
+from trestle.oscal.common import SystemComponentOperationalStateValidValues
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.transformer_helper import PropertyAccounting
@@ -96,7 +99,7 @@ class TaniumResultToOscalARTransformer(ResultsTransformer):
     def transform(self, blob: str) -> Results:
         """Transform the blob into a Results."""
         ts0 = datetime.datetime.now()
-        results = Results()
+        results = Results.model_construct(root=[])
         ru_factory = RuleUseFactory(self.get_timestamp())
         ru_list = ru_factory.make_list(blob)
         tanium_oscal_factory = TaniumOscalFactory(
@@ -109,7 +112,7 @@ class TaniumResultToOscalARTransformer(ResultsTransformer):
             self.caching,
             self.aggregate,
         )
-        results.__root__ = tanium_oscal_factory.results
+        results.root = tanium_oscal_factory.results
         ts1 = datetime.datetime.now()
         self._analysis = tanium_oscal_factory.analysis
         self._analysis.append(f'transform time: {ts1 - ts0}')
@@ -258,7 +261,7 @@ class TaniumOscalFactory:
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
         self._observation_list: List[Observation] = []
-        self._ns = 'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium'
+        self._ns = AnyUrl('https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium')
         self._cpus = None
         self._checking = checking
         self._caching = caching
@@ -270,8 +273,9 @@ class TaniumOscalFactory:
             self._blocksize = 1
         # cpus max: default, max, min
         self._cpus_max = cpus_max
-        if self._cpus_max > os.cpu_count():
-            self._cpus_max = os.cpu_count()
+        cpu_count = os.cpu_count()
+        if cpu_count is not None and self._cpus_max > cpu_count:
+            self._cpus_max = cpu_count
         self._cpus_min = cpus_min
         if self._cpus_min > self._cpus_max:
             self._cpus_min = self._cpus_max
@@ -286,7 +290,9 @@ class TaniumOscalFactory:
         component_type = rule_use.component_type
         component_title = rule_use.component
         for component in self._component_map.values():
-            if component.type != component_type:
+            # In Pydantic v2, type field may be wrapped in StringDatatype
+            comp_type = component.type.root if hasattr(component.type, 'root') else component.type
+            if comp_type != component_type:
                 continue
             if component.title != component_title:
                 continue
@@ -305,7 +311,7 @@ class TaniumOscalFactory:
             # See Note in _get_component_ref.
             component_description = rule_use.component
             component_ref = _uuid_component()
-            status = Status(state='operational')
+            status = Status(state=SystemComponentOperationalStateValidValues.operational)
             component = SystemComponent(
                 uuid=component_ref,
                 type=component_type,
@@ -319,7 +325,9 @@ class TaniumOscalFactory:
         """Get component reference for specified rule use."""
         uuid = None
         for component_ref, component in self._component_map.items():
-            if component.type != rule_use.component_type:
+            # In Pydantic v2, type field may be wrapped in StringDatatype
+            comp_type = component.type.root if hasattr(component.type, 'root') else component.type
+            if comp_type != rule_use.component_type:
                 continue
             if component.title != rule_use.component:
                 continue
@@ -362,7 +370,7 @@ class TaniumOscalFactory:
         group: str = None,
         name: str = None,
         value: str = None,
-        ns: str = None,
+        ns: Optional[AnyUrl] = None,
         class_: str = None,
     ) -> None:
         """Add non-aggregated property or remember common property."""
@@ -471,7 +479,10 @@ class TaniumOscalFactory:
             subject_uuid = self._get_inventory_ref(rule_use)
             subject_reference = SubjectReference(subject_uuid=subject_uuid, type='inventory-item')
             observation.subjects = [subject_reference]
-            observation.props = self._get_observtion_properties(rule_use)
+            props = self._get_observtion_properties(rule_use)
+            # In Pydantic v2, props must have at least 1 item if set, so only set if non-empty
+            if props:
+                observation.props = props
             observation_partial_map[subject_uuid] = observation_partial_map.get(subject_uuid, []) + [observation]
         return observation_partial_map
 
@@ -493,8 +504,10 @@ class TaniumOscalFactory:
             self._observation_map = self._batch_observations(0)
         else:
             # use multiprocessing to perform observations creation in parallel
-            pool = multiprocessing.Pool(processes=self._batch_workers)
-            rval_list = pool.map(self._batch_observations, range(self._batch_workers))
+            # Use 'spawn' context to avoid fork() warnings in multi-threaded environments
+            ctx = multiprocessing.get_context('spawn')
+            with ctx.Pool(processes=self._batch_workers) as pool:
+                rval_list = pool.map(self._batch_observations, range(self._batch_workers))
             # gather observations from the sundry batch workers
             for partial_observation_map in rval_list:
                 self._observation_map = join_key_to_list_dicts(self._observation_map, partial_observation_map)
@@ -523,14 +536,20 @@ class TaniumOscalFactory:
     @property
     def control_selections(self) -> List[ControlSelections]:
         """OSCAL control selections."""
+        from trestle.oscal.common import ControlSelectionsAll
+        from trestle.oscal.common import IncludeAll
+
         rval = []
-        rval.append(ControlSelections(include_controls=[]))
+        # Use ControlSelectionsAll with include-all to indicate all controls
+        include_all = IncludeAll()
+        control_sel_all = ControlSelectionsAll.model_validate({'include-all': include_all})
+        rval.append(control_sel_all)
         return rval
 
     @property
     def reviewed_controls(self) -> ReviewedControls:
         """OSCAL reviewed controls."""
-        rval = ReviewedControls(control_selections=self.control_selections)
+        rval = ReviewedControls.model_validate({'control-selections': self.control_selections})
         return rval
 
     @property
@@ -543,17 +562,31 @@ class TaniumOscalFactory:
         analysis.append(f'cache: requests={self._property_manager.requests} hits={self._property_manager.hits}')
         return analysis
 
+    def _get_matching_inventory_items(self, component_uuid: str) -> List[InventoryItem]:
+        """Get inventory items that match the given component UUID."""
+        inventory_items = []
+        for inventory_item in self.inventory:
+            if self._inventory_item_matches_component(inventory_item, component_uuid):
+                inventory_items.append(inventory_item)
+        return inventory_items
+
+    def _inventory_item_matches_component(self, inventory_item: InventoryItem, component_uuid: str) -> bool:
+        """Check if inventory item has an implemented component matching the UUID."""
+        for implemented_component in inventory_item.implemented_components:
+            if implemented_component.component_uuid == component_uuid:
+                return True
+        return False
+
     def _get_local_definitions(self, system_component: SystemComponent) -> LocalDefinitions1:
         """Get local definitions."""
         rval = LocalDefinitions1()
         for component in self.components:
             if component.uuid == system_component.uuid:
                 rval.components = [component]
-                rval.inventory_items = []
-                for inventory_item in self.inventory:
-                    for implemented_component in inventory_item.implemented_components:
-                        if implemented_component.component_uuid == system_component.uuid:
-                            rval.inventory_items.append(inventory_item)
+                inventory_items = self._get_matching_inventory_items(system_component.uuid)
+                # In Pydantic v2, inventory_items must have at least 1 item if set
+                if inventory_items:
+                    rval.inventory_items = inventory_items
                 break
         return rval
 

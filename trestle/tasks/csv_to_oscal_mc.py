@@ -369,17 +369,20 @@ class _McMgr:
         if confidence_score_str:
             confidence_value = self._parse_percentage(confidence_score_str)
             if confidence_value is not None:
-                # ConfidenceScore requires nested structure with __root__
-                percentage_obj = Percentage(__root__=DecimalDatatype(__root__=confidence_value))
+                # ConfidenceScore requires nested structure
+                # In Pydantic v2 RootModel, pass value directly (not using root= parameter)
+                decimal_obj = DecimalDatatype(confidence_value)
+                percentage_obj = Percentage(decimal_obj)
                 confidence_score_obj = ConfidenceScore2(percentage=percentage_obj)
-                map_.confidence_score = ConfidenceScore(__root__=confidence_score_obj)
+                map_.confidence_score = ConfidenceScore(confidence_score_obj)
 
         # Add coverage if provided
         if coverage_str:
             coverage_value = self._parse_percentage(coverage_str)
             if coverage_value is not None:
                 # Coverage requires target-coverage field
-                target_coverage = DecimalDatatype(__root__=coverage_value)
+                # In Pydantic v2 RootModel, pass value directly
+                target_coverage = DecimalDatatype(coverage_value)
                 map_.coverage = Coverage(**{'target-coverage': target_coverage})
 
         # Add other properties
@@ -413,7 +416,11 @@ class _McMgr:
         if key not in self._map.keys():
             source_item = MappingResourceReference(type=src_resource_type, href=src_resource_href)
             target_item = MappingResourceReference(type=tgt_resource_type, href=tgt_resource_href)
-            mapping = Mapping(uuid=str(uuid.uuid4()), source_resource=source_item, target_resource=target_item, maps=[])
+            # Use model_construct to bypass validation for empty maps list
+            # Maps will be added later via append, and validation will occur when serializing
+            mapping = Mapping.model_construct(
+                uuid=str(uuid.uuid4()), source_resource=source_item, target_resource=target_item, maps=[]
+            )
             self._map[key] = mapping
         return self._map[key]
 
@@ -425,11 +432,10 @@ class _McMgr:
         )
 
         # provenance
+        # MappingDescription is a RootModel in Pydantic v2, instantiate with value directly
+        mapping_desc = MappingDescription(f'Mapping collection for {self._title}')
         provenance = MappingProvenance(
-            method='manual',
-            matching_rationale='semantic',
-            status='complete',
-            mapping_description=MappingDescription(__root__=f'Mapping collection for {self._title}'),
+            method='manual', matching_rationale='semantic', status='complete', mapping_description=mapping_desc
         )
 
         # Get all mappings and add gap summaries to the first mapping

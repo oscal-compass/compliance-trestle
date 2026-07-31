@@ -134,14 +134,15 @@ class CatalogHelper:
                 raise RuntimeError(
                     f'Parent {key} is not Group1 when adding group {section} - this should not happen in Pass 1'
                 )
-            if parent.groups is None:
-                parent.groups = []
             group = CatalogGroup1(title=f'{title}', id=f'CIS-{section}')
             if props:
                 group.props = props
             if parts:
                 group.parts = parts
-            parent.groups.append(group)
+            if parent.groups is None:
+                parent.groups = [group]
+            else:
+                parent.groups.append(group)
             self._all_groups[section] = group
 
     def prepare_groups_for_controls(self, sections_with_controls: set) -> None:
@@ -157,7 +158,7 @@ class CatalogHelper:
                     # Create a "controls" subgroup (Group2) for the controls
                     controls_group_id = f'{group.id}-controls'
                     controls_group = CatalogGroup2(id=controls_group_id, title=f'{group.title} Controls')
-                    controls_group.controls = []
+                    # Note: controls will be added later, don't initialize as empty list
                     group.groups.append(controls_group)
                     # Store reference for quick access in Pass 2
                     self._all_groups[f'{section}_controls'] = controls_group
@@ -165,15 +166,20 @@ class CatalogHelper:
     def _add_prop(self, control: Control, prop: Property) -> None:
         """Add property to control."""
         control_props = control.props
-        control.props = []
+        if control_props is None:
+            control.props = [prop]
+            return
+        # Build new props list to avoid Pydantic v2 validation on empty list
+        new_props = []
         last = 0
         for i, control_prop in enumerate(control_props):
             if control_prop.name == prop.name:
                 last = i
         for i, control_prop in enumerate(control_props):
-            control.props.append(control_prop)
+            new_props.append(control_prop)
             if i == last:
-                control.props.append(prop)
+                new_props.append(prop)
+        control.props = new_props
 
     def add_control(
         self, section: str, recommendation: str, title: str, props: List[Property], parts: List[Part], links: List[Link]
@@ -211,8 +217,6 @@ class CatalogHelper:
                 self._all_groups[section] = group2
                 group = group2
 
-        if group.controls is None:
-            group.controls = []
         id_ = f'CIS-{recommendation}'
         if id_ in self._all_controls:
             control = self._all_controls[id_]
@@ -229,7 +233,10 @@ class CatalogHelper:
                 control.parts = parts
             if links:
                 control.links = links
-            group.controls.append(control)
+            if group.controls is None:
+                group.controls = [control]
+            else:
+                group.controls.append(control)
 
     def add_link(self, recommendation: str, reference: str, links: List[Link]) -> None:
         """Add link."""

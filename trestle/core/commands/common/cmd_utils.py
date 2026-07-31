@@ -32,13 +32,13 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     """Is an model_type too fine to split."""
     if type_utils.is_collection_field_type(model_type):
         return False
-    if hasattr(model_type, '__fields__') and '__root__' in model_type.__fields__:
-        # Check if __root__ contains a collection type (list)
-        root_field = model_type.__fields__['__root__']
-        root_type = root_field.outer_type_ if hasattr(root_field, 'outer_type_') else root_field.type_
+    if hasattr(model_type, 'model_fields') and 'root' in model_type.model_fields:
+        # Check if 'root' contains a collection type (list) - this is a RootModel
+        root_field = model_type.model_fields['root']
+        root_type = root_field.annotation
         if type_utils.is_collection_field_type(root_type):
             return False
-        # Check if __root__ contains a Union type of OscalBaseModel variants
+        # Check if root contains a Union type of OscalBaseModel variants (Pydantic v2 RootModel)
         # These are splittable (e.g., Group1|Group2, Parameter1|Parameter2)
         from typing import get_origin, get_args
         import types
@@ -49,7 +49,7 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
             # If any variant is an OscalBaseModel, it's splittable
             if any(isinstance(arg, type) and issubclass(arg, OscalBaseModel) for arg in union_args):
                 return False
-        # __root__ with non-collection, non-Union types (like StringDatatype) are too granular
+        # root with non-collection, non-Union types (like StringDatatype) are too granular (Pydantic v2 RootModel)
         return True
     if model_type.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float', 'datetime']:
         return True
@@ -195,16 +195,16 @@ def parse_chain(
             full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
             parent_model = ModelUtils.get_singular_alias(full_path_str, relative_path)
             # Does wildcard mean we need to inspect the sub_model to determine what can be split off from it?
-            # If it has __root__ it may mean it contains a list of objects and should be split as a list
+            # If it has root it may mean it contains a list of objects and should be split as a list (Pydantic v2 RootModel)
             if isinstance(sub_model, OscalBaseModel):
-                root = getattr(sub_model, '__root__', None)
+                root = getattr(sub_model, 'root', None)
                 if root is None or not isinstance(root, list):
                     # Cannot have parts beyond * if it isn't a list
                     if i < len(path_parts) - 1:
                         raise TrestleError(
                             f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {path_parts}'
                         )
-                    for key in sub_model.__fields__.keys():
+                    for key in sub_model.__class__.model_fields.keys():
                         # only create element path is item is present in the sub_model
                         if getattr(sub_model, key, None) is None:
                             continue

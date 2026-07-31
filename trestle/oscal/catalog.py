@@ -30,12 +30,11 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Field, RootModel, conint, constr, field_validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
-from trestle.oscal.common import Parameter1, Parameter2
 from trestle.oscal.common import StringDatatype
 
 
@@ -44,16 +43,16 @@ class Control(OscalBaseModel):
     A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., description='Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).', title='Control Identifier')
-    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the control.', title='Control Class')
-    title: constr(regex=r'^[^\n]+$') = Field(..., description='A name given to the control, which may be used by a tool for display and navigation.', title='Control Title')
-    params: list[common.Parameter] | None = Field(None)
-    props: list[common.Property] | None = Field(None)
-    links: list[common.Link] | None = Field(None)
-    parts: list[common.Part] | None = Field(None)
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    id: constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., description='Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).', title='Control Identifier')
+    class_: constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the control.', title='Control Class')
+    title: constr(pattern=r'^[^\n]+$') = Field(..., description='A name given to the control, which may be used by a tool for display and navigation.', title='Control Title')
+    params: list[common.Parameter] | None = Field(None, min_length=1)
+    props: list[common.Property] | None = Field(None, min_length=1)
+    links: list[common.Link] | None = Field(None, min_length=1)
+    parts: list[common.Part] | None = Field(None, min_length=1)
     controls: list[Control] | None = None
 
 
@@ -62,40 +61,17 @@ class Group2(OscalBaseModel):
     A group of controls, or of groups of controls.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
-    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
-    title: constr(regex=r'^[^\n]+$') = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
-    params: list[common.Parameter] | None = Field(None)
-    props: list[common.Property] | None = Field(None)
-    links: list[common.Link] | None = Field(None)
-    parts: list[common.Part] | None = Field(None)
-    controls: list[Control] | None = Field(None)
-
-
-
-    @classmethod
-    def __get_validators__(cls):
-        yield cls._smart_union_validator
-
-    @classmethod
-    def _smart_union_validator(cls, v):
-        """Smart validator that chooses Group2 if data has controls, otherwise tries Group1."""
-        if isinstance(v, dict):
-            # If dict has 'controls' field, use Group2
-            if 'controls' in v:
-                return cls.parse_obj(v)
-            # If dict has 'groups' field, use Group1
-            elif 'groups' in v:
-                return Group1.parse_obj(v)
-        # For non-dict or ambiguous cases, try Group2 first (this class)
-        try:
-            return cls.parse_obj(v) if isinstance(v, dict) else v
-        except Exception:
-            # If Group2 fails, try Group1
-            return Group1.parse_obj(v) if isinstance(v, dict) else v
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    id: constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
+    class_: constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
+    title: constr(pattern=r'^[^\n]+$') = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
+    params: list[common.Parameter] | None = Field(None, min_length=1)
+    props: list[common.Property] | None = Field(None, min_length=1)
+    links: list[common.Link] | None = Field(None, min_length=1)
+    parts: list[common.Part] | None = Field(None, min_length=1)
+    controls: list[Control] | None = Field(None, min_length=1)
 
 
 class Group1(OscalBaseModel):
@@ -103,40 +79,21 @@ class Group1(OscalBaseModel):
     A group of controls, or of groups of controls.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    id: constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
+    class_: constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
+    title: constr(pattern=r'^[^\n]+$') = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
+    params: list[common.Parameter] | None = Field(None, min_length=1)
+    props: list[common.Property] | None = Field(None, min_length=1)
+    links: list[common.Link] | None = Field(None, min_length=1)
+    parts: list[common.Part] | None = Field(None, min_length=1)
+    groups: list[Group1|Group2] | None = Field(None, min_length=1)
 
-    id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
-    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
-    title: constr(regex=r'^[^\n]+$') = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
-    params: list[common.Parameter] | None = Field(None)
-    props: list[common.Property] | None = Field(None)
-    links: list[common.Link] | None = Field(None)
-    parts: list[common.Part] | None = Field(None)
-    groups: list[Group1|Group2] | None = Field(None)
 
-
-
-    @classmethod
-    def __get_validators__(cls):
-        yield cls._smart_union_validator
-
-    @classmethod
-    def _smart_union_validator(cls, v):
-        """Smart validator that chooses Group1 if data has groups, otherwise tries Group2."""
-        if isinstance(v, dict):
-            # If dict has 'groups' field, use Group1
-            if 'groups' in v:
-                return cls.parse_obj(v)
-            # If dict has 'controls' field, use Group2
-            elif 'controls' in v:
-                return Group2.parse_obj(v)
-        # For non-dict or ambiguous cases, try Group1 first (this class)
-        try:
-            return cls.parse_obj(v) if isinstance(v, dict) else v
-        except Exception:
-            # If Group1 fails, try Group2
-            return Group2.parse_obj(v) if isinstance(v, dict) else v
+# Union alias for Group variants
+Group = Union[Group1, Group2]
 
 
 class Catalog(OscalBaseModel):
@@ -144,19 +101,16 @@ class Catalog(OscalBaseModel):
     A structured, organized collection of control information.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given catalog instance.', title='Catalog Universally Unique Identifier')
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    uuid: constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given catalog instance.', title='Catalog Universally Unique Identifier')
     metadata: common.Metadata
-    params: list[common.Parameter] | None = Field(None)
-    controls: list[Control] | None = Field(None)
-    groups: list[Group1|Group2] | None = Field(None)
+    params: list[common.Parameter] | None = Field(None, min_length=1)
+    controls: list[Control] | None = Field(None, min_length=1)
+    groups: list[Group] | None = Field(None, min_length=1)
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')
 
 
 class Model(OscalBaseModel):
     catalog: Catalog
-
-
-Control.update_forward_refs()
