@@ -46,6 +46,48 @@ from trestle.oscal import assessment_plan, assessment_results, common, poam
 logger = logging.getLogger(__name__)
 
 
+def _match_union_variant_by_alias(union_args: tuple, field_name: str) -> Optional[Type[Any]]:
+    """Return the first Union variant whose JSON alias matches field_name, or None."""
+    for union_type in union_args:
+        if not (isinstance(union_type, type) and issubclass(union_type, OscalBaseModel)):
+            continue
+        try:
+            if str_utils.classname_to_alias(union_type.__name__, AliasMode.JSON) == field_name:
+                logger.debug(f'Found alias {field_name} matching union variant {union_type}')
+                return union_type
+        except Exception as e:
+            logger.debug(f'Union type {union_type} alias resolution failed: {e}')
+    return None
+
+
+def _match_union_variant_by_field_map(union_args: tuple, field_name: str) -> Optional[Type[Any]]:
+    """Return the first Union variant whose alias_to_field_map contains field_name, or None."""
+    for union_type in union_args:
+        if not hasattr(union_type, 'alias_to_field_map'):
+            continue
+        try:
+            if field_name in union_type.alias_to_field_map():
+                logger.debug(f'Found field {field_name} in {union_type}')
+                return union_type
+        except Exception as e:
+            logger.debug(f'Union type {union_type} does not have alias_to_field_map: {e}')
+    return None
+
+
+def _select_union_fallback(union_args: tuple) -> Type[Any]:
+    """Return the best fallback type from Union args (first with alias_to_field_map, first non-list, or first)."""
+    for union_type in union_args:
+        if hasattr(union_type, 'alias_to_field_map'):
+            logger.debug(f'Using {union_type} from Union (no field match)')
+            return union_type
+    for union_type in union_args:
+        if get_origin(union_type) not in (list, List):
+            logger.debug(f'No suitable type found in Union, using first non-list: {union_type}')
+            return union_type
+    logger.warning(f'All Union types are lists, using first: {union_args[0]}')
+    return union_args[0]
+
+
 def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] = None) -> Type[Any]:
     """
     If model_type is a Union, return the appropriate concrete type.
@@ -67,54 +109,21 @@ def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] 
     """
     origin = get_origin(model_type)
     # Handle both Union[A, B] and A | B syntax (types.UnionType in Python 3.10+)
-    if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
-        union_args = get_args(model_type)
-        logger.debug(f'Union type detected: {union_args}, looking for field: {field_name}')
+    if origin is not Union and not (hasattr(types, 'UnionType') and origin is types.UnionType):
+        return model_type
 
-        # If we have a field name, first prefer a Union variant whose own alias matches.
-        if field_name:
-            for union_type in union_args:
-                if isinstance(union_type, type) and issubclass(union_type, OscalBaseModel):
-                    try:
-                        if str_utils.classname_to_alias(union_type.__name__, AliasMode.JSON) == field_name:
-                            logger.debug(f'Found alias {field_name} matching union variant {union_type}')
-                            return union_type
-                    except Exception as e:
-                        logger.debug(f'Union type {union_type} alias resolution failed: {e}')
-                        continue
+    union_args = get_args(model_type)
+    logger.debug(f'Union type detected: {union_args}, looking for field: {field_name}')
 
-            # Otherwise, find the Union variant that has that field
-            for union_type in union_args:
-                if hasattr(union_type, 'alias_to_field_map'):
-                    try:
-                        field_map = union_type.alias_to_field_map()
-                        if field_name in field_map:
-                            logger.debug(f'Found field {field_name} in {union_type}')
-                            return union_type
-                    except Exception as e:
-                        logger.debug(f'Union type {union_type} does not have alias_to_field_map: {e}')
-                        continue
+    if field_name:
+        result = _match_union_variant_by_alias(union_args, field_name)
+        if result is not None:
+            return result
+        result = _match_union_variant_by_field_map(union_args, field_name)
+        if result is not None:
+            return result
 
-        # Fallback: return the first type that has alias_to_field_map
-        # The smart validators in the generated models will handle choosing
-        # the correct variant at deserialization time
-        for union_type in union_args:
-            if hasattr(union_type, 'alias_to_field_map'):
-                logger.debug(f'Using {union_type} from Union (no field match)')
-                return union_type
-
-        # Last resort: return the first non-list type
-        # Skip list types as they don't have model methods
-        for union_type in union_args:
-            origin = get_origin(union_type)
-            if origin not in (list, List):
-                logger.debug(f'No suitable type found in Union, using first non-list: {union_type}')
-                return union_type
-
-        # If all types are lists, return the first one (shouldn't happen in practice)
-        logger.warning(f'All Union types are lists, using first: {union_args[0]}')
-        return union_args[0]
-    return model_type
+    return _select_union_fallback(union_args)
 
 
 def _pluralized_alias_to_singular(alias: str) -> str:
