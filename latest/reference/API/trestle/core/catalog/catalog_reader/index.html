@@ -401,7 +401,31 @@
 <span class=normal>439</span>
 <span class=normal>440</span>
 <span class=normal>441</span>
-<span class=normal>442</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogReader</span><span class=p>:</span>
+<span class=normal>442</span>
+<span class=normal>443</span>
+<span class=normal>444</span>
+<span class=normal>445</span>
+<span class=normal>446</span>
+<span class=normal>447</span>
+<span class=normal>448</span>
+<span class=normal>449</span>
+<span class=normal>450</span>
+<span class=normal>451</span>
+<span class=normal>452</span>
+<span class=normal>453</span>
+<span class=normal>454</span>
+<span class=normal>455</span>
+<span class=normal>456</span>
+<span class=normal>457</span>
+<span class=normal>458</span>
+<span class=normal>459</span>
+<span class=normal>460</span>
+<span class=normal>461</span>
+<span class=normal>462</span>
+<span class=normal>463</span>
+<span class=normal>464</span>
+<span class=normal>465</span>
+<span class=normal>466</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogReader</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Catalog reader.</span>
 
@@ -573,8 +597,10 @@
         <span class=n>statement</span> <span class=o>=</span> <span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>ossp</span><span class=o>.</span><span class=n>Statement</span><span class=p>)</span>
         <span class=n>statement</span><span class=o>.</span><span class=n>statement_id</span> <span class=o>=</span> <span class=n>statement_id</span>
         <span class=n>statement</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=kc>None</span>
-        <span class=n>impl_req</span><span class=o>.</span><span class=n>statements</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>impl_req</span><span class=o>.</span><span class=n>statements</span><span class=p>)</span>
-        <span class=n>impl_req</span><span class=o>.</span><span class=n>statements</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>statement</span><span class=p>)</span>
+        <span class=c1># Work with list without triggering Pydantic v2 validation on empty list assignment</span>
+        <span class=n>statements_list</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>impl_req</span><span class=o>.</span><span class=n>statements</span><span class=p>)</span>
+        <span class=n>statements_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>statement</span><span class=p>)</span>
+        <span class=n>impl_req</span><span class=o>.</span><span class=n>statements</span> <span class=o>=</span> <span class=n>statements_list</span>  <span class=c1># This will always have at least one item now</span>
         <span class=k>return</span> <span class=n>statement</span>
 
     <span class=nd>@staticmethod</span>
@@ -600,8 +626,10 @@
             <span class=n>by_comp</span> <span class=o>=</span> <span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>)</span>
             <span class=n>by_comp</span><span class=o>.</span><span class=n>component_uuid</span> <span class=o>=</span> <span class=n>comp_uuid</span>
             <span class=n>by_comp</span><span class=o>.</span><span class=n>implementation_status</span> <span class=o>=</span> <span class=n>com</span><span class=o>.</span><span class=n>ImplementationStatus</span><span class=p>(</span><span class=n>state</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>STATUS_PLANNED</span><span class=p>)</span>
-            <span class=n>found_statement</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>found_statement</span><span class=o>.</span><span class=n>by_components</span><span class=p>)</span>
-            <span class=n>found_statement</span><span class=o>.</span><span class=n>by_components</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>by_comp</span><span class=p>)</span>
+            <span class=c1># Work with list without triggering Pydantic v2 validation on empty list assignment</span>
+            <span class=n>by_comps</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>found_statement</span><span class=o>.</span><span class=n>by_components</span><span class=p>)</span>
+            <span class=n>by_comps</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>by_comp</span><span class=p>)</span>
+            <span class=n>found_statement</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=n>by_comps</span>  <span class=c1># This will always have at least one item now</span>
             <span class=k>return</span> <span class=n>by_comp</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=k>for</span> <span class=n>by_comp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>imp_req</span><span class=o>.</span><span class=n>by_components</span><span class=p>):</span>
@@ -610,8 +638,10 @@
             <span class=n>by_comp</span> <span class=o>=</span> <span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>)</span>
             <span class=n>by_comp</span><span class=o>.</span><span class=n>component_uuid</span> <span class=o>=</span> <span class=n>comp_uuid</span>
             <span class=n>by_comp</span><span class=o>.</span><span class=n>implementation_status</span> <span class=o>=</span> <span class=n>com</span><span class=o>.</span><span class=n>ImplementationStatus</span><span class=p>(</span><span class=n>state</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>STATUS_PLANNED</span><span class=p>)</span>
-            <span class=n>imp_req</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>imp_req</span><span class=o>.</span><span class=n>by_components</span><span class=p>)</span>
-            <span class=n>imp_req</span><span class=o>.</span><span class=n>by_components</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>by_comp</span><span class=p>)</span>
+            <span class=c1># Work with list without triggering Pydantic v2 validation on empty list assignment</span>
+            <span class=n>by_comps</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>imp_req</span><span class=o>.</span><span class=n>by_components</span><span class=p>)</span>
+            <span class=n>by_comps</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>by_comp</span><span class=p>)</span>
+            <span class=n>imp_req</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=n>by_comps</span>  <span class=c1># This will always have at least one item now</span>
             <span class=k>return</span> <span class=n>by_comp</span>
 
     <span class=nd>@staticmethod</span>
@@ -641,6 +671,17 @@
             <span class=n>by_comp</span> <span class=o>=</span> <span class=n>CatalogReader</span><span class=o>.</span><span class=n>_get_by_comp_from_imp_req</span><span class=p>(</span><span class=n>imp_req</span><span class=p>,</span> <span class=n>part_id</span><span class=p>,</span> <span class=n>gen_comp</span><span class=o>.</span><span class=n>uuid</span><span class=p>)</span>
             <span class=n>by_comp</span><span class=o>.</span><span class=n>description</span> <span class=o>=</span> <span class=n>comp_info</span><span class=o>.</span><span class=n>prose</span>
             <span class=n>by_comp</span><span class=o>.</span><span class=n>implementation_status</span> <span class=o>=</span> <span class=n>comp_info</span><span class=o>.</span><span class=n>status</span>
+            <span class=c1># Merge props from comp_info with existing props (e.g., Rule_Id from component definition)</span>
+            <span class=c1># Don&#39;t overwrite existing props, just add new ones from markdown</span>
+            <span class=n>existing_props</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>by_comp</span><span class=o>.</span><span class=n>props</span><span class=p>)</span>
+            <span class=n>new_props</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>comp_info</span><span class=o>.</span><span class=n>props</span><span class=p>)</span>
+            <span class=c1># Create a set of existing prop names to avoid duplicates</span>
+            <span class=n>existing_prop_names</span> <span class=o>=</span> <span class=p>{(</span><span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span><span class=p>)</span> <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>existing_props</span><span class=p>}</span>
+            <span class=c1># Add new props that don&#39;t already exist</span>
+            <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>new_props</span><span class=p>:</span>
+                <span class=k>if</span> <span class=p>(</span><span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span><span class=p>)</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>existing_prop_names</span><span class=p>:</span>
+                    <span class=n>existing_props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
+            <span class=n>by_comp</span><span class=o>.</span><span class=n>props</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>existing_props</span><span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_insert_set_param_into_by_comps</span><span class=p>(</span>
@@ -662,8 +703,11 @@
                                 <span class=k>break</span>
                         <span class=k>if</span> <span class=ow>not</span> <span class=n>found</span><span class=p>:</span>
                             <span class=n>sp</span> <span class=o>=</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>(</span><span class=n>param_id</span><span class=o>=</span><span class=n>param_name</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=n>param_values</span><span class=p>)</span>
-                            <span class=n>by_comp</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>by_comp</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>)</span>
-                            <span class=n>by_comp</span><span class=o>.</span><span class=n>set_parameters</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>sp</span><span class=p>)</span>
+                            <span class=c1># Build the list first, then assign to avoid Pydantic v2 validation error</span>
+                            <span class=c1># on empty list with min_length=1 constraint</span>
+                            <span class=n>new_set_params</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>by_comp</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>)</span>
+                            <span class=n>new_set_params</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>sp</span><span class=p>)</span>
+                            <span class=n>by_comp</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=n>new_set_params</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_insert_param_dict_in_imp_req</span><span class=p>(</span>
@@ -697,8 +741,10 @@
         <span class=k>for</span> <span class=n>sp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>item</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>):</span>
             <span class=k>if</span> <span class=n>sp</span><span class=o>.</span><span class=n>param_id</span> <span class=o>!=</span> <span class=n>param_id</span><span class=p>:</span>
                 <span class=n>new_sp_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>sp</span><span class=p>)</span>
+        <span class=c1># Add the new SetParameter to the list before assigning to avoid Pydantic v2 validation error</span>
+        <span class=c1># on empty list with min_length=1 constraint</span>
+        <span class=n>new_sp_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>ossp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>(</span><span class=n>param_id</span><span class=o>=</span><span class=n>param_id</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=n>param_values</span><span class=p>))</span>
         <span class=n>item</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=n>new_sp_list</span>
-        <span class=n>item</span><span class=o>.</span><span class=n>set_parameters</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>ossp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>(</span><span class=n>param_id</span><span class=o>=</span><span class=n>param_id</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=n>param_values</span><span class=p>))</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_add_props_to_imp_req</span><span class=p>(</span>
@@ -712,8 +758,9 @@
         <span class=n>props</span><span class=p>,</span> <span class=n>props_by_id</span> <span class=o>=</span> <span class=n>ControlReader</span><span class=o>.</span><span class=n>get_props_list</span><span class=p>(</span><span class=n>control_id</span><span class=p>,</span> <span class=n>control_part_id_map</span><span class=p>,</span> <span class=n>yaml_header</span><span class=p>)</span>
         <span class=c1># add the props at control level</span>
         <span class=k>if</span> <span class=n>props</span><span class=p>:</span>
-            <span class=n>imp_req</span><span class=o>.</span><span class=n>props</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>imp_req</span><span class=o>.</span><span class=n>props</span><span class=p>)</span>
+            <span class=c1># reconcile_props handles both existing and non-existing props</span>
             <span class=n>ControlInterface</span><span class=o>.</span><span class=n>reconcile_props</span><span class=p>(</span><span class=n>imp_req</span><span class=p>,</span> <span class=n>props</span><span class=p>)</span>
+            <span class=n>imp_req</span><span class=o>.</span><span class=n>props</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>imp_req</span><span class=o>.</span><span class=n>props</span><span class=p>)</span>
 
         <span class=c1># add the props at the part level</span>
         <span class=k>for</span> <span class=n>label</span><span class=p>,</span> <span class=n>part_id</span> <span class=ow>in</span> <span class=n>control_part_id_map</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
@@ -722,8 +769,9 @@
                 <span class=k>continue</span>
             <span class=k>for</span> <span class=n>statement</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>imp_req</span><span class=o>.</span><span class=n>statements</span><span class=p>):</span>
                 <span class=k>if</span> <span class=n>statement</span><span class=o>.</span><span class=n>statement_id</span> <span class=o>==</span> <span class=n>part_id</span><span class=p>:</span>
-                    <span class=n>statement</span><span class=o>.</span><span class=n>props</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>statement</span><span class=o>.</span><span class=n>props</span><span class=p>)</span>
+                    <span class=c1># reconcile_props handles the list internally</span>
                     <span class=n>ControlInterface</span><span class=o>.</span><span class=n>reconcile_props</span><span class=p>(</span><span class=n>statement</span><span class=p>,</span> <span class=n>props</span><span class=p>)</span>
+                    <span class=n>statement</span><span class=o>.</span><span class=n>props</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>statement</span><span class=o>.</span><span class=n>props</span><span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_update_ssp_with_md_header</span><span class=p>(</span>
@@ -1049,31 +1097,7 @@
 
   
       dataclass
-   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>control context for the procedure</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The ssp should already contain info from the comp defs and this fills in selected content from md. The only content read from md is: ssp values in the comp def rules param vals of the header ssp values in the set-params of the header all prose for implementaton responses all status values ssp has components but may not have all needed imp reqs and bycomps know controlid and comp name in comp_dict</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>390</span>
-<span class=normal>391</span>
-<span class=normal>392</span>
-<span class=normal>393</span>
-<span class=normal>394</span>
-<span class=normal>395</span>
-<span class=normal>396</span>
-<span class=normal>397</span>
-<span class=normal>398</span>
-<span class=normal>399</span>
-<span class=normal>400</span>
-<span class=normal>401</span>
-<span class=normal>402</span>
-<span class=normal>403</span>
-<span class=normal>404</span>
-<span class=normal>405</span>
-<span class=normal>406</span>
-<span class=normal>407</span>
-<span class=normal>408</span>
-<span class=normal>409</span>
-<span class=normal>410</span>
-<span class=normal>411</span>
-<span class=normal>412</span>
-<span class=normal>413</span>
-<span class=normal>414</span>
+   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>control context for the procedure</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The ssp should already contain info from the comp defs and this fills in selected content from md. The only content read from md is: ssp values in the comp def rules param vals of the header ssp values in the set-params of the header all prose for implementaton responses all status values ssp has components but may not have all needed imp reqs and bycomps know controlid and comp name in comp_dict</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>414</span>
 <span class=normal>415</span>
 <span class=normal>416</span>
 <span class=normal>417</span>
@@ -1101,7 +1125,31 @@
 <span class=normal>439</span>
 <span class=normal>440</span>
 <span class=normal>441</span>
-<span class=normal>442</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>442</span>
+<span class=normal>443</span>
+<span class=normal>444</span>
+<span class=normal>445</span>
+<span class=normal>446</span>
+<span class=normal>447</span>
+<span class=normal>448</span>
+<span class=normal>449</span>
+<span class=normal>450</span>
+<span class=normal>451</span>
+<span class=normal>452</span>
+<span class=normal>453</span>
+<span class=normal>454</span>
+<span class=normal>455</span>
+<span class=normal>456</span>
+<span class=normal>457</span>
+<span class=normal>458</span>
+<span class=normal>459</span>
+<span class=normal>460</span>
+<span class=normal>461</span>
+<span class=normal>462</span>
+<span class=normal>463</span>
+<span class=normal>464</span>
+<span class=normal>465</span>
+<span class=normal>466</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>read_ssp_md_content</span><span class=p>(</span>
     <span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
     <span class=n>ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>,</span>

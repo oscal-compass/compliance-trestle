@@ -195,7 +195,8 @@
 <span class=normal>314</span>
 <span class=normal>315</span>
 <span class=normal>316</span>
-<span class=normal>317</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ComponentAssemble</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
+<span class=normal>317</span>
+<span class=normal>318</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ComponentAssemble</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Assemble markdown files of controls into a Component json file.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;component-assemble&#39;</span>
@@ -313,10 +314,11 @@
         <span class=n>comp_names</span> <span class=o>=</span> <span class=p>[</span><span class=n>sub_dir</span><span class=o>.</span><span class=n>name</span> <span class=k>for</span> <span class=n>sub_dir</span> <span class=ow>in</span> <span class=n>sub_dirs</span> <span class=k>if</span> <span class=n>sub_dir</span><span class=o>.</span><span class=n>is_dir</span><span class=p>()]</span>
 
         <span class=c1># make sure parent has list of comps to work with - possibly empty</span>
-        <span class=k>if</span> <span class=ow>not</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>:</span>
+        <span class=c1># Build new components list to avoid Pydantic v2 validation on empty list</span>
+        <span class=k>if</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>:</span>
+            <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>[:]</span> <span class=o>=</span> <span class=p>[</span><span class=n>comp</span> <span class=k>for</span> <span class=n>comp</span> <span class=ow>in</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span> <span class=k>if</span> <span class=n>comp</span><span class=o>.</span><span class=n>title</span> <span class=ow>in</span> <span class=n>comp_names</span><span class=p>]</span>
+        <span class=k>else</span><span class=p>:</span>
             <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span> <span class=o>=</span> <span class=p>[]</span>
-
-        <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>[:]</span> <span class=o>=</span> <span class=p>[</span><span class=n>comp</span> <span class=k>for</span> <span class=n>comp</span> <span class=ow>in</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span> <span class=k>if</span> <span class=n>comp</span><span class=o>.</span><span class=n>title</span> <span class=ow>in</span> <span class=n>comp_names</span><span class=p>]</span>
 
         <span class=c1># create new comps if needed</span>
         <span class=n>existing_comp_names</span> <span class=o>=</span> <span class=p>[</span><span class=n>component</span><span class=o>.</span><span class=n>title</span> <span class=k>for</span> <span class=n>component</span> <span class=ow>in</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>]</span>
@@ -394,7 +396,8 @@
 <span class=normal>284</span>
 <span class=normal>285</span>
 <span class=normal>286</span>
-<span class=normal>287</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>287</span>
+<span class=normal>288</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>assemble_comp_def_into_parent</span><span class=p>(</span>
     <span class=n>parent_comp</span><span class=p>:</span> <span class=n>comp</span><span class=o>.</span><span class=n>ComponentDefinition</span><span class=p>,</span> <span class=n>md_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -404,10 +407,11 @@
     <span class=n>comp_names</span> <span class=o>=</span> <span class=p>[</span><span class=n>sub_dir</span><span class=o>.</span><span class=n>name</span> <span class=k>for</span> <span class=n>sub_dir</span> <span class=ow>in</span> <span class=n>sub_dirs</span> <span class=k>if</span> <span class=n>sub_dir</span><span class=o>.</span><span class=n>is_dir</span><span class=p>()]</span>
 
     <span class=c1># make sure parent has list of comps to work with - possibly empty</span>
-    <span class=k>if</span> <span class=ow>not</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>:</span>
+    <span class=c1># Build new components list to avoid Pydantic v2 validation on empty list</span>
+    <span class=k>if</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>:</span>
+        <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>[:]</span> <span class=o>=</span> <span class=p>[</span><span class=n>comp</span> <span class=k>for</span> <span class=n>comp</span> <span class=ow>in</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span> <span class=k>if</span> <span class=n>comp</span><span class=o>.</span><span class=n>title</span> <span class=ow>in</span> <span class=n>comp_names</span><span class=p>]</span>
+    <span class=k>else</span><span class=p>:</span>
         <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span> <span class=o>=</span> <span class=p>[]</span>
-
-    <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>[:]</span> <span class=o>=</span> <span class=p>[</span><span class=n>comp</span> <span class=k>for</span> <span class=n>comp</span> <span class=ow>in</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span> <span class=k>if</span> <span class=n>comp</span><span class=o>.</span><span class=n>title</span> <span class=ow>in</span> <span class=n>comp_names</span><span class=p>]</span>
 
     <span class=c1># create new comps if needed</span>
     <span class=n>existing_comp_names</span> <span class=o>=</span> <span class=p>[</span><span class=n>component</span><span class=o>.</span><span class=n>title</span> <span class=k>for</span> <span class=n>component</span> <span class=ow>in</span> <span class=n>parent_comp</span><span class=o>.</span><span class=n>components</span><span class=p>]</span>
@@ -763,7 +767,7 @@
         <span class=bp>self</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span> <span class=n>component</span><span class=p>:</span> <span class=n>comp</span><span class=o>.</span><span class=n>DefinedComponent</span><span class=p>,</span> <span class=n>markdown_dir_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Create markdown for the component using its source profiles.&quot;&quot;&quot;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for component </span><span class=si>{</span><span class=n>component</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for component </span><span class=si>{</span><span class=n>component</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
         <span class=n>context</span><span class=o>.</span><span class=n>comp_name</span> <span class=o>=</span> <span class=n>component</span><span class=o>.</span><span class=n>title</span>
         <span class=n>context</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=n>component</span>
         <span class=n>context</span><span class=o>.</span><span class=n>uri_name_map</span> <span class=o>=</span> <span class=p>{}</span>
@@ -887,7 +891,7 @@
     <span class=bp>self</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span> <span class=n>component</span><span class=p>:</span> <span class=n>comp</span><span class=o>.</span><span class=n>DefinedComponent</span><span class=p>,</span> <span class=n>markdown_dir_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Create markdown for the component using its source profiles.&quot;&quot;&quot;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for component </span><span class=si>{</span><span class=n>component</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for component </span><span class=si>{</span><span class=n>component</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
     <span class=n>context</span><span class=o>.</span><span class=n>comp_name</span> <span class=o>=</span> <span class=n>component</span><span class=o>.</span><span class=n>title</span>
     <span class=n>context</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=n>component</span>
     <span class=n>context</span><span class=o>.</span><span class=n>uri_name_map</span> <span class=o>=</span> <span class=p>{}</span>

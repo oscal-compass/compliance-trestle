@@ -28,7 +28,8 @@
 <span class=normal>61</span>
 <span class=normal>62</span>
 <span class=normal>63</span>
-<span class=normal>64</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse_dict</span><span class=p>(</span><span class=n>data</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>model_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>OscalBaseModel</span><span class=p>:</span>
+<span class=normal>64</span>
+<span class=normal>65</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse_dict</span><span class=p>(</span><span class=n>data</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>model_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>OscalBaseModel</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Load a model from the data dict.</span>
 
 <span class=sd>    This functionality is provided for situations when the OSCAL data type is not known ahead of time. Here the model</span>
@@ -57,21 +58,21 @@
     <span class=k>if</span> <span class=n>mclass</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;class &quot;</span><span class=si>{</span><span class=n>class_name</span><span class=si>}</span><span class=s1>&quot; could not be found in &quot;</span><span class=si>{</span><span class=n>module_name</span><span class=si>}</span><span class=s1>&quot;&#39;</span><span class=p>)</span>
 
-    <span class=n>instance</span> <span class=o>=</span> <span class=n>mclass</span><span class=o>.</span><span class=n>parse_obj</span><span class=p>(</span><span class=n>data</span><span class=p>)</span>
+    <span class=c1># Pydantic v2: parse_obj() → model_validate()</span>
+    <span class=n>instance</span> <span class=o>=</span> <span class=n>mclass</span><span class=o>.</span><span class=n>model_validate</span><span class=p>(</span><span class=n>data</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>instance</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.parser.root_key class="doc doc-heading"> <code class="highlight language-python"><span class=n>root_key</span><span class=p>(</span><span class=n>data</span><span class=p>)</span></code> <a href=#trestle.core.parser.root_key class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Find root model name in the data.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/parser.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>67</span>
-<span class=normal>68</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.parser.root_key class="doc doc-heading"> <code class="highlight language-python"><span class=n>root_key</span><span class=p>(</span><span class=n>data</span><span class=p>)</span></code> <a href=#trestle.core.parser.root_key class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Find root model name in the data.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/parser.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>68</span>
 <span class=normal>69</span>
 <span class=normal>70</span>
 <span class=normal>71</span>
-<span class=normal>72</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>root_key</span><span class=p>(</span><span class=n>data</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
+<span class=normal>72</span>
+<span class=normal>73</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>root_key</span><span class=p>(</span><span class=n>data</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Find root model name in the data.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>data</span><span class=o>.</span><span class=n>items</span><span class=p>())</span> <span class=o>==</span> <span class=mi>1</span><span class=p>:</span>
         <span class=k>return</span> <span class=nb>next</span><span class=p>(</span><span class=nb>iter</span><span class=p>(</span><span class=n>data</span><span class=p>))</span>
 
     <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;data does not contain a root key&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.parser.to_full_model_name class="doc doc-heading"> <code class="highlight language-python"><span class=n>to_full_model_name</span><span class=p>(</span><span class=n>root_key</span><span class=p>)</span></code> <a href=#trestle.core.parser.to_full_model_name class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Find model name from the root_key in the file.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>root_key</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>root key such as 'system-security-plan' from a top level OSCAL model.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/parser.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>75</span>
-<span class=normal>76</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.parser.to_full_model_name class="doc doc-heading"> <code class="highlight language-python"><span class=n>to_full_model_name</span><span class=p>(</span><span class=n>root_key</span><span class=p>)</span></code> <a href=#trestle.core.parser.to_full_model_name class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Find model name from the root_key in the file.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>root_key</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>root key such as 'system-security-plan' from a top level OSCAL model.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/parser.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>76</span>
 <span class=normal>77</span>
 <span class=normal>78</span>
 <span class=normal>79</span>
@@ -82,7 +83,8 @@
 <span class=normal>84</span>
 <span class=normal>85</span>
 <span class=normal>86</span>
-<span class=normal>87</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>to_full_model_name</span><span class=p>(</span><span class=n>root_key</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
+<span class=normal>87</span>
+<span class=normal>88</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>to_full_model_name</span><span class=p>(</span><span class=n>root_key</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Find model name from the root_key in the file.</span>
 

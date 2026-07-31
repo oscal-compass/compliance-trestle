@@ -190,7 +190,9 @@
 <span class=normal>203</span>
 <span class=normal>204</span>
 <span class=normal>205</span>
-<span class=normal>206</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>MergeCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>206</span>
+<span class=normal>207</span>
+<span class=normal>208</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>MergeCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Merge subcomponents on a trestle model.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;merge&#39;</span>
@@ -328,9 +330,11 @@
                 <span class=n>target_model_filename</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>collection_type</span>
             <span class=p>)</span>
 
-        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>target_model_object</span><span class=p>,</span> <span class=s1>&#39;__dict__&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>&#39;__root__&#39;</span> <span class=ow>in</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>:</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;loaded object has dict and root so set target model object to root contents&#39;</span><span class=p>)</span>
-            <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>[</span><span class=s1>&#39;__root__&#39;</span><span class=p>]</span>
+        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>target_model_object</span><span class=p>,</span> <span class=s1>&#39;__dict__&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>&#39;root&#39;</span> <span class=ow>in</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>:</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span>
+                <span class=s1>&#39;loaded object has dict and root so set target model object to root contents (Pydantic v2 RootModel)&#39;</span>
+            <span class=p>)</span>
+            <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>[</span><span class=s1>&#39;root&#39;</span><span class=p>]</span>
         <span class=c1># 4. Insert target model into destination model.</span>
         <span class=n>merged_dict</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>if</span> <span class=n>destination_model_object</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
@@ -488,7 +492,9 @@
 <span class=normal>203</span>
 <span class=normal>204</span>
 <span class=normal>205</span>
-<span class=normal>206</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>206</span>
+<span class=normal>207</span>
+<span class=normal>208</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>merge</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>effective_cwd</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Plan</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Merge operations.</span>
 
@@ -589,9 +595,11 @@
             <span class=n>target_model_filename</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>collection_type</span>
         <span class=p>)</span>
 
-    <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>target_model_object</span><span class=p>,</span> <span class=s1>&#39;__dict__&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>&#39;__root__&#39;</span> <span class=ow>in</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>:</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;loaded object has dict and root so set target model object to root contents&#39;</span><span class=p>)</span>
-        <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>[</span><span class=s1>&#39;__root__&#39;</span><span class=p>]</span>
+    <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>target_model_object</span><span class=p>,</span> <span class=s1>&#39;__dict__&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>&#39;root&#39;</span> <span class=ow>in</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>:</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span>
+            <span class=s1>&#39;loaded object has dict and root so set target model object to root contents (Pydantic v2 RootModel)&#39;</span>
+        <span class=p>)</span>
+        <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>[</span><span class=s1>&#39;root&#39;</span><span class=p>]</span>
     <span class=c1># 4. Insert target model into destination model.</span>
     <span class=n>merged_dict</span> <span class=o>=</span> <span class=p>{}</span>
     <span class=k>if</span> <span class=n>destination_model_object</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>

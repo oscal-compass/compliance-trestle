@@ -533,7 +533,13 @@
 <span class=normal>554</span>
 <span class=normal>555</span>
 <span class=normal>556</span>
-<span class=normal>557</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Ocp4CisProfileToOscalCD</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
+<span class=normal>557</span>
+<span class=normal>558</span>
+<span class=normal>559</span>
+<span class=normal>560</span>
+<span class=normal>561</span>
+<span class=normal>562</span>
+<span class=normal>563</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Ocp4CisProfileToOscalCD</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Task to transform OCP4 CIS profile to OSCAL component-definition.</span>
 
@@ -722,8 +728,14 @@
         <span class=c1># defined component</span>
         <span class=n>component_title</span> <span class=o>=</span> <span class=n>component_name</span>
         <span class=n>component_description</span> <span class=o>=</span> <span class=n>component_name</span>
+        <span class=c1># Convert string to enum member for Pydantic v2</span>
+        <span class=kn>from</span><span class=w> </span><span class=nn>trestle.oscal.component</span><span class=w> </span><span class=kn>import</span> <span class=n>DefinedComponentTypeValidValues</span>
+
         <span class=n>defined_component</span> <span class=o>=</span> <span class=n>DefinedComponent</span><span class=p>(</span>
-            <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span> <span class=n>description</span><span class=o>=</span><span class=n>component_description</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=n>component_title</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;Service&#39;</span>
+            <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
+            <span class=n>description</span><span class=o>=</span><span class=n>component_description</span><span class=p>,</span>
+            <span class=n>title</span><span class=o>=</span><span class=n>component_title</span><span class=p>,</span>
+            <span class=nb>type</span><span class=o>=</span><span class=n>DefinedComponentTypeValidValues</span><span class=o>.</span><span class=n>service</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=c1># add control implementation per profile</span>
         <span class=n>prop1</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>&#39;profile_name&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_name</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_profile_name&#39;</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=n>profile_ns</span><span class=p>)</span>

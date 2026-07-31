@@ -154,7 +154,11 @@
 <span class=normal>188</span>
 <span class=normal>189</span>
 <span class=normal>190</span>
-<span class=normal>191</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SSPInheritanceAPI</span><span class=p>:</span>
+<span class=normal>191</span>
+<span class=normal>192</span>
+<span class=normal>193</span>
+<span class=normal>194</span>
+<span class=normal>195</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SSPInheritanceAPI</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;API for updating inheritance information in SSPs through inheritance markdown.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>inheritance_md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -226,8 +230,12 @@
             <span class=k>if</span> <span class=n>existing_leveraged_auth</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
                 <span class=n>leveraged_auth</span> <span class=o>=</span> <span class=n>existing_leveraged_auth</span>
             <span class=k>else</span><span class=p>:</span>
-                <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span><span class=p>)</span>
-                <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>link</span><span class=p>)</span>
+                <span class=c1># In Pydantic v2, links field has min_length=1, cannot be empty list</span>
+                <span class=c1># Initialize with link directly instead of converting None to [] then appending</span>
+                <span class=k>if</span> <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span><span class=p>:</span>
+                    <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>link</span><span class=p>)</span>
+                <span class=k>else</span><span class=p>:</span>
+                    <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span> <span class=o>=</span> <span class=p>[</span><span class=n>link</span><span class=p>]</span>
 
             <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>title</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;Leveraged Authorization for </span><span class=si>{</span><span class=n>leveraged_ssp</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span>
             <span class=n>leveraged_auths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>leveraged_auth</span><span class=p>)</span>
@@ -360,7 +368,11 @@
 <span class=normal>114</span>
 <span class=normal>115</span>
 <span class=normal>116</span>
-<span class=normal>117</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>update_ssp_inheritance</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>117</span>
+<span class=normal>118</span>
+<span class=normal>119</span>
+<span class=normal>120</span>
+<span class=normal>121</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>update_ssp_inheritance</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Update inheritance information in SSP.</span>
 
@@ -392,8 +404,12 @@
         <span class=k>if</span> <span class=n>existing_leveraged_auth</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>leveraged_auth</span> <span class=o>=</span> <span class=n>existing_leveraged_auth</span>
         <span class=k>else</span><span class=p>:</span>
-            <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span><span class=p>)</span>
-            <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>link</span><span class=p>)</span>
+            <span class=c1># In Pydantic v2, links field has min_length=1, cannot be empty list</span>
+            <span class=c1># Initialize with link directly instead of converting None to [] then appending</span>
+            <span class=k>if</span> <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span><span class=p>:</span>
+                <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>link</span><span class=p>)</span>
+            <span class=k>else</span><span class=p>:</span>
+                <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>links</span> <span class=o>=</span> <span class=p>[</span><span class=n>link</span><span class=p>]</span>
 
         <span class=n>leveraged_auth</span><span class=o>.</span><span class=n>title</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;Leveraged Authorization for </span><span class=si>{</span><span class=n>leveraged_ssp</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span>
         <span class=n>leveraged_auths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>leveraged_auth</span><span class=p>)</span>

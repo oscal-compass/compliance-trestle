@@ -221,7 +221,9 @@
 <span class=normal>260</span>
 <span class=normal>261</span>
 <span class=normal>262</span>
-<span class=normal>263</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ExportReader</span><span class=p>:</span>
+<span class=normal>263</span>
+<span class=normal>264</span>
+<span class=normal>265</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ExportReader</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    By-Component Assembly Exports Markdown reader.</span>
 
@@ -361,13 +363,15 @@
             <span class=n>statement</span> <span class=o>=</span> <span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>ossp</span><span class=o>.</span><span class=n>Statement</span><span class=p>)</span>
             <span class=n>statement</span><span class=o>.</span><span class=n>statement_id</span> <span class=o>=</span> <span class=n>control_mapping</span>
             <span class=n>statement</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=n>ExportReader</span><span class=o>.</span><span class=n>_add_new_by_comps</span><span class=p>(</span><span class=n>by_comps</span><span class=p>)</span>
-            <span class=n>implemented_req</span><span class=o>.</span><span class=n>statements</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>implemented_req</span><span class=o>.</span><span class=n>statements</span><span class=p>)</span>
-            <span class=n>implemented_req</span><span class=o>.</span><span class=n>statements</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>statement</span><span class=p>)</span>
+            <span class=n>statements_list</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>implemented_req</span><span class=o>.</span><span class=n>statements</span><span class=p>)</span>
+            <span class=n>statements_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>statement</span><span class=p>)</span>
+            <span class=n>implemented_req</span><span class=o>.</span><span class=n>statements</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>statements_list</span><span class=p>)</span>
             <span class=n>implemented_req</span><span class=o>.</span><span class=n>statements</span> <span class=o>=</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>implemented_req</span><span class=o>.</span><span class=n>statements</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=o>.</span><span class=n>statement_id</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>implemented_req</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_add_or_get_implemented_requirement</span><span class=p>(</span><span class=n>control_mapping</span><span class=p>)</span>
-            <span class=n>implemented_req</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>implemented_req</span><span class=o>.</span><span class=n>by_components</span><span class=p>)</span>
-            <span class=n>implemented_req</span><span class=o>.</span><span class=n>by_components</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>ExportReader</span><span class=o>.</span><span class=n>_add_new_by_comps</span><span class=p>(</span><span class=n>by_comps</span><span class=p>))</span>
+            <span class=n>by_comps_list</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>implemented_req</span><span class=o>.</span><span class=n>by_components</span><span class=p>)</span>
+            <span class=n>by_comps_list</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>ExportReader</span><span class=o>.</span><span class=n>_add_new_by_comps</span><span class=p>(</span><span class=n>by_comps</span><span class=p>))</span>
+            <span class=n>implemented_req</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>by_comps_list</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_add_or_get_implemented_requirement</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>control_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Add or get implemented requirement from implemented requirements dictionary.&quot;&quot;&quot;</span>

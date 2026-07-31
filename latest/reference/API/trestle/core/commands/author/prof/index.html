@@ -263,7 +263,18 @@
 <span class=normal>414</span>
 <span class=normal>415</span>
 <span class=normal>416</span>
-<span class=normal>417</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ProfileAssemble</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
+<span class=normal>417</span>
+<span class=normal>418</span>
+<span class=normal>419</span>
+<span class=normal>420</span>
+<span class=normal>421</span>
+<span class=normal>422</span>
+<span class=normal>423</span>
+<span class=normal>424</span>
+<span class=normal>425</span>
+<span class=normal>426</span>
+<span class=normal>427</span>
+<span class=normal>428</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ProfileAssemble</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Assemble markdown files of controls into a Profile json file.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-assemble&#39;</span>
@@ -320,29 +331,35 @@
             <span class=n>alter_dict</span><span class=p>[</span><span class=n>new_alter</span><span class=o>.</span><span class=n>control_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>alter</span>
 
     <span class=nd>@staticmethod</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_create_alter_dict</span><span class=p>(</span><span class=n>existing_alters</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>]:</span>
+<span class=w>        </span><span class=sd>&quot;&quot;&quot;Create dictionary of alters by control_id, removing existing adds.&quot;&quot;&quot;</span>
+        <span class=n>alter_dict</span> <span class=o>=</span> <span class=p>{}</span>
+        <span class=k>for</span> <span class=n>alter</span> <span class=ow>in</span> <span class=n>existing_alters</span><span class=p>:</span>
+            <span class=n>alter</span><span class=o>.</span><span class=n>adds</span> <span class=o>=</span> <span class=kc>None</span>
+            <span class=n>alter_dict</span><span class=p>[</span><span class=n>alter</span><span class=o>.</span><span class=n>control_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>alter</span>
+        <span class=k>return</span> <span class=n>alter_dict</span>
+
+    <span class=nd>@staticmethod</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_filter_valid_alters</span><span class=p>(</span><span class=n>alters</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>]:</span>
+<span class=w>        </span><span class=sd>&quot;&quot;&quot;Filter alters to keep only those with adds or removes.&quot;&quot;&quot;</span>
+        <span class=k>return</span> <span class=nb>list</span><span class=p>(</span><span class=nb>filter</span><span class=p>(</span><span class=k>lambda</span> <span class=n>alt</span><span class=p>:</span> <span class=n>alt</span><span class=o>.</span><span class=n>adds</span> <span class=ow>or</span> <span class=n>alt</span><span class=o>.</span><span class=n>removes</span><span class=p>,</span> <span class=n>alters</span><span class=p>))</span>
+
+    <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_replace_alter_adds</span><span class=p>(</span><span class=n>profile</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>,</span> <span class=n>alters</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Replace the alter adds in the orig_profile with the new ones and return True if changed.&quot;&quot;&quot;</span>
         <span class=n>changed</span> <span class=o>=</span> <span class=kc>False</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=p>:</span>
-            <span class=n>profile</span><span class=o>.</span><span class=n>modify</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Modify</span><span class=p>(</span><span class=n>alters</span><span class=o>=</span><span class=n>alters</span><span class=p>)</span>
-            <span class=k>if</span> <span class=n>alters</span><span class=p>:</span>
-                <span class=n>changed</span> <span class=o>=</span> <span class=kc>True</span>
+            <span class=c1># In Pydantic v2, Modify.alters has min_length=1, so use None for empty list</span>
+            <span class=n>profile</span><span class=o>.</span><span class=n>modify</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Modify</span><span class=p>(</span><span class=n>alters</span><span class=o>=</span><span class=n>alters</span> <span class=k>if</span> <span class=n>alters</span> <span class=k>else</span> <span class=kc>None</span><span class=p>)</span>
+            <span class=n>changed</span> <span class=o>=</span> <span class=nb>bool</span><span class=p>(</span><span class=n>alters</span><span class=p>)</span>
         <span class=k>elif</span> <span class=ow>not</span> <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>alters</span><span class=p>:</span>
-            <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>alters</span> <span class=o>=</span> <span class=n>alters</span>
-            <span class=k>if</span> <span class=n>alters</span><span class=p>:</span>
-                <span class=n>changed</span> <span class=o>=</span> <span class=kc>True</span>
+            <span class=c1># In Pydantic v2, only set alters if not empty (min_length=1)</span>
+            <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>alters</span> <span class=o>=</span> <span class=n>alters</span> <span class=k>if</span> <span class=n>alters</span> <span class=k>else</span> <span class=kc>None</span>
+            <span class=n>changed</span> <span class=o>=</span> <span class=nb>bool</span><span class=p>(</span><span class=n>alters</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
-            <span class=n>alter_dict</span> <span class=o>=</span> <span class=p>{}</span>
-            <span class=c1># if an alter has adds - remove them up front and build dict of alters by control id</span>
-            <span class=k>for</span> <span class=n>alter</span> <span class=ow>in</span> <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>alters</span><span class=p>:</span>
-                <span class=n>alter</span><span class=o>.</span><span class=n>adds</span> <span class=o>=</span> <span class=kc>None</span>
-                <span class=n>alter_dict</span><span class=p>[</span><span class=n>alter</span><span class=o>.</span><span class=n>control_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>alter</span>
-            <span class=c1># now go through new alters and add them to each control in dict by control id</span>
+            <span class=n>alter_dict</span> <span class=o>=</span> <span class=n>ProfileAssemble</span><span class=o>.</span><span class=n>_create_alter_dict</span><span class=p>(</span><span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>alters</span><span class=p>)</span>
             <span class=n>ProfileAssemble</span><span class=o>.</span><span class=n>_update_alter_adds</span><span class=p>(</span><span class=n>profile</span><span class=p>,</span> <span class=n>alters</span><span class=p>,</span> <span class=n>alter_dict</span><span class=p>)</span>
-            <span class=c1># get the new list of alters from the dict and update profile</span>
-            <span class=n>new_alters</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=n>alter_dict</span><span class=o>.</span><span class=n>values</span><span class=p>())</span>
-            <span class=c1># special case, if all adds were deleted remove such alters completely</span>
-            <span class=n>new_alters</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=nb>filter</span><span class=p>(</span><span class=k>lambda</span> <span class=n>alt</span><span class=p>:</span> <span class=n>alt</span><span class=o>.</span><span class=n>adds</span> <span class=ow>or</span> <span class=n>alt</span><span class=o>.</span><span class=n>removes</span><span class=p>,</span> <span class=n>new_alters</span><span class=p>))</span>
+            <span class=n>new_alters</span> <span class=o>=</span> <span class=n>ProfileAssemble</span><span class=o>.</span><span class=n>_filter_valid_alters</span><span class=p>(</span><span class=nb>list</span><span class=p>(</span><span class=n>alter_dict</span><span class=o>.</span><span class=n>values</span><span class=p>()))</span>
             <span class=k>if</span> <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>alters</span> <span class=o>!=</span> <span class=n>new_alters</span><span class=p>:</span>
                 <span class=n>changed</span> <span class=o>=</span> <span class=kc>True</span>
             <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>alters</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>new_alters</span><span class=p>)</span>
@@ -372,7 +389,8 @@
                     <span class=n>set_param_dict</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;param_id&#39;</span><span class=p>:</span> <span class=n>key</span><span class=p>}</span>
                     <span class=k>if</span> <span class=n>param</span><span class=o>.</span><span class=n>label</span><span class=p>:</span>
                         <span class=n>set_param_dict</span><span class=p>[</span><span class=s1>&#39;label&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>param</span><span class=o>.</span><span class=n>label</span>
-                    <span class=k>if</span> <span class=n>param</span><span class=o>.</span><span class=n>props</span><span class=p>:</span>
+                    <span class=c1># Pydantic v2: Only add props if not empty (props has min_length=1)</span>
+                    <span class=k>if</span> <span class=n>param</span><span class=o>.</span><span class=n>props</span> <span class=ow>and</span> <span class=nb>len</span><span class=p>(</span><span class=n>param</span><span class=o>.</span><span class=n>props</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
                         <span class=n>set_param_dict</span><span class=p>[</span><span class=s1>&#39;props&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>param</span><span class=o>.</span><span class=n>props</span>
                     <span class=c1># Add either values or select, not both</span>
                     <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>param</span><span class=p>,</span> <span class=s1>&#39;select&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>param</span><span class=o>.</span><span class=n>select</span><span class=p>:</span>
@@ -384,10 +402,14 @@
                         <span class=n>new_set_params</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prof</span><span class=o>.</span><span class=n>SetParameters</span><span class=p>(</span><span class=o>**</span><span class=n>set_param_dict</span><span class=p>))</span>
             <span class=k>if</span> <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>!=</span> <span class=n>new_set_params</span><span class=p>:</span>
                 <span class=n>changed</span> <span class=o>=</span> <span class=kc>True</span>
-            <span class=c1># sort the params first by control sorting then by param_id</span>
-            <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=nb>sorted</span><span class=p>(</span>
-                <span class=n>new_set_params</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>param</span><span class=p>:</span> <span class=p>(</span><span class=n>param_map</span><span class=p>[</span><span class=n>param</span><span class=o>.</span><span class=n>param_id</span><span class=p>],</span> <span class=n>param</span><span class=o>.</span><span class=n>param_id</span><span class=p>)</span>
-            <span class=p>)</span>
+            <span class=c1># Pydantic v2: Only assign set_parameters if not empty (has min_length=1)</span>
+            <span class=k>if</span> <span class=n>new_set_params</span><span class=p>:</span>
+                <span class=c1># sort the params first by control sorting then by param_id</span>
+                <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=nb>sorted</span><span class=p>(</span>
+                    <span class=n>new_set_params</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>param</span><span class=p>:</span> <span class=p>(</span><span class=n>param_map</span><span class=p>[</span><span class=n>param</span><span class=o>.</span><span class=n>param_id</span><span class=p>],</span> <span class=n>param</span><span class=o>.</span><span class=n>param_id</span><span class=p>)</span>
+                <span class=p>)</span>
+            <span class=k>else</span><span class=p>:</span>
+                <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=k>if</span> <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=p>:</span>
             <span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>profile</span><span class=o>.</span><span class=n>modify</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>changed</span>
@@ -466,7 +488,7 @@
                 <span class=n>part</span>
                 <span class=k>for</span> <span class=n>alter</span> <span class=ow>in</span> <span class=n>found_alters</span>
                 <span class=k>for</span> <span class=n>add</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>alter</span><span class=o>.</span><span class=n>adds</span><span class=p>)</span>
-                <span class=k>for</span> <span class=n>part</span> <span class=ow>in</span> <span class=n>as_filtered_list</span><span class=p>(</span><span class=n>add</span><span class=o>.</span><span class=n>parts</span><span class=p>,</span> <span class=k>lambda</span> <span class=n>a</span><span class=p>:</span> <span class=n>a</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>allowed_sections</span><span class=p>)</span>  <span class=c1># type: ignore</span>
+                <span class=k>for</span> <span class=n>part</span> <span class=ow>in</span> <span class=n>as_filtered_list</span><span class=p>(</span><span class=n>add</span><span class=o>.</span><span class=n>parts</span><span class=p>,</span> <span class=k>lambda</span> <span class=n>a</span><span class=p>:</span> <span class=n>a</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>allowed_sections</span><span class=p>)</span>
             <span class=p>]:</span>
                 <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Profile has alter with name </span><span class=si>{</span><span class=n>bad_part</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> not in allowed sections.&#39;</span><span class=p>)</span>
 
@@ -500,18 +522,7 @@
         <span class=n>assem_prof_path</span><span class=o>.</span><span class=n>parent</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>parents</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
         <span class=n>parent_prof</span><span class=o>.</span><span class=n>oscal_write</span><span class=p>(</span><span class=n>assem_prof_path</span><span class=p>)</span>  <span class=c1># type: ignore</span>
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.prof.ProfileAssemble-attributes>Attributes<a href=#trestle.core.commands.author.prof.ProfileAssemble-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.prof.ProfileAssemble.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-assemble&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileAssemble.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.prof.ProfileAssemble-functions>Methods:<a href=#trestle.core.commands.author.prof.ProfileAssemble-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.prof.ProfileAssemble.assemble_profile class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_profile</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_name</span><span class=p>,</span> <span class=n>md_name</span><span class=p>,</span> <span class=n>assem_prof_name</span><span class=p>,</span> <span class=n>set_parameters_flag</span><span class=p>,</span> <span class=n>regenerate</span><span class=p>,</span> <span class=n>version</span><span class=p>,</span> <span class=n>sections_dict</span><span class=p>,</span> <span class=n>required_sections</span><span class=p>,</span> <span class=n>allowed_sections</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileAssemble.assemble_profile class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble the markdown directory into a json profile model file.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>The trestle root directory</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>parent_prof_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Optional name of profile used to generate the markdown (default is assem_prof_name)</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>md_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the directory containing the markdown control files for the profile</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>assem_prof_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the assembled profile. It can be the same as the parent to overwrite</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>set_parameters_flag</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Use the params and props in yaml header to add or alter setparameters in the profile</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>regenerate</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Whether to regenerate the uuid's in the profile</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>version</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional version for the assembled profile</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>sections_dict</code> </td> <td> <code><span title=typing.Dict>Dict</span>[<span title=str>str</span>, <span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional map of short name to long name for sections</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>required_sections</code> </td> <td> <code><span title=typing.List>List</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>List of required sections in assembled profile, as comma-separated short names</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>allowed_sections</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=typing.List>List</span>[<span title=str>str</span>]]</code> </td> <td> <div class=doc-md-description> <p>Optional list of section short names that are allowed, as comma-separated short names</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>0 on success, 1 otherwise</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>There must already be a profile model and it will either be updated or a new json profile created. The generated markdown has the current values for parameters of controls being imported, as set by the original catalog and any intermediate profiles. It also shows the current SetParameters being applied by this profile. That list of SetParameters can be edited by changing the assigned values and adding or removing SetParameters from that list. During assembly that list will be used to create the SetParameters in the assembled profile if the --set-parameters option is specified.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>310</span>
-<span class=normal>311</span>
-<span class=normal>312</span>
-<span class=normal>313</span>
-<span class=normal>314</span>
-<span class=normal>315</span>
-<span class=normal>316</span>
-<span class=normal>317</span>
-<span class=normal>318</span>
-<span class=normal>319</span>
-<span class=normal>320</span>
-<span class=normal>321</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.prof.ProfileAssemble-attributes>Attributes<a href=#trestle.core.commands.author.prof.ProfileAssemble-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.prof.ProfileAssemble.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-assemble&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileAssemble.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.prof.ProfileAssemble-functions>Methods:<a href=#trestle.core.commands.author.prof.ProfileAssemble-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.prof.ProfileAssemble.assemble_profile class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_profile</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_name</span><span class=p>,</span> <span class=n>md_name</span><span class=p>,</span> <span class=n>assem_prof_name</span><span class=p>,</span> <span class=n>set_parameters_flag</span><span class=p>,</span> <span class=n>regenerate</span><span class=p>,</span> <span class=n>version</span><span class=p>,</span> <span class=n>sections_dict</span><span class=p>,</span> <span class=n>required_sections</span><span class=p>,</span> <span class=n>allowed_sections</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileAssemble.assemble_profile class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble the markdown directory into a json profile model file.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>The trestle root directory</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>parent_prof_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Optional name of profile used to generate the markdown (default is assem_prof_name)</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>md_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the directory containing the markdown control files for the profile</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>assem_prof_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the assembled profile. It can be the same as the parent to overwrite</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>set_parameters_flag</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Use the params and props in yaml header to add or alter setparameters in the profile</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>regenerate</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Whether to regenerate the uuid's in the profile</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>version</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional version for the assembled profile</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>sections_dict</code> </td> <td> <code><span title=typing.Dict>Dict</span>[<span title=str>str</span>, <span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional map of short name to long name for sections</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>required_sections</code> </td> <td> <code><span title=typing.List>List</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>List of required sections in assembled profile, as comma-separated short names</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>allowed_sections</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=typing.List>List</span>[<span title=str>str</span>]]</code> </td> <td> <div class=doc-md-description> <p>Optional list of section short names that are allowed, as comma-separated short names</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>0 on success, 1 otherwise</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>There must already be a profile model and it will either be updated or a new json profile created. The generated markdown has the current values for parameters of controls being imported, as set by the original catalog and any intermediate profiles. It also shows the current SetParameters being applied by this profile. That list of SetParameters can be edited by changing the assigned values and adding or removing SetParameters from that list. During assembly that list will be used to create the SetParameters in the assembled profile if the --set-parameters option is specified.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>321</span>
 <span class=normal>322</span>
 <span class=normal>323</span>
 <span class=normal>324</span>
@@ -607,7 +618,18 @@
 <span class=normal>414</span>
 <span class=normal>415</span>
 <span class=normal>416</span>
-<span class=normal>417</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>417</span>
+<span class=normal>418</span>
+<span class=normal>419</span>
+<span class=normal>420</span>
+<span class=normal>421</span>
+<span class=normal>422</span>
+<span class=normal>423</span>
+<span class=normal>424</span>
+<span class=normal>425</span>
+<span class=normal>426</span>
+<span class=normal>427</span>
+<span class=normal>428</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>assemble_profile</span><span class=p>(</span>
     <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
     <span class=n>parent_prof_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
@@ -681,7 +703,7 @@
             <span class=n>part</span>
             <span class=k>for</span> <span class=n>alter</span> <span class=ow>in</span> <span class=n>found_alters</span>
             <span class=k>for</span> <span class=n>add</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>alter</span><span class=o>.</span><span class=n>adds</span><span class=p>)</span>
-            <span class=k>for</span> <span class=n>part</span> <span class=ow>in</span> <span class=n>as_filtered_list</span><span class=p>(</span><span class=n>add</span><span class=o>.</span><span class=n>parts</span><span class=p>,</span> <span class=k>lambda</span> <span class=n>a</span><span class=p>:</span> <span class=n>a</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>allowed_sections</span><span class=p>)</span>  <span class=c1># type: ignore</span>
+            <span class=k>for</span> <span class=n>part</span> <span class=ow>in</span> <span class=n>as_filtered_list</span><span class=p>(</span><span class=n>add</span><span class=o>.</span><span class=n>parts</span><span class=p>,</span> <span class=k>lambda</span> <span class=n>a</span><span class=p>:</span> <span class=n>a</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>allowed_sections</span><span class=p>)</span>
         <span class=p>]:</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Profile has alter with name </span><span class=si>{</span><span class=n>bad_part</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> not in allowed sections.&#39;</span><span class=p>)</span>
 
@@ -1113,18 +1135,7 @@
                   return '';
                 }
               });
-            </script> <p>Generate and populate profile in JSON from a parent profile and leveraged ssp in the trestle workspace.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>568</span>
-<span class=normal>569</span>
-<span class=normal>570</span>
-<span class=normal>571</span>
-<span class=normal>572</span>
-<span class=normal>573</span>
-<span class=normal>574</span>
-<span class=normal>575</span>
-<span class=normal>576</span>
-<span class=normal>577</span>
-<span class=normal>578</span>
-<span class=normal>579</span>
+            </script> <p>Generate and populate profile in JSON from a parent profile and leveraged ssp in the trestle workspace.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>579</span>
 <span class=normal>580</span>
 <span class=normal>581</span>
 <span class=normal>582</span>
@@ -1324,7 +1335,59 @@
 <span class=normal>776</span>
 <span class=normal>777</span>
 <span class=normal>778</span>
-<span class=normal>779</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ProfileInherit</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
+<span class=normal>779</span>
+<span class=normal>780</span>
+<span class=normal>781</span>
+<span class=normal>782</span>
+<span class=normal>783</span>
+<span class=normal>784</span>
+<span class=normal>785</span>
+<span class=normal>786</span>
+<span class=normal>787</span>
+<span class=normal>788</span>
+<span class=normal>789</span>
+<span class=normal>790</span>
+<span class=normal>791</span>
+<span class=normal>792</span>
+<span class=normal>793</span>
+<span class=normal>794</span>
+<span class=normal>795</span>
+<span class=normal>796</span>
+<span class=normal>797</span>
+<span class=normal>798</span>
+<span class=normal>799</span>
+<span class=normal>800</span>
+<span class=normal>801</span>
+<span class=normal>802</span>
+<span class=normal>803</span>
+<span class=normal>804</span>
+<span class=normal>805</span>
+<span class=normal>806</span>
+<span class=normal>807</span>
+<span class=normal>808</span>
+<span class=normal>809</span>
+<span class=normal>810</span>
+<span class=normal>811</span>
+<span class=normal>812</span>
+<span class=normal>813</span>
+<span class=normal>814</span>
+<span class=normal>815</span>
+<span class=normal>816</span>
+<span class=normal>817</span>
+<span class=normal>818</span>
+<span class=normal>819</span>
+<span class=normal>820</span>
+<span class=normal>821</span>
+<span class=normal>822</span>
+<span class=normal>823</span>
+<span class=normal>824</span>
+<span class=normal>825</span>
+<span class=normal>826</span>
+<span class=normal>827</span>
+<span class=normal>828</span>
+<span class=normal>829</span>
+<span class=normal>830</span>
+<span class=normal>831</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ProfileInherit</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Generate and populate profile in JSON from a parent profile and leveraged ssp in the trestle workspace.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-inherit&#39;</span>
@@ -1378,6 +1441,57 @@
         <span class=k>return</span> <span class=kc>True</span>
 
     <span class=nd>@staticmethod</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_compute_control_sets</span><span class=p>(</span>
+        <span class=n>catalog_api</span><span class=p>:</span> <span class=n>CatalogAPI</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span>
+    <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>tuple</span><span class=p>[</span><span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]]:</span>
+<span class=w>        </span><span class=sd>&quot;&quot;&quot;Compute include and exclude control ID sets based on SSP inheritance.</span>
+
+<span class=sd>        Returns:</span>
+<span class=sd>            Tuple of (include_with_ids, exclude_with_ids)</span>
+<span class=sd>        &quot;&quot;&quot;</span>
+        <span class=n>exclude_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>set</span><span class=p>()</span>
+        <span class=n>components_by_id</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_create_components_by_id</span><span class=p>(</span><span class=n>leveraged_ssp</span><span class=p>)</span>
+        <span class=n>catalog_control_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>set</span><span class=p>(</span><span class=n>catalog_api</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_control_ids</span><span class=p>())</span>
+
+        <span class=k>for</span> <span class=n>control_id</span> <span class=ow>in</span> <span class=n>catalog_control_ids</span><span class=p>:</span>
+            <span class=k>if</span> <span class=n>control_id</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>components_by_id</span><span class=p>:</span>
+                <span class=k>continue</span>
+            <span class=n>by_comps</span> <span class=o>=</span> <span class=n>components_by_id</span><span class=p>[</span><span class=n>control_id</span><span class=p>]</span>
+            <span class=k>if</span> <span class=n>by_comps</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_is_inherited</span><span class=p>(</span><span class=n>by_comps</span><span class=p>):</span>
+                <span class=n>exclude_with_ids</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>control_id</span><span class=p>)</span>
+
+        <span class=n>include_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=n>catalog_control_ids</span> <span class=o>-</span> <span class=n>exclude_with_ids</span>
+        <span class=k>return</span> <span class=n>include_with_ids</span><span class=p>,</span> <span class=n>exclude_with_ids</span>
+
+    <span class=nd>@staticmethod</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_create_profile_import</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>exclude_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>local_path</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import</span><span class=p>:</span>
+<span class=w>        </span><span class=sd>&quot;&quot;&quot;Create appropriate Import variant based on control ID sets.&quot;&quot;&quot;</span>
+        <span class=k>if</span> <span class=n>include_with_ids</span><span class=p>:</span>
+            <span class=k>return</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import2</span><span class=p>(</span>
+                <span class=n>href</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>TRESTLE_HREF_HEADING</span> <span class=o>+</span> <span class=n>local_path</span><span class=p>,</span>
+                <span class=n>include_controls</span><span class=o>=</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>))],</span>
+                <span class=n>exclude_controls</span><span class=o>=</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>exclude_with_ids</span><span class=p>))]</span> <span class=k>if</span> <span class=n>exclude_with_ids</span> <span class=k>else</span> <span class=kc>None</span><span class=p>,</span>
+            <span class=p>)</span>
+        <span class=k>else</span><span class=p>:</span>
+            <span class=c1># All controls are excluded, use Import1 with include_all</span>
+            <span class=k>return</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import1</span><span class=p>(</span>
+                <span class=n>href</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>TRESTLE_HREF_HEADING</span> <span class=o>+</span> <span class=n>local_path</span><span class=p>,</span>
+                <span class=n>include_all</span><span class=o>=</span><span class=n>common</span><span class=o>.</span><span class=n>IncludeAll</span><span class=p>(),</span>
+                <span class=n>exclude_controls</span><span class=o>=</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>exclude_with_ids</span><span class=p>))]</span> <span class=k>if</span> <span class=n>exclude_with_ids</span> <span class=k>else</span> <span class=kc>None</span><span class=p>,</span>
+            <span class=p>)</span>
+
+    <span class=nd>@staticmethod</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_load_leveraged_ssp</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>leveraged_ssp_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>:</span>
+<span class=w>        </span><span class=sd>&quot;&quot;&quot;Load and validate the leveraged SSP.&quot;&quot;&quot;</span>
+        <span class=k>try</span><span class=p>:</span>
+            <span class=n>leveraged_ssp</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>load_validate_model_name</span><span class=p>(</span>
+                <span class=n>trestle_root</span><span class=p>,</span> <span class=n>leveraged_ssp_name</span><span class=p>,</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
+            <span class=p>)</span>
+            <span class=k>return</span> <span class=n>leveraged_ssp</span>
+        <span class=k>except</span> <span class=n>TrestleNotFoundError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;SSP </span><span class=si>{</span><span class=n>leveraged_ssp_name</span><span class=si>}</span><span class=s1> not found: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+
+    <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_create_components_by_id</span><span class=p>(</span><span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=n>ssp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]]:</span>
         <span class=n>components_by_id</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=n>ssp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]]</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>for</span> <span class=n>implemented_requirement</span> <span class=ow>in</span> <span class=n>leveraged_ssp</span><span class=o>.</span><span class=n>control_implementation</span><span class=o>.</span><span class=n>implemented_requirements</span><span class=p>:</span>
@@ -1423,8 +1537,24 @@
 
         <span class=n>include_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=n>catalog_control_ids</span> <span class=o>-</span> <span class=n>exclude_with_ids</span>
 
-        <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>include_controls</span> <span class=o>=</span> <span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>))]</span>
-        <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>exclude_controls</span> <span class=o>=</span> <span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>exclude_with_ids</span><span class=p>))]</span>
+        <span class=c1># In Pydantic v2, SelectControl.with_ids has min_length=1, so we must check for empty sets</span>
+        <span class=c1># Import1 has include_all, Import2 has include_controls</span>
+        <span class=c1># We need to handle both types appropriately</span>
+        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>orig_prof_import</span><span class=p>,</span> <span class=s1>&#39;include_controls&#39;</span><span class=p>):</span>
+            <span class=c1># This is Import2</span>
+            <span class=k>if</span> <span class=n>include_with_ids</span><span class=p>:</span>
+                <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>include_controls</span> <span class=o>=</span> <span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>))]</span>
+            <span class=c1># If include_with_ids is empty, we can&#39;t set include_controls (min_length=1)</span>
+            <span class=c1># This shouldn&#39;t happen in practice for Import2, but if it does, we skip setting it</span>
+        <span class=k>elif</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>orig_prof_import</span><span class=p>,</span> <span class=s1>&#39;include_all&#39;</span><span class=p>):</span>
+            <span class=c1># This is Import1 - it already has include_all, no need to modify it</span>
+            <span class=k>pass</span>
+
+        <span class=c1># Set exclude_controls if there are any to exclude</span>
+        <span class=k>if</span> <span class=n>exclude_with_ids</span><span class=p>:</span>
+            <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>exclude_controls</span> <span class=o>=</span> <span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>exclude_with_ids</span><span class=p>))]</span>
+        <span class=k>else</span><span class=p>:</span>
+            <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>exclude_controls</span> <span class=o>=</span> <span class=kc>None</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>initialize_profile</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span>
@@ -1454,28 +1584,17 @@
 <span class=sd>            on inheritance information.</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=k>try</span><span class=p>:</span>
-            <span class=n>result_profile</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span>
-            <span class=n>existing_profile</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
-
+            <span class=c1># Load existing profile if it exists</span>
             <span class=n>existing_profile_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_model_path_for_name_and_class</span><span class=p>(</span>
                 <span class=n>trestle_root</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span>
             <span class=p>)</span>
-
-            <span class=c1># If a profile exists at the output path, use that as a starting point for a new profile.</span>
-            <span class=c1># else create a new profile with minimal structure to avoid Import1 generation</span>
+            <span class=n>existing_profile</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
             <span class=k>if</span> <span class=n>existing_profile_path</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
                 <span class=n>existing_profile</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>load_validate_model_name</span><span class=p>(</span>
                     <span class=n>trestle_root</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
                 <span class=p>)</span>
-                <span class=n>result_profile</span> <span class=o>=</span> <span class=n>copy</span><span class=o>.</span><span class=n>deepcopy</span><span class=p>(</span><span class=n>existing_profile</span><span class=p>)</span>
-            <span class=k>else</span><span class=p>:</span>
-                <span class=c1># Create a minimal profile with Import2 structure to avoid generate_sample_model creating Import1</span>
-                <span class=n>result_profile</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>(</span>
-                    <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-                    <span class=n>metadata</span><span class=o>=</span><span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>common</span><span class=o>.</span><span class=n>Metadata</span><span class=p>),</span>
-                    <span class=n>imports</span><span class=o>=</span><span class=p>[],</span>  <span class=c1># Will be set below with Import2</span>
-                <span class=p>)</span>
 
+            <span class=c1># Validate parent profile exists</span>
             <span class=n>parent_prof_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_model_path_for_name_and_class</span><span class=p>(</span>
                 <span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span>
             <span class=p>)</span>
@@ -1484,44 +1603,29 @@
                     <span class=sa>f</span><span class=s1>&#39;Profile </span><span class=si>{</span><span class=n>parent_prof_name</span><span class=si>}</span><span class=s1> does not exist.  An existing profile must be provided.&#39;</span>
                 <span class=p>)</span>
 
-            <span class=n>local_path</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;profiles/</span><span class=si>{</span><span class=n>parent_prof_name</span><span class=si>}</span><span class=s1>/profile.json&#39;</span>
-
-            <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span>
-            <span class=k>try</span><span class=p>:</span>
-                <span class=n>leveraged_ssp</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>load_validate_model_name</span><span class=p>(</span>
-                    <span class=n>trestle_root</span><span class=p>,</span> <span class=n>leveraged_ssp_name</span><span class=p>,</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
-                <span class=p>)</span>
-            <span class=k>except</span> <span class=n>TrestleNotFoundError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;SSP </span><span class=si>{</span><span class=n>leveraged_ssp_name</span><span class=si>}</span><span class=s1> not found: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-
+            <span class=c1># Load leveraged SSP and resolve catalog</span>
+            <span class=n>leveraged_ssp</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_load_leveraged_ssp</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>leveraged_ssp_name</span><span class=p>)</span>
             <span class=n>prof_resolver</span> <span class=o>=</span> <span class=n>ProfileResolver</span><span class=p>()</span>
             <span class=n>catalog</span> <span class=o>=</span> <span class=n>prof_resolver</span><span class=o>.</span><span class=n>get_resolved_profile_catalog</span><span class=p>(</span>
                 <span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_path</span><span class=p>,</span> <span class=n>show_value_warnings</span><span class=o>=</span><span class=kc>True</span>
             <span class=p>)</span>
             <span class=n>catalog_api</span> <span class=o>=</span> <span class=n>CatalogAPI</span><span class=p>(</span><span class=n>catalog</span><span class=o>=</span><span class=n>catalog</span><span class=p>)</span>
 
-            <span class=c1># Determine which controls to include and exclude based on the SSP</span>
-            <span class=n>exclude_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>set</span><span class=p>()</span>
-            <span class=n>components_by_id</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=n>ssp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]]</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_create_components_by_id</span><span class=p>(</span><span class=n>leveraged_ssp</span><span class=p>)</span>
-            <span class=n>catalog_control_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>set</span><span class=p>(</span><span class=n>catalog_api</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_control_ids</span><span class=p>())</span>
+            <span class=c1># Compute control sets and create import</span>
+            <span class=n>include_with_ids</span><span class=p>,</span> <span class=n>exclude_with_ids</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_compute_control_sets</span><span class=p>(</span><span class=n>catalog_api</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=p>)</span>
+            <span class=n>local_path</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;profiles/</span><span class=si>{</span><span class=n>parent_prof_name</span><span class=si>}</span><span class=s1>/profile.json&#39;</span>
+            <span class=n>profile_import</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_create_profile_import</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>,</span> <span class=n>exclude_with_ids</span><span class=p>,</span> <span class=n>local_path</span><span class=p>)</span>
 
-            <span class=k>for</span> <span class=n>control_id</span> <span class=ow>in</span> <span class=n>catalog_control_ids</span><span class=p>:</span>
-                <span class=k>if</span> <span class=n>control_id</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>components_by_id</span><span class=p>:</span>
-                    <span class=k>continue</span>
-                <span class=n>by_comps</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>ssp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]]</span> <span class=o>=</span> <span class=n>components_by_id</span><span class=p>[</span><span class=n>control_id</span><span class=p>]</span>
-                <span class=k>if</span> <span class=n>by_comps</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_is_inherited</span><span class=p>(</span><span class=n>by_comps</span><span class=p>):</span>
-                    <span class=n>exclude_with_ids</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>control_id</span><span class=p>)</span>
-
-            <span class=n>include_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=n>catalog_control_ids</span> <span class=o>-</span> <span class=n>exclude_with_ids</span>
-
-            <span class=c1># Create Import2 variant with the computed control lists</span>
-            <span class=n>profile_import</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import2</span><span class=p>(</span>
-                <span class=n>href</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>TRESTLE_HREF_HEADING</span> <span class=o>+</span> <span class=n>local_path</span><span class=p>,</span>
-                <span class=n>include_controls</span><span class=o>=</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>))],</span>
-                <span class=n>exclude_controls</span><span class=o>=</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>exclude_with_ids</span><span class=p>))]</span> <span class=k>if</span> <span class=n>exclude_with_ids</span> <span class=k>else</span> <span class=kc>None</span><span class=p>,</span>
-            <span class=p>)</span>
-
-            <span class=n>result_profile</span><span class=o>.</span><span class=n>imports</span> <span class=o>=</span> <span class=p>[</span><span class=n>profile_import</span><span class=p>]</span>
+            <span class=c1># Create or update result profile</span>
+            <span class=k>if</span> <span class=n>existing_profile</span><span class=p>:</span>
+                <span class=n>result_profile</span> <span class=o>=</span> <span class=n>copy</span><span class=o>.</span><span class=n>deepcopy</span><span class=p>(</span><span class=n>existing_profile</span><span class=p>)</span>
+                <span class=n>result_profile</span><span class=o>.</span><span class=n>imports</span> <span class=o>=</span> <span class=p>[</span><span class=n>profile_import</span><span class=p>]</span>
+            <span class=k>else</span><span class=p>:</span>
+                <span class=n>result_profile</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>(</span>
+                    <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
+                    <span class=n>metadata</span><span class=o>=</span><span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>common</span><span class=o>.</span><span class=n>Metadata</span><span class=p>),</span>
+                    <span class=n>imports</span><span class=o>=</span><span class=p>[</span><span class=n>profile_import</span><span class=p>],</span>
+                <span class=p>)</span>
 
             <span class=k>if</span> <span class=n>version</span><span class=p>:</span>
                 <span class=n>result_profile</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>version</span> <span class=o>=</span> <span class=n>version</span>
@@ -1536,34 +1640,178 @@
         <span class=k>except</span> <span class=n>TrestleError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Error initializing profile </span><span class=si>{</span><span class=n>output_prof_name</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.prof.ProfileInherit-attributes>Attributes<a href=#trestle.core.commands.author.prof.ProfileInherit-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.prof.ProfileInherit.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-inherit&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileInherit.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.prof.ProfileInherit-functions>Methods:<a href=#trestle.core.commands.author.prof.ProfileInherit-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.prof.ProfileInherit.initialize_profile class="doc doc-heading"> <code class="highlight language-python"><span class=n>initialize_profile</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_name</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>leveraged_ssp_name</span><span class=p>,</span> <span class=n>version</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.prof.ProfileInherit.initialize_profile class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize profile with controls from a parent profile, filtering by inherited controls.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Root directory of the trestle workspace</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>parent_prof_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the parent profile in the trestle workspace</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>output_prof_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the output profile json file</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>leveraged_ssp_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the ssp in the trestle workspace for control filtering</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>version</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional profile version</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>0 on success, 1 on error</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The profile model will either be updated or a new json profile created. This will overwrite any import information on an exiting profile, but will preserve control modifications and parameters. Allowing profile updates ensure that SSP export updates can be incorporated into an existing profile. All controls from the original profile will exists and will be grouped by included and excluded controls based on inheritance information.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>670</span>
-<span class=normal>671</span>
-<span class=normal>672</span>
-<span class=normal>673</span>
-<span class=normal>674</span>
-<span class=normal>675</span>
-<span class=normal>676</span>
-<span class=normal>677</span>
-<span class=normal>678</span>
-<span class=normal>679</span>
-<span class=normal>680</span>
-<span class=normal>681</span>
-<span class=normal>682</span>
-<span class=normal>683</span>
-<span class=normal>684</span>
-<span class=normal>685</span>
-<span class=normal>686</span>
-<span class=normal>687</span>
-<span class=normal>688</span>
-<span class=normal>689</span>
-<span class=normal>690</span>
-<span class=normal>691</span>
-<span class=normal>692</span>
-<span class=normal>693</span>
-<span class=normal>694</span>
-<span class=normal>695</span>
-<span class=normal>696</span>
-<span class=normal>697</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.prof.ProfileInherit-attributes>Attributes<a href=#trestle.core.commands.author.prof.ProfileInherit-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.prof.ProfileInherit.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-inherit&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileInherit.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.prof.ProfileInherit-functions>Methods:<a href=#trestle.core.commands.author.prof.ProfileInherit-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.prof.ProfileInherit.initialize_profile class="doc doc-heading"> <code class="highlight language-python"><span class=n>initialize_profile</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_name</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>leveraged_ssp_name</span><span class=p>,</span> <span class=n>version</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.prof.ProfileInherit.initialize_profile class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize profile with controls from a parent profile, filtering by inherited controls.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Root directory of the trestle workspace</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>parent_prof_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the parent profile in the trestle workspace</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>output_prof_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the output profile json file</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>leveraged_ssp_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the ssp in the trestle workspace for control filtering</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>version</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional profile version</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>0 on success, 1 on error</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The profile model will either be updated or a new json profile created. This will overwrite any import information on an exiting profile, but will preserve control modifications and parameters. Allowing profile updates ensure that SSP export updates can be incorporated into an existing profile. All controls from the original profile will exists and will be grouped by included and excluded controls based on inheritance information.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>748</span>
+<span class=normal>749</span>
+<span class=normal>750</span>
+<span class=normal>751</span>
+<span class=normal>752</span>
+<span class=normal>753</span>
+<span class=normal>754</span>
+<span class=normal>755</span>
+<span class=normal>756</span>
+<span class=normal>757</span>
+<span class=normal>758</span>
+<span class=normal>759</span>
+<span class=normal>760</span>
+<span class=normal>761</span>
+<span class=normal>762</span>
+<span class=normal>763</span>
+<span class=normal>764</span>
+<span class=normal>765</span>
+<span class=normal>766</span>
+<span class=normal>767</span>
+<span class=normal>768</span>
+<span class=normal>769</span>
+<span class=normal>770</span>
+<span class=normal>771</span>
+<span class=normal>772</span>
+<span class=normal>773</span>
+<span class=normal>774</span>
+<span class=normal>775</span>
+<span class=normal>776</span>
+<span class=normal>777</span>
+<span class=normal>778</span>
+<span class=normal>779</span>
+<span class=normal>780</span>
+<span class=normal>781</span>
+<span class=normal>782</span>
+<span class=normal>783</span>
+<span class=normal>784</span>
+<span class=normal>785</span>
+<span class=normal>786</span>
+<span class=normal>787</span>
+<span class=normal>788</span>
+<span class=normal>789</span>
+<span class=normal>790</span>
+<span class=normal>791</span>
+<span class=normal>792</span>
+<span class=normal>793</span>
+<span class=normal>794</span>
+<span class=normal>795</span>
+<span class=normal>796</span>
+<span class=normal>797</span>
+<span class=normal>798</span>
+<span class=normal>799</span>
+<span class=normal>800</span>
+<span class=normal>801</span>
+<span class=normal>802</span>
+<span class=normal>803</span>
+<span class=normal>804</span>
+<span class=normal>805</span>
+<span class=normal>806</span>
+<span class=normal>807</span>
+<span class=normal>808</span>
+<span class=normal>809</span>
+<span class=normal>810</span>
+<span class=normal>811</span>
+<span class=normal>812</span>
+<span class=normal>813</span>
+<span class=normal>814</span>
+<span class=normal>815</span>
+<span class=normal>816</span>
+<span class=normal>817</span>
+<span class=normal>818</span>
+<span class=normal>819</span>
+<span class=normal>820</span>
+<span class=normal>821</span>
+<span class=normal>822</span>
+<span class=normal>823</span>
+<span class=normal>824</span>
+<span class=normal>825</span>
+<span class=normal>826</span>
+<span class=normal>827</span>
+<span class=normal>828</span>
+<span class=normal>829</span>
+<span class=normal>830</span>
+<span class=normal>831</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>initialize_profile</span><span class=p>(</span>
+    <span class=bp>self</span><span class=p>,</span>
+    <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
+    <span class=n>parent_prof_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
+    <span class=n>output_prof_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
+    <span class=n>leveraged_ssp_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
+    <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span>
+<span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize profile with controls from a parent profile, filtering by inherited controls.</span>
+
+<span class=sd>    Args:</span>
+<span class=sd>        trestle_root: Root directory of the trestle workspace</span>
+<span class=sd>        parent_prof_name: Name of the parent profile in the trestle workspace</span>
+<span class=sd>        output_prof_name: Name of the output profile json file</span>
+<span class=sd>        leveraged_ssp_name: Name of the ssp in the trestle workspace for control filtering</span>
+<span class=sd>        version: Optional profile version</span>
+
+<span class=sd>    Returns:</span>
+<span class=sd>        0 on success, 1 on error</span>
+
+<span class=sd>    Notes:</span>
+<span class=sd>        The profile model will either be updated or a new json profile created. This will overwrite</span>
+<span class=sd>        any import information on an exiting profile, but will preserve control modifications and parameters.</span>
+<span class=sd>        Allowing profile updates ensure that SSP export updates can be incorporated into an existing profile. All</span>
+<span class=sd>        controls from the original profile will exists and will be grouped by included and excluded controls based</span>
+<span class=sd>        on inheritance information.</span>
+<span class=sd>    &quot;&quot;&quot;</span>
+    <span class=k>try</span><span class=p>:</span>
+        <span class=c1># Load existing profile if it exists</span>
+        <span class=n>existing_profile_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_model_path_for_name_and_class</span><span class=p>(</span>
+            <span class=n>trestle_root</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span>
+        <span class=p>)</span>
+        <span class=n>existing_profile</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+        <span class=k>if</span> <span class=n>existing_profile_path</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+            <span class=n>existing_profile</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>load_validate_model_name</span><span class=p>(</span>
+                <span class=n>trestle_root</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
+            <span class=p>)</span>
+
+        <span class=c1># Validate parent profile exists</span>
+        <span class=n>parent_prof_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_model_path_for_name_and_class</span><span class=p>(</span>
+            <span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span>
+        <span class=p>)</span>
+        <span class=k>if</span> <span class=n>parent_prof_path</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+            <span class=k>raise</span> <span class=n>TrestleNotFoundError</span><span class=p>(</span>
+                <span class=sa>f</span><span class=s1>&#39;Profile </span><span class=si>{</span><span class=n>parent_prof_name</span><span class=si>}</span><span class=s1> does not exist.  An existing profile must be provided.&#39;</span>
+            <span class=p>)</span>
+
+        <span class=c1># Load leveraged SSP and resolve catalog</span>
+        <span class=n>leveraged_ssp</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_load_leveraged_ssp</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>leveraged_ssp_name</span><span class=p>)</span>
+        <span class=n>prof_resolver</span> <span class=o>=</span> <span class=n>ProfileResolver</span><span class=p>()</span>
+        <span class=n>catalog</span> <span class=o>=</span> <span class=n>prof_resolver</span><span class=o>.</span><span class=n>get_resolved_profile_catalog</span><span class=p>(</span>
+            <span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_path</span><span class=p>,</span> <span class=n>show_value_warnings</span><span class=o>=</span><span class=kc>True</span>
+        <span class=p>)</span>
+        <span class=n>catalog_api</span> <span class=o>=</span> <span class=n>CatalogAPI</span><span class=p>(</span><span class=n>catalog</span><span class=o>=</span><span class=n>catalog</span><span class=p>)</span>
+
+        <span class=c1># Compute control sets and create import</span>
+        <span class=n>include_with_ids</span><span class=p>,</span> <span class=n>exclude_with_ids</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_compute_control_sets</span><span class=p>(</span><span class=n>catalog_api</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=p>)</span>
+        <span class=n>local_path</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;profiles/</span><span class=si>{</span><span class=n>parent_prof_name</span><span class=si>}</span><span class=s1>/profile.json&#39;</span>
+        <span class=n>profile_import</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_create_profile_import</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>,</span> <span class=n>exclude_with_ids</span><span class=p>,</span> <span class=n>local_path</span><span class=p>)</span>
+
+        <span class=c1># Create or update result profile</span>
+        <span class=k>if</span> <span class=n>existing_profile</span><span class=p>:</span>
+            <span class=n>result_profile</span> <span class=o>=</span> <span class=n>copy</span><span class=o>.</span><span class=n>deepcopy</span><span class=p>(</span><span class=n>existing_profile</span><span class=p>)</span>
+            <span class=n>result_profile</span><span class=o>.</span><span class=n>imports</span> <span class=o>=</span> <span class=p>[</span><span class=n>profile_import</span><span class=p>]</span>
+        <span class=k>else</span><span class=p>:</span>
+            <span class=n>result_profile</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>(</span>
+                <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
+                <span class=n>metadata</span><span class=o>=</span><span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>common</span><span class=o>.</span><span class=n>Metadata</span><span class=p>),</span>
+                <span class=n>imports</span><span class=o>=</span><span class=p>[</span><span class=n>profile_import</span><span class=p>],</span>
+            <span class=p>)</span>
+
+        <span class=k>if</span> <span class=n>version</span><span class=p>:</span>
+            <span class=n>result_profile</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>version</span> <span class=o>=</span> <span class=n>version</span>
+
+        <span class=k>if</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>models_are_equivalent</span><span class=p>(</span><span class=n>existing_profile</span><span class=p>,</span> <span class=n>result_profile</span><span class=p>):</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Profile is no different from existing version, so no update.&#39;</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
+
+        <span class=n>ModelUtils</span><span class=o>.</span><span class=n>update_last_modified</span><span class=p>(</span><span class=n>result_profile</span><span class=p>)</span>
+        <span class=n>ModelUtils</span><span class=o>.</span><span class=n>save_top_level_model</span><span class=p>(</span><span class=n>result_profile</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
+
+    <span class=k>except</span> <span class=n>TrestleError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Error initializing profile </span><span class=si>{</span><span class=n>output_prof_name</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.prof.ProfileInherit.update_profile_import class="doc doc-heading"> <code class="highlight language-python"><span class=n>update_profile_import</span><span class=p>(</span><span class=n>orig_prof_import</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=p>,</span> <span class=n>catalog_api</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileInherit.update_profile_import class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Add controls to different sections of a profile import based on catalog and leveraged SSP.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>orig_prof_import</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Import = Union[Import1, Import2]
+
+  
+      module-attribute
+   (trestle.oscal.profile.Import)" href=../../../../oscal/profile/#trestle.oscal.profile.Import>Import</a></code> </td> <td> <div class=doc-md-description> <p>The original profile import that will have the control selection updated.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>leveraged_ssp</code> </td> <td> <code><a class="autorefs autorefs-internal" title="SystemSecurityPlan (trestle.oscal.ssp.SystemSecurityPlan)" href=../../../../oscal/ssp/#trestle.oscal.ssp.SystemSecurityPlan>SystemSecurityPlan</a></code> </td> <td> <div class=doc-md-description> <p>SSP input for control filtering</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>catalog_api</code> </td> <td> <code><a class="autorefs autorefs-internal" title="CatalogAPI (trestle.core.catalog.catalog_api.CatalogAPI)" href=../../../catalog/catalog_api/#trestle.core.catalog.catalog_api.CatalogAPI>CatalogAPI</a></code> </td> <td> <div class=doc-md-description> <p>Catalog API with access to controls that need to be filtered</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>None</code> </td> <td> <div class=doc-md-description> <p>None</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>697</span>
 <span class=normal>698</span>
 <span class=normal>699</span>
 <span class=normal>700</span>
@@ -1612,187 +1860,7 @@
 <span class=normal>743</span>
 <span class=normal>744</span>
 <span class=normal>745</span>
-<span class=normal>746</span>
-<span class=normal>747</span>
-<span class=normal>748</span>
-<span class=normal>749</span>
-<span class=normal>750</span>
-<span class=normal>751</span>
-<span class=normal>752</span>
-<span class=normal>753</span>
-<span class=normal>754</span>
-<span class=normal>755</span>
-<span class=normal>756</span>
-<span class=normal>757</span>
-<span class=normal>758</span>
-<span class=normal>759</span>
-<span class=normal>760</span>
-<span class=normal>761</span>
-<span class=normal>762</span>
-<span class=normal>763</span>
-<span class=normal>764</span>
-<span class=normal>765</span>
-<span class=normal>766</span>
-<span class=normal>767</span>
-<span class=normal>768</span>
-<span class=normal>769</span>
-<span class=normal>770</span>
-<span class=normal>771</span>
-<span class=normal>772</span>
-<span class=normal>773</span>
-<span class=normal>774</span>
-<span class=normal>775</span>
-<span class=normal>776</span>
-<span class=normal>777</span>
-<span class=normal>778</span>
-<span class=normal>779</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>initialize_profile</span><span class=p>(</span>
-    <span class=bp>self</span><span class=p>,</span>
-    <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
-    <span class=n>parent_prof_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>output_prof_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>leveraged_ssp_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span>
-<span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize profile with controls from a parent profile, filtering by inherited controls.</span>
-
-<span class=sd>    Args:</span>
-<span class=sd>        trestle_root: Root directory of the trestle workspace</span>
-<span class=sd>        parent_prof_name: Name of the parent profile in the trestle workspace</span>
-<span class=sd>        output_prof_name: Name of the output profile json file</span>
-<span class=sd>        leveraged_ssp_name: Name of the ssp in the trestle workspace for control filtering</span>
-<span class=sd>        version: Optional profile version</span>
-
-<span class=sd>    Returns:</span>
-<span class=sd>        0 on success, 1 on error</span>
-
-<span class=sd>    Notes:</span>
-<span class=sd>        The profile model will either be updated or a new json profile created. This will overwrite</span>
-<span class=sd>        any import information on an exiting profile, but will preserve control modifications and parameters.</span>
-<span class=sd>        Allowing profile updates ensure that SSP export updates can be incorporated into an existing profile. All</span>
-<span class=sd>        controls from the original profile will exists and will be grouped by included and excluded controls based</span>
-<span class=sd>        on inheritance information.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
-    <span class=k>try</span><span class=p>:</span>
-        <span class=n>result_profile</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span>
-        <span class=n>existing_profile</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
-
-        <span class=n>existing_profile_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_model_path_for_name_and_class</span><span class=p>(</span>
-            <span class=n>trestle_root</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span>
-        <span class=p>)</span>
-
-        <span class=c1># If a profile exists at the output path, use that as a starting point for a new profile.</span>
-        <span class=c1># else create a new profile with minimal structure to avoid Import1 generation</span>
-        <span class=k>if</span> <span class=n>existing_profile_path</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=n>existing_profile</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>load_validate_model_name</span><span class=p>(</span>
-                <span class=n>trestle_root</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
-            <span class=p>)</span>
-            <span class=n>result_profile</span> <span class=o>=</span> <span class=n>copy</span><span class=o>.</span><span class=n>deepcopy</span><span class=p>(</span><span class=n>existing_profile</span><span class=p>)</span>
-        <span class=k>else</span><span class=p>:</span>
-            <span class=c1># Create a minimal profile with Import2 structure to avoid generate_sample_model creating Import1</span>
-            <span class=n>result_profile</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>(</span>
-                <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-                <span class=n>metadata</span><span class=o>=</span><span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>common</span><span class=o>.</span><span class=n>Metadata</span><span class=p>),</span>
-                <span class=n>imports</span><span class=o>=</span><span class=p>[],</span>  <span class=c1># Will be set below with Import2</span>
-            <span class=p>)</span>
-
-        <span class=n>parent_prof_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_model_path_for_name_and_class</span><span class=p>(</span>
-            <span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_name</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span>
-        <span class=p>)</span>
-        <span class=k>if</span> <span class=n>parent_prof_path</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleNotFoundError</span><span class=p>(</span>
-                <span class=sa>f</span><span class=s1>&#39;Profile </span><span class=si>{</span><span class=n>parent_prof_name</span><span class=si>}</span><span class=s1> does not exist.  An existing profile must be provided.&#39;</span>
-            <span class=p>)</span>
-
-        <span class=n>local_path</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;profiles/</span><span class=si>{</span><span class=n>parent_prof_name</span><span class=si>}</span><span class=s1>/profile.json&#39;</span>
-
-        <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span>
-        <span class=k>try</span><span class=p>:</span>
-            <span class=n>leveraged_ssp</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>load_validate_model_name</span><span class=p>(</span>
-                <span class=n>trestle_root</span><span class=p>,</span> <span class=n>leveraged_ssp_name</span><span class=p>,</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
-            <span class=p>)</span>
-        <span class=k>except</span> <span class=n>TrestleNotFoundError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;SSP </span><span class=si>{</span><span class=n>leveraged_ssp_name</span><span class=si>}</span><span class=s1> not found: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-
-        <span class=n>prof_resolver</span> <span class=o>=</span> <span class=n>ProfileResolver</span><span class=p>()</span>
-        <span class=n>catalog</span> <span class=o>=</span> <span class=n>prof_resolver</span><span class=o>.</span><span class=n>get_resolved_profile_catalog</span><span class=p>(</span>
-            <span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_prof_path</span><span class=p>,</span> <span class=n>show_value_warnings</span><span class=o>=</span><span class=kc>True</span>
-        <span class=p>)</span>
-        <span class=n>catalog_api</span> <span class=o>=</span> <span class=n>CatalogAPI</span><span class=p>(</span><span class=n>catalog</span><span class=o>=</span><span class=n>catalog</span><span class=p>)</span>
-
-        <span class=c1># Determine which controls to include and exclude based on the SSP</span>
-        <span class=n>exclude_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>set</span><span class=p>()</span>
-        <span class=n>components_by_id</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=n>ssp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]]</span> <span class=o>=</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_create_components_by_id</span><span class=p>(</span><span class=n>leveraged_ssp</span><span class=p>)</span>
-        <span class=n>catalog_control_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>set</span><span class=p>(</span><span class=n>catalog_api</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_control_ids</span><span class=p>())</span>
-
-        <span class=k>for</span> <span class=n>control_id</span> <span class=ow>in</span> <span class=n>catalog_control_ids</span><span class=p>:</span>
-            <span class=k>if</span> <span class=n>control_id</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>components_by_id</span><span class=p>:</span>
-                <span class=k>continue</span>
-            <span class=n>by_comps</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>ssp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]]</span> <span class=o>=</span> <span class=n>components_by_id</span><span class=p>[</span><span class=n>control_id</span><span class=p>]</span>
-            <span class=k>if</span> <span class=n>by_comps</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>ProfileInherit</span><span class=o>.</span><span class=n>_is_inherited</span><span class=p>(</span><span class=n>by_comps</span><span class=p>):</span>
-                <span class=n>exclude_with_ids</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>control_id</span><span class=p>)</span>
-
-        <span class=n>include_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=n>catalog_control_ids</span> <span class=o>-</span> <span class=n>exclude_with_ids</span>
-
-        <span class=c1># Create Import2 variant with the computed control lists</span>
-        <span class=n>profile_import</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import2</span><span class=p>(</span>
-            <span class=n>href</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>TRESTLE_HREF_HEADING</span> <span class=o>+</span> <span class=n>local_path</span><span class=p>,</span>
-            <span class=n>include_controls</span><span class=o>=</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>))],</span>
-            <span class=n>exclude_controls</span><span class=o>=</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>exclude_with_ids</span><span class=p>))]</span> <span class=k>if</span> <span class=n>exclude_with_ids</span> <span class=k>else</span> <span class=kc>None</span><span class=p>,</span>
-        <span class=p>)</span>
-
-        <span class=n>result_profile</span><span class=o>.</span><span class=n>imports</span> <span class=o>=</span> <span class=p>[</span><span class=n>profile_import</span><span class=p>]</span>
-
-        <span class=k>if</span> <span class=n>version</span><span class=p>:</span>
-            <span class=n>result_profile</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>version</span> <span class=o>=</span> <span class=n>version</span>
-
-        <span class=k>if</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>models_are_equivalent</span><span class=p>(</span><span class=n>existing_profile</span><span class=p>,</span> <span class=n>result_profile</span><span class=p>):</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Profile is no different from existing version, so no update.&#39;</span><span class=p>)</span>
-            <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-
-        <span class=n>ModelUtils</span><span class=o>.</span><span class=n>update_last_modified</span><span class=p>(</span><span class=n>result_profile</span><span class=p>)</span>
-        <span class=n>ModelUtils</span><span class=o>.</span><span class=n>save_top_level_model</span><span class=p>(</span><span class=n>result_profile</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>output_prof_name</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
-
-    <span class=k>except</span> <span class=n>TrestleError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Error initializing profile </span><span class=si>{</span><span class=n>output_prof_name</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-    <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.prof.ProfileInherit.update_profile_import class="doc doc-heading"> <code class="highlight language-python"><span class=n>update_profile_import</span><span class=p>(</span><span class=n>orig_prof_import</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=p>,</span> <span class=n>catalog_api</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileInherit.update_profile_import class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Add controls to different sections of a profile import based on catalog and leveraged SSP.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>orig_prof_import</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Import = Union[Import1, Import2]
-
-  
-      module-attribute
-   (trestle.oscal.profile.Import)" href=../../../../oscal/profile/#trestle.oscal.profile.Import>Import</a></code> </td> <td> <div class=doc-md-description> <p>The original profile import that will have the control selection updated.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>leveraged_ssp</code> </td> <td> <code><a class="autorefs autorefs-internal" title="SystemSecurityPlan (trestle.oscal.ssp.SystemSecurityPlan)" href=../../../../oscal/ssp/#trestle.oscal.ssp.SystemSecurityPlan>SystemSecurityPlan</a></code> </td> <td> <div class=doc-md-description> <p>SSP input for control filtering</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>catalog_api</code> </td> <td> <code><a class="autorefs autorefs-internal" title="CatalogAPI (trestle.core.catalog.catalog_api.CatalogAPI)" href=../../../catalog/catalog_api/#trestle.core.catalog.catalog_api.CatalogAPI>CatalogAPI</a></code> </td> <td> <div class=doc-md-description> <p>Catalog API with access to controls that need to be filtered</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>None</code> </td> <td> <div class=doc-md-description> <p>None</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>635</span>
-<span class=normal>636</span>
-<span class=normal>637</span>
-<span class=normal>638</span>
-<span class=normal>639</span>
-<span class=normal>640</span>
-<span class=normal>641</span>
-<span class=normal>642</span>
-<span class=normal>643</span>
-<span class=normal>644</span>
-<span class=normal>645</span>
-<span class=normal>646</span>
-<span class=normal>647</span>
-<span class=normal>648</span>
-<span class=normal>649</span>
-<span class=normal>650</span>
-<span class=normal>651</span>
-<span class=normal>652</span>
-<span class=normal>653</span>
-<span class=normal>654</span>
-<span class=normal>655</span>
-<span class=normal>656</span>
-<span class=normal>657</span>
-<span class=normal>658</span>
-<span class=normal>659</span>
-<span class=normal>660</span>
-<span class=normal>661</span>
-<span class=normal>662</span>
-<span class=normal>663</span>
-<span class=normal>664</span>
-<span class=normal>665</span>
-<span class=normal>666</span>
-<span class=normal>667</span>
-<span class=normal>668</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>746</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>update_profile_import</span><span class=p>(</span>
     <span class=n>orig_prof_import</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ssp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>,</span> <span class=n>catalog_api</span><span class=p>:</span> <span class=n>CatalogAPI</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -1824,8 +1892,24 @@
 
     <span class=n>include_with_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=n>catalog_control_ids</span> <span class=o>-</span> <span class=n>exclude_with_ids</span>
 
-    <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>include_controls</span> <span class=o>=</span> <span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>))]</span>
-    <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>exclude_controls</span> <span class=o>=</span> <span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>exclude_with_ids</span><span class=p>))]</span>
+    <span class=c1># In Pydantic v2, SelectControl.with_ids has min_length=1, so we must check for empty sets</span>
+    <span class=c1># Import1 has include_all, Import2 has include_controls</span>
+    <span class=c1># We need to handle both types appropriately</span>
+    <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>orig_prof_import</span><span class=p>,</span> <span class=s1>&#39;include_controls&#39;</span><span class=p>):</span>
+        <span class=c1># This is Import2</span>
+        <span class=k>if</span> <span class=n>include_with_ids</span><span class=p>:</span>
+            <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>include_controls</span> <span class=o>=</span> <span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>include_with_ids</span><span class=p>))]</span>
+        <span class=c1># If include_with_ids is empty, we can&#39;t set include_controls (min_length=1)</span>
+        <span class=c1># This shouldn&#39;t happen in practice for Import2, but if it does, we skip setting it</span>
+    <span class=k>elif</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>orig_prof_import</span><span class=p>,</span> <span class=s1>&#39;include_all&#39;</span><span class=p>):</span>
+        <span class=c1># This is Import1 - it already has include_all, no need to modify it</span>
+        <span class=k>pass</span>
+
+    <span class=c1># Set exclude_controls if there are any to exclude</span>
+    <span class=k>if</span> <span class=n>exclude_with_ids</span><span class=p>:</span>
+        <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>exclude_controls</span> <span class=o>=</span> <span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>SelectControl</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=nb>sorted</span><span class=p>(</span><span class=n>exclude_with_ids</span><span class=p>))]</span>
+    <span class=k>else</span><span class=p>:</span>
+        <span class=n>orig_prof_import</span><span class=o>.</span><span class=n>exclude_controls</span> <span class=o>=</span> <span class=kc>None</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.core.commands.author.prof.ProfileResolve class="doc doc-heading"> <code>ProfileResolve</code> <a href=#trestle.core.commands.author.prof.ProfileResolve class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><a class="autorefs autorefs-internal" title="AuthorCommonCommand (trestle.core.commands.author.common.AuthorCommonCommand)" href=../common/#trestle.core.commands.author.common.AuthorCommonCommand>AuthorCommonCommand</a></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="ProfileResolve (trestle.core.commands.author.prof.ProfileResolve)" href=#trestle.core.commands.author.prof.ProfileResolve id=mermaid-link-trestle.core.commands.author.prof.ProfileResolve></a> <a class="autorefs autorefs-internal" title="AuthorCommonCommand (trestle.core.commands.author.common.AuthorCommonCommand)" href=../common/#trestle.core.commands.author.common.AuthorCommonCommand id=mermaid-link-trestle.core.commands.author.common.AuthorCommonCommand></a> <a class="autorefs autorefs-internal" title="CommandPlusDocs (trestle.core.commands.command_docs.CommandPlusDocs)" href=../../command_docs/#trestle.core.commands.command_docs.CommandPlusDocs id=mermaid-link-trestle.core.commands.command_docs.CommandPlusDocs></a> <a class="autorefs autorefs-internal" title="CommandBase (trestle.core.commands.command_docs.CommandBase)" href=../../command_docs/#trestle.core.commands.command_docs.CommandBase id=mermaid-link-trestle.core.commands.command_docs.CommandBase></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.core.commands.author.prof.ProfileResolve>
               flowchart TD
               trestle.core.commands.author.prof.ProfileResolve[ProfileResolve]
@@ -1855,18 +1939,7 @@
                   return '';
                 }
               });
-            </script> <p>Resolve profile to resolved profile catalog.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>420</span>
-<span class=normal>421</span>
-<span class=normal>422</span>
-<span class=normal>423</span>
-<span class=normal>424</span>
-<span class=normal>425</span>
-<span class=normal>426</span>
-<span class=normal>427</span>
-<span class=normal>428</span>
-<span class=normal>429</span>
-<span class=normal>430</span>
-<span class=normal>431</span>
+            </script> <p>Resolve profile to resolved profile catalog.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>431</span>
 <span class=normal>432</span>
 <span class=normal>433</span>
 <span class=normal>434</span>
@@ -2000,7 +2073,18 @@
 <span class=normal>562</span>
 <span class=normal>563</span>
 <span class=normal>564</span>
-<span class=normal>565</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ProfileResolve</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
+<span class=normal>565</span>
+<span class=normal>566</span>
+<span class=normal>567</span>
+<span class=normal>568</span>
+<span class=normal>569</span>
+<span class=normal>570</span>
+<span class=normal>571</span>
+<span class=normal>572</span>
+<span class=normal>573</span>
+<span class=normal>574</span>
+<span class=normal>575</span>
+<span class=normal>576</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ProfileResolve</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Resolve profile to resolved profile catalog.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-resolve&#39;</span>
@@ -2146,18 +2230,7 @@
         <span class=n>ModelUtils</span><span class=o>.</span><span class=n>save_top_level_model</span><span class=p>(</span><span class=n>catalog</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>catalog_name</span><span class=p>,</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
 
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.prof.ProfileResolve-attributes>Attributes<a href=#trestle.core.commands.author.prof.ProfileResolve-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.prof.ProfileResolve.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-resolve&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileResolve.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.prof.ProfileResolve-functions>Methods:<a href=#trestle.core.commands.author.prof.ProfileResolve-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.prof.ProfileResolve.resolve_profile class="doc doc-heading"> <code class="highlight language-python"><span class=n>resolve_profile</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>profile_path</span><span class=p>,</span> <span class=n>catalog_name</span><span class=p>,</span> <span class=n>show_values</span><span class=p>,</span> <span class=n>bracket_format</span><span class=p>,</span> <span class=n>value_assigned_prefix</span><span class=p>,</span> <span class=n>value_not_assigned_prefix</span><span class=p>,</span> <span class=n>show_labels</span><span class=p>,</span> <span class=n>label_prefix</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.prof.ProfileResolve.resolve_profile class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create resolved profile catalog from given profile.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Root directory of the trestle workspace</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>profile_path</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Path of the profile json file</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>catalog_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the resolved profile catalog</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>show_values</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>If true, show values of parameters in prose rather than original {{}} form</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>bracket_format</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>String representing brackets around value, e.g. [.] or ((.))</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>value_assigned_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Prefix placed in front of param string if a value was assigned</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>value_not_assigned_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Prefix placed in front of param string if a value was <em>not</em> assigned</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>show_labels</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Show labels for parameters and not values</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>label_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Prefix placed in front of param label</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>0 on success and raises exception on error</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>506</span>
-<span class=normal>507</span>
-<span class=normal>508</span>
-<span class=normal>509</span>
-<span class=normal>510</span>
-<span class=normal>511</span>
-<span class=normal>512</span>
-<span class=normal>513</span>
-<span class=normal>514</span>
-<span class=normal>515</span>
-<span class=normal>516</span>
-<span class=normal>517</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.prof.ProfileResolve-attributes>Attributes<a href=#trestle.core.commands.author.prof.ProfileResolve-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.prof.ProfileResolve.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;profile-resolve&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.prof.ProfileResolve.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.prof.ProfileResolve-functions>Methods:<a href=#trestle.core.commands.author.prof.ProfileResolve-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.prof.ProfileResolve.resolve_profile class="doc doc-heading"> <code class="highlight language-python"><span class=n>resolve_profile</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>profile_path</span><span class=p>,</span> <span class=n>catalog_name</span><span class=p>,</span> <span class=n>show_values</span><span class=p>,</span> <span class=n>bracket_format</span><span class=p>,</span> <span class=n>value_assigned_prefix</span><span class=p>,</span> <span class=n>value_not_assigned_prefix</span><span class=p>,</span> <span class=n>show_labels</span><span class=p>,</span> <span class=n>label_prefix</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.prof.ProfileResolve.resolve_profile class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create resolved profile catalog from given profile.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Root directory of the trestle workspace</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>profile_path</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Path of the profile json file</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>catalog_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the resolved profile catalog</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>show_values</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>If true, show values of parameters in prose rather than original {{}} form</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>bracket_format</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>String representing brackets around value, e.g. [.] or ((.))</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>value_assigned_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Prefix placed in front of param string if a value was assigned</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>value_not_assigned_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Prefix placed in front of param string if a value was <em>not</em> assigned</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>show_labels</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Show labels for parameters and not values</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>label_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Prefix placed in front of param label</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>0 on success and raises exception on error</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/prof.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>517</span>
 <span class=normal>518</span>
 <span class=normal>519</span>
 <span class=normal>520</span>
@@ -2205,7 +2278,18 @@
 <span class=normal>562</span>
 <span class=normal>563</span>
 <span class=normal>564</span>
-<span class=normal>565</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>resolve_profile</span><span class=p>(</span>
+<span class=normal>565</span>
+<span class=normal>566</span>
+<span class=normal>567</span>
+<span class=normal>568</span>
+<span class=normal>569</span>
+<span class=normal>570</span>
+<span class=normal>571</span>
+<span class=normal>572</span>
+<span class=normal>573</span>
+<span class=normal>574</span>
+<span class=normal>575</span>
+<span class=normal>576</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>resolve_profile</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
     <span class=n>profile_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
