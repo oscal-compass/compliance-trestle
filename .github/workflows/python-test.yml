@@ -274,6 +274,7 @@ jobs:
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
           -Dsonar.exclusions=trestle/oscal/*.py
           -Dsonar.branch.name=${{ github.ref_name }}
+          -Dsonar.newCode.referenceBranch=develop
     - name: SonarQube Quality Gate check
       uses: sonarsource/sonarqube-quality-gate-action@df914238f99aa5d81f4490aeea80f205c7ed9600 # master
       # Force to fail step after specific time
