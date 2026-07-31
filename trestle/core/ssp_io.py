@@ -339,8 +339,9 @@ class SSPMarkdownWriter:
         self, has_bycomps: TypeWithByComps, write_empty_responses: bool
     ) -> Dict[str, Tuple[str, List[str], str]]:
         """Get response per component, substitute component id with title if possible."""
-        response_per_component: Dict[str, Tuple[str, str]] = {}
-        for by_comp in as_list(has_bycomps.by_components):  # type: ignore
+        response_per_component: Dict[str, Tuple[str, List[str], str]] = {}
+
+        for by_comp in as_list(has_bycomps.by_components):
             # look up component title
             subheader = by_comp.component_uuid
             prose = ''
@@ -357,6 +358,7 @@ class SSPMarkdownWriter:
                 prose = _neutralize_jinja_delimiters(by_comp.description)
             if by_comp.implementation_status:
                 status = by_comp.implementation_status.state
+
             rules, _ = ControlInterface.get_rule_list_for_item(by_comp)
 
             if prose or write_empty_responses:

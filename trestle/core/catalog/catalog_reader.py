@@ -208,8 +208,10 @@ class CatalogReader:
         statement = gens.generate_sample_model(ossp.Statement)
         statement.statement_id = statement_id
         statement.by_components = None
-        impl_req.statements = as_list(impl_req.statements)
-        impl_req.statements.append(statement)
+        # Work with list without triggering Pydantic v2 validation on empty list assignment
+        statements_list = as_list(impl_req.statements)
+        statements_list.append(statement)
+        impl_req.statements = statements_list  # This will always have at least one item now
         return statement
 
     @staticmethod
@@ -235,8 +237,10 @@ class CatalogReader:
             by_comp = gens.generate_sample_model(ossp.ByComponent)
             by_comp.component_uuid = comp_uuid
             by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
-            found_statement.by_components = as_list(found_statement.by_components)
-            found_statement.by_components.append(by_comp)
+            # Work with list without triggering Pydantic v2 validation on empty list assignment
+            by_comps = as_list(found_statement.by_components)
+            by_comps.append(by_comp)
+            found_statement.by_components = by_comps  # This will always have at least one item now
             return by_comp
         else:
             for by_comp in as_list(imp_req.by_components):
@@ -245,8 +249,10 @@ class CatalogReader:
             by_comp = gens.generate_sample_model(ossp.ByComponent)
             by_comp.component_uuid = comp_uuid
             by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
-            imp_req.by_components = as_list(imp_req.by_components)
-            imp_req.by_components.append(by_comp)
+            # Work with list without triggering Pydantic v2 validation on empty list assignment
+            by_comps = as_list(imp_req.by_components)
+            by_comps.append(by_comp)
+            imp_req.by_components = by_comps  # This will always have at least one item now
             return by_comp
 
     @staticmethod
@@ -276,6 +282,17 @@ class CatalogReader:
             by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, part_id, gen_comp.uuid)
             by_comp.description = comp_info.prose
             by_comp.implementation_status = comp_info.status
+            # Merge props from comp_info with existing props (e.g., Rule_Id from component definition)
+            # Don't overwrite existing props, just add new ones from markdown
+            existing_props = as_list(by_comp.props)
+            new_props = as_list(comp_info.props)
+            # Create a set of existing prop names to avoid duplicates
+            existing_prop_names = {(prop.name, prop.value) for prop in existing_props}
+            # Add new props that don't already exist
+            for prop in new_props:
+                if (prop.name, prop.value) not in existing_prop_names:
+                    existing_props.append(prop)
+            by_comp.props = none_if_empty(existing_props)
 
     @staticmethod
     def _insert_set_param_into_by_comps(
@@ -297,8 +314,11 @@ class CatalogReader:
                                 break
                         if not found:
                             sp = ossp.SetParameter(param_id=param_name, values=param_values)
-                            by_comp.set_parameters = as_list(by_comp.set_parameters)
-                            by_comp.set_parameters.append(sp)
+                            # Build the list first, then assign to avoid Pydantic v2 validation error
+                            # on empty list with min_length=1 constraint
+                            new_set_params = as_list(by_comp.set_parameters)
+                            new_set_params.append(sp)
+                            by_comp.set_parameters = new_set_params
 
     @staticmethod
     def _insert_param_dict_in_imp_req(
@@ -332,8 +352,10 @@ class CatalogReader:
         for sp in as_list(item.set_parameters):
             if sp.param_id != param_id:
                 new_sp_list.append(sp)
+        # Add the new SetParameter to the list before assigning to avoid Pydantic v2 validation error
+        # on empty list with min_length=1 constraint
+        new_sp_list.append(ossp.SetParameter(param_id=param_id, values=param_values))
         item.set_parameters = new_sp_list
-        item.set_parameters.append(ossp.SetParameter(param_id=param_id, values=param_values))
 
     @staticmethod
     def _add_props_to_imp_req(
@@ -347,8 +369,9 @@ class CatalogReader:
         props, props_by_id = ControlReader.get_props_list(control_id, control_part_id_map, yaml_header)
         # add the props at control level
         if props:
-            imp_req.props = as_list(imp_req.props)
+            # reconcile_props handles both existing and non-existing props
             ControlInterface.reconcile_props(imp_req, props)
+            imp_req.props = none_if_empty(imp_req.props)
 
         # add the props at the part level
         for label, part_id in control_part_id_map.items():
@@ -357,8 +380,9 @@ class CatalogReader:
                 continue
             for statement in as_list(imp_req.statements):
                 if statement.statement_id == part_id:
-                    statement.props = as_list(statement.props)
+                    # reconcile_props handles the list internally
                     ControlInterface.reconcile_props(statement, props)
+                    statement.props = none_if_empty(statement.props)
 
     @staticmethod
     def _update_ssp_with_md_header(

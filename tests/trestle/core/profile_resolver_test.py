@@ -86,7 +86,8 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     assert control.parts[0].parts[0].prose == 'Extra added part in subpart'
 
     assert cat.metadata.title == test_prof.metadata.title
-    assert cat.metadata.oscal_version.__root__ == OSCAL_VERSION
+    # Pydantic v2: OscalVersion is RootModel[StringDatatype], so need .root.root to get string value
+    assert cat.metadata.oscal_version.root.root == OSCAL_VERSION
     assert cat.metadata.links[0].href == 'trestle://catalogs/nist_cat/catalog.json'
     assert cat.metadata.links[0].rel == RESOLUTION_SOURCE
     assert cat.metadata.links[1].href == 'trestle://profiles/test_profile_b/profile.json'
@@ -171,10 +172,9 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
 def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test profile resolver merge."""
     profile = gens.generate_sample_model(prof.Profile)
-    method = 'merge'
-    # In OSCAL 1.2.0, combine is a dict, not a Combine object
-    # Merge1 has combine as dict and flat as required dict
-    profile.merge = prof.Merge1(combine={'method': method}, flat={})
+    # In OSCAL 1.2.0, combine is an empty dict per schema (additionalProperties: false)
+    # Merge1 has combine as empty dict and flat as required empty dict
+    profile.merge = prof.Merge1(combine={}, flat={})
     merge = Merge(profile)
 
     # merge into empty catalog
@@ -212,15 +212,16 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     assert catalog_interface.get_count_of_controls_in_catalog(True) == 7
     assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
 
-    # add part to first control and merge but with use-first.  The part should not be there at end.
-    method = prof.CombinationMethodValidValues.use_first.value
-    # In OSCAL 1.2.0, combine is a dict, not a Combine object
-    profile.merge = prof.Merge1(combine={'method': method}, flat={})
+    # add part to first control and merge. Since combine is empty per OSCAL schema,
+    # the default merge behavior applies and both parts are included.
+    # In OSCAL 1.2.0, combine is an empty dict per schema (additionalProperties: false)
+    profile.merge = prof.Merge1(combine={}, flat={})
     merge = Merge(profile)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
     assert catalog_interface.get_count_of_controls_in_catalog(True) == 7
-    assert len(catalog_interface.get_control(control_id).parts) == 1
+    # With empty combine dict, default merge includes both parts
+    assert len(catalog_interface.get_control(control_id).parts) == 2
 
     # now force a merge with keep
     profile.merge = None
@@ -360,9 +361,9 @@ def test_merge_two_catalogs() -> None:
     cat_2 = test_utils.generate_complex_catalog('bar')
     cat_2.controls[0].id = cat_1.controls[0].id
     method = 'merge'
-    # In OSCAL 1.2.0, combine is a dict, not a Combine object
+    # In OSCAL 1.2.0, combine is an empty dict per schema (additionalProperties: false)
     profile = gens.generate_sample_model(prof.Profile)
-    profile.merge = prof.Merge1(combine={'method': method}, flat={})
+    profile.merge = prof.Merge1(combine={}, flat={})
     merge = Merge(profile)
     merge._merge_two_catalogs(cat_1, cat_2, method, True)
     assert cat_1

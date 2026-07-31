@@ -83,14 +83,31 @@ def classname_to_alias(classname: str, mode: AliasMode) -> str:
     """
     suffix = classname.split('.')[-1]
 
-    # the alias mode is either json or field - yaml doesn't apply here
+    # Root/datatype wrapper names should resolve to the underlying semantic alias.
+    root_suffix_aliases = {
+        'StringDatatype': 'string',
+        'IntegerDatatype': 'integer',
+        'PositiveIntegerDatatype': 'positive-integer',
+        'NonNegativeIntegerDatatype': 'non-negative-integer',
+        'Base64Datatype': 'base64',
+        'DateTimeWithTimezoneDatatype': 'date-time-with-timezone',
+        'EmailAddressDatatype': 'email-address',
+        'MarkupLineDatatype': 'markup-line',
+        'MarkupMultilineDatatype': 'markup-multiline',
+        'URIReferenceDatatype': 'uri-reference',
+    }
     if mode == AliasMode.JSON:
-        # things like class_ should just be class
-        if suffix[-1] == '_':
+        if suffix.endswith('_'):
             suffix = suffix[:-1]
-        return _camel_to_dash(suffix).rstrip(string.digits)
+        if suffix in root_suffix_aliases:
+            return root_suffix_aliases[suffix]
+        return _camel_to_dash(suffix.rstrip(string.digits))
     # else alias mode is field
-    return _camel_to_snake(suffix).rstrip(string.digits)
+    if suffix.endswith('_'):
+        suffix = suffix[:-1]
+    if suffix in root_suffix_aliases:
+        return root_suffix_aliases[suffix].replace('-', '_')
+    return _camel_to_snake(suffix.rstrip(string.digits))
 
 
 def alias_to_classname(alias: str, mode: AliasMode) -> str:
@@ -138,8 +155,8 @@ def as_bool(string_or_none: Optional[str]) -> bool:
 
 
 def string_from_root(item_with_root: Optional[Any]) -> str:
-    """Convert root to string if present."""
-    return as_string(item_with_root.__root__) if item_with_root else ''
+    """Convert root to string if present (Pydantic v2 RootModel)."""
+    return as_string(item_with_root.root) if item_with_root else ''
 
 
 def strip_lower_equals(str_a: Optional[str], str_b: Optional[str]) -> bool:

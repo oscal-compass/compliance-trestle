@@ -166,11 +166,13 @@ class ControlReader:
             else:
                 logger.warning(f'Role in header for control {control_id} not recognized: {role}')
         if props:
-            imp_req.props = as_list(imp_req.props)
-            imp_req.props.extend(props)
+            props_list = as_list(imp_req.props)
+            props_list.extend(props)
+            imp_req.props = none_if_empty(props_list)
         if responsible_roles:
-            imp_req.responsible_roles = as_list(imp_req.responsible_roles)
-            imp_req.responsible_roles.extend(responsible_roles)
+            roles_list = as_list(imp_req.responsible_roles)
+            roles_list.extend(responsible_roles)
+            imp_req.responsible_roles = none_if_empty(roles_list)
             imp_req.responsible_roles = none_if_empty(imp_req.responsible_roles)
             # enforce single list of resp. roles for control and each by_comp
             for by_comp in as_list(imp_req.by_components):
@@ -256,6 +258,58 @@ class ControlReader:
         return prose
 
     @staticmethod
+    def _create_statement_part_id(control_id: str, label: str) -> str:
+        """Create statement part ID based on control ID and label."""
+        statement_id = ControlInterface.create_statement_id(control_id)
+        if label in ['', const.STATEMENT]:
+            return statement_id
+        clean_label = label.strip('.')
+        return ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
+
+    @staticmethod
+    def _get_or_create_statement(statement_part_id: str, statement_map: Dict[str, comp.Statement]) -> comp.Statement:
+        """Get existing statement from map or create new one."""
+        if statement_part_id in statement_map:
+            return statement_map[statement_part_id]
+        statement = gens.generate_sample_model(comp.Statement)
+        statement.statement_id = statement_part_id
+        statement_map[statement_part_id] = statement
+        return statement
+
+    @staticmethod
+    def _process_comp_info(
+        imp_req: comp.ImplementedRequirement,
+        control_id: str,
+        label: str,
+        comp_info: Any,
+        statement_map: Dict[str, comp.Statement],
+    ) -> None:
+        """Process component info and update imp_req or statement_map."""
+        if not label:
+            imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
+            ControlInterface.insert_status_in_props(imp_req, comp_info.status)
+            return
+
+        statement_part_id = ControlReader._create_statement_part_id(control_id, label)
+        statement = ControlReader._get_or_create_statement(statement_part_id, statement_map)
+        statement.description = comp_info.prose
+        statement.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
+        ControlInterface.insert_status_in_props(statement, comp_info.status)
+
+    @staticmethod
+    def _build_set_parameters(md_header: Dict[str, Any]) -> List[ossp.SetParameter]:
+        """Build list of set parameters from markdown header."""
+        set_params_list = []
+        for _, param_dict_list in md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
+            for param_dict in param_dict_list:
+                values = param_dict.get(const.VALUES, [])
+                comp_values = param_dict.get(const.COMPONENT_VALUES, [])
+                values = comp_values if comp_values else values
+                set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
+                set_params_list.append(set_param)
+        return set_params_list
+
+    @staticmethod
     def read_implemented_requirement(
         control_file: pathlib.Path, context: ControlContext
     ) -> Tuple[str, comp.ImplementedRequirement]:
@@ -279,46 +333,15 @@ class ControlReader:
         comp_name = context.component.title
 
         statement_map: Dict[str, comp.Statement] = {}
-        # create a new implemented requirement linked to the control id to hold the statements
         imp_req = gens.generate_sample_model(comp.ImplementedRequirement)
         imp_req.control_id = control_id
 
-        imp_req.statements = []
         comp_dict = md_comp_dict[comp_name]
         for label, comp_info in comp_dict.items():
-            # if no label it applies to the imp_req itself rather than a statement
-            if not label:
-                imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
-                ControlInterface.insert_status_in_props(imp_req, comp_info.status)
-                continue
-            statement_id = ControlInterface.create_statement_id(control_id)
-            if label in ['', const.STATEMENT]:
-                statement_part_id = statement_id
-            else:
-                clean_label = label.strip('.')
-                statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
-            if statement_part_id in statement_map:
-                statement = statement_map[statement_part_id]
-            else:
-                statement = gens.generate_sample_model(comp.Statement)
-                statement.statement_id = statement_part_id
-                statement_map[statement_part_id] = statement
-            statement.description = comp_info.prose
-            statement.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
-            ControlInterface.insert_status_in_props(statement, comp_info.status)
+            ControlReader._process_comp_info(imp_req, control_id, label, comp_info, statement_map)
 
-        imp_req.statements = list(statement_map.values())
-        imp_req.set_parameters = []
-
-        for _, param_dict_list in md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
-            for param_dict in param_dict_list:
-                values = param_dict.get(const.VALUES, [])
-                comp_values = param_dict.get(const.COMPONENT_VALUES, [])
-                values = comp_values if comp_values else values
-                set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
-                imp_req.set_parameters.append(set_param)
         imp_req.statements = none_if_empty(list(statement_map.values()))
-        imp_req.set_parameters = none_if_empty(imp_req.set_parameters)
+        imp_req.set_parameters = none_if_empty(ControlReader._build_set_parameters(md_header))
 
         ControlReader._insert_header_content(imp_req, md_header, control_id)
         sort_id = md_header.get(const.SORT_ID, control_id)
@@ -484,15 +507,21 @@ class ControlReader:
         if set_parameters_flag:
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
-                control.params = []
+                # Pydantic v2: Build the complete list before assignment to avoid validation on empty list
+                param_list = []
                 for id_, param_dict in params.items():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
                     # if display_name is in list of properties, set its namespace
                     ControlReader._update_display_prop_namespace(param)
-                    control.params.append(param)
+                    param_list.append(param)
+                control.params = param_list
         sort_id = deep_get(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.SORT_ID], None)
         if sort_id:
-            control.props = control.props if control.props else []
-            control.props.append(common.Property(name=const.SORT_ID, value=sort_id))
+            # Build props list to avoid Pydantic v2 validation on empty list
+            new_prop = common.Property(name=const.SORT_ID, value=sort_id)
+            if control.props:
+                control.props.append(new_prop)
+            else:
+                control.props = [new_prop]
         return control, group_title

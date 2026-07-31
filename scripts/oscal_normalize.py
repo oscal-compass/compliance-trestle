@@ -184,7 +184,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Field, RootModel, conint, constr, field_validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
@@ -192,60 +192,22 @@ from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 
 oscal_validator_code = """
 
-    @validator('__root__')
+    @field_validator('root')
+    @classmethod
     def oscal_version_is_valid(cls, v):
         strict_version = False
         if not strict_version:
             return v
+        # In Pydantic v2, v is a StringDatatype (RootModel), so we need to extract the actual string
+        # StringDatatype itself is RootModel[constr(...)], so we need v.root to get the string
+        actual_value = v.root if hasattr(v, 'root') else v
         p = re.compile(OSCAL_VERSION_REGEX)
-        matched = p.match(v)
+        matched = p.match(actual_value)
         if matched is None:
-            raise ValueError(f'OSCAL version: {v} is not supported, use {OSCAL_VERSION} instead.')
+            raise ValueError(f'OSCAL version: {actual_value} is not supported, use {OSCAL_VERSION} instead.')
         return v
 
 """
-
-
-def add_union_validators(class_name, discriminator_field, other_variant):
-    """
-    Generate smart Union validator code for OSCAL 1.2.0 Union types.
-
-    Args:
-        class_name: Name of the current class (e.g., 'Group1', 'Parameter1')
-        discriminator_field: Field that indicates this variant (e.g., 'groups', 'values')
-        other_variant: Name of the other Union variant (e.g., 'Group2', 'Parameter2')
-
-    Returns:
-        String containing the validator code to add to the class
-    """
-    other_discriminator = {'groups': 'controls', 'controls': 'groups', 'values': 'select', 'select': 'values'}.get(
-        discriminator_field, ''
-    )
-
-    return f'''
-    @classmethod
-    def __get_validators__(cls):
-        yield cls._smart_union_validator
-
-    @classmethod
-    def _smart_union_validator(cls, v):
-        """Smart validator that chooses {class_name} if data has {discriminator_field}, otherwise tries {other_variant}."""
-        if isinstance(v, dict):
-            # If dict has '{discriminator_field}' field, use {class_name}
-            if '{discriminator_field}' in v:
-                return cls.parse_obj(v)
-            # If dict has '{other_discriminator}' field, use {other_variant}
-            elif '{other_discriminator}' in v:
-                return {other_variant}.parse_obj(v)
-        # For non-dict or ambiguous cases, try {class_name} first (this class)
-        try:
-            return cls.parse_obj(v) if isinstance(v, dict) else v
-        except Exception:
-            # If {class_name} fails, try {other_variant}
-            return {other_variant}.parse_obj(v) if isinstance(v, dict) else v
-
-
-'''
 
 
 class RelOrder:
@@ -396,23 +358,42 @@ class ClassText:
 
 
 def find_forward_refs(class_list, orders):
-    """Find forward references within the file."""
-    forward_names = set()
-    for c in class_list:
-        if c.is_self_ref:
-            forward_names.add(c.name)
-    for i in range(len(orders)):
-        # If a class references something defined after it (i < latest_dep),
-        # it needs update_forward_refs() to resolve the forward reference
-        if i < orders[i].latest_dep:
-            forward_names.add(class_list[i].name)
-
+    """Find forward references within the file that need model_rebuild()."""
+    # In Pydantic v2, Union type aliases (like Parameter = Union[Parameter1, Parameter2])
+    # require model_rebuild() calls for any models that use them in annotations
+    # This is because the Union is not a real class but a type alias
     forward_refs = []
+
+    # Track which Union aliases are defined in this file
+    union_aliases = set()
     for c in class_list:
-        if c.name in forward_names:
-            # Skip Enums - they don't have update_forward_refs()
-            if '(Enum)' not in c.lines[0]:
-                forward_refs.append(f'{c.name}.update_forward_refs()')
+        class_text = '\n'.join(c.lines)
+        # Check if this is a Union alias definition (e.g., "Parameter = Union[Parameter1, Parameter2]")
+        if ' = Union[' in class_text and not c.name.endswith('1') and not c.name.endswith('2'):
+            union_aliases.add(c.name)
+
+    # Find models that use these Union aliases and need rebuilding
+    models_needing_rebuild = set()
+    for c in class_list:
+        # Skip Union aliases themselves
+        if c.name in union_aliases:
+            continue
+        # Skip RootModel wrappers
+        class_text = '\n'.join(c.lines)
+        if 'RootModel[' in c.lines[0] or '__root__' in class_text:
+            continue
+        # Check if this model uses any Union alias in its fields
+        for union_alias in union_aliases:
+            # Look for the Union alias used in type annotations
+            # Match patterns like: "field: list[Parameter]", "field: Parameter | None", etc.
+            if f'list[{union_alias}]' in class_text or f': {union_alias}' in class_text:
+                models_needing_rebuild.add(c.name)
+                break
+
+    # Generate model_rebuild() calls for models that need it
+    for model_name in sorted(models_needing_rebuild):
+        forward_refs.append(f'{model_name}.model_rebuild()')
+
     return forward_refs
 
 
@@ -546,7 +527,7 @@ def load_classes(fstem):
     with open(fname, 'r', encoding='utf8') as infile:
         for r in infile.readlines():
             # collect forward references
-            if r.find('.update_forward_refs()') >= 0:
+            if r.find('.model_rebuild()') >= 0:
                 forward_refs.append(r)
             elif r.find(class_header) == 0:  # start of new class
                 done_header = True
@@ -866,24 +847,32 @@ def write_oscal(classes, forward_refs, fstem):
         seen_import2 = False
         seen_insertcontrols1 = False
         seen_insertcontrols2 = False
-        seen_setparameters = False
+        # Track Group1 and Group2 for creating Union alias
+        seen_group1 = False
+        seen_group2 = False
 
         for c in classes:
             # Skip the broken Group Union wrapper in common.py that references Cat_Group2
             if is_common and c.name == 'Group' and '__root__' in '\n'.join(c.lines):
                 continue
 
-            # Skip Union wrapper classes with __root__ - we use Union aliases instead
-            if '__root__' in '\n'.join(c.lines):
-                # Skip Parameter wrapper in common.py
-                if is_common and c.name == 'Parameter':
+            # Skip Union wrapper classes with RootModel - we use Union aliases instead
+            # In Pydantic v2, these are RootModel classes with 'root:' field
+            class_text = '\n'.join(c.lines)
+            is_root_model = 'RootModel[' in c.lines[0] or '__root__' in class_text or ' root:' in class_text
+
+            if is_root_model:
+                # Skip Parameter wrapper in all files (common.py, catalog.py, etc.)
+                if c.name == 'Parameter':
                     continue
                 # Skip Group wrapper in common.py
                 if is_common and c.name == 'Group':
                     continue
-                # Skip Merge, Import, InsertControls wrappers in profile.py
-                if fstem == 'profile' and c.name in ['Merge', 'Import', 'InsertControls']:
-                    continue
+                # Skip Merge, Import, InsertControls, Group wrappers in profile.py and catalog.py
+                # Check if class name ends with these names (handles both short and long names)
+                if fstem in ['profile', 'catalog']:
+                    if any(c.name.endswith(wrapper) for wrapper in ['Merge', 'Import', 'InsertControls', 'Group']):
+                        continue
 
             # Fix: Replace Group pipe unions
             lines_to_write = c.lines
@@ -909,21 +898,30 @@ def write_oscal(classes, forward_refs, fstem):
                     # Replace inline Parameter1|Parameter2 unions with common.Parameter alias
                     if 'Parameter1|Parameter2' in line:
                         line = line.replace('Parameter1|Parameter2', 'common.Parameter')
+                    # In catalog.py and profile.py, replace Parameter references with common.Parameter
+                    # to avoid needing to import the Union alias
+                    if fstem in ['catalog', 'profile'] and not is_common:
+                        # Replace list[Parameter] with list[common.Parameter]
+                        if 'list[Parameter]' in line:
+                            line = line.replace('list[Parameter]', 'list[common.Parameter]')
+                        # Replace : Parameter with : common.Parameter (for optional fields)
+                        if ': Parameter' in line and 'common.Parameter' not in line:
+                            line = line.replace(': Parameter', ': common.Parameter')
                     lines_to_write.append(line)
 
             out_file.writelines('\n'.join(lines_to_write) + '\n')
 
-            # Add smart Union validators for Group1 and Group2 in catalog/profile
+            # Add Group Union alias after both Group1 and Group2 are defined
             if c.name == 'Group1' and fstem in ['catalog', 'profile']:
-                out_file.write(add_union_validators('Group1', 'groups', 'Group2'))
+                seen_group1 = True
+                if seen_group2:
+                    out_file.write('# Union alias for Group variants\n')
+                    out_file.write('Group = Union[Group1, Group2]\n\n\n')
             if c.name == 'Group2' and fstem in ['catalog', 'profile']:
-                out_file.write(add_union_validators('Group2', 'controls', 'Group1'))
-
-            # Add smart Union validators for Parameter1 and Parameter2 in common
-            if c.name == 'Parameter1' and is_common:
-                out_file.write(add_union_validators('Parameter1', 'values', 'Parameter2'))
-            if c.name == 'Parameter2' and is_common:
-                out_file.write(add_union_validators('Parameter2', 'select', 'Parameter1'))
+                seen_group2 = True
+                if seen_group1:
+                    out_file.write('# Union alias for Group variants\n')
+                    out_file.write('Group = Union[Group1, Group2]\n\n\n')
 
             # add special validator for OscalVersion
             if c.name == 'OscalVersion':
@@ -965,17 +963,10 @@ def write_oscal(classes, forward_refs, fstem):
             if fstem == 'profile':
                 # Track SetParameters variants and update forward refs
                 # TODO: Investigate why reordering doesn't place these classes in the right order
-                if c.name == 'SetParameters':
-                    seen_setparameters = True
-                if c.name == 'SetParameters1':
-                    # Update SetParameters forward references after both variants are defined
-                    # They reference Parameter1|Parameter2Constraint and Parameter1|Parameter2Guideline
-                    if seen_setparameters:
-                        out_file.write(
-                            '# Update SetParameters forward references for Parameter constraints/guidelines\n'
-                        )
-                        out_file.write('SetParameters.update_forward_refs()\n')
-                        out_file.write('SetParameters1.update_forward_refs()\n\n\n')
+                # Pydantic v2 with 'from __future__ import annotations' handles forward refs automatically
+                # No need for manual model_rebuild() calls or tracking SetParameters variants
+                if c.name in ['SetParameters', 'SetParameters1']:
+                    pass
 
                 # Track Merge variants and add Union alias after all are defined
                 if c.name == 'Merge1':
@@ -1052,7 +1043,7 @@ def write_oscal(classes, forward_refs, fstem):
         if forward_refs:
             if not is_common:
                 out_file.writelines('\n\n')
-            # Filter out Group.update_forward_refs() from common.py since we removed the Group Union wrapper
+            # Filter out Group.model_rebuild() from common.py since we removed the Group Union wrapper
             filtered_refs = forward_refs
             if is_common:
                 filtered_refs = [ref for ref in forward_refs if not ref.startswith('Group.')]
@@ -1097,10 +1088,7 @@ additions = {
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
     ],
-    'catalog': [
-        'from trestle.oscal.common import Parameter1, Parameter2',
-        'from trestle.oscal.common import StringDatatype',
-    ],
+    'catalog': ['from trestle.oscal.common import StringDatatype'],
     'common': [],
     'component': [
         'from trestle.oscal.common import StringDatatype',
@@ -1118,10 +1106,7 @@ additions = {
         'from trestle.oscal.common import TokenDatatype',
         'from trestle.oscal.common import RelatedObservation as RelatedObservation1',
     ],
-    'profile': [
-        'from trestle.oscal.common import Parameter1, Parameter2',
-        'from trestle.oscal.common import StringDatatype',
-    ],
+    'profile': ['from trestle.oscal.common import StringDatatype'],
     'ssp': [
         'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import Status, SystemComponent',
@@ -1147,28 +1132,11 @@ def bkwd_compat_1_0_4(fstem):
                 f.write(line)
 
 
-def pydantic_interface_v1(fstem):
-    """Patch for trestle use of pydantic v1 interface from pydantic v2 lib."""
-    # This function should be removed once the v2 interface is supported in trestle.
-    lines = []
-    if fstem in additions.keys():
-        fname = f'trestle/oscal/{fstem}.py'
-        with open(fname, 'r') as f:
-            for line in f:
-                if line.startswith('from pydantic'):
-                    line = line.replace('pydantic', 'pydantic.v1')
-                    logger.debug(f'pydantic_interface_v1: file {fstem}.py modify "{line.strip()}"')
-                lines.append(line)
-        with open(fname, 'w') as f:
-            for line in lines:
-                f.write(line)
-
-
 def apply_eligible(line):
     """Apply eligible for token replacement.
 
     We want to replace class names in type annotations but not in string literals.
-    For __root__ lines with Field(...), we need to replace class names in the type
+    For __root__/root lines with Field(...), we need to replace class names in the type
     annotation (before = Field) but not in the description/title strings.
     """
     # If no title= or description=, always eligible
@@ -1179,9 +1147,10 @@ def apply_eligible(line):
     if 'CommonRiskStatus' in line:
         return True
 
-    # For __root__ lines with type annotations, we want to replace class names
+    # For __root__/root lines with type annotations, we want to replace class names
     # in the type annotation part only (before ' = Field(')
-    if '__root__:' in line and ' = Field(' in line:
+    # Support both Pydantic v1 (__root__:) and v2 (root:) syntax
+    if ('__root__:' in line or ' root:' in line) and ' = Field(' in line:
         return True
 
     # Otherwise, skip lines with title=/description= to avoid changing strings
@@ -1250,7 +1219,6 @@ def reorder_and_dump_as_python(file_classes):
         # Keep forward_refs for classes with circular dependencies
         write_oscal(ordered, forward_refs, item[0])
         bkwd_compat_1_0_4(item[0])
-        pydantic_interface_v1(item[0])
 
 
 def find_full_changes(file_classes):
@@ -1378,11 +1346,19 @@ def kill_roots(file_classes):
     """Kill the root classes in common."""
     com = file_classes['common']
     root_classes = {}
-    match_str = ':__root__:'
+    # Support both Pydantic v1 (__root__:) and v2 (root:) syntax
+    match_str_v1 = ':__root__:'
+    match_str_v2 = ':root:'
     # find all root classes
     for c in com:
         body = c.body_text
-        if body.startswith(match_str):
+        match_str = None
+        if body.startswith(match_str_v1):
+            match_str = match_str_v1
+        elif body.startswith(match_str_v2):
+            match_str = match_str_v2
+
+        if match_str:
             p_field = body.find('=Field(')
             if p_field > 0:
                 body = body[:p_field]
@@ -1439,8 +1415,9 @@ def kill_roots(file_classes):
 
 def relax_optional_parameter_labels(file_classes):
     """Allow blank optional parameter labels while keeping other single-line fields strict."""
-    strict_label = r"constr(regex=r'^[^\n]+$')"
-    relaxed_label = r"constr(regex=r'^[^\n]*\Z')"
+    # Pydantic v2 uses 'pattern=' instead of 'regex='
+    strict_label = r"constr(pattern=r'^[^\n]+$')"
+    relaxed_label = r"constr(pattern=r'^[^\n]*$')"
     parameter_label_classes = {'Parameter1', 'Parameter2', 'SetParameters', 'SetParameters1'}
     for classes in file_classes.values():
         for c in classes:

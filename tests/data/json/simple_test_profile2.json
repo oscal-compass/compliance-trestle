@@ -22,9 +22,7 @@
       }
     ],
     "merge": {
-      "combine": {
-        "method": "use-first"
-      },
+      "combine": {},
       "as-is": true
     },
     "modify": {
@@ -56,19 +54,21 @@
             }
           ],
           "values": [
-                "Organization-level",
-                "System-level"
+            "Organization-level",
+            "System-level"
           ]
         },
-        {  "param_id": "ac-1_prm_3",
-            "values": [
-              "officer"
-            ]
+        {
+          "param_id": "ac-1_prm_3",
+          "values": [
+            "officer"
+          ]
         },
-        {  "param_id": "ac-1_prm_4",
-            "values": [
-              "weekly"
-            ]
+        {
+          "param_id": "ac-1_prm_4",
+          "values": [
+            "weekly"
+          ]
         },
         {
           "param_id": "ac-1_prm_5",
@@ -77,55 +77,65 @@
             "all meetings"
           ]
         },
-        {  "param_id": "ac-1_prm_6",
-            "values": [
-              "monthly"
-            ]
+        {
+          "param_id": "ac-1_prm_6",
+          "values": [
+            "monthly"
+          ]
         },
-        {  "param_id": "ac-2_prm_1",
-            "values": [
-              "passwords"
-            ]
+        {
+          "param_id": "ac-2_prm_1",
+          "values": [
+            "passwords"
+          ]
         },
-        {  "param_id": "ac-2_prm_2",
-            "values": [
-              "approvals"
-            ]
+        {
+          "param_id": "ac-2_prm_2",
+          "values": [
+            "approvals"
+          ]
         },
-        {  "param_id": "ac-2_prm_3",
-            "values": [
-              "authorized personnel"
-            ]
+        {
+          "param_id": "ac-2_prm_3",
+          "values": [
+            "authorized personnel"
+          ]
         },
-        {  "param_id": "ac-2_prm_4",
-            "values": [
-              "guidelines"
-            ]
+        {
+          "param_id": "ac-2_prm_4",
+          "values": [
+            "guidelines"
+          ]
         },
-        {  "param_id": "ac-2_prm_5",
-            "values": [
-              "personnel"
-            ]
+        {
+          "param_id": "ac-2_prm_5",
+          "values": [
+            "personnel"
+          ]
         },
-        {  "param_id": "ac-2_prm_6",
-            "values": [
-              "one week"
-            ]
+        {
+          "param_id": "ac-2_prm_6",
+          "values": [
+            "one week"
+          ]
         },
-        {  "param_id": "ac-2_prm_7",
-            "values": [
-              "one day"
-            ]
+        {
+          "param_id": "ac-2_prm_7",
+          "values": [
+            "one day"
+          ]
         },
-        {  "param_id": "ac-2_prm_8",
-            "values": [
-              "one hour"
-            ]
+        {
+          "param_id": "ac-2_prm_8",
+          "values": [
+            "one hour"
+          ]
         },
-        {  "param_id": "ac-2_prm_9",
-            "values": [
-              "special needs"
-            ]
+        {
+          "param_id": "ac-2_prm_9",
+          "values": [
+            "special needs"
+          ]
         }
       ],
       "alters": [

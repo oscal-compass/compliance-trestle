@@ -17,9 +17,11 @@
 
 import string
 
-FIELDS_SET = '__fields_set__'
+# Pydantic v2: __fields_set__ → model_fields_set
+FIELDS_SET = 'model_fields_set'
 
-ROOT = '__root__'
+# Pydantic v2 RootModel uses 'root' instead of '__root__'
+ROOT = 'root'
 
 PACKAGE_OSCAL = 'trestle.oscal'
 
@@ -246,7 +248,8 @@ AFTER_HASHES_REGEX = r'(?:##*\s+)(.*)'
 
 CACHE_ABS_DIR = '__abs__'
 
-UNIX_CACHE_ROOT = '__root__'
+# Pydantic v2 RootModel uses 'root' instead of '__root__'
+UNIX_CACHE_ROOT = 'root'
 
 TRESTLE_HREF_HEADING = 'trestle://'
 
