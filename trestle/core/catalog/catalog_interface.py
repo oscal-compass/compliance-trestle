@@ -124,7 +124,8 @@ class CatalogInterface:
         """Generate sequential group ids."""
         group_id = f'trestle_group_{self._generate_group_index:04d}'
         self._generate_group_index += 1
-        logger.warning(f'Group titled "{group.title}" has no id and has been assigned id: {group_id}')
+        safe_title = str(group.title).replace('\n', '\\n').replace('\r', '\\r') if group.title else ''
+        logger.warning(f'Group titled "{safe_title}" has no id and has been assigned id: {group_id}')
         return group_id
 
     def _add_params_to_map(self, control: cat.Control) -> None:
