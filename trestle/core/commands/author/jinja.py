@@ -23,6 +23,7 @@ import re
 from typing import Any, Dict, Optional
 
 from jinja2 import Environment, FileSystemLoader, Template
+from jinja2.sandbox import SandboxedEnvironment
 
 from ruamel.yaml import YAML
 
@@ -301,9 +302,15 @@ class JinjaCmd(CommandPlusDocs):
         return CmdReturnCodes.SUCCESS.value
 
     @staticmethod
-    def _create_jinja_environment(template_folder: pathlib.Path) -> Environment:
-        """Create the trusted Jinja environment used for loading template files."""
-        return Environment(
+    def _create_jinja_environment(template_folder: pathlib.Path) -> SandboxedEnvironment:
+        """Create the sandboxed Jinja environment used for loading template files.
+
+        Uses SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks.
+        The sandbox restricts access to unsafe Python attributes like __class__, __globals__,
+        __mro__, __subclasses__, etc., preventing attackers from executing arbitrary code
+        even if they can inject Jinja2 syntax into markdown files or data fields.
+        """
+        return SandboxedEnvironment(
             loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
         )
 

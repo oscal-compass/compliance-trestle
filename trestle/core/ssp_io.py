@@ -33,6 +33,27 @@ from trestle.oscal.catalog import Catalog
 logger = logging.getLogger(__name__)
 
 
+def _neutralize_jinja_delimiters(text: str) -> str:
+    """Neutralize Jinja2 template delimiters to prevent SSTI attacks.
+
+    Replaces {{ and }} with [[ and ]] to prevent untrusted OSCAL data
+    from being interpreted as Jinja2 template code when included in
+    markdown files that are later processed by Jinja2 include tags.
+
+    This is a defense-in-depth measure to complement the primary fix
+    of not re-parsing included content as templates.
+
+    Args:
+        text: The text to neutralize
+
+    Returns:
+        Text with Jinja delimiters replaced
+    """
+    if not text:
+        return text
+    return text.replace('{{', '[[').replace('}}', ']]')
+
+
 class SSPMarkdownWriter:
     """
     Class to write control responses as markdown.
@@ -228,7 +249,8 @@ class SSPMarkdownWriter:
             header = f'Component: {comp_name}'
             md_writer.new_header(level, header)
         md_writer.set_indent_level(-1)
-        md_writer.new_line(prose)
+        # SECURITY: Neutralize Jinja delimiters in prose to prevent SSTI
+        md_writer.new_line(_neutralize_jinja_delimiters(prose))
         md_writer.set_indent_level(-1)
         if rules and show_rules:
             md_writer.new_header((level + 1), title='Rules:')
@@ -330,8 +352,9 @@ class SSPMarkdownWriter:
                         title = comp.title
                         if title:
                             subheader = title
+            # SECURITY: Neutralize Jinja delimiters in description to prevent SSTI
             if by_comp.description:
-                prose = by_comp.description
+                prose = _neutralize_jinja_delimiters(by_comp.description)
             if by_comp.implementation_status:
                 status = by_comp.implementation_status.state
             rules, _ = ControlInterface.get_rule_list_for_item(by_comp)
@@ -384,7 +407,8 @@ class SSPMarkdownWriter:
             md_writer.new_paragraph()
             md_writer.new_header(level=1, title=header)
             md_writer.set_indent_level(-1)
-            md_writer.new_line(text)
+            # SECURITY: Neutralize Jinja delimiters in text to prevent SSTI
+            md_writer.new_line(_neutralize_jinja_delimiters(text))
             md_writer.set_indent_level(-1)
 
             return self._build_tree_and_adjust(md_writer.get_lines(), level)

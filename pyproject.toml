@@ -35,7 +35,7 @@ classifiers = [
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==46.0.7",
+    "cryptography>=46.0.7",
     "paramiko==4.0.0",
     "ruamel.yaml",
     "furl",
@@ -296,6 +296,10 @@ warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true
+omit = [
+    "*/tmp*/*.j2",
+    "*/tmp*/*.md.j2",
+]
 
 [tool.semantic_release]
 build_command = """
