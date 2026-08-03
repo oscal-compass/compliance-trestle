@@ -34,7 +34,7 @@ plugins:
     enabled: true
     validate_rendered_template: false
     validate_external_urls: true
-    # Fail on errors except for 429 (rate limiting)
+    # Fail on errors except for 429 (rate limiting) and transient 5xx server errors
     raise_error_after_finish: true
     raise_error_excludes:
       # This is to remove some false positives for links which work.
@@ -42,6 +42,16 @@ plugins:
       404: [ '*#trestle.*' ]
       # Don't fail on 429 (Too Many Requests) - rate limiting is expected
       429: [ '*' ]
+      # Ignore transient server-side 5xx errors - the URLs are correct but the
+      # remote server may be temporarily unavailable.
+      # 500 Internal Server Error  - catch-all server fault, often transient
+      500: [ '*' ]
+      # 502 Bad Gateway           - upstream proxy/load-balancer fault
+      502: [ '*' ]
+      # 503 Service Unavailable   - server overloaded or in maintenance
+      503: [ '*' ]
+      # 504 Gateway Timeout       - also returned by the plugin for request timeouts
+      504: [ '*' ]
     # Add URLs here that should be completely ignored by htmlproofer:
     ignore_urls:
         - 'https://example.com/placeholder'
