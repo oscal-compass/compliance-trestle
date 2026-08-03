@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v3.12.4 (2026-08-03)
+
+### Bug Fixes
+
+- Backport security and dependency fixes to v3
+  ([`5335ff8`](https://github.com/oscal-compass/compliance-trestle/commit/5335ff873a2a68eb7de43df029bea09cadff22fd))
+
+
 ## v3.12.3 (2026-05-28)
 
 ### Bug Fixes
