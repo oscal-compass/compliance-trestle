@@ -88,6 +88,8 @@ class BetaCmd(CommandBase):
         self.out('  trestle beta query             List beta features and their status')
         self.out('  trestle beta enable <feature>  Enable a beta feature')
         self.out('  trestle beta disable <feature> Disable a beta feature')
+        self.out('  trestle beta enable all        Enable all beta features')
+        self.out('  trestle beta disable all       Disable all config-enabled beta features')
         self.out('')
         self.out('Use "trestle beta query --verbose" for detailed descriptions.')
 
@@ -151,6 +153,10 @@ class BetaCmd(CommandBase):
         """Enable a beta feature."""
         if not feature_name:
             raise TrestleIncorrectArgsError('A beta feature name is required.')
+        if feature_name == 'all':
+            changed = beta_features.enable_all_features(trestle_root)
+            self.out(f'Enabled {changed} beta feature(s).')
+            return
 
         feature = self._get_feature(feature_name)
         changed = beta_features.enable_feature(feature_name, trestle_root)
@@ -176,6 +182,13 @@ class BetaCmd(CommandBase):
         """Disable a beta feature."""
         if not feature_name:
             raise TrestleIncorrectArgsError('A beta feature name is required.')
+        if feature_name == 'all':
+            changed = beta_features.disable_all_features(trestle_root)
+            self.out(f'Disabled {changed} beta feature(s).')
+            remaining = beta_features.get_enabled_features(trestle_root)
+            if remaining:
+                self.out(f'Features still enabled by environment or default: {", ".join(sorted(remaining))}')
+            return
 
         feature = self._get_feature(feature_name)
         changed = beta_features.disable_feature(feature_name, trestle_root)

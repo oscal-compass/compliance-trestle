@@ -202,6 +202,14 @@ trestle beta enable example-feature
 trestle beta disable example-feature
 ```
 
+Use `all` to enable every registered beta feature or disable every feature stored in the selected config. Features
+enabled by environment or by default remain enabled.
+
+```bash
+trestle beta enable all
+trestle beta disable all
+```
+
 Use `--beta` on a beta command to run it one time without writing beta state to config. Commands that are not beta
 features will warn that `--beta` is only effective for beta level commands, but will otherwise proceed normally.
 
