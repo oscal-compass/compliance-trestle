@@ -49,13 +49,20 @@ class SignCmd(CommandBase):
 
     def _init_arguments(self) -> None:
         self.add_argument('-f', '--file', help='Path to the JSON file to sign.', required=True, type=pathlib.Path)
-        self.add_argument('--key', help='Path to the PEM private key for signing.', required=True, type=pathlib.Path)
+        self.add_argument(
+            '--private-key',
+            dest='key',
+            help='Path to the PEM private key for signing.',
+            required=True,
+            type=pathlib.Path,
+        )
         self.add_argument(
             '--key-password-env',
             help='Environment variable containing the password for an encrypted PEM private key.',
             default=None,
         )
         self.add_argument('-o', '--output', help='Output DSSE envelope file.', required=True, type=pathlib.Path)
+        self.add_argument('--overwrite', help='Replace an existing DSSE envelope.', action='store_true')
         self.add_argument(
             '--subject-name',
             help='Subject name to record in the in-toto Statement. Defaults to the input file name.',
@@ -67,7 +74,7 @@ class SignCmd(CommandBase):
         """Sign a JSON file."""
         try:
             log.set_log_level_from_args(args)
-            self.sign(args.file, args.key, args.output, args.subject_name, args.key_password_env)
+            self.sign(args.file, args.key, args.output, args.subject_name, args.key_password_env, args.overwrite)
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while signing JSON')
@@ -80,6 +87,7 @@ class SignCmd(CommandBase):
         output_path: pathlib.Path,
         subject_name: Optional[str] = None,
         key_password_env: Optional[str] = None,
+        overwrite: bool = False,
     ) -> None:
         """Write a detached DSSE provenance envelope for a JSON file."""
         input_path = input_path.resolve()
@@ -98,4 +106,4 @@ class SignCmd(CommandBase):
 
         signer = load_pem_private_key_signer(key_path, key_password)
         envelope = create_oscal_provenance_envelope(input_path, signer, subject_name)
-        write_dsse_envelope(envelope, output_path)
+        write_dsse_envelope(envelope, output_path, overwrite)

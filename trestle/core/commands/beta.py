@@ -126,10 +126,11 @@ class BetaCmd(CommandBase):
             self.out('  None')
             return
 
+        name_width = max(len(feature.name) for feature in feature_list)
         for feature in feature_list:
             status = 'enabled' if feature.name in enabled_features else 'disabled'
             if not verbose:
-                self.out(f'  [{status}] {feature.name:<20} {feature.description}')
+                self.out(f'  [{status}] {feature.name:<{name_width}} {feature.description}')
             else:
                 self._show_verbose_feature(feature, status)
 

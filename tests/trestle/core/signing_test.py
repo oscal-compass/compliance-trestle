@@ -162,7 +162,54 @@ def test_write_dsse_envelope_rejects_existing_output_file(tmp_path: pathlib.Path
     assert output_path.read_text(encoding=const.FILE_ENCODING) == 'existing file'
 
 
-def test_write_dsse_envelope_rejects_output_symlink(tmp_path: pathlib.Path) -> None:
+def test_write_dsse_envelope_overwrites_existing_output_file(tmp_path: pathlib.Path) -> None:
+    """DSSE envelope writing should atomically replace an existing output when requested."""
+    output_path = tmp_path / 'catalog.json.dsse'
+    output_path.write_text('existing file', encoding=const.FILE_ENCODING)
+
+    write_dsse_envelope({'payload': 'replacement'}, output_path, overwrite=True)
+
+    assert json.loads(output_path.read_text(encoding=const.FILE_ENCODING)) == {'payload': 'replacement'}
+
+
+def test_write_dsse_envelope_cleans_up_failed_overwrite(
+    tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """An atomic DSSE overwrite failure should not leave its temporary file behind."""
+    output_path = tmp_path / 'catalog.json.dsse'
+    output_path.write_text('existing file', encoding=const.FILE_ENCODING)
+    existing_paths = set(tmp_path.iterdir())
+
+    def _fail_replace(path: pathlib.Path, target: pathlib.Path) -> pathlib.Path:
+        raise OSError('replace failed')
+
+    monkeypatch.setattr(pathlib.Path, 'replace', _fail_replace)
+    with pytest.raises(OSError, match='replace failed'):
+        write_dsse_envelope({}, output_path, overwrite=True)
+
+    assert set(tmp_path.iterdir()) == existing_paths
+    assert output_path.read_text(encoding=const.FILE_ENCODING) == 'existing file'
+
+
+def test_write_dsse_envelope_handles_exclusive_creation_race(
+    tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A file created after validation should still prevent DSSE envelope overwrite."""
+    output_path = tmp_path / 'catalog.json.dsse'
+    original_open = pathlib.Path.open
+
+    def _race_open(path: pathlib.Path, *args: Any, **kwargs: Any) -> Any:
+        if path == output_path and args and args[0] == 'x':
+            raise FileExistsError
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(pathlib.Path, 'open', _race_open)
+    with pytest.raises(TrestleError, match='output path already exists'):
+        write_dsse_envelope({}, output_path)
+
+
+@pytest.mark.parametrize('overwrite', [False, True])
+def test_write_dsse_envelope_rejects_output_symlink(tmp_path: pathlib.Path, overwrite: bool) -> None:
     """DSSE envelope writing should not follow output symlinks."""
     target_path = tmp_path / 'target.txt'
     target_path.write_text('target file', encoding=const.FILE_ENCODING)
@@ -173,7 +220,7 @@ def test_write_dsse_envelope_rejects_output_symlink(tmp_path: pathlib.Path) -> N
         pytest.skip(f'Symlinks are not available in this environment: {error}')
 
     with pytest.raises(TrestleError):
-        write_dsse_envelope({}, output_path)
+        write_dsse_envelope({}, output_path, overwrite)
 
     assert target_path.read_text(encoding=const.FILE_ENCODING) == 'target file'
 
