@@ -109,8 +109,9 @@ def _validate_pci_mapping(tmp_path: pathlib.Path) -> None:
 
     # Check confidence score with percentage field
     if map_entry.confidence_score:
-        assert hasattr(map_entry.confidence_score, '__root__')
-        assert map_entry.confidence_score.__root__ is not None
+        # Pydantic v2: RootModel uses 'root' instead of '__root__'
+        assert hasattr(map_entry.confidence_score, 'root')
+        assert map_entry.confidence_score.root is not None
 
     if map_entry.coverage:
         assert hasattr(map_entry.coverage, 'target_coverage')
@@ -156,8 +157,9 @@ def _validate_soc2_mapping(tmp_path: pathlib.Path) -> None:
 
     # Check confidence score with percentage field
     if map_entry.confidence_score:
-        assert hasattr(map_entry.confidence_score, '__root__')
-        assert map_entry.confidence_score.__root__ is not None
+        # Pydantic v2: RootModel uses 'root' instead of '__root__'
+        assert hasattr(map_entry.confidence_score, 'root')
+        assert map_entry.confidence_score.root is not None
 
     if map_entry.coverage:
         assert hasattr(map_entry.coverage, 'target_coverage')

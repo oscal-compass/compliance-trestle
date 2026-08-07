@@ -104,8 +104,12 @@ class SSPInheritanceAPI:
             if existing_leveraged_auth is not None:
                 leveraged_auth = existing_leveraged_auth
             else:
-                leveraged_auth.links = as_list(leveraged_auth.links)
-                leveraged_auth.links.append(link)
+                # In Pydantic v2, links field has min_length=1, cannot be empty list
+                # Initialize with link directly instead of converting None to [] then appending
+                if leveraged_auth.links:
+                    leveraged_auth.links.append(link)
+                else:
+                    leveraged_auth.links = [link]
 
             leveraged_auth.title = f'Leveraged Authorization for {leveraged_ssp.metadata.title}'
             leveraged_auths.append(leveraged_auth)

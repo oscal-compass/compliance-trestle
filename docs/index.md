@@ -34,14 +34,15 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Tooling manage authoring and governance of markdown and drawio files withn a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artefacts.
-- Detached signing and verification for JSON artifacts. See the [`trestle sign` and `trestle verify` CLI documentation](tutorials/cli.md#trestle-sign).
+- Detached signing and verification for JSON artifacts and JSON package manifests. See the [`trestle sign`](tutorials/cli.md#trestle-sign) and [`trestle sign-manifest`](tutorials/cli.md#trestle-sign-manifest) CLI documentation.
 
 ## Important Note:
 
-The current version of trestle 4.x supports NIST OSCAL 1.2.1.
+The current version of trestle 5.x supports NIST OSCAL 1.2.1.
 Below shows trestle versions correspondence with OSCAL versions:
 
 ```
+trestle 5.x => OSCAL 1.2.1
 trestle 4.x => OSCAL 1.2.1
 trestle 3.x => OSCAL 1.1.3
 trestle 2.x => OSCAL 1.0.4
@@ -53,6 +54,18 @@ Visit [pypi](https://pypi.org/project/compliance-trestle/#history) for trestle r
 
 ## Notes for install of current and older versions of trestle
 
+#### Install of trestle 5.x
+
+Use python 3.12.
+
+```
+python3.12 -m venv venv.trestle
+source venv.trestle/bin/activate
+pip install compliance-trestle
+trestle version
+Trestle version v5.0.0 based on OSCAL version 1.2.1
+```
+
 #### Install of trestle 4.x
 
 Use python 3.11.
@@ -60,21 +73,9 @@ Use python 3.11.
 ```
 python3.11 -m venv venv.trestle
 source venv.trestle/bin/activate
-pip install compliance-trestle
+pip install compliance-trestle=4.2.0
 trestle version
-Trestle version v4.0.0 based on OSCAL version 1.2.1
-```
-
-#### Install of trestle 3.x
-
-Use python 3.11.
-
-```
-python3.11 -m venv venv.trestle
-source venv.trestle/bin/activate
-pip install compliance-trestle==3.6.0
-trestle version
-Trestle version v3.6.0 based on OSCAL version 1.1.3
+Trestle version v4.2.0 based on OSCAL version 1.2.1
 ```
 
 ## Why Trestle

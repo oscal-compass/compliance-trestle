@@ -321,8 +321,12 @@ class PathSecurityValidator:
             TrestleError: If path contains traversal sequences (..)
 
         Example:
-            >>> PathSecurityValidator.validate_url_path_for_cache('/normal/path.json')  # No exception
-            >>> PathSecurityValidator.validate_url_path_for_cache('/../../../etc/passwd')  # Raises TrestleError
+            >>> PathSecurityValidator.validate_url_path_for_cache(
+            ...     '/normal/path.json'
+            ... )  # No exception
+            >>> PathSecurityValidator.validate_url_path_for_cache(
+            ...     '/../../../etc/passwd'
+            ... )  # Raises TrestleError
         """
         # Check for path traversal sequences
         if '..' in url_path:
@@ -385,8 +389,12 @@ class PathSecurityValidator:
             TrestleError: If path contains traversal sequences (..)
 
         Example:
-            >>> PathSecurityValidator.validate_trestle_uri_path('catalogs/nist/catalog.json')  # No exception
-            >>> PathSecurityValidator.validate_trestle_uri_path('../../etc/passwd')  # Raises TrestleError
+            >>> PathSecurityValidator.validate_trestle_uri_path(
+            ...     'catalogs/nist/catalog.json'
+            ... )  # No exception
+            >>> PathSecurityValidator.validate_trestle_uri_path(
+            ...     '../../etc/passwd'
+            ... )  # Raises TrestleError
         """
         # Check for path traversal sequences
         if '..' in uri_path:

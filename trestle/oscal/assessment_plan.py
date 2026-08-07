@@ -30,7 +30,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Field, RootModel, conint, constr, field_validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
@@ -49,14 +49,14 @@ class LocalDefinitions(OscalBaseModel):
     Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    components: list[common.SystemComponent] | None = Field(None)
-    inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items')
-    users: list[common.SystemUser] | None = Field(None)
-    objectives_and_methods: list[common.LocalObjective] | None = Field(None, alias='objectives-and-methods')
-    activities: list[common.Activity] | None = Field(None)
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    components: list[common.SystemComponent] | None = Field(None, min_length=1)
+    inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items', min_length=1)
+    users: list[common.SystemUser] | None = Field(None, min_length=1)
+    objectives_and_methods: list[common.LocalObjective] | None = Field(None, alias='objectives-and-methods', min_length=1)
+    activities: list[common.Activity] | None = Field(None, min_length=1)
     remarks: str | None = None
 
 
@@ -65,10 +65,10 @@ class TermsAndConditions(OscalBaseModel):
     Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    parts: list[common.AssessmentPart] | None = Field(None)
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    parts: list[common.AssessmentPart] | None = Field(None, min_length=1)
 
 
 class AssessmentPlan(OscalBaseModel):
@@ -76,10 +76,10 @@ class AssessmentPlan(OscalBaseModel):
     An assessment plan, such as those provided by a FedRAMP assessor.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    uuid: constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(
         ...,
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment plan in this or other OSCAL instances. The locally defined UUID of the assessment plan can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Assessment Plan Universally Unique Identifier',
@@ -89,9 +89,9 @@ class AssessmentPlan(OscalBaseModel):
     local_definitions: LocalDefinitions | None = Field(None, alias='local-definitions', description='Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.', title='Local Definitions')
     terms_and_conditions: TermsAndConditions | None = Field(None, alias='terms-and-conditions', description='Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.', title='Assessment Plan Terms and Conditions')
     reviewed_controls: common.ReviewedControls = Field(..., alias='reviewed-controls')
-    assessment_subjects: list[AssessmentSubjectAll|AssessmentSubjectSpecific] | None = Field(None, alias='assessment-subjects')
+    assessment_subjects: list[AssessmentSubjectAll|AssessmentSubjectSpecific] | None = Field(None, alias='assessment-subjects', min_length=1)
     assessment_assets: common.AssessmentAssets | None = Field(None, alias='assessment-assets')
-    tasks: list[common.Task] | None = Field(None)
+    tasks: list[common.Task] | None = Field(None, min_length=1)
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')
 
 

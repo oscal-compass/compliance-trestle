@@ -92,7 +92,7 @@ def test_oscal_model(tmp_path: pathlib.Path) -> None:
     assert component_obj == component_reload
 
     # confirm it really is checking the time
-    component_reload.metadata.last_modified = datetime.datetime.now()
+    component_reload.metadata.last_modified = datetime.datetime.now(datetime.timezone.utc)
     assert component_obj != component_reload
 
     # load good target with different timezone
@@ -113,3 +113,26 @@ def test_oscal_model(tmp_path: pathlib.Path) -> None:
         assert True
     else:
         assert AssertionError()
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/parser.py
+# ---------------------------------------------------------------------------
+
+
+def test_parse_dict_none_data() -> None:
+    """parser.parse_dict: line 48 — raises TrestleError when data is None."""
+    from trestle.core import parser
+    from trestle.common.err import TrestleError
+
+    with pytest.raises(TrestleError, match='data name is required'):
+        parser.parse_dict(None, 'trestle.oscal.catalog.Catalog')
+
+
+def test_parse_dict_none_model_name() -> None:
+    """parser.parse_dict: line 51 — raises TrestleError when model_name is None."""
+    from trestle.core import parser
+    from trestle.common.err import TrestleError
+
+    with pytest.raises(TrestleError, match='model_name is required'):
+        parser.parse_dict({}, None)

@@ -177,13 +177,15 @@ class ExportReader:
             statement = gens.generate_sample_model(ossp.Statement)
             statement.statement_id = control_mapping
             statement.by_components = ExportReader._add_new_by_comps(by_comps)
-            implemented_req.statements = as_list(implemented_req.statements)
-            implemented_req.statements.append(statement)
+            statements_list = as_list(implemented_req.statements)
+            statements_list.append(statement)
+            implemented_req.statements = none_if_empty(statements_list)
             implemented_req.statements = sorted(implemented_req.statements, key=lambda x: x.statement_id)
         else:
             implemented_req = self._add_or_get_implemented_requirement(control_mapping)
-            implemented_req.by_components = as_list(implemented_req.by_components)
-            implemented_req.by_components.extend(ExportReader._add_new_by_comps(by_comps))
+            by_comps_list = as_list(implemented_req.by_components)
+            by_comps_list.extend(ExportReader._add_new_by_comps(by_comps))
+            implemented_req.by_components = none_if_empty(by_comps_list)
 
     def _add_or_get_implemented_requirement(self, control_id: str) -> ossp.ImplementedRequirement:
         """Add or get implemented requirement from implemented requirements dictionary."""

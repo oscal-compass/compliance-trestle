@@ -85,7 +85,7 @@ dev = [
     "pre-commit>=2.4.0",
     "python-semantic-release>=10.4.0",
     "pylint",
-    "datamodel-code-generator[http]<0.55.0",
+    "datamodel-code-generator[http]",
     "gitpython",
 ]
 
@@ -116,6 +116,9 @@ dependencies = [
   "coverage[toml]~=7.4",
 ]
 
+[tool.hatch.envs.default.scripts]
+cov-combine = "coverage combine"
+
 [tool.hatch.envs.hatch-test]
 default-args = ["tests"]
 parallel = true
@@ -127,6 +130,18 @@ dependencies = [
     "pytest-randomly>=3.15",
     "mypy",
 ]
+
+[tool.hatch.envs.hatch-test.scripts]
+run = [
+    "rm -f .coverage .coverage.*",
+    "coverage run -m pytest{env:HATCH_TEST_ARGS:} --dist loadfile {args}",
+]
+run-cov = [
+    "rm -f .coverage .coverage.*",
+    "coverage run -m pytest{env:HATCH_TEST_ARGS:} --dist loadfile {args}",
+]
+cov-combine = "coverage combine"
+cov-report = "coverage report"
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.10", "3.11", "3.12"]
@@ -282,7 +297,8 @@ no_implicit_reexport = true
 show_error_codes = true
 show_error_context = true
 disallow_untyped_defs = true
-disable_error_code = ["union-attr", "attr-defined", "no-redef", "assignment", "arg-type", "list-item"]
+# Disable only the specific error codes needed for dynamic Python patterns
+disable_error_code = ["assignment", "attr-defined"]
 
 [[tool.mypy.overrides]]
 module = "trestle.oscal.*"
@@ -292,10 +308,12 @@ ignore_errors = true
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
-warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true
+parallel = true
+concurrency = ["thread", "multiprocessing"]
+sigterm = true
 omit = [
     "*/tmp*/*.j2",
     "*/tmp*/*.md.j2",

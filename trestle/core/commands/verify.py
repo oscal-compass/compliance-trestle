@@ -51,7 +51,7 @@ class VerifyCmd(CommandBase):
         self.add_argument('-f', '--file', help='Path to the JSON file to verify.', required=True, type=pathlib.Path)
         self.add_argument('--signature', help='Path to the detached DSSE envelope.', required=True, type=pathlib.Path)
         self.add_argument(
-            '--key', help='Path to the PEM public key for verification.', required=True, type=pathlib.Path
+            '--public-key', help='Path to the PEM public key for verification.', required=True, type=pathlib.Path
         )
         self.add_argument(
             '--subject-name',
@@ -64,7 +64,7 @@ class VerifyCmd(CommandBase):
         """Verify a JSON file."""
         try:
             log.set_log_level_from_args(args)
-            self.verify(args.file, args.signature, args.key, args.subject_name)
+            self.verify(args.file, args.signature, args.public_key, args.subject_name)
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while verifying JSON signature')
@@ -74,10 +74,10 @@ class VerifyCmd(CommandBase):
         cls,
         input_path: pathlib.Path,
         signature_path: pathlib.Path,
-        key_path: pathlib.Path,
+        public_key_path: pathlib.Path,
         subject_name: Optional[str] = None,
     ) -> None:
         """Verify a detached DSSE provenance envelope for a JSON file."""
-        public_key = load_pem_public_key(key_path.resolve())
+        public_key = load_pem_public_key(public_key_path.resolve())
         envelope = load_dsse_envelope(signature_path.resolve())
         verify_oscal_provenance_envelope(input_path.resolve(), envelope, public_key, subject_name)

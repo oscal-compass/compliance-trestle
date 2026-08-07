@@ -19,6 +19,8 @@ import pathlib
 from typing import Dict
 from unittest.mock import patch
 
+from pydantic import AnyUrl
+
 from tests.test_utils import TEST_DIR, set_cwd_unsafe
 
 import trestle.tasks.cis_xlsx_to_oscal_cd as cis_xlsx_to_oscal_cd
@@ -229,17 +231,26 @@ def _validate_db2(tmp_path: pathlib.Path):
     assert component_definition.metadata.title == 'CIS IBM Db2 11 Benchmark'
     assert component_definition.metadata.version == '1.1.0'
     component = component_definition.components[0]
-    assert component.type == 'software'
+    # Pydantic v2: component.type can be StringDatatype or DefinedComponentTypeValidValues
+    from trestle.oscal.common import StringDatatype
+    from trestle.oscal.component import DefinedComponentTypeValidValues
+
+    if isinstance(component.type, StringDatatype):
+        assert component.type.root == 'software'
+    else:
+        assert component.type == DefinedComponentTypeValidValues.software
     assert len(component.props) == 552
     prop = component.props[0]
     assert prop.name == 'Rule_Id'
-    assert prop.ns == 'https://oscal-compass/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert prop.ns == AnyUrl('https://oscal-compass/compliance-trestle/schemas/oscal/cd')
     assert prop.value == 'CIS-1.1.1'
     assert prop.remarks == 'rule_set_00'
     assert len(component.control_implementations) == 1
     prop = component.props[551]
     assert prop.name == 'Group_Description_Level_1'
-    assert prop.ns == 'https://oscal-compass/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert prop.ns == AnyUrl('https://oscal-compass/compliance-trestle/schemas/oscal/cd')
     assert prop.value.startswith('This section provides guidance on various database configuration parameters.')
     assert prop.remarks == 'rule_set_22'
     assert len(component.control_implementations) == 1
@@ -252,7 +263,8 @@ def _validate_db2(tmp_path: pathlib.Path):
     assert len(implemented_requirement.props) == 1
     prop = implemented_requirement.props[0]
     assert prop.name == 'Rule_Id'
-    assert prop.ns == 'https://oscal-compass/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert prop.ns == AnyUrl('https://oscal-compass/compliance-trestle/schemas/oscal/cd')
     assert prop.value == 'CIS-1.1.1'
     implemented_requirement = control_implementation.implemented_requirements[5]
     assert implemented_requirement.control_id == 'cisc-3.10'
