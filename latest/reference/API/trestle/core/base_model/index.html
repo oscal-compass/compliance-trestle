@@ -1863,7 +1863,7 @@
         <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Missing utcoffset in datetime&#39;</span><span class=p>)</span>
 
     <span class=c1># Normalise to UTC so the offset is always +00:00 (not e.g. -05:00)</span>
-    <span class=n>dt_utc</span> <span class=o>=</span> <span class=n>input_dt</span><span class=o>.</span><span class=n>astimezone</span><span class=p>(</span><span class=n>datetime</span><span class=o>.</span><span class=n>timezone</span><span class=o>.</span><span class=n>utc</span><span class=p>)</span>
+    <span class=n>dt_utc</span> <span class=o>=</span> <span class=n>input_dt</span><span class=o>.</span><span class=n>astimezone</span><span class=p>(</span><span class=n>datetime</span><span class=o>.</span><span class=n>UTC</span><span class=p>)</span>
 
     <span class=c1># Omit sub-second precision when microseconds are zero to keep output compact.</span>
     <span class=c1># Include milliseconds when microseconds are set so no precision is lost.</span>
