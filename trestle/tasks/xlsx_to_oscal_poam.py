@@ -369,20 +369,20 @@ class PoamXlsxHelper:
         if isinstance(date_value, datetime.datetime):
             # Add timezone if missing
             if date_value.tzinfo is None:
-                return date_value.replace(tzinfo=datetime.timezone.utc)
+                return date_value.replace(tzinfo=datetime.UTC)
             return date_value
 
         if isinstance(date_value, datetime.date):
             # Convert date to datetime
             dt = datetime.datetime.combine(date_value, datetime.time.min)
-            return dt.replace(tzinfo=datetime.timezone.utc)
+            return dt.replace(tzinfo=datetime.UTC)
 
         if isinstance(date_value, str):
             # Try to parse ISO 8601 format
             try:
                 dt = datetime.datetime.fromisoformat(date_value.replace('Z', '+00:00'))
                 if dt.tzinfo is None:
-                    dt = dt.replace(tzinfo=datetime.timezone.utc)
+                    dt = dt.replace(tzinfo=datetime.UTC)
                 return dt
             except (ValueError, AttributeError):
                 logger.warning(f'Could not parse date string: "{date_value}"')
@@ -831,7 +831,7 @@ class XlsxToOscalPoam(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
-        self._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+        self._timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
 
     def set_timestamp(self, timestamp: str) -> None:
         """Set the timestamp."""

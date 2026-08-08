@@ -56,10 +56,10 @@ Visit [pypi](https://pypi.org/project/compliance-trestle/#history) for trestle r
 
 #### Install of trestle 5.x
 
-Use python 3.12.
+Use python 3.14.
 
 ```
-python3.12 -m venv venv.trestle
+python3.14 -m venv venv.trestle
 source venv.trestle/bin/activate
 pip install compliance-trestle
 trestle version

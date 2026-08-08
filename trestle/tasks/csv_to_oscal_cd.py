@@ -17,7 +17,6 @@
 # mypy: ignore-errors  # noqa E800
 import configparser
 import csv
-import datetime
 import logging
 import os
 import pathlib
@@ -265,32 +264,10 @@ class CsvToOscalComponentDefinition(TaskBase):
 
     def configure(self) -> bool:
         """Configure."""
-        self._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
-        # config verbosity
-        self._quiet = self._config.get('quiet', False)
-        self._verbose = not self._quiet
-        # title
-        self._title = self._config.get('title')
-        if self._title is None:
-            logger.warning('config missing "title"')
+        ok, msg = self._configure_csv_common()
+        if not ok:
+            logger.warning(msg)
             return False
-        # version
-        self._version = self._config.get('version')
-        if self._version is None:
-            logger.warning('config missing "version"')
-            return False
-        # config csv
-        self._csv_file = self._config.get('csv-file')
-        if self._csv_file is None:
-            logger.warning('config missing "csv-file"')
-            return False
-        self._csv_path = pathlib.Path(self._csv_file)
-        if not self._csv_path.exists():
-            logger.warning('"csv-file" not found')
-            return False
-        # announce csv
-        if self._verbose:
-            logger.info(f'input: {self._csv_file}')
         # config cd
         self._cd_path = None
         self._cd_file = self._config.get('component-definition')
@@ -299,8 +276,6 @@ class CsvToOscalComponentDefinition(TaskBase):
             if not self._cd_path.exists():
                 logger.warning('"component-definition" not found')
                 return False
-        # workspace
-        self._workspace = os.getcwd()
         # validate_controls
         self._validate_controls = self._config.get('validate-controls', 'off')
         return True
@@ -1222,29 +1197,36 @@ class _CdMgr:
         logger.debug(f'cd params: {len(self._cd_rules_map)}')
         logger.debug(f'cd controls: {len(self._cd_controls_map)}')
 
-    def get_component(self, component_title: str, component_type: str, component_description: str) -> DefinedComponent:
-        """Get component."""
+    @staticmethod
+    def _resolve_type_enum(component_type: str):
+        """Resolve a component type string to a DefinedComponentTypeValidValues enum or StringDatatype."""
         from trestle.oscal.component import DefinedComponentTypeValidValues
         from trestle.oscal.common import StringDatatype
 
         try:
-            type_enum = DefinedComponentTypeValidValues(component_type)
+            return DefinedComponentTypeValidValues(component_type)
         except ValueError:
-            # If not a valid enum value, wrap in StringDatatype for Pydantic v2
-            type_enum = StringDatatype(component_type)
+            return StringDatatype(component_type)
 
+    @staticmethod
+    def _component_type_matches(component: DefinedComponent, type_enum) -> bool:
+        """Return True if component.type matches type_enum (handles enum and StringDatatype)."""
+        from trestle.oscal.component import DefinedComponentTypeValidValues
+        from trestle.oscal.common import StringDatatype
+
+        if isinstance(component.type, DefinedComponentTypeValidValues):
+            return component.type == type_enum
+        if isinstance(component.type, StringDatatype):
+            if isinstance(type_enum, DefinedComponentTypeValidValues):
+                return component.type.root == type_enum.value
+            return component.type.root == type_enum.root
+        return False
+
+    def get_component(self, component_title: str, component_type: str, component_description: str) -> DefinedComponent:
+        """Get component."""
+        type_enum = self._resolve_type_enum(component_type)
         for component in self._component_definition.components:
-            # Pydantic v2: component.type can be either enum or StringDatatype
-            type_matches = False
-            if isinstance(component.type, DefinedComponentTypeValidValues):
-                type_matches = component.type == type_enum
-            elif isinstance(component.type, StringDatatype):
-                if isinstance(type_enum, DefinedComponentTypeValidValues):
-                    type_matches = component.type.root == type_enum.value
-                else:
-                    type_matches = component.type.root == type_enum.root
-
-            if component.title == component_title and type_matches:
+            if component.title == component_title and self._component_type_matches(component, type_enum):
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 return component
         # Pydantic v2: Use model_construct without control_implementations
@@ -1258,28 +1240,10 @@ class _CdMgr:
 
     def find_component(self, component_title: str, component_type: str) -> DefinedComponent:
         """Find component."""
-        from trestle.oscal.component import DefinedComponentTypeValidValues
-        from trestle.oscal.common import StringDatatype
-
-        try:
-            type_enum = DefinedComponentTypeValidValues(component_type)
-        except ValueError:
-            # If not a valid enum value, wrap in StringDatatype for Pydantic v2
-            type_enum = StringDatatype(component_type)
-
+        type_enum = self._resolve_type_enum(component_type)
         rval = None
         for component in self._component_definition.components:
-            # Pydantic v2: component.type can be either enum or StringDatatype
-            type_matches = False
-            if isinstance(component.type, DefinedComponentTypeValidValues):
-                type_matches = component.type == type_enum
-            elif isinstance(component.type, StringDatatype):
-                if isinstance(type_enum, DefinedComponentTypeValidValues):
-                    type_matches = component.type.root == type_enum.value
-                else:
-                    type_matches = component.type.root == type_enum.root
-
-            if component.title == component_title and type_matches:
+            if component.title == component_title and self._component_type_matches(component, type_enum):
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 rval = component
                 break

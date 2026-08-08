@@ -92,7 +92,7 @@ def test_oscal_model(tmp_path: pathlib.Path) -> None:
     assert component_obj == component_reload
 
     # confirm it really is checking the time
-    component_reload.metadata.last_modified = datetime.datetime.now(datetime.timezone.utc)
+    component_reload.metadata.last_modified = datetime.datetime.now(datetime.UTC)
     assert component_obj != component_reload
 
     # load good target with different timezone
