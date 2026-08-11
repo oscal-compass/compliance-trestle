@@ -90,6 +90,38 @@ def test_beta_enable_query_disable_feature(
     assert not beta_features.is_beta_enabled('sample', tmp_trestle_dir)
 
 
+def test_beta_enable_disable_all(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]
+) -> None:
+    """Test enabling and disabling all registered beta features."""
+    patch_beta_features(monkeypatch, sample_feature('one'), sample_feature('two'))
+
+    execute_command_and_assert('trestle beta enable all', CmdReturnCodes.SUCCESS.value, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert 'Enabled 2 beta feature(s).' in output
+    assert beta_features.get_enabled_features(tmp_trestle_dir) == {'one', 'two'}
+
+    execute_command_and_assert('trestle beta disable all', CmdReturnCodes.SUCCESS.value, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert 'Disabled 2 beta feature(s).' in output
+    assert not beta_features.get_enabled_features(tmp_trestle_dir)
+
+
+def test_beta_disable_all_reports_environment_enabled_features(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]
+) -> None:
+    """Test disabling all reports features that config cannot disable."""
+    patch_beta_features(monkeypatch, sample_feature())
+    monkeypatch.setenv(beta_features.TRESTLE_BETA_FEATURES_ENV, 'sample')
+
+    execute_command_and_assert('trestle beta disable all', CmdReturnCodes.SUCCESS.value, monkeypatch)
+
+    output, _ = capsys.readouterr()
+    assert 'Disabled 0 beta feature(s).' in output
+    assert 'Features still enabled by environment or default: sample' in output
+    assert beta_features.is_beta_enabled('sample', tmp_trestle_dir)
+
+
 def test_beta_query_verbose(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:
     """Test verbose beta query output."""
     patch_beta_features(monkeypatch, sample_feature())
