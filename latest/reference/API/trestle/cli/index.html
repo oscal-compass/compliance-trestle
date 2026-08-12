@@ -19,8 +19,7 @@
                   return '';
                 }
               });
-            </script> <p>Manage OSCAL files in a human friendly manner.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/cli.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>50</span>
-<span class=normal>51</span>
+            </script> <p>Manage OSCAL files in a human friendly manner.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/cli.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>51</span>
 <span class=normal>52</span>
 <span class=normal>53</span>
 <span class=normal>54</span>
@@ -60,7 +59,9 @@
 <span class=normal>88</span>
 <span class=normal>89</span>
 <span class=normal>90</span>
-<span class=normal>91</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Trestle</span><span class=p>(</span><span class=n>CommandBase</span><span class=p>):</span>
+<span class=normal>91</span>
+<span class=normal>92</span>
+<span class=normal>93</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Trestle</span><span class=p>(</span><span class=n>CommandBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Manage OSCAL files in a human friendly manner.&quot;&quot;&quot;</span>
 
     <span class=n>subcommands</span> <span class=o>=</span> <span class=p>[</span>
@@ -70,6 +71,7 @@
         <span class=n>CanonicalizeCmd</span><span class=p>,</span>
         <span class=n>CreateCmd</span><span class=p>,</span>
         <span class=n>DescribeCmd</span><span class=p>,</span>
+        <span class=n>GenerateManifestCmd</span><span class=p>,</span>
         <span class=n>HrefCmd</span><span class=p>,</span>
         <span class=n>ImportCmd</span><span class=p>,</span>
         <span class=n>InitCmd</span><span class=p>,</span>
@@ -102,12 +104,12 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
             <span class=s1>&#39;-tr&#39;</span><span class=p>,</span> <span class=s1>&#39;--trestle-root&#39;</span><span class=p>,</span> <span class=n>help</span><span class=o>=</span><span class=s1>&#39;Path of trestle root dir&#39;</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>default</span><span class=o>=</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=o>.</span><span class=n>cwd</span><span class=p>()</span>
         <span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.cli.Trestle-attributes>Attributes<a href=#trestle.cli.Trestle-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.cli.Trestle.subcommands class="doc doc-heading"> <code class="highlight language-python"><span class=n>subcommands</span> <span class=o>=</span> <span class=p>[</span><span class=n>AssembleCmd</span><span class=p>,</span> <span class=n>AuthorCmd</span><span class=p>,</span> <span class=n>BetaCmd</span><span class=p>,</span> <span class=n>CanonicalizeCmd</span><span class=p>,</span> <span class=n>CreateCmd</span><span class=p>,</span> <span class=n>DescribeCmd</span><span class=p>,</span> <span class=n>HrefCmd</span><span class=p>,</span> <span class=n>ImportCmd</span><span class=p>,</span> <span class=n>InitCmd</span><span class=p>,</span> <span class=n>MergeCmd</span><span class=p>,</span> <span class=n>PartialObjectValidate</span><span class=p>,</span> <span class=n>RemoveCmd</span><span class=p>,</span> <span class=n>ReplicateCmd</span><span class=p>,</span> <span class=n>SignCmd</span><span class=p>,</span> <span class=n>SignManifestCmd</span><span class=p>,</span> <span class=n>SplitCmd</span><span class=p>,</span> <span class=n>TaskCmd</span><span class=p>,</span> <span class=n>ValidateCmd</span><span class=p>,</span> <span class=n>VerifyCmd</span><span class=p>,</span> <span class=n>VerifyManifestCmd</span><span class=p>,</span> <span class=n>VersionCmd</span><span class=p>]</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.cli.Trestle.subcommands class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> </div> </div> </div> <h3 id=trestle.cli-functions>Functions:<a href=#trestle.cli-functions class=headerlink title="Permanent link">¤</a></h3> <div class="doc doc-object doc-function"> <h4 id=trestle.cli.run class="doc doc-heading"> <code class="highlight language-python"><span class=n>run</span><span class=p>()</span></code> <a href=#trestle.cli.run class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Run the trestle cli.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/cli.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>94</span>
-<span class=normal>95</span>
-<span class=normal>96</span>
-<span class=normal>97</span>
-<span class=normal>98</span>
-<span class=normal>99</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>run</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.cli.Trestle-attributes>Attributes<a href=#trestle.cli.Trestle-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.cli.Trestle.subcommands class="doc doc-heading"> <code class="highlight language-python"><span class=n>subcommands</span> <span class=o>=</span> <span class=p>[</span><span class=n>AssembleCmd</span><span class=p>,</span> <span class=n>AuthorCmd</span><span class=p>,</span> <span class=n>BetaCmd</span><span class=p>,</span> <span class=n>CanonicalizeCmd</span><span class=p>,</span> <span class=n>CreateCmd</span><span class=p>,</span> <span class=n>DescribeCmd</span><span class=p>,</span> <span class=n>GenerateManifestCmd</span><span class=p>,</span> <span class=n>HrefCmd</span><span class=p>,</span> <span class=n>ImportCmd</span><span class=p>,</span> <span class=n>InitCmd</span><span class=p>,</span> <span class=n>MergeCmd</span><span class=p>,</span> <span class=n>PartialObjectValidate</span><span class=p>,</span> <span class=n>RemoveCmd</span><span class=p>,</span> <span class=n>ReplicateCmd</span><span class=p>,</span> <span class=n>SignCmd</span><span class=p>,</span> <span class=n>SignManifestCmd</span><span class=p>,</span> <span class=n>SplitCmd</span><span class=p>,</span> <span class=n>TaskCmd</span><span class=p>,</span> <span class=n>ValidateCmd</span><span class=p>,</span> <span class=n>VerifyCmd</span><span class=p>,</span> <span class=n>VerifyManifestCmd</span><span class=p>,</span> <span class=n>VersionCmd</span><span class=p>]</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.cli.Trestle.subcommands class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> </div> </div> </div> <h3 id=trestle.cli-functions>Functions:<a href=#trestle.cli-functions class=headerlink title="Permanent link">¤</a></h3> <div class="doc doc-object doc-function"> <h4 id=trestle.cli.run class="doc doc-heading"> <code class="highlight language-python"><span class=n>run</span><span class=p>()</span></code> <a href=#trestle.cli.run class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Run the trestle cli.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/cli.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 96</span>
+<span class=normal> 97</span>
+<span class=normal> 98</span>
+<span class=normal> 99</span>
+<span class=normal>100</span>
+<span class=normal>101</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>run</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Run the trestle cli.&quot;&quot;&quot;</span>
     <span class=n>log</span><span class=o>.</span><span class=n>set_global_logging_levels</span><span class=p>()</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s1>&#39;Main entry point.&#39;</span><span class=p>)</span>
