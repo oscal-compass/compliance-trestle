@@ -163,6 +163,26 @@ def disable_feature(feature_name: str, trestle_root: pathlib.Path) -> bool:
     return True
 
 
+def enable_all_features(trestle_root: pathlib.Path) -> int:
+    """Enable every registered beta feature and return the number changed."""
+    config_path = get_beta_config_path(trestle_root)
+    enabled_features = _read_config_enabled_features(config_path)
+    newly_enabled = set(BETA_FEATURES).difference(enabled_features)
+    if newly_enabled:
+        _write_config_enabled_features(config_path, enabled_features.union(newly_enabled))
+    return len(newly_enabled)
+
+
+def disable_all_features(trestle_root: pathlib.Path) -> int:
+    """Disable every config-enabled beta feature and return the number changed."""
+    config_path = get_beta_config_path(trestle_root)
+    enabled_features = _read_config_enabled_features(config_path)
+    configured_features = set(BETA_FEATURES).intersection(enabled_features)
+    if configured_features:
+        _write_config_enabled_features(config_path, enabled_features.difference(configured_features))
+    return len(configured_features)
+
+
 def beta_feature(feature_name: str) -> Callable[[BetaCallable], BetaCallable]:
     """Decorate a command run method so it requires an enabled beta feature."""
 
