@@ -105,7 +105,7 @@ def test_sign_manifest_and_verify_manifest_require_beta_feature(
             'sign-manifest',
             '--manifest',
             str(manifest_path),
-            '--key',
+            '--private-key',
             str(key_path),
             '-o',
             str(envelope_path),
@@ -149,7 +149,7 @@ def test_sign_manifest_and_verify_manifest_accept_one_time_beta_flag(
             '--beta',
             '--manifest',
             str(manifest_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '-o',
             str(envelope_path),
@@ -190,7 +190,7 @@ def test_sign_manifest_and_verify_manifest_round_trip(tmp_path: pathlib.Path, mo
             'sign-manifest',
             '--manifest',
             str(manifest_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '-o',
             str(envelope_path),
@@ -239,12 +239,53 @@ def test_sign_manifest_supports_encrypted_private_key(tmp_path: pathlib.Path, mo
             'sign-manifest',
             '--manifest',
             str(manifest_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '--key-password-env',
             'TRESTLE_KEY_PASSWORD',
             '-o',
             str(envelope_path),
+        ],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'verify-manifest',
+            '--manifest',
+            str(manifest_path),
+            '--signature',
+            str(envelope_path),
+            '--public-key',
+            str(public_key_path),
+        ],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+
+def test_sign_manifest_overwrites_existing_envelope(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Sign-manifest should replace an existing DSSE envelope only when requested."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    manifest_path = write_package_manifest(tmp_path)
+    envelope_path = tmp_path / 'package.dsse'
+    envelope_path.write_text('existing envelope', encoding=const.FILE_ENCODING)
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'sign-manifest',
+            '--manifest',
+            str(manifest_path),
+            '--private-key',
+            str(private_key_path),
+            '-o',
+            str(envelope_path),
+            '--overwrite',
         ],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
@@ -279,7 +320,7 @@ def test_sign_manifest_rejects_unsafe_output_paths(
     output_path = manifest_path if output_target == 'manifest' else private_key_path
 
     with pytest.raises(TrestleError, match=expected_error):
-        SignManifestCmd.sign_manifest(manifest_path, private_key_path, output_path)
+        SignManifestCmd.sign_manifest(manifest_path, private_key_path, output_path, overwrite=True)
 
 
 def test_sign_manifest_rejects_missing_key_password_env(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -308,7 +349,7 @@ def test_verify_manifest_rejects_changed_artifact(tmp_path: pathlib.Path, monkey
             'sign-manifest',
             '--manifest',
             str(manifest_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '-o',
             str(envelope_path),
@@ -349,7 +390,7 @@ def test_verify_manifest_rejects_wrong_public_key(tmp_path: pathlib.Path, monkey
             'sign-manifest',
             '--manifest',
             str(manifest_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '-o',
             str(envelope_path),
@@ -388,7 +429,7 @@ def test_verify_manifest_rejects_tampered_envelope(tmp_path: pathlib.Path, monke
             'sign-manifest',
             '--manifest',
             str(manifest_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '-o',
             str(envelope_path),

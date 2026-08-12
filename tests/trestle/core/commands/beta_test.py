@@ -90,6 +90,38 @@ def test_beta_enable_query_disable_feature(
     assert not beta_features.is_beta_enabled('sample', tmp_trestle_dir)
 
 
+def test_beta_enable_disable_all(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]
+) -> None:
+    """Test enabling and disabling all registered beta features."""
+    patch_beta_features(monkeypatch, sample_feature('one'), sample_feature('two'))
+
+    execute_command_and_assert('trestle beta enable all', CmdReturnCodes.SUCCESS.value, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert 'Enabled 2 beta feature(s).' in output
+    assert beta_features.get_enabled_features(tmp_trestle_dir) == {'one', 'two'}
+
+    execute_command_and_assert('trestle beta disable all', CmdReturnCodes.SUCCESS.value, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert 'Disabled 2 beta feature(s).' in output
+    assert not beta_features.get_enabled_features(tmp_trestle_dir)
+
+
+def test_beta_disable_all_reports_environment_enabled_features(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]
+) -> None:
+    """Test disabling all reports features that config cannot disable."""
+    patch_beta_features(monkeypatch, sample_feature())
+    monkeypatch.setenv(beta_features.TRESTLE_BETA_FEATURES_ENV, 'sample')
+
+    execute_command_and_assert('trestle beta disable all', CmdReturnCodes.SUCCESS.value, monkeypatch)
+
+    output, _ = capsys.readouterr()
+    assert 'Disabled 0 beta feature(s).' in output
+    assert 'Features still enabled by environment or default: sample' in output
+    assert beta_features.is_beta_enabled('sample', tmp_trestle_dir)
+
+
 def test_beta_query_verbose(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:
     """Test verbose beta query output."""
     patch_beta_features(monkeypatch, sample_feature())
@@ -121,6 +153,18 @@ def test_beta_query_global_verbose_does_not_show_details(monkeypatch: MonkeyPatc
     output, _ = capsys.readouterr()
     assert '[disabled] sample' in output
     assert 'Description: Sample beta feature' not in output
+
+
+def test_beta_query_aligns_feature_descriptions(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:
+    """Test query aligns descriptions after feature names of different lengths."""
+    patch_beta_features(monkeypatch, sample_feature('short'), sample_feature('much-longer-feature-name'))
+    monkeypatch.setenv(beta_features.TRESTLE_BETA_FEATURES_ENV, 'short,much-longer-feature-name')
+
+    execute_command_and_assert('trestle beta query', CmdReturnCodes.SUCCESS.value, monkeypatch)
+
+    output, _ = capsys.readouterr()
+    feature_lines = [line for line in output.splitlines() if line.startswith('  [enabled]')]
+    assert len({line.index('Sample beta feature') for line in feature_lines}) == 1
 
 
 def test_beta_unknown_feature(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:

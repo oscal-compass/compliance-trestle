@@ -47,20 +47,27 @@ class SignManifestCmd(CommandBase):
         self.add_argument(
             '--manifest', help='Path to the JSON package manifest to sign.', required=True, type=pathlib.Path
         )
-        self.add_argument('--key', help='Path to the PEM private key for signing.', required=True, type=pathlib.Path)
+        self.add_argument(
+            '--private-key',
+            dest='key',
+            help='Path to the PEM private key for signing.',
+            required=True,
+            type=pathlib.Path,
+        )
         self.add_argument(
             '--key-password-env',
             help='Environment variable containing the password for an encrypted PEM private key.',
             default=None,
         )
         self.add_argument('-o', '--output', help='Output DSSE package envelope file.', required=True, type=pathlib.Path)
+        self.add_argument('--overwrite', help='Replace an existing DSSE package envelope.', action='store_true')
 
     @beta_feature('json-manifest-signing')
     def _run(self, args: argparse.Namespace) -> int:
         """Sign a JSON package manifest."""
         try:
             log.set_log_level_from_args(args)
-            self.sign_manifest(args.manifest, args.key, args.output, args.key_password_env)
+            self.sign_manifest(args.manifest, args.key, args.output, args.key_password_env, args.overwrite)
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while signing package manifest')
@@ -72,6 +79,7 @@ class SignManifestCmd(CommandBase):
         key_path: pathlib.Path,
         output_path: pathlib.Path,
         key_password_env: Optional[str] = None,
+        overwrite: bool = False,
     ) -> None:
         """Write a detached DSSE envelope for a JSON package manifest."""
         manifest_path = manifest_path.resolve()
@@ -91,4 +99,4 @@ class SignManifestCmd(CommandBase):
         signer = load_pem_private_key_signer(key_path, key_password)
         manifest = load_signing_manifest(manifest_path)
         envelope = create_manifest_envelope(manifest, signer)
-        write_dsse_envelope(envelope, output_path)
+        write_dsse_envelope(envelope, output_path, overwrite)

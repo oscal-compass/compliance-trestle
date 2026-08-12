@@ -21,6 +21,7 @@ import base64
 import hmac
 import json
 import pathlib
+import tempfile
 from typing import Any, Dict, List, Optional
 
 from cryptography.hazmat.primitives import serialization
@@ -115,17 +116,35 @@ def sign_in_toto_statement(statement: Dict[str, Any], signer: Signer) -> Dict[st
     }
 
 
-def write_dsse_envelope(envelope: Dict[str, Any], output_path: pathlib.Path) -> None:
-    """Write a DSSE envelope as JSON."""
+def write_dsse_envelope(envelope: Dict[str, Any], output_path: pathlib.Path, overwrite: bool = False) -> None:
+    """Write a DSSE envelope as JSON, optionally replacing an existing file."""
     if output_path.is_symlink():
         raise TrestleError(f'DSSE output path must not be a symlink: {output_path}')
     if output_path.exists():
         if output_path.is_dir():
             raise TrestleError(f'DSSE output path is a directory: {output_path}')
-        raise TrestleError(f'DSSE output path already exists: {output_path}')
+        if not overwrite:
+            raise TrestleError(f'DSSE output path already exists: {output_path}')
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open('x', encoding=const.FILE_ENCODING) as write_file:
-        write_file.write(json.dumps(envelope, indent=2, sort_keys=True) + '\n')
+    serialized_envelope = json.dumps(envelope, indent=2, sort_keys=True) + '\n'
+    if overwrite:
+        temporary_path: Optional[pathlib.Path] = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                'w', dir=output_path.parent, delete=False, encoding=const.FILE_ENCODING
+            ) as temporary_file:
+                temporary_path = pathlib.Path(temporary_file.name)
+                temporary_file.write(serialized_envelope)
+            temporary_path.replace(output_path)
+        finally:
+            if temporary_path and temporary_path.exists():
+                temporary_path.unlink()
+    else:
+        try:
+            with output_path.open('x', encoding=const.FILE_ENCODING) as write_file:
+                write_file.write(serialized_envelope)
+        except FileExistsError as error:
+            raise TrestleError(f'DSSE output path already exists: {output_path}') from error
 
 
 def load_dsse_envelope(envelope_path: pathlib.Path) -> Dict[str, Any]:
