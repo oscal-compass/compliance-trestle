@@ -27,6 +27,7 @@ from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.create import CreateCmd
 from trestle.core.commands.describe import DescribeCmd
+from trestle.core.commands.generate_manifest import GenerateManifestCmd
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.commands.init import InitCmd
@@ -57,6 +58,7 @@ class Trestle(CommandBase):
         CanonicalizeCmd,
         CreateCmd,
         DescribeCmd,
+        GenerateManifestCmd,
         HrefCmd,
         ImportCmd,
         InitCmd,

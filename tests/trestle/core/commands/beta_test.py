@@ -155,6 +155,18 @@ def test_beta_query_global_verbose_does_not_show_details(monkeypatch: MonkeyPatc
     assert 'Description: Sample beta feature' not in output
 
 
+def test_beta_query_aligns_feature_descriptions(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:
+    """Test query aligns descriptions after feature names of different lengths."""
+    patch_beta_features(monkeypatch, sample_feature('short'), sample_feature('much-longer-feature-name'))
+    monkeypatch.setenv(beta_features.TRESTLE_BETA_FEATURES_ENV, 'short,much-longer-feature-name')
+
+    execute_command_and_assert('trestle beta query', CmdReturnCodes.SUCCESS.value, monkeypatch)
+
+    output, _ = capsys.readouterr()
+    feature_lines = [line for line in output.splitlines() if line.startswith('  [enabled]')]
+    assert len({line.index('Sample beta feature') for line in feature_lines}) == 1
+
+
 def test_beta_unknown_feature(monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]) -> None:
     """Test enabling an unknown beta feature fails."""
     patch_beta_features(monkeypatch, sample_feature())

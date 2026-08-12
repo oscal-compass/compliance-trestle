@@ -627,9 +627,11 @@ The private key is used for signing. Keep it secret. The public key can be share
 ```bash
 trestle sign \
   -f catalog.json \
-  --key private.pem \
+  --private-key private.pem \
   -o catalog.json.dsse
 ```
+
+By default, signing fails if the output envelope already exists. Pass `--overwrite` to replace an existing envelope.
 
 For an encrypted private key, use `--key-password-env`. The option names an environment variable that contains the password, so the password is not passed as a command-line argument.
 
@@ -640,7 +642,7 @@ openssl pkey -in private-encrypted.pem -passin env:TRESTLE_KEY_PASSWORD -pubout 
 chmod 600 private-encrypted.pem
 trestle sign \
   -f catalog.json \
-  --key private-encrypted.pem \
+  --private-key private-encrypted.pem \
   --key-password-env TRESTLE_KEY_PASSWORD \
   -o catalog.json.dsse
 ```
@@ -664,11 +666,40 @@ trestle verify \
 
 If signing used `--subject-name`, pass the same value during verification.
 
+## `trestle generate-manifest`
+
+Trestle generate-manifest creates a package manifest from any top-level OSCAL JSON model: assessment plan, assessment results, catalog, component definition, mapping collection, plan of action and milestones (POA&M), profile, or system security plan (SSP). It follows the model's local and remote OSCAL dependencies recursively and records normalized artifact paths relative to the generated manifest. Catalogs have no further dependencies.
+
+The generate-manifest, sign-manifest, and verify-manifest commands are beta features. Enable them before use:
+
+```bash
+trestle beta enable json-manifest-signing
+```
+
+Generate a manifest from an SSP:
+
+```bash
+trestle generate-manifest \
+  -f system-security-plans/acme/system-security-plan.json \
+  --include component-definitions/web/component-definition.json \
+  -o package.json
+```
+
+By default, generation fails if the output manifest already exists. Pass `--overwrite` to replace an existing manifest.
+
+Use `--include` for other OSCAL JSON files that are part of the package but cannot be inferred from the primary model. Multiple files may be supplied as a comma-separated list. For example, component definitions require explicit inclusion when the primary model is an SSP because SSP assembly does not retain their source paths.
+
+Discovery follows assessment-results to assessment-plan, assessment-plan and POA&M to SSP, SSP to profile or catalog, profile to profile or catalog, component-definition imports and control-implementation sources, and mapping-collection to its declared catalog or profile resources. Local dependencies must stay inside the directory containing the output manifest.
+
+HTTPS and SFTP dependency references are fetched using Trestle's remote cache and copied as canonical JSON into the package's `remote` directory. Relative references in downloaded documents are resolved against their original remote URI. Review the generated manifest and downloaded artifacts before signing them.
+
+Automatic discovery accepts at most 1,000 artifacts, 64 dependency levels, 50 MiB per remote artifact, and 500 MiB of remote artifacts in total. Loopback, link-local, cloud metadata, and private network endpoints are blocked. Use `--allow-private-uris` only when dependencies are hosted on a trusted private network. Loopback, link-local, and cloud metadata endpoints remain blocked when the option is used.
+
 ## `trestle sign-manifest`
 
 Trestle sign-manifest writes a detached DSSE envelope for a JSON package manifest. The manifest lists related JSON artifacts. Trestle canonicalizes each artifact using RFC 8785, records each SHA-256 digest in an in-toto Statement, and signs the package Statement with a PEM private key.
 
-The sign-manifest and verify-manifest commands are beta features. Enable them before use:
+Enable the package manifest beta feature before use:
 
 ```bash
 trestle beta enable json-manifest-signing
@@ -708,9 +739,11 @@ Sign the package manifest:
 ```bash
 trestle sign-manifest \
   --manifest package.json \
-  --key private.pem \
+  --private-key private.pem \
   -o package.dsse
 ```
+
+By default, manifest signing fails if the output envelope already exists. Pass `--overwrite` to replace an existing envelope.
 
 For an encrypted private key, use `--key-password-env` as with `trestle sign`.
 
