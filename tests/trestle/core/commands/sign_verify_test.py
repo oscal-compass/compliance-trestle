@@ -70,7 +70,9 @@ def test_sign_and_verify_require_beta_feature(tmp_path: pathlib.Path, monkeypatc
     envelope_path = tmp_path / 'catalog.json.dsse'
 
     monkeypatch.setattr(
-        sys, 'argv', ['trestle', 'sign', '-f', str(input_path), '--key', str(key_path), '-o', str(envelope_path)]
+        sys,
+        'argv',
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(key_path), '-o', str(envelope_path)],
     )
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
 
@@ -94,7 +96,17 @@ def test_sign_and_verify_accept_one_time_beta_flag(tmp_path: pathlib.Path, monke
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '--beta', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+        [
+            'trestle',
+            'sign',
+            '--beta',
+            '-f',
+            str(input_path),
+            '--private-key',
+            str(private_key_path),
+            '-o',
+            str(envelope_path),
+        ],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
 
@@ -127,7 +139,7 @@ def test_sign_and_verify_round_trip(tmp_path: pathlib.Path, monkeypatch: MonkeyP
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
     assert input_path.read_text(encoding=const.FILE_ENCODING) == '{"b":2,"a":1}'
@@ -161,7 +173,7 @@ def test_sign_and_verify_real_nist_800_53_catalog(tmp_path: pathlib.Path, monkey
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
     assert envelope_path.exists()
@@ -198,7 +210,7 @@ def test_verify_rejects_missing_custom_subject_name(tmp_path: pathlib.Path, monk
             'sign',
             '-f',
             str(input_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '-o',
             str(envelope_path),
@@ -259,12 +271,54 @@ def test_sign_supports_encrypted_private_key(tmp_path: pathlib.Path, monkeypatch
             'sign',
             '-f',
             str(input_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '--key-password-env',
             'TRESTLE_KEY_PASSWORD',
             '-o',
             str(envelope_path),
+        ],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'verify',
+            '-f',
+            str(input_path),
+            '--signature',
+            str(envelope_path),
+            '--public-key',
+            str(public_key_path),
+        ],
+    )
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+
+def test_sign_overwrites_existing_envelope(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Sign should replace an existing DSSE envelope only when requested."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    input_path = tmp_path / 'catalog.json'
+    envelope_path = tmp_path / 'catalog.json.dsse'
+    input_path.write_text('{"a":1}', encoding=const.FILE_ENCODING)
+    envelope_path.write_text('existing envelope', encoding=const.FILE_ENCODING)
+
+    monkeypatch.setattr(
+        sys,
+        'argv',
+        [
+            'trestle',
+            'sign',
+            '-f',
+            str(input_path),
+            '--private-key',
+            str(private_key_path),
+            '-o',
+            str(envelope_path),
+            '--overwrite',
         ],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
@@ -302,7 +356,7 @@ def test_sign_rejects_missing_key_password_env(tmp_path: pathlib.Path, monkeypat
             'sign',
             '-f',
             str(input_path),
-            '--key',
+            '--private-key',
             str(private_key_path),
             '--key-password-env',
             'TRESTLE_KEY_PASSWORD',
@@ -322,7 +376,19 @@ def test_sign_rejects_output_that_matches_input(tmp_path: pathlib.Path, monkeypa
     original_text = '{"a":1}'
     input_path.write_text(original_text, encoding=const.FILE_ENCODING)
     monkeypatch.setattr(
-        sys, 'argv', ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(input_path)]
+        sys,
+        'argv',
+        [
+            'trestle',
+            'sign',
+            '-f',
+            str(input_path),
+            '--private-key',
+            str(private_key_path),
+            '-o',
+            str(input_path),
+            '--overwrite',
+        ],
     )
 
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
@@ -338,7 +404,17 @@ def test_sign_rejects_output_that_matches_private_key(tmp_path: pathlib.Path, mo
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(private_key_path)],
+        [
+            'trestle',
+            'sign',
+            '-f',
+            str(input_path),
+            '--private-key',
+            str(private_key_path),
+            '-o',
+            str(private_key_path),
+            '--overwrite',
+        ],
     )
 
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
@@ -358,7 +434,9 @@ def test_sign_rejects_output_symlink(tmp_path: pathlib.Path, monkeypatch: Monkey
         pytest.skip(f'Symlinks are not available in this environment: {error}')
 
     monkeypatch.setattr(
-        sys, 'argv', ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(output_path)]
+        sys,
+        'argv',
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(output_path)],
     )
 
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
@@ -374,7 +452,7 @@ def test_verify_rejects_tampered_document(tmp_path: pathlib.Path, monkeypatch: M
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
 
@@ -406,7 +484,7 @@ def test_verify_rejects_wrong_key(tmp_path: pathlib.Path, monkeypatch: MonkeyPat
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
 
@@ -436,7 +514,7 @@ def test_sign_rejects_duplicate_json_keys(tmp_path: pathlib.Path, monkeypatch: M
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)],
     )
 
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
@@ -452,7 +530,7 @@ def test_sign_rejects_non_json_input(tmp_path: pathlib.Path, monkeypatch: Monkey
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)],
     )
 
     assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
@@ -470,7 +548,7 @@ def test_verify_rejects_non_json_input(tmp_path: pathlib.Path, monkeypatch: Monk
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--key', str(private_key_path), '-o', str(envelope_path)],
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
 

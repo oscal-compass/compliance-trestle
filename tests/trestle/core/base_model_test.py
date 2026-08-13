@@ -16,7 +16,7 @@
 
 import json
 import pathlib
-from datetime import datetime, timezone, tzinfo
+from datetime import datetime, timezone, tzinfo, UTC
 from uuid import uuid4
 
 import pytest
@@ -63,7 +63,7 @@ def simple_catalog_utc() -> oscatalog.Catalog:
     m = common.Metadata(
         **{
             'title': 'My simple catalog',
-            'last-modified': datetime.now().astimezone(timezone.utc),
+            'last-modified': datetime.now().astimezone(UTC),
             'version': '0.0.0',
             'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
@@ -464,13 +464,13 @@ def test_robust_datetime_serialization_error_paths() -> None:
         robust_datetime_serialization(naive_dt)
 
     # Test with datetime with microseconds = 0 (seconds format)
-    dt_no_micro = datetime(2024, 1, 1, 12, 0, 0, 0, tzinfo=timezone.utc)
+    dt_no_micro = datetime(2024, 1, 1, 12, 0, 0, 0, tzinfo=UTC)
     result = robust_datetime_serialization(dt_no_micro)
     assert '+00:00' in result
     assert '.' not in result  # No milliseconds
 
     # Test with datetime with microseconds != 0 (milliseconds format)
-    dt_with_micro = datetime(2024, 1, 1, 12, 0, 0, 123456, tzinfo=timezone.utc)
+    dt_with_micro = datetime(2024, 1, 1, 12, 0, 0, 123456, tzinfo=UTC)
     result = robust_datetime_serialization(dt_with_micro)
     assert '+00:00' in result
     assert '.' in result  # Has milliseconds
@@ -599,9 +599,9 @@ def test_serialize_oscal_fields_datetime() -> None:
     """Test that serialize_oscal_fields emits +00:00 timezone offset (not Z) for datetime fields."""
     import trestle.oscal.common as common
     import json
-    from datetime import datetime, timezone
+    from datetime import datetime
 
-    dt = datetime(2024, 6, 15, 10, 30, 0, tzinfo=timezone.utc)
+    dt = datetime(2024, 6, 15, 10, 30, 0, tzinfo=UTC)
     # Use a model that has a datetime field (Remarks wraps markup, use OnDate which has AwareDatetime)
     on_date = common.OnDate(date=dt)
     serialized = json.loads(on_date.model_dump_json(by_alias=True))
