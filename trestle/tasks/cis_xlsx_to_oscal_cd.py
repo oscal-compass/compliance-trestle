@@ -34,7 +34,7 @@ from trestle.tasks.csv_to_oscal_cd import CsvToOscalComponentDefinition
 
 logger = logging.getLogger(__name__)
 
-timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
 
 default_benchmark_control_prefix = 'cisc-'
 default_benchmark_rule_prefix = 'CIS-'

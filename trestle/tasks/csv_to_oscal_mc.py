@@ -63,7 +63,7 @@ L_MAP_COVERAGE = MAP_COVERAGE.lower()
 
 logger = logging.getLogger(__name__)
 
-timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
 
 
 class CsvToOscalMappingCollection(TaskBase):
@@ -123,34 +123,10 @@ class CsvToOscalMappingCollection(TaskBase):
 
     def configure(self) -> bool:
         """Configure."""
-        self._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
-        # config verbosity
-        self._quiet = self._config.get('quiet', False)
-        self._verbose = not self._quiet
-        # title
-        self._title = self._config.get('title')
-        if self._title is None:
-            logger.warning('config missing "title"')
+        ok, msg = self._configure_csv_common()
+        if not ok:
+            logger.warning(msg)
             return False
-        # version
-        self._version = self._config.get('version')
-        if self._version is None:
-            logger.warning('config missing "version"')
-            return False
-        # config csv
-        self._csv_file = self._config.get('csv-file')
-        if self._csv_file is None:
-            logger.warning('config missing "csv-file"')
-            return False
-        self._csv_path = pathlib.Path(self._csv_file)
-        if not self._csv_path.exists():
-            logger.warning('"csv-file" not found')
-            return False
-        # announce csv
-        if self._verbose:
-            logger.info(f'input: {self._csv_file}')
-        # workspace
-        self._workspace = os.getcwd()
         return True
 
     def simulate(self) -> TaskOutcome:

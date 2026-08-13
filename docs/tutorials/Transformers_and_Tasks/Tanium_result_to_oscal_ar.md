@@ -33,7 +33,7 @@ Make these changes:
 </ul>
 </details>
 
-- Insure you have a modern [Python](https://www.python.org/downloads/) (3.10, 3.11, 3.12, 3.13).
+- Insure you have a modern [Python](https://www.python.org/downloads/) (3.11, 3.12, 3.13, 3.14).
 
 ```bash
 $ python -V
