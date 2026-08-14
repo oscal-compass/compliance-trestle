@@ -7,6 +7,7 @@ nav:
 - Developing beta features: beta_features.md
 - Contributors: https://github.com/oscal-compass/compliance-trestle/graphs/contributors
 - Maintainers: maintainers.md
+- Emeritus Maintainers: EMERITUS.md
 - Developer Certificate of Originality: DCO.md
 - GitHub actions: github_actions_setup.md
 - Maintenance releases: maintenance_releases.md
