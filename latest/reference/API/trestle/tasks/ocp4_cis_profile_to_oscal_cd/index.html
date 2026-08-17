@@ -540,173 +540,173 @@
 <span class=normal>561</span>
 <span class=normal>562</span>
 <span class=normal>563</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Ocp4CisProfileToOscalCD</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Task to transform OCP4 CIS profile to OSCAL component-definition.</span>
 
 <span class=sd>    Attributes:</span>
 <span class=sd>        name: Name of the task.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
 
-    <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;ocp4-cis-profile-to-oscal-cd&#39;</span>
+    <span class=n>name</span> <span class=o>=</span> <span class=s1>'ocp4-cis-profile-to-oscal-cd'</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_object</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>configparser</span><span class=o>.</span><span class=n>SectionProxy</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Initialize trestle task ocp4-cis-profile-to-oscal-cd.</span>
 
 <span class=sd>        Args:</span>
 <span class=sd>            config_object: Config section associated with the task.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>(</span><span class=n>datetime</span><span class=o>.</span><span class=n>UTC</span><span class=p>)</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=n>microsecond</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span><span class=o>.</span><span class=n>isoformat</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>set_timestamp</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Set the timestamp.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Set the timestamp."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>timestamp</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>print_info</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Purpose: Create component definition from standard (e.g. CIS benchmark).&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Configuration flags sit under [task.ocp4-cis-profile-to-oscal-cd]:&#39;</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  component-name         = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;component name, e.g. OSCO.&#39;</span>
+<span class=w>        </span><span class=sd>"""Print the help string."""</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.'</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'Purpose: Create component definition from standard (e.g. CIS benchmark).'</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'Configuration flags sit under [task.ocp4-cis-profile-to-oscal-cd]:'</span><span class=p>)</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  component-name         = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'component name, e.g. OSCO.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  org-name               = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;organization name, e.g. International Business Machines.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  org-name               = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'organization name, e.g. International Business Machines.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  org-remarks            = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;organization remarks, e.g. IBM.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  org-remarks            = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'organization remarks, e.g. IBM.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  folder-cac             = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;folder containing compliance-as-code artifacts, e.g adjunct-data/cis-benchmarks/content.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  folder-cac             = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'folder containing compliance-as-code artifacts, e.g adjunct-data/cis-benchmarks/content.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  output-dir             = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;location to write the generated component-definition.json file.&#39;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=c1>#</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-name           = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile name, e.g. OCP4 CIS-benchmark v4.&#39;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-mnemonic       = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile mnemonic, e.g. ocp4-cis-node.&#39;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-ns             = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile ns, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud.&#39;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-version        = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile version, e.g. 1.1.&#39;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-check-version  = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile check version, e.g. 0.1.58.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  output-dir             = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'location to write the generated component-definition.json file.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
         <span class=c1>#</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-type           = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile type, e.g. OCP4.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-name           = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile name, e.g. OCP4 CIS-benchmark v4.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-list           = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile list is blank separated list of &quot;&lt;suffix&gt;&quot; for config entries: &#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-mnemonic       = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile mnemonic, e.g. ocp4-cis-node.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;                           profile-file.&lt;suffix&gt;, profile-title.&lt;suffix&gt;, profile-url.&lt;suffix&gt;&#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;, e.g. cis cis-node.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-ns             = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile ns, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-file.&lt;suffix&gt;  = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;path of the profile file to ingest&#39;</span>
-        <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;, e.g. ${folder-cac}/products/ocp4/profiles/cis-node.profile.&#39;</span>  <span class=c1># noqa</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-version        = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile version, e.g. 1.1.'</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-check-version  = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile check version, e.g. 0.1.58.'</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+        <span class=c1>#</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-type           = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile type, e.g. OCP4.'</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-list           = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile list is blank separated list of "&lt;suffix&gt;" for config entries: '</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'                           profile-file.&lt;suffix&gt;, profile-title.&lt;suffix&gt;, profile-url.&lt;suffix&gt;'</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>', e.g. cis cis-node.'</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-file.&lt;suffix&gt;  = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'path of the profile file to ingest'</span>
+        <span class=n>text3</span> <span class=o>=</span> <span class=s1>', e.g. ${folder-cac}/products/ocp4/profiles/cis-node.profile.'</span>  <span class=c1># noqa</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-title.&lt;suffix&gt; = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;title of the profile&#39;</span>
-        <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;, e.g. CIS Red Hat OpenShift Container Platform 4 Benchmark.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-title.&lt;suffix&gt; = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'title of the profile'</span>
+        <span class=n>text3</span> <span class=o>=</span> <span class=s1>', e.g. CIS Red Hat OpenShift Container Platform 4 Benchmark.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-url.&lt;suffix&gt;   = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;URL of the profile&#39;</span>
-        <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;, e.g. https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-url.&lt;suffix&gt;   = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'URL of the profile'</span>
+        <span class=n>text3</span> <span class=o>=</span> <span class=s1>', e.g. https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  rule-to-parameters-map = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;map file for set-parameters, e.g. &#39;</span>
-        <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;adjunct-data/task-files/rule2var.json.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  rule-to-parameters-map = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'map file for set-parameters, e.g. '</span>
+        <span class=n>text3</span> <span class=o>=</span> <span class=s1>'adjunct-data/task-files/rule2var.json.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  selected-rules         = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;file with list of selected rules, e.g. &#39;</span>
-        <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;adjunct-data/task-files/selected_rules.json.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  selected-rules         = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'file with list of selected rules, e.g. '</span>
+        <span class=n>text3</span> <span class=o>=</span> <span class=s1>'adjunct-data/task-files/selected_rules.json.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-        <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  enabled-rules          = &#39;</span>
-        <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;file with list of enabled rules, e.g. &#39;</span>
-        <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;adjunct-data/task-files/enabled_rules.json.&#39;</span>
+        <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  enabled-rules          = '</span>
+        <span class=n>text2</span> <span class=o>=</span> <span class=s1>'file with list of enabled rules, e.g. '</span>
+        <span class=n>text3</span> <span class=o>=</span> <span class=s1>'adjunct-data/task-files/enabled_rules.json.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
         <span class=c1>#</span>
-        <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
+        <span class=n>text</span> <span class=o>=</span> <span class=s1>''</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
-        <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;Notes:&#39;</span>
+        <span class=n>text</span> <span class=o>=</span> <span class=s1>'Notes:'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
-        <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;1. If a control has selected rules but no enabled rules, then all those selected are included.&#39;</span>
+        <span class=n>text</span> <span class=o>=</span> <span class=s1>'1. If a control has selected rules but no enabled rules, then all those selected are included.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
-        <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;2. If a control has selected and enabled rules, then only those enabled are included.&#39;</span>
+        <span class=n>text</span> <span class=o>=</span> <span class=s1>'2. If a control has selected and enabled rules, then only those enabled are included.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
-        <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;3. If a control has no selected rules, then none are included regardless of enabled.&#39;</span>
+        <span class=n>text</span> <span class=o>=</span> <span class=s1>'3. If a control has no selected rules, then none are included regardless of enabled.'</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>simulate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;simulated-success&#39;</span><span class=p>)</span>
+<span class=w>        </span><span class=sd>"""Provide a simulated outcome."""</span>
+        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'simulated-success'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Provide an actual outcome."""</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_execute</span><span class=p>()</span>
         <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>traceback</span><span class=o>.</span><span class=n>format_exc</span><span class=p>())</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>&#39;config missing&#39;</span><span class=p>)</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>'config missing'</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
         <span class=k>try</span><span class=p>:</span>
-            <span class=n>component_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;component-name&#39;</span><span class=p>]</span>
-            <span class=n>org_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;org-name&#39;</span><span class=p>]</span>
-            <span class=n>org_remarks</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;org-remarks&#39;</span><span class=p>]</span>
-            <span class=bp>self</span><span class=o>.</span><span class=n>_folder_cac</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;folder-cac&#39;</span><span class=p>]</span>
-            <span class=n>profile_check_version</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;profile-check-version&#39;</span><span class=p>]</span>
-            <span class=n>profile_type</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;profile-type&#39;</span><span class=p>]</span>
-            <span class=n>profile_mnemonic</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;profile-mnemonic&#39;</span><span class=p>]</span>
-            <span class=n>profile_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;profile-name&#39;</span><span class=p>]</span>
-            <span class=n>profile_ns</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;profile-ns&#39;</span><span class=p>]</span>
-            <span class=n>profile_version</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;profile-version&#39;</span><span class=p>]</span>
+            <span class=n>component_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'component-name'</span><span class=p>]</span>
+            <span class=n>org_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'org-name'</span><span class=p>]</span>
+            <span class=n>org_remarks</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'org-remarks'</span><span class=p>]</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_folder_cac</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'folder-cac'</span><span class=p>]</span>
+            <span class=n>profile_check_version</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'profile-check-version'</span><span class=p>]</span>
+            <span class=n>profile_type</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'profile-type'</span><span class=p>]</span>
+            <span class=n>profile_mnemonic</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'profile-mnemonic'</span><span class=p>]</span>
+            <span class=n>profile_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'profile-name'</span><span class=p>]</span>
+            <span class=n>profile_ns</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'profile-ns'</span><span class=p>]</span>
+            <span class=n>profile_version</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'profile-version'</span><span class=p>]</span>
             <span class=n>profile_sets</span> <span class=o>=</span> <span class=p>{}</span>
-            <span class=n>profile_list</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;profile-list&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>split</span><span class=p>()</span>
+            <span class=n>profile_list</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'profile-list'</span><span class=p>]</span><span class=o>.</span><span class=n>split</span><span class=p>()</span>
             <span class=k>for</span> <span class=n>profile</span> <span class=ow>in</span> <span class=n>profile_list</span><span class=p>:</span>
                 <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
-                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>&#39;profile-file&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=sa>f</span><span class=s1>&#39;profile-file.</span><span class=si>{</span><span class=n>profile</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>]</span>
-                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>&#39;profile-url&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=sa>f</span><span class=s1>&#39;profile-url.</span><span class=si>{</span><span class=n>profile</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>]</span>
-                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>&#39;profile-title&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=sa>f</span><span class=s1>&#39;profile-title.</span><span class=si>{</span><span class=n>profile</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>]</span>
-                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>&#39;profile-ns&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>profile_ns</span>
-                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>&#39;component-name&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>component_name</span>
-            <span class=n>odir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;output-dir&#39;</span><span class=p>]</span>
+                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>'profile-file'</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=sa>f</span><span class=s1>'profile-file.</span><span class=si>{</span><span class=n>profile</span><span class=si>}</span><span class=s1>'</span><span class=p>]</span>
+                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>'profile-url'</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=sa>f</span><span class=s1>'profile-url.</span><span class=si>{</span><span class=n>profile</span><span class=si>}</span><span class=s1>'</span><span class=p>]</span>
+                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>'profile-title'</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=sa>f</span><span class=s1>'profile-title.</span><span class=si>{</span><span class=n>profile</span><span class=si>}</span><span class=s1>'</span><span class=p>]</span>
+                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>'profile-ns'</span><span class=p>]</span> <span class=o>=</span> <span class=n>profile_ns</span>
+                <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>][</span><span class=s1>'component-name'</span><span class=p>]</span> <span class=o>=</span> <span class=n>component_name</span>
+            <span class=n>odir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'output-dir'</span><span class=p>]</span>
         <span class=k>except</span> <span class=ne>KeyError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing&#39;</span><span class=p>)</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing'</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
         <span class=c1># selected rules</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_selected_rules</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_filter_rules</span><span class=p>(</span><span class=s1>&#39;selected-rules&#39;</span><span class=p>,</span> <span class=s1>&#39;selected&#39;</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_selected_rules</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_filter_rules</span><span class=p>(</span><span class=s1>'selected-rules'</span><span class=p>,</span> <span class=s1>'selected'</span><span class=p>)</span>
         <span class=c1># enabled rules</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_enabled_rules</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_filter_rules</span><span class=p>(</span><span class=s1>&#39;enabled-rules&#39;</span><span class=p>,</span> <span class=s1>&#39;enabled&#39;</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_enabled_rules</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_filter_rules</span><span class=p>(</span><span class=s1>'enabled-rules'</span><span class=p>,</span> <span class=s1>'enabled'</span><span class=p>)</span>
         <span class=c1># verbosity</span>
-        <span class=n>quiet</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;quiet&#39;</span><span class=p>,</span> <span class=kc>False</span><span class=p>)</span>
+        <span class=n>quiet</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'quiet'</span><span class=p>,</span> <span class=kc>False</span><span class=p>)</span>
         <span class=n>verbose</span> <span class=o>=</span> <span class=ow>not</span> <span class=n>quiet</span>
         <span class=c1># output</span>
-        <span class=n>overwrite</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>&#39;output-overwrite&#39;</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
+        <span class=n>overwrite</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>'output-overwrite'</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
         <span class=n>opth</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>odir</span><span class=p>)</span>
         <span class=c1># insure output dir exists</span>
         <span class=n>opth</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>parents</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
         <span class=c1># calculate output file name &amp; check writability</span>
-        <span class=n>oname</span> <span class=o>=</span> <span class=s1>&#39;component-definition.json&#39;</span>
+        <span class=n>oname</span> <span class=o>=</span> <span class=s1>'component-definition.json'</span>
         <span class=n>ofile</span> <span class=o>=</span> <span class=n>opth</span> <span class=o>/</span> <span class=n>oname</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>overwrite</span> <span class=ow>and</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>ofile</span><span class=p>)</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1> already exists&#39;</span><span class=p>)</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1> already exists'</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
         <span class=c1># fetch rule to parameters map</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_rule_to_parm_map</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_parameters_map</span><span class=p>(</span><span class=s1>&#39;rule-to-parameters-map&#39;</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_rule_to_parm_map</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_parameters_map</span><span class=p>(</span><span class=s1>'rule-to-parameters-map'</span><span class=p>)</span>
         <span class=c1># roles, responsible_roles, parties, responsible parties</span>
         <span class=n>party_uuid_01</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>())</span>
         <span class=n>party_uuid_02</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>())</span>
@@ -717,7 +717,7 @@
         <span class=n>responsible_parties</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_build_responsible_parties</span><span class=p>(</span><span class=n>party_uuid_01</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>)</span>
         <span class=c1># metadata</span>
         <span class=n>metadata</span> <span class=o>=</span> <span class=n>Metadata</span><span class=p>(</span>
-            <span class=n>title</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;Component definition for </span><span class=si>{</span><span class=n>profile_type</span><span class=si>}</span><span class=s1> profiles&#39;</span><span class=p>,</span>
+            <span class=n>title</span><span class=o>=</span><span class=sa>f</span><span class=s1>'Component definition for </span><span class=si>{</span><span class=n>profile_type</span><span class=si>}</span><span class=s1> profiles'</span><span class=p>,</span>
             <span class=n>last_modified</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span><span class=p>,</span>
             <span class=n>oscal_version</span><span class=o>=</span><span class=n>OSCAL_VERSION</span><span class=p>,</span>
             <span class=n>version</span><span class=o>=</span><span class=n>trestle</span><span class=o>.</span><span class=n>__version__</span><span class=p>,</span>
@@ -738,10 +738,10 @@
             <span class=nb>type</span><span class=o>=</span><span class=n>DefinedComponentTypeValidValues</span><span class=o>.</span><span class=n>service</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=c1># add control implementation per profile</span>
-        <span class=n>prop1</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>&#39;profile_name&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_name</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_profile_name&#39;</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=n>profile_ns</span><span class=p>)</span>
-        <span class=n>prop2</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>&#39;profile_mnemonic&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_mnemonic</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_profile_mnemonic&#39;</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=n>profile_ns</span><span class=p>)</span>
-        <span class=n>prop3</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>&#39;profile_version&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_version</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_profile_version&#39;</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=n>profile_ns</span><span class=p>)</span>
-        <span class=n>prop4</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>&#39;profile_check_version&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_check_version</span><span class=p>)</span>
+        <span class=n>prop1</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>'profile_name'</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_name</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>'scc_profile_name'</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=n>profile_ns</span><span class=p>)</span>
+        <span class=n>prop2</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>'profile_mnemonic'</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_mnemonic</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>'scc_profile_mnemonic'</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=n>profile_ns</span><span class=p>)</span>
+        <span class=n>prop3</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>'profile_version'</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_version</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>'scc_profile_version'</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=n>profile_ns</span><span class=p>)</span>
+        <span class=n>prop4</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>'profile_check_version'</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>profile_check_version</span><span class=p>)</span>
         <span class=n>props</span> <span class=o>=</span> <span class=p>[</span><span class=n>prop1</span><span class=p>,</span> <span class=n>prop2</span><span class=p>,</span> <span class=n>prop3</span><span class=p>,</span> <span class=n>prop4</span><span class=p>]</span>
         <span class=k>for</span> <span class=n>profile</span> <span class=ow>in</span> <span class=n>profile_list</span><span class=p>:</span>
             <span class=n>profile_set</span> <span class=o>=</span> <span class=n>profile_sets</span><span class=p>[</span><span class=n>profile</span><span class=p>]</span>
@@ -759,26 +759,26 @@
         <span class=p>)</span>
         <span class=c1># write OSCAL ComponentDefinition to file</span>
         <span class=k>if</span> <span class=n>verbose</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>component_definition</span><span class=o>.</span><span class=n>oscal_write</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>ofile</span><span class=p>))</span>
-        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;success&#39;</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'success'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_set_parameter</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>rule</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>SetParameter</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get set parameter.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get set parameter."""</span>
         <span class=n>set_parameter</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=k>for</span> <span class=n>key</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_rule_to_parm_map</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>key</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>key</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>key</span> <span class=o>==</span> <span class=n>rule</span><span class=p>:</span>
                 <span class=n>value</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_rule_to_parm_map</span><span class=p>[</span><span class=n>key</span><span class=p>]</span>
-                <span class=n>remarks</span> <span class=o>=</span> <span class=n>value</span><span class=p>[</span><span class=s1>&#39;description&#39;</span><span class=p>]</span>
-                <span class=n>options</span> <span class=o>=</span> <span class=n>value</span><span class=p>[</span><span class=s1>&#39;options&#39;</span><span class=p>]</span>
-                <span class=n>default_value</span> <span class=o>=</span> <span class=n>options</span><span class=p>[</span><span class=s1>&#39;default&#39;</span><span class=p>]</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;key: </span><span class=si>{</span><span class=n>key</span><span class=si>}</span><span class=s1> options: </span><span class=si>{</span><span class=n>options</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-                <span class=n>set_parameter</span> <span class=o>=</span> <span class=n>SetParameter</span><span class=p>(</span><span class=n>param_id</span><span class=o>=</span><span class=n>rule</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=p>[</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>default_value</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>],</span> <span class=n>remarks</span><span class=o>=</span><span class=n>remarks</span><span class=p>)</span>
+                <span class=n>remarks</span> <span class=o>=</span> <span class=n>value</span><span class=p>[</span><span class=s1>'description'</span><span class=p>]</span>
+                <span class=n>options</span> <span class=o>=</span> <span class=n>value</span><span class=p>[</span><span class=s1>'options'</span><span class=p>]</span>
+                <span class=n>default_value</span> <span class=o>=</span> <span class=n>options</span><span class=p>[</span><span class=s1>'default'</span><span class=p>]</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'key: </span><span class=si>{</span><span class=n>key</span><span class=si>}</span><span class=s1> options: </span><span class=si>{</span><span class=n>options</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+                <span class=n>set_parameter</span> <span class=o>=</span> <span class=n>SetParameter</span><span class=p>(</span><span class=n>param_id</span><span class=o>=</span><span class=n>rule</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=p>[</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>default_value</span><span class=si>}</span><span class=s1>'</span><span class=p>],</span> <span class=n>remarks</span><span class=o>=</span><span class=n>remarks</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>set_parameter</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_controls</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>rules</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Tuple</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get controls.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get controls."""</span>
         <span class=n>controls</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>for</span> <span class=n>rule</span> <span class=ow>in</span> <span class=n>rules</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
             <span class=n>control</span> <span class=o>=</span> <span class=n>rules</span><span class=p>[</span><span class=n>rule</span><span class=p>][</span><span class=mi>1</span><span class=p>]</span>
@@ -789,28 +789,28 @@
         <span class=c1># trim rules associated with control with respect to enabled rules</span>
         <span class=k>for</span> <span class=n>control</span> <span class=ow>in</span> <span class=n>controls</span><span class=p>:</span>
             <span class=n>controls</span><span class=p>[</span><span class=n>control</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_trimmed_rules</span><span class=p>(</span><span class=n>control</span><span class=p>,</span> <span class=n>controls</span><span class=p>[</span><span class=n>control</span><span class=p>])</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>controls</span><span class=p>[</span><span class=n>control</span><span class=p>]</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>controls</span><span class=p>[</span><span class=n>control</span><span class=p>]</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>controls</span>
 
     <span class=c1># determine if trim is needed for the control, and if so then</span>
     <span class=c1># for the associated set of rules drop those that are not enabled</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_get_trimmed_rules</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>control</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>rules_for_control</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Trim rules if any rule for control appears in enabled rules list.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Trim rules if any rule for control appears in enabled rules list."""</span>
         <span class=n>retval</span> <span class=o>=</span> <span class=n>rules_for_control</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_is_trim_needed</span><span class=p>(</span><span class=n>rules_for_control</span><span class=p>):</span>
             <span class=n>retval</span> <span class=o>=</span> <span class=p>[]</span>
             <span class=k>for</span> <span class=n>rule</span> <span class=ow>in</span> <span class=n>rules_for_control</span><span class=p>:</span>
                 <span class=k>if</span> <span class=n>rule</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_enabled_rules</span><span class=p>:</span>
                     <span class=n>retval</span> <span class=o>=</span> <span class=n>retval</span> <span class=o>+</span> <span class=p>[</span><span class=n>rule</span><span class=p>]</span>
-                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;keep </span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'keep </span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
                 <span class=k>else</span><span class=p>:</span>
-                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;drop </span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'drop </span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>retval</span>
 
     <span class=c1># if any rule in the set of rules for the control appears in the enabled list,</span>
     <span class=c1># then trim is needed</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_is_trim_needed</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>rules_for_control</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Check if trim is needed.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Check if trim is needed."""</span>
         <span class=n>retval</span> <span class=o>=</span> <span class=kc>False</span>
         <span class=k>for</span> <span class=n>rule</span> <span class=ow>in</span> <span class=n>rules_for_control</span><span class=p>:</span>
             <span class=k>if</span> <span class=n>rule</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_enabled_rules</span><span class=p>:</span>
@@ -820,35 +820,35 @@
 
     <span class=c1># fetch the set of rules that will be included/excluded from the CIS rules</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_get_parameters_map</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_key</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get parameters map.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get parameters map."""</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>fp</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=n>config_key</span><span class=p>])</span>
-            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>'r'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
                 <span class=n>parameters_map</span> <span class=o>=</span> <span class=n>json</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>f</span><span class=p>)</span>
         <span class=k>except</span> <span class=ne>KeyError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing'</span><span class=p>)</span>
             <span class=n>parameters_map</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;unable to process </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=n>config_key</span><span class=p>]</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'unable to process </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=n>config_key</span><span class=p>]</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>parameters_map</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>return</span> <span class=n>parameters_map</span>
 
     <span class=c1># fetch the set of rules that will be included/excluded from the CIS rules</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_get_filter_rules</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_key</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>file_key</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get filter rules.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get filter rules."""</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>fp</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=n>config_key</span><span class=p>])</span>
-            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>'r'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
                 <span class=n>jdata</span> <span class=o>=</span> <span class=n>json</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>f</span><span class=p>)</span>
             <span class=k>try</span><span class=p>:</span>
                 <span class=n>filter_rules</span> <span class=o>=</span> <span class=n>jdata</span><span class=p>[</span><span class=n>file_key</span><span class=p>]</span>
             <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
                 <span class=n>filter_rules</span> <span class=o>=</span> <span class=n>jdata</span>
         <span class=k>except</span> <span class=ne>KeyError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing'</span><span class=p>)</span>
             <span class=n>filter_rules</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;unable to process </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=n>config_key</span><span class=p>]</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'unable to process </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=n>config_key</span><span class=p>]</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>filter_rules</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>return</span> <span class=n>filter_rules</span>
 
@@ -856,75 +856,75 @@
     <span class=c1># key is rule</span>
     <span class=c1># value is tuple comprising [ category, control, description ]</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_get_cis_rules</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>filename</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Tuple</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get CIS rules.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get CIS rules."""</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>fp</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>filename</span><span class=p>)</span>
-            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>'r'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
                 <span class=n>content</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>readlines</span><span class=p>()</span>
             <span class=n>rules</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_parse_cis_rules</span><span class=p>(</span><span class=n>content</span><span class=p>)</span>
         <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;unable to process </span><span class=si>{</span><span class=n>filename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'unable to process </span><span class=si>{</span><span class=n>filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>rules</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>return</span> <span class=n>rules</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_parse_cis_rules</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>content</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Tuple</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Parse CIS rules.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Parse CIS rules."""</span>
         <span class=n>rules</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>for</span> <span class=n>lineno</span><span class=p>,</span> <span class=n>line</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>content</span><span class=p>,</span> <span class=n>start</span><span class=o>=</span><span class=mi>1</span><span class=p>):</span>
-            <span class=n>line</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>)</span>
-            <span class=k>if</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;  #### &#39;</span><span class=p>):</span>
-                <span class=n>category</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;  #### &#39;</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> category: </span><span class=si>{</span><span class=n>category</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-            <span class=k>elif</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;  # &#39;</span><span class=p>):</span>
-                <span class=n>text</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;  # &#39;</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39; &#39;</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
-                <span class=k>if</span> <span class=s1>&#39;.&#39;</span> <span class=ow>in</span> <span class=n>text</span><span class=p>[</span><span class=mi>0</span><span class=p>]:</span>
+            <span class=n>line</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>'</span><span class=se>\n</span><span class=s1>'</span><span class=p>,</span> <span class=s1>''</span><span class=p>)</span>
+            <span class=k>if</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>'  #### '</span><span class=p>):</span>
+                <span class=n>category</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'  #### '</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> category: </span><span class=si>{</span><span class=n>category</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+            <span class=k>elif</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>'  # '</span><span class=p>):</span>
+                <span class=n>text</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'  # '</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>' '</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
+                <span class=k>if</span> <span class=s1>'.'</span> <span class=ow>in</span> <span class=n>text</span><span class=p>[</span><span class=mi>0</span><span class=p>]:</span>
                     <span class=n>control</span> <span class=o>=</span> <span class=n>text</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
                     <span class=n>desc</span> <span class=o>=</span> <span class=n>text</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
-                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> control: </span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1> description: </span><span class=si>{</span><span class=n>desc</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> control: </span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1> description: </span><span class=si>{</span><span class=n>desc</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
                 <span class=k>else</span><span class=p>:</span>
-                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> skip: </span><span class=si>{</span><span class=n>line</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-            <span class=k>elif</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;    - &#39;</span><span class=p>):</span>
-                <span class=n>rule</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;    - &#39;</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> rule: </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> skip: </span><span class=si>{</span><span class=n>line</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+            <span class=k>elif</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>'    - '</span><span class=p>):</span>
+                <span class=n>rule</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'    - '</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> rule: </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
                 <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_is_selected</span><span class=p>(</span><span class=n>rule</span><span class=p>):</span>
-                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;not selected rule: </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'not selected rule: </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
                 <span class=k>elif</span> <span class=n>rule</span> <span class=ow>in</span> <span class=n>rules</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
-                    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;duplicate rule: </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'duplicate rule: </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
                 <span class=k>else</span><span class=p>:</span>
                     <span class=n>rules</span><span class=p>[</span><span class=n>rule</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=n>category</span><span class=p>,</span> <span class=n>control</span><span class=p>,</span> <span class=n>desc</span><span class=p>]</span>
             <span class=k>else</span><span class=p>:</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> skip: </span><span class=si>{</span><span class=n>line</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>lineno</span><span class=si>}</span><span class=s1> skip: </span><span class=si>{</span><span class=n>line</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>rules</span>
 
     <span class=c1># rule is selected if:</span>
     <span class=c1># a) the selected rules file is not specified or is empty or</span>
     <span class=c1># b) the rule appears in the list of selected rules from the file</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_is_selected</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>rule</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Check if rule is selected.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Check if rule is selected."""</span>
         <span class=n>retval</span> <span class=o>=</span> <span class=kc>True</span>
         <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_selected_rules</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>rule</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_selected_rules</span><span class=p>:</span>
             <span class=n>retval</span> <span class=o>=</span> <span class=kc>False</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>retval</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>retval</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>retval</span>
 
     <span class=c1># rule is excluded if it does not appear in the list of trimmed rules</span>
     <span class=c1># for the control</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_is_excluded</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>rule</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>control</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>controls</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Check if rule is excluded.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Check if rule is excluded."""</span>
         <span class=n>retval</span> <span class=o>=</span> <span class=kc>False</span>
         <span class=k>if</span> <span class=n>rule</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>controls</span><span class=p>[</span><span class=n>control</span><span class=p>]:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;exclude </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'exclude </span><span class=si>{</span><span class=n>rule</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>control</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>retval</span> <span class=o>=</span> <span class=kc>True</span>
         <span class=k>return</span> <span class=n>retval</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_build_roles</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Role</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Build roles.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Build roles."""</span>
         <span class=n>value</span> <span class=o>=</span> <span class=p>[</span>
-            <span class=n>Role</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=s1>&#39;prepared-by&#39;</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=s1>&#39;Indicates the organization that created this content.&#39;</span><span class=p>),</span>
-            <span class=n>Role</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=s1>&#39;prepared-for&#39;</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=s1>&#39;Indicates the organization for which this content was created..&#39;</span><span class=p>),</span>
+            <span class=n>Role</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=s1>'prepared-by'</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=s1>'Indicates the organization that created this content.'</span><span class=p>),</span>
+            <span class=n>Role</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=s1>'prepared-for'</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=s1>'Indicates the organization for which this content was created..'</span><span class=p>),</span>
             <span class=n>Role</span><span class=p>(</span>
-                <span class=nb>id</span><span class=o>=</span><span class=s1>&#39;content-approver&#39;</span><span class=p>,</span>
-                <span class=n>title</span><span class=o>=</span><span class=s1>&#39;Indicates the organization responsible for all content represented in the &quot;document&quot;.&#39;</span><span class=p>,</span>
+                <span class=nb>id</span><span class=o>=</span><span class=s1>'content-approver'</span><span class=p>,</span>
+                <span class=n>title</span><span class=o>=</span><span class=s1>'Indicates the organization responsible for all content represented in the "document".'</span><span class=p>,</span>
             <span class=p>),</span>
         <span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
@@ -932,23 +932,23 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_build_control_implementation</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>profile_set</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>],</span> <span class=n>responsible_roles</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleRole</span><span class=p>],</span> <span class=n>props</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Property</span><span class=p>]</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ControlImplementation</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Build control implementation.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Build control implementation."""</span>
         <span class=n>implemented_requirements</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_build_implemented_requirements</span><span class=p>(</span><span class=n>profile_set</span><span class=p>,</span> <span class=n>responsible_roles</span><span class=p>)</span>
         <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>implemented_requirements</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
             <span class=n>control_implementation</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>control_implementation</span> <span class=o>=</span> <span class=n>ControlImplementation</span><span class=p>(</span>
                 <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-                <span class=n>source</span><span class=o>=</span><span class=n>profile_set</span><span class=p>[</span><span class=s1>&#39;profile-url&#39;</span><span class=p>],</span>
-                <span class=n>description</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>profile_set</span><span class=p>[</span><span class=s2>&quot;component-name&quot;</span><span class=p>]</span><span class=si>}</span><span class=s1> implemented controls for </span><span class=si>{</span><span class=n>profile_set</span><span class=p>[</span><span class=s2>&quot;profile-title&quot;</span><span class=p>]</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>,</span>
+                <span class=n>source</span><span class=o>=</span><span class=n>profile_set</span><span class=p>[</span><span class=s1>'profile-url'</span><span class=p>],</span>
+                <span class=n>description</span><span class=o>=</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>profile_set</span><span class=p>[</span><span class=s2>"component-name"</span><span class=p>]</span><span class=si>}</span><span class=s1> implemented controls for </span><span class=si>{</span><span class=n>profile_set</span><span class=p>[</span><span class=s2>"profile-title"</span><span class=p>]</span><span class=si>}</span><span class=s1>.'</span><span class=p>,</span>
                 <span class=n>implemented_requirements</span><span class=o>=</span><span class=n>implemented_requirements</span><span class=p>,</span>
                 <span class=n>props</span><span class=o>=</span><span class=n>props</span><span class=p>,</span>
             <span class=p>)</span>
         <span class=k>return</span> <span class=n>control_implementation</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_title</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>dir_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>root</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Extract rule title from compliance-as-code rule.yml.&quot;&quot;&quot;</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Extract rule title from compliance-as-code rule.yml."""</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Operation:</span>
 <span class=sd>        Given is a dir_name and a root directory. We walk the</span>
 <span class=sd>        directory tree looking for a directory named dir_name.</span>
@@ -958,54 +958,54 @@
 <span class=sd>        in the one or more profiles, e.g. cis-node.profile, which</span>
 <span class=sd>        drive the search. From the content, we find the title and</span>
 <span class=sd>        return its corresponding value.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
 
         <span class=n>title</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=k>for</span> <span class=n>path</span><span class=p>,</span> <span class=n>dirs</span><span class=p>,</span> <span class=n>_files</span> <span class=ow>in</span> <span class=n>os</span><span class=o>.</span><span class=n>walk</span><span class=p>(</span><span class=n>root</span><span class=p>):</span>
             <span class=k>if</span> <span class=n>dir_name</span> <span class=ow>in</span> <span class=n>dirs</span><span class=p>:</span>
                 <span class=n>folder</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>path</span><span class=p>,</span> <span class=n>dir_name</span><span class=p>)</span>
-                <span class=n>tpath</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>folder</span><span class=p>)</span> <span class=o>/</span> <span class=s1>&#39;rule.yml&#39;</span>
+                <span class=n>tpath</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>folder</span><span class=p>)</span> <span class=o>/</span> <span class=s1>'rule.yml'</span>
                 <span class=n>fp</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>tpath</span><span class=p>)</span>
-                <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+                <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>'r'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
                     <span class=n>content</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>readlines</span><span class=p>()</span>
                 <span class=k>for</span> <span class=n>line</span> <span class=ow>in</span> <span class=n>content</span><span class=p>:</span>
-                    <span class=k>if</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;title:&#39;</span><span class=p>):</span>
-                        <span class=n>title</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;title:&#39;</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
+                    <span class=k>if</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>'title:'</span><span class=p>):</span>
+                        <span class=n>title</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'title:'</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
                         <span class=k>break</span>
         <span class=k>if</span> <span class=n>title</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=n>msg</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;unable to find &quot;</span><span class=si>{</span><span class=n>dir_name</span><span class=si>}</span><span class=s1>&quot;&#39;</span>
+            <span class=n>msg</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'unable to find "</span><span class=si>{</span><span class=n>dir_name</span><span class=si>}</span><span class=s1>"'</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
-            <span class=n>title</span> <span class=o>=</span> <span class=s1>&#39;no title&#39;</span>
-        <span class=n>title</span> <span class=o>=</span> <span class=n>title</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s2>&quot;&#39;&quot;</span><span class=p>)</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s1>&#39;&quot;&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>title</span> <span class=o>=</span> <span class=s1>'no title'</span>
+        <span class=n>title</span> <span class=o>=</span> <span class=n>title</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s2>"'"</span><span class=p>)</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s1>'"'</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>title</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>title</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_build_implemented_requirements</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>profile_set</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>],</span> <span class=n>responsible_roles</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleRole</span><span class=p>]</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ImplementedRequirement</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Build implemented requirements.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Build implemented requirements."""</span>
         <span class=n>implemented_requirements</span> <span class=o>=</span> <span class=p>[]</span>
-        <span class=n>profile_file</span> <span class=o>=</span> <span class=n>profile_set</span><span class=p>[</span><span class=s1>&#39;profile-file&#39;</span><span class=p>]</span>
+        <span class=n>profile_file</span> <span class=o>=</span> <span class=n>profile_set</span><span class=p>[</span><span class=s1>'profile-file'</span><span class=p>]</span>
         <span class=n>rules</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_cis_rules</span><span class=p>(</span><span class=n>profile_file</span><span class=p>)</span>
         <span class=n>controls</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_controls</span><span class=p>(</span><span class=n>rules</span><span class=p>)</span>
-        <span class=n>rule_prefix</span> <span class=o>=</span> <span class=s1>&#39;xccdf_org.ssgproject.content_rule_&#39;</span>
-        <span class=n>cac_openshift</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_folder_cac</span><span class=si>}</span><span class=s1>/applications/openshift&#39;</span>
+        <span class=n>rule_prefix</span> <span class=o>=</span> <span class=s1>'xccdf_org.ssgproject.content_rule_'</span>
+        <span class=n>cac_openshift</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_folder_cac</span><span class=si>}</span><span class=s1>/applications/openshift'</span>
         <span class=k>for</span> <span class=n>rule</span> <span class=ow>in</span> <span class=n>rules</span><span class=p>:</span>
             <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_is_excluded</span><span class=p>(</span><span class=n>rule</span><span class=p>,</span> <span class=n>rules</span><span class=p>[</span><span class=n>rule</span><span class=p>][</span><span class=mi>1</span><span class=p>],</span> <span class=n>controls</span><span class=p>):</span>
                 <span class=k>continue</span>
             <span class=n>remarks</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_title</span><span class=p>(</span><span class=n>rule</span><span class=p>,</span> <span class=n>cac_openshift</span><span class=p>)</span>
             <span class=n>prop</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span>
-                <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_goal_name_id&#39;</span><span class=p>,</span>
-                <span class=n>ns</span><span class=o>=</span><span class=n>profile_set</span><span class=p>[</span><span class=s1>&#39;profile-ns&#39;</span><span class=p>],</span>
-                <span class=n>name</span><span class=o>=</span><span class=s1>&#39;XCCDF_rule&#39;</span><span class=p>,</span>
-                <span class=n>value</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>rule_prefix</span><span class=si>}{</span><span class=n>rule</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-                <span class=n>remarks</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>remarks</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
+                <span class=n>class_</span><span class=o>=</span><span class=s1>'scc_goal_name_id'</span><span class=p>,</span>
+                <span class=n>ns</span><span class=o>=</span><span class=n>profile_set</span><span class=p>[</span><span class=s1>'profile-ns'</span><span class=p>],</span>
+                <span class=n>name</span><span class=o>=</span><span class=s1>'XCCDF_rule'</span><span class=p>,</span>
+                <span class=n>value</span><span class=o>=</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>rule_prefix</span><span class=si>}{</span><span class=n>rule</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+                <span class=n>remarks</span><span class=o>=</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>remarks</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=n>props</span> <span class=o>=</span> <span class=p>[</span><span class=n>prop</span><span class=p>]</span>
             <span class=n>implemented_requirement</span> <span class=o>=</span> <span class=n>ImplementedRequirement</span><span class=p>(</span>
-                <span class=n>uuid</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>())</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-                <span class=n>control_id</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;CIS-</span><span class=si>{</span><span class=n>rules</span><span class=p>[</span><span class=n>rule</span><span class=p>][</span><span class=mi>1</span><span class=p>]</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-                <span class=n>description</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>rules</span><span class=p>[</span><span class=n>rule</span><span class=p>][</span><span class=mi>2</span><span class=p>]</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
+                <span class=n>uuid</span><span class=o>=</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>())</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+                <span class=n>control_id</span><span class=o>=</span><span class=sa>f</span><span class=s1>'CIS-</span><span class=si>{</span><span class=n>rules</span><span class=p>[</span><span class=n>rule</span><span class=p>][</span><span class=mi>1</span><span class=p>]</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+                <span class=n>description</span><span class=o>=</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>rules</span><span class=p>[</span><span class=n>rule</span><span class=p>][</span><span class=mi>2</span><span class=p>]</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
                 <span class=n>props</span><span class=o>=</span><span class=n>props</span><span class=p>,</span>
                 <span class=n>responsible_roles</span><span class=o>=</span><span class=n>responsible_roles</span><span class=p>,</span>
             <span class=p>)</span>
@@ -1018,30 +1018,30 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_build_responsible_roles</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleRole</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Build responsible roles.&quot;&quot;&quot;</span>
-        <span class=n>role_prepared_by</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;prepared-by&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
-        <span class=n>role_prepared_for</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;prepared-for&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_02</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>])</span>
-        <span class=n>role_content_approver</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;content-approver&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
+<span class=w>        </span><span class=sd>"""Build responsible roles."""</span>
+        <span class=n>role_prepared_by</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>'prepared-by'</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
+        <span class=n>role_prepared_for</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>'prepared-for'</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_02</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>])</span>
+        <span class=n>role_content_approver</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>'content-approver'</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
         <span class=n>value</span> <span class=o>=</span> <span class=p>[</span><span class=n>role_prepared_by</span><span class=p>,</span> <span class=n>role_prepared_for</span><span class=p>,</span> <span class=n>role_content_approver</span><span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_build_parties</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>org_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>org_remarks</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Parties</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Build parties.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Build parties."""</span>
         <span class=n>value</span> <span class=o>=</span> <span class=p>[</span>
-            <span class=n>Parties</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_01</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=n>org_name</span><span class=p>,</span> <span class=n>remarks</span><span class=o>=</span><span class=n>org_remarks</span><span class=p>),</span>
+            <span class=n>Parties</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_01</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=s1>'organization'</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=n>org_name</span><span class=p>,</span> <span class=n>remarks</span><span class=o>=</span><span class=n>org_remarks</span><span class=p>),</span>
             <span class=n>Parties</span><span class=p>(</span>
                 <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_02</span><span class=p>,</span>
-                <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span>
-                <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Customer&#39;</span><span class=p>,</span>
-                <span class=n>remarks</span><span class=o>=</span><span class=s1>&#39;organization to be customized at account creation only for their Component Definition&#39;</span><span class=p>,</span>
+                <span class=nb>type</span><span class=o>=</span><span class=s1>'organization'</span><span class=p>,</span>
+                <span class=n>name</span><span class=o>=</span><span class=s1>'Customer'</span><span class=p>,</span>
+                <span class=n>remarks</span><span class=o>=</span><span class=s1>'organization to be customized at account creation only for their Component Definition'</span><span class=p>,</span>
             <span class=p>),</span>
             <span class=n>Parties</span><span class=p>(</span>
                 <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_03</span><span class=p>,</span>
-                <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span>
-                <span class=n>name</span><span class=o>=</span><span class=s1>&#39;ISV&#39;</span><span class=p>,</span>
-                <span class=n>remarks</span><span class=o>=</span><span class=s1>&#39;organization to be customized at ISV subscription only for their Component Definition&#39;</span><span class=p>,</span>
+                <span class=nb>type</span><span class=o>=</span><span class=s1>'organization'</span><span class=p>,</span>
+                <span class=n>name</span><span class=o>=</span><span class=s1>'ISV'</span><span class=p>,</span>
+                <span class=n>remarks</span><span class=o>=</span><span class=s1>'organization to be customized at ISV subscription only for their Component Definition'</span><span class=p>,</span>
             <span class=p>),</span>
         <span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
@@ -1049,13 +1049,13 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_build_responsible_parties</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleParty</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Build responsible parties.&quot;&quot;&quot;</span>
-        <span class=n>prepared_by</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;prepared-by&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
-        <span class=n>prepared_for</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;prepared-for&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_02</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>])</span>
-        <span class=n>content_approver</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;content-approver&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
+<span class=w>        </span><span class=sd>"""Build responsible parties."""</span>
+        <span class=n>prepared_by</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>'prepared-by'</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
+        <span class=n>prepared_for</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>'prepared-for'</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_02</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>])</span>
+        <span class=n>content_approver</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>'content-approver'</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
         <span class=n>value</span> <span class=o>=</span> <span class=p>[</span><span class=n>prepared_by</span><span class=p>,</span> <span class=n>prepared_for</span><span class=p>,</span> <span class=n>content_approver</span><span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD-attributes>Attributes<a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;ocp4-cis-profile-to-oscal-cd&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD-functions>Methods:<a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span></code> <a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle task ocp4-cis-profile-to-oscal-cd.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>config_object</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=configparser.SectionProxy>SectionProxy</span>]</code> </td> <td> <div class=doc-md-description> <p>Config section associated with the task.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>58</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD-attributes>Attributes<a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'ocp4-cis-profile-to-oscal-cd'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD-functions>Methods:<a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span></code> <a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle task ocp4-cis-profile-to-oscal-cd.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>config_object</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=configparser.SectionProxy>SectionProxy</span>]</code> </td> <td> <div class=doc-md-description> <p>Config section associated with the task.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>58</span>
 <span class=normal>59</span>
 <span class=normal>60</span>
 <span class=normal>61</span>
@@ -1064,12 +1064,12 @@
 <span class=normal>64</span>
 <span class=normal>65</span>
 <span class=normal>66</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_object</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>configparser</span><span class=o>.</span><span class=n>SectionProxy</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Initialize trestle task ocp4-cis-profile-to-oscal-cd.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        config_object: Config section associated with the task.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>(</span><span class=n>datetime</span><span class=o>.</span><span class=n>UTC</span><span class=p>)</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=n>microsecond</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span><span class=o>.</span><span class=n>isoformat</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide an actual outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>160</span>
@@ -1079,12 +1079,12 @@
 <span class=normal>164</span>
 <span class=normal>165</span>
 <span class=normal>166</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Provide an actual outcome."""</span>
     <span class=k>try</span><span class=p>:</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_execute</span><span class=p>()</span>
     <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>traceback</span><span class=o>.</span><span class=n>format_exc</span><span class=p>())</span>
-        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.print_info class="doc doc-heading"> <code class="highlight language-python"><span class=n>print_info</span><span class=p>()</span></code> <a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.print_info class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Print the help string.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 72</span>
 <span class=normal> 73</span>
 <span class=normal> 74</span>
@@ -1168,96 +1168,96 @@
 <span class=normal>152</span>
 <span class=normal>153</span>
 <span class=normal>154</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>print_info</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.&#39;</span><span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Purpose: Create component definition from standard (e.g. CIS benchmark).&#39;</span><span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Configuration flags sit under [task.ocp4-cis-profile-to-oscal-cd]:&#39;</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  component-name         = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;component name, e.g. OSCO.&#39;</span>
+<span class=w>    </span><span class=sd>"""Print the help string."""</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.'</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'Purpose: Create component definition from standard (e.g. CIS benchmark).'</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'Configuration flags sit under [task.ocp4-cis-profile-to-oscal-cd]:'</span><span class=p>)</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  component-name         = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'component name, e.g. OSCO.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  org-name               = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;organization name, e.g. International Business Machines.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  org-name               = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'organization name, e.g. International Business Machines.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  org-remarks            = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;organization remarks, e.g. IBM.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  org-remarks            = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'organization remarks, e.g. IBM.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  folder-cac             = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;folder containing compliance-as-code artifacts, e.g adjunct-data/cis-benchmarks/content.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  folder-cac             = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'folder containing compliance-as-code artifacts, e.g adjunct-data/cis-benchmarks/content.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  output-dir             = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;location to write the generated component-definition.json file.&#39;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=c1>#</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-name           = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile name, e.g. OCP4 CIS-benchmark v4.&#39;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-mnemonic       = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile mnemonic, e.g. ocp4-cis-node.&#39;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-ns             = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile ns, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud.&#39;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-version        = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile version, e.g. 1.1.&#39;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-check-version  = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile check version, e.g. 0.1.58.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  output-dir             = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'location to write the generated component-definition.json file.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
     <span class=c1>#</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-type           = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile type, e.g. OCP4.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-name           = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile name, e.g. OCP4 CIS-benchmark v4.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-list           = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;profile list is blank separated list of &quot;&lt;suffix&gt;&quot; for config entries: &#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-mnemonic       = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile mnemonic, e.g. ocp4-cis-node.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;                           profile-file.&lt;suffix&gt;, profile-title.&lt;suffix&gt;, profile-url.&lt;suffix&gt;&#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;, e.g. cis cis-node.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-ns             = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile ns, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-file.&lt;suffix&gt;  = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;path of the profile file to ingest&#39;</span>
-    <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;, e.g. ${folder-cac}/products/ocp4/profiles/cis-node.profile.&#39;</span>  <span class=c1># noqa</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-version        = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile version, e.g. 1.1.'</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-check-version  = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile check version, e.g. 0.1.58.'</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+    <span class=c1>#</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-type           = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile type, e.g. OCP4.'</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-list           = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'profile list is blank separated list of "&lt;suffix&gt;" for config entries: '</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'                           profile-file.&lt;suffix&gt;, profile-title.&lt;suffix&gt;, profile-url.&lt;suffix&gt;'</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>', e.g. cis cis-node.'</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-file.&lt;suffix&gt;  = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'path of the profile file to ingest'</span>
+    <span class=n>text3</span> <span class=o>=</span> <span class=s1>', e.g. ${folder-cac}/products/ocp4/profiles/cis-node.profile.'</span>  <span class=c1># noqa</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-title.&lt;suffix&gt; = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;title of the profile&#39;</span>
-    <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;, e.g. CIS Red Hat OpenShift Container Platform 4 Benchmark.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-title.&lt;suffix&gt; = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'title of the profile'</span>
+    <span class=n>text3</span> <span class=o>=</span> <span class=s1>', e.g. CIS Red Hat OpenShift Container Platform 4 Benchmark.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-url.&lt;suffix&gt;   = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;URL of the profile&#39;</span>
-    <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;, e.g. https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  profile-url.&lt;suffix&gt;   = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'URL of the profile'</span>
+    <span class=n>text3</span> <span class=o>=</span> <span class=s1>', e.g. https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  rule-to-parameters-map = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;map file for set-parameters, e.g. &#39;</span>
-    <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;adjunct-data/task-files/rule2var.json.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  rule-to-parameters-map = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'map file for set-parameters, e.g. '</span>
+    <span class=n>text3</span> <span class=o>=</span> <span class=s1>'adjunct-data/task-files/rule2var.json.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  selected-rules         = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;file with list of selected rules, e.g. &#39;</span>
-    <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;adjunct-data/task-files/selected_rules.json.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  selected-rules         = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'file with list of selected rules, e.g. '</span>
+    <span class=n>text3</span> <span class=o>=</span> <span class=s1>'adjunct-data/task-files/selected_rules.json.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
-    <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  enabled-rules          = &#39;</span>
-    <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;file with list of enabled rules, e.g. &#39;</span>
-    <span class=n>text3</span> <span class=o>=</span> <span class=s1>&#39;adjunct-data/task-files/enabled_rules.json.&#39;</span>
+    <span class=n>text1</span> <span class=o>=</span> <span class=s1>'  enabled-rules          = '</span>
+    <span class=n>text2</span> <span class=o>=</span> <span class=s1>'file with list of enabled rules, e.g. '</span>
+    <span class=n>text3</span> <span class=o>=</span> <span class=s1>'adjunct-data/task-files/enabled_rules.json.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span> <span class=o>+</span> <span class=n>text3</span><span class=p>)</span>
     <span class=c1>#</span>
-    <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
+    <span class=n>text</span> <span class=o>=</span> <span class=s1>''</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
-    <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;Notes:&#39;</span>
+    <span class=n>text</span> <span class=o>=</span> <span class=s1>'Notes:'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
-    <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;1. If a control has selected rules but no enabled rules, then all those selected are included.&#39;</span>
+    <span class=n>text</span> <span class=o>=</span> <span class=s1>'1. If a control has selected rules but no enabled rules, then all those selected are included.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
-    <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;2. If a control has selected and enabled rules, then only those enabled are included.&#39;</span>
+    <span class=n>text</span> <span class=o>=</span> <span class=s1>'2. If a control has selected and enabled rules, then only those enabled are included.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
-    <span class=n>text</span> <span class=o>=</span> <span class=s1>&#39;3. If a control has no selected rules, then none are included regardless of enabled.&#39;</span>
+    <span class=n>text</span> <span class=o>=</span> <span class=s1>'3. If a control has no selected rules, then none are included regardless of enabled.'</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.set_timestamp class="doc doc-heading"> <code class="highlight language-python"><span class=n>set_timestamp</span><span class=p>(</span><span class=n>timestamp</span><span class=p>)</span></code> <a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.set_timestamp class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Set the timestamp.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>68</span>
 <span class=normal>69</span>
 <span class=normal>70</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>set_timestamp</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Set the timestamp.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Set the timestamp."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>timestamp</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.simulate class="doc doc-heading"> <code class="highlight language-python"><span class=n>simulate</span><span class=p>()</span></code> <a href=#trestle.tasks.ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD.simulate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide a simulated outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>156</span>
 <span class=normal>157</span>
 <span class=normal>158</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>simulate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;simulated-success&#39;</span><span class=p>)</span>
+<span class=w>    </span><span class=sd>"""Provide a simulated outcome."""</span>
+    <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'simulated-success'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

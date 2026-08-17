@@ -114,7 +114,7 @@ x-trestle-add-props:
   #   - name: ac1_new_prop
   #     value: new property value
   #
-  # Add properties to a statement part like this, where &quot;b.&quot; is the label of the target statement part
+  # Add properties to a statement part like this, where "b." is the label of the target statement part
   #   - name: ac1_new_prop
   #     value: new property value
   #     smt-part: b.
@@ -164,8 +164,8 @@ Access control policy and procedures address the controls in the AC family that 
 &lt;!-- The added parts in the profile for this control are below.  You may edit them and/or add new ones. --&gt;
 &lt;!-- Each addition must have a heading either of the form ## Control my_addition_name --&gt;
 &lt;!-- or ## Part a. (where the a. refers to one of the control statement labels.) --&gt;
-&lt;!-- &quot;## Control&quot; parts are new parts added after the statement part. --&gt;
-&lt;!-- &quot;## Part&quot; parts are new subparts added into the existing top-level statement part with that label. --&gt;
+&lt;!-- "## Control" parts are new parts added after the statement part. --&gt;
+&lt;!-- "## Part" parts are new subparts added into the existing top-level statement part with that label. --&gt;
 &lt;!-- Subparts may be added with nested hash levels of the form ### My Subpart Name --&gt;
 &lt;!-- underneath the parent ## Control or ## Part being added --&gt;
 &lt;!-- See https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/ for guidance. --&gt;
@@ -216,30 +216,30 @@ Prose added as a sub-part to Part a. of the control
   &lt;dt&gt;# not a header&lt;/dt&gt;
 &lt;/dl&gt;
 </code></pre></div></li> <li>Written in the single-line <code># not a header</code> and multi-line code blocks: <div class=highlight><pre><span></span><code><span class=gh># not a header </span>
-</code></pre></div></li> <li>Written in the links <code>[# not a header](url)</code></li> <li>Trestle will also not support headers inside the blockquotes <code>&gt; # not a header</code></li> </ol> <p>In all cases above Trestle markdown parser will skip such headers and it will be not added to the control.</p> </details> </details> <details> <summary>trestle author profile-resolve</summary> <p>The <code>trestle author profile-resolve</code> command is different from the <code>generate/assemble</code> commands because it doesn't involve markdown and instead it takes an input profile and creates the corresponding resolved profile catalog in <code>JSON</code> format. In addition, it has several options for how parameters are represented in prose of the controls, and whether or not those values are substituted.</p> <p>As an example, the prose in the statement for control <code>AC-1</code> is:</p> <p><code>Develops, documents, and disseminates to {{ insert: param, ac-1_prm_1 }}:</code></p> <p>The parameter <code>ac-1_prm_1</code> has a label: <code>organization-defined personnel or roles</code> and it may or may not have a value assigned by the profile being resolved. Suppose it has been assigned the value, <code>my prm 1 value</code>. In that case we can either leave the prose as-is (with the parameter in "moustache" form) in the resolved catalog, or we can substitute the value, or we can substitute the descriptive label. trestle supports all these options, along with an optional prefix to specify whether a value has been assigned or not - typically using the name of the organization responsible.</p> <p>The <code>--show-value -sv</code> option will cause the value for the parameter to be substituted in the prose if it is available - otherwise the list of selection options if it has any, or simply the label prose if it has no options.</p> <p>The <code>--value-assigned-prefix -vap</code> option adds a prefix to the value if the value is being assigned by the profile, and the <code>--value-not-assigned-prefix -vnap</code> will assign a prefix to parameters that do not have values assigned, along with the descriptive parameter label.</p> <p>Finally, the <code>--bracket-format -bf</code> option specifies how the parameter representation will be wrapped in braces. The specification is done by placing characters around a single <code>.</code> symbol representing the parameter string, e.g. <code>[.]</code> will place square brackets around the parameter.</p> <p>Note that these options that specify how the parameter is represented all require <code>--show-value</code> to be True, otherwise the raw prose with the moustache is produced.</p> <p>As an example, if we use options</p> <p><code>trestle author profile-resolve -n my_profile -o my_resolved_catalog -sv -bf [.] -vap "ACME Assignment:" -vnap "Assignment:"</code></p> <p>the above prose would become:</p> <p><code>Develops, documents, and disseminates to [ACME Assignment: my prm 1 value]:</code></p> <p>(Note that you need appropriate use of quotation marks in the command for any strings that include spaces or special characters.)</p> <p>And if the parameter did not have a value assigned the result would be:</p> <p><code>Develops, documents, and disseminates to [Assignment: organization-defined personell or roles]:</code></p> <p>Finally, if the parameter already had a value specified in the catalog, the value would be shown by itself in braces:</p> <p><code>Develops, documents, and disseminates to [value in catalog]:</code></p> <p>Similar substitution happens when a parameter has choices that themselves reference a parameter, such as:</p> <div class=highlight><pre><span></span><code>&quot;id&quot;: &quot;ac-4.4_prm_1&quot;,
-&quot;select&quot;: {
-  &quot;how-many&quot;: &quot;one-or-more&quot;,
-  &quot;choice&quot;: [
-    &quot;decrypting the information&quot;,
-    &quot;blocking the flow of the encrypted information&quot;,
-    &quot;terminating communications sessions attempting to pass encrypted information&quot;,
-    &quot; {{ insert: param, ac-4.4_prm_2 }} &quot;
+</code></pre></div></li> <li>Written in the links <code>[# not a header](url)</code></li> <li>Trestle will also not support headers inside the blockquotes <code>&gt; # not a header</code></li> </ol> <p>In all cases above Trestle markdown parser will skip such headers and it will be not added to the control.</p> </details> </details> <details> <summary>trestle author profile-resolve</summary> <p>The <code>trestle author profile-resolve</code> command is different from the <code>generate/assemble</code> commands because it doesn't involve markdown and instead it takes an input profile and creates the corresponding resolved profile catalog in <code>JSON</code> format. In addition, it has several options for how parameters are represented in prose of the controls, and whether or not those values are substituted.</p> <p>As an example, the prose in the statement for control <code>AC-1</code> is:</p> <p><code>Develops, documents, and disseminates to {{ insert: param, ac-1_prm_1 }}:</code></p> <p>The parameter <code>ac-1_prm_1</code> has a label: <code>organization-defined personnel or roles</code> and it may or may not have a value assigned by the profile being resolved. Suppose it has been assigned the value, <code>my prm 1 value</code>. In that case we can either leave the prose as-is (with the parameter in "moustache" form) in the resolved catalog, or we can substitute the value, or we can substitute the descriptive label. trestle supports all these options, along with an optional prefix to specify whether a value has been assigned or not - typically using the name of the organization responsible.</p> <p>The <code>--show-value -sv</code> option will cause the value for the parameter to be substituted in the prose if it is available - otherwise the list of selection options if it has any, or simply the label prose if it has no options.</p> <p>The <code>--value-assigned-prefix -vap</code> option adds a prefix to the value if the value is being assigned by the profile, and the <code>--value-not-assigned-prefix -vnap</code> will assign a prefix to parameters that do not have values assigned, along with the descriptive parameter label.</p> <p>Finally, the <code>--bracket-format -bf</code> option specifies how the parameter representation will be wrapped in braces. The specification is done by placing characters around a single <code>.</code> symbol representing the parameter string, e.g. <code>[.]</code> will place square brackets around the parameter.</p> <p>Note that these options that specify how the parameter is represented all require <code>--show-value</code> to be True, otherwise the raw prose with the moustache is produced.</p> <p>As an example, if we use options</p> <p><code>trestle author profile-resolve -n my_profile -o my_resolved_catalog -sv -bf [.] -vap "ACME Assignment:" -vnap "Assignment:"</code></p> <p>the above prose would become:</p> <p><code>Develops, documents, and disseminates to [ACME Assignment: my prm 1 value]:</code></p> <p>(Note that you need appropriate use of quotation marks in the command for any strings that include spaces or special characters.)</p> <p>And if the parameter did not have a value assigned the result would be:</p> <p><code>Develops, documents, and disseminates to [Assignment: organization-defined personell or roles]:</code></p> <p>Finally, if the parameter already had a value specified in the catalog, the value would be shown by itself in braces:</p> <p><code>Develops, documents, and disseminates to [value in catalog]:</code></p> <p>Similar substitution happens when a parameter has choices that themselves reference a parameter, such as:</p> <div class=highlight><pre><span></span><code>"id": "ac-4.4_prm_1",
+"select": {
+  "how-many": "one-or-more",
+  "choice": [
+    "decrypting the information",
+    "blocking the flow of the encrypted information",
+    "terminating communications sessions attempting to pass encrypted information",
+    " {{ insert: param, ac-4.4_prm_2 }} "
   ]
 </code></pre></div> <p>If the statement prose for AC-4.4 is:</p> <p><code>The information system prevents encrypted information from bypassing content-checking mechanisms by {{ insert: param, ac-4.4_prm_1 }}.</code></p> <p>and if a value <code>pulling the plug</code> has been assigned to ac-4.4_prm_2, the prose will be:</p> <p><code>The information system prevents encrypted information from bypassing content-checking mechanisms by [Selection (one or more): decrypting the information, blocking the flow of the encrypted information, terminating the communications sessions attempting to pass encrypted information, [ACME Assignment: pulling the plug]].</code></p> <p>There is a separate option from <code>--show-values</code> that will instead show only the descriptive labels for the parameters - again with an optional prefix. The options are <code>--show-labels -sl</code> and <code>--label-prefix -lp</code>. Note that there is no need for "assigned" or "not assigned" because no values are being shown - just the labels.</p> <p>If we resolve the profile with options <code>--show-labels --label-prefix "Label:" --bracket-format [.]</code> the resulting prose from earlier would be:</p> <p><code>Develops, documents, and disseminates to [Label: organization-defined personnel or roles]:</code></p> <p>and any value present for the parameter would be ignored.</p> <p>Similar options apply to the <code>jinja</code> authoring commands.</p> </details> <details> <summary>trestle author profile-inherit</summary> <p>The <code>trestle author profile-inherit</code> command is different from the <code>generate/assemble</code> commands because it doesn't involve markdown and instead it takes an parent profile and ssp and creates child profile in <code>JSON</code> format.</p> <p>When utilizing a process with leveraged authorizations, use the command <code>trestle author profile-inherit</code> to create a profile with initial content using a parent profile and SSP with inheritable controls. The provided and responsibility statements for all <code>by-component</code> fields, as well as the implementation status, will be used to evaluate the leveraged SSP. To be filtered from the output profile (i.e. controls delta profile), all components must have exported provided statements, no exported responsibility statements, and an implementation status of <code>implemented</code>.</p> <p>The filter command is invoked as:</p> <p><code>trestle author profile-inherit --profile my_parent --ssp my_leveraged_ssp --output controls_delta_profile</code></p> <p>Both the parent profile and the SSP must be present in the trestle workspace. This command produces a new workspace profile that imports the parent profile and filters the inherited controls from the SSP using the <code>exclude-controls</code> and <code>include-controls</code> fields in the profile import.</p> <details> <summary>Example imports generated from profile-inherit</summary> <div class=highlight><pre><span></span><code><span class=p>{</span>
-<span class=w>  </span><span class=nt>&quot;imports&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>  </span><span class=nt>"imports"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;href&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;trestle://profiles/controls_delta/profile.json&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;include-controls&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>      </span><span class=nt>"href"</span><span class=p>:</span><span class=w> </span><span class=s2>"trestle://profiles/controls_delta/profile.json"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"include-controls"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;with-ids&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;ac-2&quot;</span>
+<span class=w>          </span><span class=nt>"with-ids"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"ac-2"</span>
 <span class=w>          </span><span class=p>]</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>      </span><span class=p>],</span>
-<span class=w>      </span><span class=nt>&quot;exclude-controls&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>      </span><span class=nt>"exclude-controls"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;with-ids&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;ac-1&quot;</span>
+<span class=w>          </span><span class=nt>"with-ids"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"ac-1"</span>
 <span class=w>          </span><span class=p>]</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>      </span><span class=p>]</span>
@@ -257,7 +257,7 @@ x-trestle-rules-params:
   comp_aa:
 <span class=w>    </span><span class=k>-</span><span class=w> </span>name: shared_param_1
       description: shared param 1 in aa
-      options: &#39;[&quot;shared_param_1_aa_opt_1&quot;, &quot;shared_param_1_aa_opt_2&quot;]&#39;
+      options: '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
       rule-id: top_shared_rule_1
 x-trestle-comp-def-rules-param-vals:
   # You may set new values for rule parameters by adding
@@ -348,80 +348,80 @@ ______________________________________________________________________
 </code></pre></div> </details> <p>There is no direct way to specify rules in the ComponentDefinition, so they are specified via properties as shown here:</p> <details> <summary>Representation of rules in the props of a ComponentDefinition</summary> <div class=highlight><pre><span></span><code><span class=p>[</span>
 <span class=w>  </span><span class=p>[</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule_Id&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;http://comp_ns&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;comp_rule_aa_1&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule_Id&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;remarks&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;rule_2&quot;</span>
+<span class=w>      </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule_Id"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"http://comp_ns"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"comp_rule_aa_1"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule_Id"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"remarks"</span><span class=p>:</span><span class=w> </span><span class=s2>"rule_2"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule_Description&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;http://comp_ns&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;comp rule aa 1&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;remarks&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;rule_2&quot;</span>
+<span class=w>      </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule_Description"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"http://comp_ns"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"comp rule aa 1"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"remarks"</span><span class=p>:</span><span class=w> </span><span class=s2>"rule_2"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule_Id&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;http://comp_ns&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;comp_rule_aa_2&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule_Id&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;remarks&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;rule_3&quot;</span>
+<span class=w>      </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule_Id"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"http://comp_ns"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"comp_rule_aa_2"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule_Id"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"remarks"</span><span class=p>:</span><span class=w> </span><span class=s2>"rule_3"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule_Description&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;http://comp_ns&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;comp rule aa 2&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule_Description&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;remarks&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;rule_3&quot;</span>
+<span class=w>      </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule_Description"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"http://comp_ns"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"comp rule aa 2"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule_Description"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"remarks"</span><span class=p>:</span><span class=w> </span><span class=s2>"rule_3"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Parameter_Id&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;http://comp_ns&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;shared_param_1&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Parameter_Id&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;remarks&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;rule_1&quot;</span>
+<span class=w>      </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Parameter_Id"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"http://comp_ns"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"shared_param_1"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"Parameter_Id"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"remarks"</span><span class=p>:</span><span class=w> </span><span class=s2>"rule_1"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Parameter_Description&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;http://comp_ns&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;shared param 1 in aa&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Parameter_Description&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;remarks&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;rule_1&quot;</span>
+<span class=w>      </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Parameter_Description"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"http://comp_ns"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"shared param 1 in aa"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"Parameter_Description"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"remarks"</span><span class=p>:</span><span class=w> </span><span class=s2>"rule_1"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Parameter_Value_Alternatives&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;http://comp_ns&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;[\&quot;shared_param_1_aa_opt_1\&quot;, \&quot;shared_param_1_aa_opt_2\&quot;]&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Parameter_Value_Alternatives&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;remarks&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;rule_1&quot;</span>
+<span class=w>      </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Parameter_Value_Alternatives"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"http://comp_ns"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\"]"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"Parameter_Value_Alternatives"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"remarks"</span><span class=p>:</span><span class=w> </span><span class=s2>"rule_1"</span>
 <span class=w>    </span><span class=p>}</span>
 <span class=w>  </span><span class=p>],</span>
 <span class=w>  </span><span class=p>{</span>
-<span class=w>    </span><span class=nt>&quot;set-parameters&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>    </span><span class=nt>"set-parameters"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>      </span><span class=p>{</span>
-<span class=w>        </span><span class=nt>&quot;param-id&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;shared_param_1&quot;</span><span class=p>,</span>
-<span class=w>        </span><span class=nt>&quot;values&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>          </span><span class=s2>&quot;shared_param_1_aa_opt_1&quot;</span>
+<span class=w>        </span><span class=nt>"param-id"</span><span class=p>:</span><span class=w> </span><span class=s2>"shared_param_1"</span><span class=p>,</span>
+<span class=w>        </span><span class=nt>"values"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=s2>"shared_param_1_aa_opt_1"</span>
 <span class=w>        </span><span class=p>],</span>
-<span class=w>        </span><span class=nt>&quot;remarks&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;set shared param aa 1&quot;</span>
+<span class=w>        </span><span class=nt>"remarks"</span><span class=p>:</span><span class=w> </span><span class=s2>"set shared param aa 1"</span>
 <span class=w>      </span><span class=p>}</span>
 <span class=w>    </span><span class=p>]</span>
 <span class=w>  </span><span class=p>}</span>
 <span class=p>]</span>
 </code></pre></div> </details> <p>In this scheme the rules have a <code>Rule_Id</code> (e.g. <code>comp_rule_aa_1</code> in this example) and an associated tag (<code>rule_2</code>) in the <code>remarks</code> section that binds the name to the description: <code>Rule_Description</code>=<code>comp rule aa 1</code>. In addition, rules may be associated with parameters specified here with <code>Parameter_id</code>=<code>shared_param_1</code>, <code>Parameter_Description</code>=<code>shared param 1 in aa</code>, and <code>Parameter_Value_Alternatives</code>=<code>[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\"]</code>. <code>Parameter_Value_Alternatives</code> corresponds to possible Choices for the parameter value.</p> <p>Also shown in this JSON excerpt is a normal set-parameter used to set the value of a parameter associated with a rule id. Thus the setting of the parameter follows the normal OSCAL schema for setting a parameter value, while the specification of the parameter and its options is specified via linked properties.</p> <p>The markdown header lists all the rules that apply to this control, along with their descriptions, and for each implementation response, the rules that apply to it are shown. The association of an ImplementedRequirement with a rule is again done with properties as shown here:</p> <details> <summary>Linking of ImplementedRequirement to a rule</summary> <div class=highlight><pre><span></span><code><span class=p>{</span>
-<span class=w>  </span><span class=nt>&quot;implemented-requirements&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>  </span><span class=nt>"implemented-requirements"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;ca5ea4c5-ba51-4b1d-932a-5606891b7500&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;control-id&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;ac-1&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;imp req prose for ac-1 from comp aa&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>      </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"ca5ea4c5-ba51-4b1d-932a-5606891b7500"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"control-id"</span><span class=p>:</span><span class=w> </span><span class=s2>"ac-1"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"imp req prose for ac-1 from comp aa"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule_Id&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;top_shared_rule_1&quot;</span>
+<span class=w>          </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule_Id"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"top_shared_rule_1"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;implementation-status&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;implemented&quot;</span>
+<span class=w>          </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"implementation-status"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"implemented"</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>      </span><span class=p>]</span>
 <span class=w>    </span><span class=p>}</span>
@@ -449,22 +449,22 @@ x-trestle-rules-params:
   comp_aa:
 <span class=w>    </span><span class=k>-</span><span class=w> </span>name: shared_param_1
       description: shared param 1 in aa
-      options: &#39;[&quot;shared_param_1_aa_opt_1&quot;, &quot;shared_param_1_aa_opt_2&quot;]&#39;
+      options: '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
       rule-id: top_shared_rule_1
   comp_ab:
 <span class=w>    </span><span class=k>-</span><span class=w> </span>name: shared_param_1
       description: shared param 1 in ab
-      options: &#39;[&quot;shared_param_1_ab_opt_1&quot;, &quot;shared_param_1_ab_opt_2&quot;]&#39;
+      options: '["shared_param_1_ab_opt_1", "shared_param_1_ab_opt_2"]'
       rule-id: top_shared_rule_1
   comp_ba:
 <span class=w>    </span><span class=k>-</span><span class=w> </span>name: shared_param_1
       description: shared param 1 in ba
-      options: &#39;[&quot;shared_param_1_ba_opt_1&quot;, &quot;shared_param_1_ba_opt_2&quot;]&#39;
+      options: '["shared_param_1_ba_opt_1", "shared_param_1_ba_opt_2"]'
       rule-id: top_shared_rule_1
   comp_bb:
 <span class=w>    </span><span class=k>-</span><span class=w> </span>name: shared_param_1
       description: shared param 1 in bb
-      options: &#39;[&quot;shared_param_1_bb_opt_1&quot;, &quot;shared_param_1_bb_opt_2&quot;]&#39;
+      options: '["shared_param_1_bb_opt_1", "shared_param_1_bb_opt_2"]'
       rule-id: top_shared_rule_1
 x-trestle-comp-def-rules-param-vals:
   # You may set new values for rule parameters by adding
@@ -526,7 +526,7 @@ x-trestle-add-props:
   #   - name: ac1_new_prop
   #     value: new property value
   #
-  # Add properties to a statement part like this, where &quot;b.&quot; is the label of the target statement part
+  # Add properties to a statement part like this, where "b." is the label of the target statement part
   #   - name: ac1_new_prop
   #     value: new property value
   #     smt-part: b.
@@ -664,7 +664,7 @@ x-trestle-leveraging-comp:
 
 <span class=gh># Responsibility Statement Description</span>
 
-Leveraging system&#39;s responsibilities with respect to inheriting this capability.
+Leveraging system's responsibilities with respect to inheriting this capability.
 
 <span class=gh># Satisfied Statement Description</span>
 
@@ -686,7 +686,7 @@ Consumer-appropriate description of what may be inherited.
 
 <span class=gh># Responsibility Statement Description</span>
 
-Leveraging system&#39;s responsibilities with respect to inheriting this capability.
+Leveraging system's responsibilities with respect to inheriting this capability.
 
 <span class=gh># Satisfied Statement Description</span>
 

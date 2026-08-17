@@ -171,153 +171,153 @@
 <span class=normal>176</span>
 <span class=normal>177</span>
 <span class=normal>178</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>OscoResultToOscalAR</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Task to convert Osco result to OSCAL json.</span>
 
 <span class=sd>    Attributes:</span>
 <span class=sd>        name: Name of the task.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
 
-    <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;osco-result-to-oscal-ar&#39;</span>
+    <span class=n>name</span> <span class=o>=</span> <span class=s1>'osco-result-to-oscal-ar'</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_object</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>configparser</span><span class=o>.</span><span class=n>SectionProxy</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Initialize trestle task osco-result-to-oscal-ar.</span>
 
 <span class=sd>        Args:</span>
 <span class=sd>            config_object: Config section associated with the task.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>print_info</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
+<span class=w>        </span><span class=sd>"""Print the help string."""</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.'</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-            <span class=s1>&#39;Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) &#39;</span>
-            <span class=o>+</span> <span class=s1>&#39;partial results files.&#39;</span>
+            <span class=s1>'Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) '</span>
+            <span class=o>+</span> <span class=s1>'partial results files.'</span>
         <span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Configuration flags sit under [task.osco-result-to-oscal-ar]:&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'Configuration flags sit under [task.osco-result-to-oscal-ar]:'</span><span class=p>)</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-            <span class=s1>&#39;  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.&#39;</span>
+            <span class=s1>'  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'</span>
         <span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;  input-dir = (required) the path of the input directory comprising Osco results.&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'  input-dir = (required) the path of the input directory comprising Osco results.'</span><span class=p>)</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-            <span class=s1>&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span>
+            <span class=s1>'  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'</span>
         <span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;  output-overwrite = (optional) true [default] or false; replace existing output when true.&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'  output-overwrite = (optional) true [default] or false; replace existing output when true.'</span><span class=p>)</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-            <span class=s1>&#39;  quiet = (optional) true or false [default]; display file creations and rules analysis when false.&#39;</span>
+            <span class=s1>'  quiet = (optional) true or false [default]; display file creations and rules analysis when false.'</span>
         <span class=p>)</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-            <span class=s1>&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as &#39;</span>
-            <span class=o>+</span> <span class=s1>&#39; 2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Osco &#39;</span>
-            <span class=o>+</span> <span class=s1>&#39; result is used if present, otherwise current time is used.&#39;</span>
+            <span class=s1>'  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as '</span>
+            <span class=o>+</span> <span class=s1>' 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Osco '</span>
+            <span class=o>+</span> <span class=s1>' result is used if present, otherwise current time is used.'</span>
         <span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-            <span class=s1>&#39;Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL &#39;</span>
-            <span class=o>+</span> <span class=s1>&#39;partial results format.&#39;</span>
+            <span class=s1>'Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL '</span>
+            <span class=o>+</span> <span class=s1>'partial results format.'</span>
         <span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>simulate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Provide a simulated outcome."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span> <span class=o>=</span> <span class=kc>True</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_transform</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Provide an actual outcome."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span> <span class=o>=</span> <span class=kc>False</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_transform</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_transform</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Perform transformation.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Perform transformation."""</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_transform_work</span><span class=p>()</span>
         <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=n>traceback</span><span class=o>.</span><span class=n>format_exc</span><span class=p>())</span>
-            <span class=n>mode</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
+            <span class=n>mode</span> <span class=o>=</span> <span class=s1>''</span>
             <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span><span class=p>:</span>
-                <span class=n>mode</span> <span class=o>=</span> <span class=s1>&#39;simulated-&#39;</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+                <span class=n>mode</span> <span class=o>=</span> <span class=s1>'simulated-'</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>'failure'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_transform_work</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Perform transformation work steps.</span>
 
 <span class=sd>        Work steps: read input, process, write output, display analysis</span>
-<span class=sd>        &quot;&quot;&quot;</span>
-        <span class=n>mode</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
+<span class=sd>        """</span>
+        <span class=n>mode</span> <span class=o>=</span> <span class=s1>''</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span><span class=p>:</span>
-            <span class=n>mode</span> <span class=o>=</span> <span class=s1>&#39;simulated-&#39;</span>
+            <span class=n>mode</span> <span class=o>=</span> <span class=s1>'simulated-'</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>&#39;config missing&#39;</span><span class=p>)</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>'config missing'</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>'failure'</span><span class=p>)</span>
         <span class=c1># config required input &amp; output dirs</span>
         <span class=k>try</span><span class=p>:</span>
-            <span class=n>idir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;input-dir&#39;</span><span class=p>]</span>
+            <span class=n>idir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'input-dir'</span><span class=p>]</span>
             <span class=n>ipth</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>idir</span><span class=p>)</span>
-            <span class=n>odir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>&#39;output-dir&#39;</span><span class=p>]</span>
+            <span class=n>odir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=s1>'output-dir'</span><span class=p>]</span>
             <span class=n>opth</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>odir</span><span class=p>)</span>
         <span class=k>except</span> <span class=ne>KeyError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing&#39;</span><span class=p>)</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing'</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>'failure'</span><span class=p>)</span>
         <span class=c1># config optional overwrite &amp; quiet</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_overwrite</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>&#39;output-overwrite&#39;</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
-        <span class=n>quiet</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;quiet&#39;</span><span class=p>,</span> <span class=kc>False</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_overwrite</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>'output-overwrite'</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
+        <span class=n>quiet</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'quiet'</span><span class=p>,</span> <span class=kc>False</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_verbose</span> <span class=o>=</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>quiet</span>
         <span class=c1># config optional timestamp</span>
-        <span class=n>timestamp</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;timestamp&#39;</span><span class=p>)</span>
+        <span class=n>timestamp</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'timestamp'</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>timestamp</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=k>try</span><span class=p>:</span>
                 <span class=n>OscoTransformer</span><span class=o>.</span><span class=n>set_timestamp</span><span class=p>(</span><span class=n>timestamp</span><span class=p>)</span>
             <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>&#39;config invalid &quot;timestamp&quot;&#39;</span><span class=p>)</span>
-                <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>'config invalid "timestamp"'</span><span class=p>)</span>
+                <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>'failure'</span><span class=p>)</span>
         <span class=c1># config optional performance</span>
-        <span class=n>modes</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;checking&#39;</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>&#39;checking&#39;</span><span class=p>,</span> <span class=kc>False</span><span class=p>)}</span>
+        <span class=n>modes</span> <span class=o>=</span> <span class=p>{</span><span class=s1>'checking'</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>'checking'</span><span class=p>,</span> <span class=kc>False</span><span class=p>)}</span>
         <span class=c1># insure output dir exists</span>
         <span class=n>opth</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>parents</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
         <span class=c1># process</span>
         <span class=k>for</span> <span class=n>ifile</span> <span class=ow>in</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>ipth</span><span class=o>.</span><span class=n>iterdir</span><span class=p>()):</span>
-            <span class=k>if</span> <span class=n>ifile</span><span class=o>.</span><span class=n>suffix</span> <span class=ow>not</span> <span class=ow>in</span> <span class=p>[</span><span class=s1>&#39;.json&#39;</span><span class=p>,</span> <span class=s1>&#39;.jsn&#39;</span><span class=p>,</span> <span class=s1>&#39;.yaml&#39;</span><span class=p>,</span> <span class=s1>&#39;.yml&#39;</span><span class=p>,</span> <span class=s1>&#39;.xml&#39;</span><span class=p>]:</span>
+            <span class=k>if</span> <span class=n>ifile</span><span class=o>.</span><span class=n>suffix</span> <span class=ow>not</span> <span class=ow>in</span> <span class=p>[</span><span class=s1>'.json'</span><span class=p>,</span> <span class=s1>'.jsn'</span><span class=p>,</span> <span class=s1>'.yaml'</span><span class=p>,</span> <span class=s1>'.yml'</span><span class=p>,</span> <span class=s1>'.xml'</span><span class=p>]:</span>
                 <span class=k>continue</span>
             <span class=n>blob</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_read_file</span><span class=p>(</span><span class=n>ifile</span><span class=p>)</span>
             <span class=n>osco_transformer</span> <span class=o>=</span> <span class=n>OscoTransformer</span><span class=p>()</span>
             <span class=n>osco_transformer</span><span class=o>.</span><span class=n>set_modes</span><span class=p>(</span><span class=n>modes</span><span class=p>)</span>
             <span class=n>results</span> <span class=o>=</span> <span class=n>osco_transformer</span><span class=o>.</span><span class=n>transform</span><span class=p>(</span><span class=n>blob</span><span class=p>)</span>
-            <span class=n>oname</span> <span class=o>=</span> <span class=n>ifile</span><span class=o>.</span><span class=n>stem</span> <span class=o>+</span> <span class=s1>&#39;.oscal&#39;</span> <span class=o>+</span> <span class=s1>&#39;.json&#39;</span>
+            <span class=n>oname</span> <span class=o>=</span> <span class=n>ifile</span><span class=o>.</span><span class=n>stem</span> <span class=o>+</span> <span class=s1>'.oscal'</span> <span class=o>+</span> <span class=s1>'.json'</span>
             <span class=n>ofile</span> <span class=o>=</span> <span class=n>opth</span> <span class=o>/</span> <span class=n>oname</span>
             <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_overwrite</span> <span class=ow>and</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>ofile</span><span class=p>)</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1> already exists&#39;</span><span class=p>)</span>
-                <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1> already exists'</span><span class=p>)</span>
+                <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>'failure'</span><span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_write_file</span><span class=p>(</span><span class=n>results</span><span class=p>,</span> <span class=n>ofile</span><span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_show_analysis</span><span class=p>(</span><span class=n>osco_transformer</span><span class=p>)</span>
-        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>&#39;success&#39;</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=n>mode</span> <span class=o>+</span> <span class=s1>'success'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_read_file</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>ifile</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Read raw input file.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Read raw input file."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_verbose</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;input: </span><span class=si>{</span><span class=n>ifile</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'input: </span><span class=si>{</span><span class=n>ifile</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>ifile</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
             <span class=n>blob</span> <span class=o>=</span> <span class=n>fp</span><span class=o>.</span><span class=n>read</span><span class=p>()</span>
         <span class=k>return</span> <span class=n>blob</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_write_file</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>result</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>ofile</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Write oscal results file.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Write oscal results file."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span><span class=p>:</span>
             <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_verbose</span><span class=p>:</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>result</span><span class=o>.</span><span class=n>oscal_write</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>ofile</span><span class=p>))</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_show_analysis</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>osco_transformer</span><span class=p>:</span> <span class=n>OscoTransformer</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Show analysis.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Show analysis."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_verbose</span><span class=p>:</span>
             <span class=n>analysis</span> <span class=o>=</span> <span class=n>osco_transformer</span><span class=o>.</span><span class=n>analysis</span>
             <span class=k>for</span> <span class=n>line</span> <span class=ow>in</span> <span class=n>analysis</span><span class=p>:</span>
                 <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>line</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR-attributes>Attributes<a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;osco-result-to-oscal-ar&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR-functions>Methods:<a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span></code> <a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle task osco-result-to-oscal-ar.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>config_object</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=configparser.SectionProxy>SectionProxy</span>]</code> </td> <td> <div class=doc-md-description> <p>Config section associated with the task.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/osco_result_to_oscal_ar.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>42</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR-attributes>Attributes<a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'osco-result-to-oscal-ar'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR-functions>Methods:<a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span></code> <a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle task osco-result-to-oscal-ar.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>config_object</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=configparser.SectionProxy>SectionProxy</span>]</code> </td> <td> <div class=doc-md-description> <p>Config section associated with the task.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/osco_result_to_oscal_ar.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>42</span>
 <span class=normal>43</span>
 <span class=normal>44</span>
 <span class=normal>45</span>
@@ -325,18 +325,18 @@
 <span class=normal>47</span>
 <span class=normal>48</span>
 <span class=normal>49</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_object</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>configparser</span><span class=o>.</span><span class=n>SectionProxy</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Initialize trestle task osco-result-to-oscal-ar.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        config_object: Config section associated with the task.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide an actual outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/osco_result_to_oscal_ar.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>88</span>
 <span class=normal>89</span>
 <span class=normal>90</span>
 <span class=normal>91</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Provide an actual outcome."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span> <span class=o>=</span> <span class=kc>False</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_transform</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.print_info class="doc doc-heading"> <code class="highlight language-python"><span class=n>print_info</span><span class=p>()</span></code> <a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.print_info class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Print the help string.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/osco_result_to_oscal_ar.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>51</span>
@@ -370,41 +370,41 @@
 <span class=normal>79</span>
 <span class=normal>80</span>
 <span class=normal>81</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>print_info</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.&#39;</span><span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
+<span class=w>    </span><span class=sd>"""Print the help string."""</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.'</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-        <span class=s1>&#39;Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) &#39;</span>
-        <span class=o>+</span> <span class=s1>&#39;partial results files.&#39;</span>
+        <span class=s1>'Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) '</span>
+        <span class=o>+</span> <span class=s1>'partial results files.'</span>
     <span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Configuration flags sit under [task.osco-result-to-oscal-ar]:&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'Configuration flags sit under [task.osco-result-to-oscal-ar]:'</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-        <span class=s1>&#39;  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.&#39;</span>
+        <span class=s1>'  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'</span>
     <span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;  input-dir = (required) the path of the input directory comprising Osco results.&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'  input-dir = (required) the path of the input directory comprising Osco results.'</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-        <span class=s1>&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span>
+        <span class=s1>'  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'</span>
     <span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;  output-overwrite = (optional) true [default] or false; replace existing output when true.&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>'  output-overwrite = (optional) true [default] or false; replace existing output when true.'</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-        <span class=s1>&#39;  quiet = (optional) true or false [default]; display file creations and rules analysis when false.&#39;</span>
+        <span class=s1>'  quiet = (optional) true or false [default]; display file creations and rules analysis when false.'</span>
     <span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-        <span class=s1>&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as &#39;</span>
-        <span class=o>+</span> <span class=s1>&#39; 2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Osco &#39;</span>
-        <span class=o>+</span> <span class=s1>&#39; result is used if present, otherwise current time is used.&#39;</span>
+        <span class=s1>'  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as '</span>
+        <span class=o>+</span> <span class=s1>' 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Osco '</span>
+        <span class=o>+</span> <span class=s1>' result is used if present, otherwise current time is used.'</span>
     <span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
-        <span class=s1>&#39;Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL &#39;</span>
-        <span class=o>+</span> <span class=s1>&#39;partial results format.&#39;</span>
+        <span class=s1>'Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL '</span>
+        <span class=o>+</span> <span class=s1>'partial results format.'</span>
     <span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.simulate class="doc doc-heading"> <code class="highlight language-python"><span class=n>simulate</span><span class=p>()</span></code> <a href=#trestle.tasks.osco_result_to_oscal_ar.OscoResultToOscalAR.simulate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide a simulated outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/osco_result_to_oscal_ar.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>83</span>
 <span class=normal>84</span>
 <span class=normal>85</span>
 <span class=normal>86</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>simulate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Provide a simulated outcome."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_simulate</span> <span class=o>=</span> <span class=kc>True</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_transform</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

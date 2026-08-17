@@ -224,65 +224,65 @@
 <span class=normal>238</span>
 <span class=normal>239</span>
 <span class=normal>240</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxToOscalProfile</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Task to create OSCAL Profile json.</span>
 
 <span class=sd>    Attributes:</span>
 <span class=sd>        name: Name of the task.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
 
-    <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;xlsx-to-oscal-profile&#39;</span>
+    <span class=n>name</span> <span class=o>=</span> <span class=s1>'xlsx-to-oscal-profile'</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_object</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>configparser</span><span class=o>.</span><span class=n>SectionProxy</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Initialize trestle task xlsx-to-oscal-profile.</span>
 
 <span class=sd>        Args:</span>
 <span class=sd>            config_object: Config section associated with the task.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span> <span class=o>=</span> <span class=n>XlsxHelper</span><span class=p>()</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>(</span><span class=n>datetime</span><span class=o>.</span><span class=n>UTC</span><span class=p>)</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=n>microsecond</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span><span class=o>.</span><span class=n>isoformat</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>set_timestamp</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Set the timestamp.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Set the timestamp."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>timestamp</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>print_info</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>print_info</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=s1>&#39;profile&#39;</span><span class=p>)</span>
+<span class=w>        </span><span class=sd>"""Print the help string."""</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>print_info</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=s1>'profile'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>simulate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;simulated-success&#39;</span><span class=p>)</span>
+<span class=w>        </span><span class=sd>"""Provide a simulated outcome."""</span>
+        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'simulated-success'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Provide an executed outcome.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Provide an executed outcome."""</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_execute</span><span class=p>()</span>
         <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>traceback</span><span class=o>.</span><span class=n>format_exc</span><span class=p>())</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute path core.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute path core."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>configure</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
         <span class=c1># config output</span>
-        <span class=n>odir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;output-dir&#39;</span><span class=p>)</span>
+        <span class=n>odir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'output-dir'</span><span class=p>)</span>
         <span class=n>opth</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>odir</span><span class=p>)</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_overwrite</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>&#39;output-overwrite&#39;</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_overwrite</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>'output-overwrite'</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
         <span class=c1># insure output dir exists</span>
         <span class=n>opth</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>parents</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
         <span class=c1># calculate output file name &amp; check writability</span>
-        <span class=n>oname</span> <span class=o>=</span> <span class=s1>&#39;profile.json&#39;</span>
+        <span class=n>oname</span> <span class=o>=</span> <span class=s1>'profile.json'</span>
         <span class=n>ofile</span> <span class=o>=</span> <span class=n>opth</span> <span class=o>/</span> <span class=n>oname</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_overwrite</span> <span class=ow>and</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>ofile</span><span class=p>)</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1> already exists&#39;</span><span class=p>)</span>
-            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=sa>f</span><span class=s1>'output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1> already exists'</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
         <span class=c1># create OSCAL Profile</span>
         <span class=n>metadata</span> <span class=o>=</span> <span class=n>Metadata</span><span class=p>(</span>
-            <span class=n>title</span><span class=o>=</span><span class=s1>&#39;Profile for &#39;</span> <span class=o>+</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_profile_title</span><span class=p>(),</span>
+            <span class=n>title</span><span class=o>=</span><span class=s1>'Profile for '</span> <span class=o>+</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_profile_title</span><span class=p>(),</span>
             <span class=n>last_modified</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span><span class=p>,</span>
             <span class=n>oscal_version</span><span class=o>=</span><span class=n>OSCAL_VERSION</span><span class=p>,</span>
             <span class=n>version</span><span class=o>=</span><span class=n>get_trestle_version</span><span class=p>(),</span>
@@ -302,18 +302,18 @@
             <span class=n>profile</span> <span class=o>=</span> <span class=n>Profile</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span> <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span><span class=p>,</span> <span class=n>imports</span><span class=o>=</span><span class=n>imports</span><span class=p>,</span> <span class=n>modify</span><span class=o>=</span><span class=n>modify</span><span class=p>)</span>
         <span class=c1># write OSCAL Profile to file</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_verbose</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>profile</span><span class=o>.</span><span class=n>oscal_write</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>ofile</span><span class=p>))</span>
         <span class=c1># issues</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_report_issues</span><span class=p>()</span>
-        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;success&#39;</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'success'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_imports_by_goal</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Import2</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get imports by goal.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get imports by goal."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_imports_by_check</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_imports_by_control</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Import2</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get imports by control.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get imports by control."""</span>
         <span class=n>import_</span> <span class=o>=</span> <span class=n>Import2</span><span class=p>(</span>
             <span class=n>href</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_spread_sheet_url</span><span class=p>(),</span>
             <span class=n>include_controls</span><span class=o>=</span><span class=p>[</span><span class=n>SelectControlById</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_with_ids_by_control</span><span class=p>())],</span>
@@ -322,7 +322,7 @@
         <span class=k>return</span> <span class=n>imports</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_imports_by_rule</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Import2</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get imports by rule.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get imports by rule."""</span>
         <span class=n>import_</span> <span class=o>=</span> <span class=n>Import2</span><span class=p>(</span>
             <span class=n>href</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_spread_sheet_url</span><span class=p>(),</span>
             <span class=n>include_controls</span><span class=o>=</span><span class=p>[</span><span class=n>SelectControlById</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_with_ids_by_rule</span><span class=p>())],</span>
@@ -331,7 +331,7 @@
         <span class=k>return</span> <span class=n>imports</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_imports_by_check</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Import2</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get imports by check.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get imports by check."""</span>
         <span class=n>import_</span> <span class=o>=</span> <span class=n>Import2</span><span class=p>(</span>
             <span class=n>href</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_spread_sheet_url</span><span class=p>(),</span>
             <span class=n>include_controls</span><span class=o>=</span><span class=p>[</span><span class=n>SelectControlById</span><span class=p>(</span><span class=n>with_ids</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_with_ids_by_check</span><span class=p>())],</span>
@@ -340,7 +340,7 @@
         <span class=k>return</span> <span class=n>imports</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_with_ids_by_control</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get controls from spread sheet.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get controls from spread sheet."""</span>
         <span class=n>control_list</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>for</span> <span class=n>row</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>row_generator</span><span class=p>():</span>
             <span class=c1># quit when first row with no goal_id encountered</span>
@@ -354,7 +354,7 @@
         <span class=k>return</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>control_list</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_control_sort_key</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_with_ids_by_rule</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get rules from spread sheet.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get rules from spread sheet."""</span>
         <span class=n>rule_name_id_list</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>for</span> <span class=n>row</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>row_generator</span><span class=p>():</span>
             <span class=c1># quit when first row with no goal_id encountered</span>
@@ -366,7 +366,7 @@
         <span class=k>return</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>rule_name_id_list</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_with_ids_by_check</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get check from spread sheet.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get check from spread sheet."""</span>
         <span class=n>check_name_id_list</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>for</span> <span class=n>row</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>row_generator</span><span class=p>():</span>
             <span class=c1># quit when first row with no goal_id encountered</span>
@@ -378,23 +378,23 @@
         <span class=k>return</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>check_name_id_list</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_control_sort_key</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>control</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>int</span><span class=p>,</span> <span class=nb>int</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Fabricate sort key.&quot;&quot;&quot;</span>
-        <span class=n>k1</span> <span class=o>=</span> <span class=n>control</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;-&#39;</span><span class=p>)[</span><span class=mi>0</span><span class=p>]</span>
-        <span class=n>k2</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;-&#39;</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)[</span><span class=mi>0</span><span class=p>])</span>
-        <span class=k>if</span> <span class=s1>&#39;.&#39;</span> <span class=ow>in</span> <span class=n>control</span><span class=p>:</span>
-            <span class=n>k3</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;-&#39;</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)[</span><span class=mi>1</span><span class=p>])</span>
+<span class=w>        </span><span class=sd>"""Fabricate sort key."""</span>
+        <span class=n>k1</span> <span class=o>=</span> <span class=n>control</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'-'</span><span class=p>)[</span><span class=mi>0</span><span class=p>]</span>
+        <span class=n>k2</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'-'</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)[</span><span class=mi>0</span><span class=p>])</span>
+        <span class=k>if</span> <span class=s1>'.'</span> <span class=ow>in</span> <span class=n>control</span><span class=p>:</span>
+            <span class=n>k3</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'-'</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)[</span><span class=mi>1</span><span class=p>])</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>k3</span> <span class=o>=</span> <span class=mi>0</span>
         <span class=k>return</span> <span class=p>(</span><span class=n>k1</span><span class=p>,</span> <span class=n>k2</span><span class=p>,</span> <span class=n>k3</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_oscal_namify</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>control</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Rectify parenthesized numbers in controls.&quot;&quot;&quot;</span>
-        <span class=n>control</span> <span class=o>=</span> <span class=n>control</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>&#39;(&#39;</span><span class=p>,</span> <span class=s1>&#39;.&#39;</span><span class=p>)</span>
-        <span class=n>control</span> <span class=o>=</span> <span class=n>control</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>&#39;)&#39;</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>)</span>
+<span class=w>        </span><span class=sd>"""Rectify parenthesized numbers in controls."""</span>
+        <span class=n>control</span> <span class=o>=</span> <span class=n>control</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>'('</span><span class=p>,</span> <span class=s1>'.'</span><span class=p>)</span>
+        <span class=n>control</span> <span class=o>=</span> <span class=n>control</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>')'</span><span class=p>,</span> <span class=s1>''</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>control</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_set_parameters</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>SetParameters</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get set parameters from spread sheet.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get set parameters from spread sheet."""</span>
         <span class=n>set_parameters</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>for</span> <span class=n>row</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>row_generator</span><span class=p>():</span>
             <span class=c1># quit when first row with no goal_id encountered</span>
@@ -409,21 +409,21 @@
         <span class=k>return</span> <span class=n>set_parameters</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_profile_title</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get profile title from config.&quot;&quot;&quot;</span>
-        <span class=n>value</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;profile-title&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;profile-title: </span><span class=si>{</span><span class=n>value</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+<span class=w>        </span><span class=sd>"""Get profile title from config."""</span>
+        <span class=n>value</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'profile-title'</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'profile-title: </span><span class=si>{</span><span class=n>value</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>value</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_spread_sheet_url</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get spread sheet url from config.&quot;&quot;&quot;</span>
-        <span class=n>value</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;spread-sheet-url&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;spread-sheet-url: </span><span class=si>{</span><span class=n>value</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+<span class=w>        </span><span class=sd>"""Get spread sheet url from config."""</span>
+        <span class=n>value</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'spread-sheet-url'</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'spread-sheet-url: </span><span class=si>{</span><span class=n>value</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>value</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_report_issues</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Report issues.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Report issues."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>report_issues</span><span class=p>()</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile-attributes>Attributes<a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;xlsx-to-oscal-profile&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.xlsx_helper class="doc doc-heading"> <code class="highlight language-python"><span class=n>xlsx_helper</span> <span class=o>=</span> <span class=n>XlsxHelper</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.xlsx_helper class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile-functions>Methods:<a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span></code> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle task xlsx-to-oscal-profile.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>config_object</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=configparser.SectionProxy>SectionProxy</span>]</code> </td> <td> <div class=doc-md-description> <p>Config section associated with the task.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/xlsx_to_oscal_profile.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>51</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile-attributes>Attributes<a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'xlsx-to-oscal-profile'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.xlsx_helper class="doc doc-heading"> <code class="highlight language-python"><span class=n>xlsx_helper</span> <span class=o>=</span> <span class=n>XlsxHelper</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.xlsx_helper class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile-functions>Methods:<a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span></code> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle task xlsx-to-oscal-profile.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>config_object</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=configparser.SectionProxy>SectionProxy</span>]</code> </td> <td> <div class=doc-md-description> <p>Config section associated with the task.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/xlsx_to_oscal_profile.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>51</span>
 <span class=normal>52</span>
 <span class=normal>53</span>
 <span class=normal>54</span>
@@ -433,12 +433,12 @@
 <span class=normal>58</span>
 <span class=normal>59</span>
 <span class=normal>60</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_object</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>configparser</span><span class=o>.</span><span class=n>SectionProxy</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Initialize trestle task xlsx-to-oscal-profile.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        config_object: Config section associated with the task.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span> <span class=o>=</span> <span class=n>XlsxHelper</span><span class=p>()</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>(</span><span class=n>datetime</span><span class=o>.</span><span class=n>UTC</span><span class=p>)</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=n>microsecond</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span><span class=o>.</span><span class=n>isoformat</span><span class=p>()</span>
@@ -449,25 +449,25 @@
 <span class=normal>78</span>
 <span class=normal>79</span>
 <span class=normal>80</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Provide an executed outcome.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Provide an executed outcome."""</span>
     <span class=k>try</span><span class=p>:</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_execute</span><span class=p>()</span>
     <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>traceback</span><span class=o>.</span><span class=n>format_exc</span><span class=p>())</span>
-        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'failure'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.print_info class="doc doc-heading"> <code class="highlight language-python"><span class=n>print_info</span><span class=p>()</span></code> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.print_info class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Print the help string.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/xlsx_to_oscal_profile.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>66</span>
 <span class=normal>67</span>
 <span class=normal>68</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>print_info</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
-    <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>print_info</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=s1>&#39;profile&#39;</span><span class=p>)</span>
+<span class=w>    </span><span class=sd>"""Print the help string."""</span>
+    <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>print_info</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=s1>'profile'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.set_timestamp class="doc doc-heading"> <code class="highlight language-python"><span class=n>set_timestamp</span><span class=p>(</span><span class=n>timestamp</span><span class=p>)</span></code> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.set_timestamp class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Set the timestamp.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/xlsx_to_oscal_profile.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>62</span>
 <span class=normal>63</span>
 <span class=normal>64</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>set_timestamp</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Set the timestamp.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Set the timestamp."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>timestamp</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.simulate class="doc doc-heading"> <code class="highlight language-python"><span class=n>simulate</span><span class=p>()</span></code> <a href=#trestle.tasks.xlsx_to_oscal_profile.XlsxToOscalProfile.simulate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide a simulated outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/xlsx_to_oscal_profile.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>70</span>
 <span class=normal>71</span>
 <span class=normal>72</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>simulate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;simulated-success&#39;</span><span class=p>)</span>
+<span class=w>    </span><span class=sd>"""Provide a simulated outcome."""</span>
+    <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>'simulated-success'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <h3 id=trestle.tasks.xlsx_to_oscal_profile-functions>Functions:<a href=#trestle.tasks.xlsx_to_oscal_profile-functions class=headerlink title="Permanent link">¤</a></h3> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

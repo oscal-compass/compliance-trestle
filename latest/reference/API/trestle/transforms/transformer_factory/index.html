@@ -25,16 +25,16 @@
 <span class=normal>58</span>
 <span class=normal>59</span>
 <span class=normal>60</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>FromOscalTransformer</span><span class=p>(</span><span class=n>TransformerBase</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Abstract interface for transformers from OSCAL.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Abstract interface for transformers from OSCAL."""</span>
 
     <span class=nd>@abstractmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>transform</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>obj</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Transform the from OSCAL.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Transform the from OSCAL."""</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.transforms.transformer_factory.FromOscalTransformer-functions>Methods:<a href=#trestle.transforms.transformer_factory.FromOscalTransformer-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.FromOscalTransformer.transform class="doc doc-heading"> <code class="highlight language-python"><span class=n>transform</span><span class=p>(</span><span class=n>obj</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small> </span> <a href=#trestle.transforms.transformer_factory.FromOscalTransformer.transform class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Transform the from OSCAL.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>58</span>
 <span class=normal>59</span>
 <span class=normal>60</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@abstractmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>transform</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>obj</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Transform the from OSCAL.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Transform the from OSCAL."""</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.transforms.transformer_factory.ResultsTransformer class="doc doc-heading"> <code>ResultsTransformer</code> <a href=#trestle.transforms.transformer_factory.ResultsTransformer class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><a class="autorefs autorefs-internal" title="TransformerBase (trestle.transforms.transformer_factory.TransformerBase)" href=#trestle.transforms.transformer_factory.TransformerBase>TransformerBase</a></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="ResultsTransformer (trestle.transforms.transformer_factory.ResultsTransformer)" href=#trestle.transforms.transformer_factory.ResultsTransformer id=mermaid-link-trestle.transforms.transformer_factory.ResultsTransformer></a> <a class="autorefs autorefs-internal" title="TransformerBase (trestle.transforms.transformer_factory.TransformerBase)" href=#trestle.transforms.transformer_factory.TransformerBase id=mermaid-link-trestle.transforms.transformer_factory.TransformerBase></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.transforms.transformer_factory.ResultsTransformer>
               flowchart TD
               trestle.transforms.transformer_factory.ResultsTransformer[ResultsTransformer]
@@ -62,16 +62,16 @@
 <span class=normal>74</span>
 <span class=normal>75</span>
 <span class=normal>76</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ResultsTransformer</span><span class=p>(</span><span class=n>TransformerBase</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Abstract interface for transformers that specifically return Results.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Abstract interface for transformers that specifically return Results."""</span>
 
     <span class=nd>@abstractmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>transform</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>blob</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Results</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Transform the blob into Results.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Transform the blob into Results."""</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.transforms.transformer_factory.ResultsTransformer-functions>Methods:<a href=#trestle.transforms.transformer_factory.ResultsTransformer-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.ResultsTransformer.transform class="doc doc-heading"> <code class="highlight language-python"><span class=n>transform</span><span class=p>(</span><span class=n>blob</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small> </span> <a href=#trestle.transforms.transformer_factory.ResultsTransformer.transform class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Transform the blob into Results.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>74</span>
 <span class=normal>75</span>
 <span class=normal>76</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@abstractmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>transform</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>blob</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Results</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Transform the blob into Results.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Transform the blob into Results."""</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.transforms.transformer_factory.ToOscalTransformer class="doc doc-heading"> <code>ToOscalTransformer</code> <a href=#trestle.transforms.transformer_factory.ToOscalTransformer class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><a class="autorefs autorefs-internal" title="TransformerBase (trestle.transforms.transformer_factory.TransformerBase)" href=#trestle.transforms.transformer_factory.TransformerBase>TransformerBase</a></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="ToOscalTransformer (trestle.transforms.transformer_factory.ToOscalTransformer)" href=#trestle.transforms.transformer_factory.ToOscalTransformer id=mermaid-link-trestle.transforms.transformer_factory.ToOscalTransformer></a> <a class="autorefs autorefs-internal" title="TransformerBase (trestle.transforms.transformer_factory.TransformerBase)" href=#trestle.transforms.transformer_factory.TransformerBase id=mermaid-link-trestle.transforms.transformer_factory.TransformerBase></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.transforms.transformer_factory.ToOscalTransformer>
               flowchart TD
               trestle.transforms.transformer_factory.ToOscalTransformer[ToOscalTransformer]
@@ -99,16 +99,16 @@
 <span class=normal>66</span>
 <span class=normal>67</span>
 <span class=normal>68</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ToOscalTransformer</span><span class=p>(</span><span class=n>TransformerBase</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Abstract interface for transformers to OSCAL.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Abstract interface for transformers to OSCAL."""</span>
 
     <span class=nd>@abstractmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>transform</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>obj</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>OscalBaseModel</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Transform the to OSCAL.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Transform the to OSCAL."""</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.transforms.transformer_factory.ToOscalTransformer-functions>Methods:<a href=#trestle.transforms.transformer_factory.ToOscalTransformer-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.ToOscalTransformer.transform class="doc doc-heading"> <code class="highlight language-python"><span class=n>transform</span><span class=p>(</span><span class=n>obj</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small> </span> <a href=#trestle.transforms.transformer_factory.ToOscalTransformer.transform class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Transform the to OSCAL.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>66</span>
 <span class=normal>67</span>
 <span class=normal>68</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@abstractmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>transform</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>obj</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>OscalBaseModel</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Transform the to OSCAL.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Transform the to OSCAL."""</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.transforms.transformer_factory.TransformerBase class="doc doc-heading"> <code>TransformerBase</code> <a href=#trestle.transforms.transformer_factory.TransformerBase class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><span title=abc.ABC>ABC</span></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="TransformerBase (trestle.transforms.transformer_factory.TransformerBase)" href=#trestle.transforms.transformer_factory.TransformerBase id=mermaid-link-trestle.transforms.transformer_factory.TransformerBase></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.transforms.transformer_factory.TransformerBase>
               flowchart TD
               trestle.transforms.transformer_factory.TransformerBase[TransformerBase]
@@ -152,35 +152,35 @@
 <span class=normal>50</span>
 <span class=normal>51</span>
 <span class=normal>52</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TransformerBase</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Abstract base interface for all transformers.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Abstract base interface for all transformers."""</span>
 
     <span class=c1># the current time for consistent timestamping</span>
     <span class=n>_timestamp</span> <span class=o>=</span> <span class=kc>None</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize the transformer and set timestamp if not already set.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize the transformer and set timestamp if not already set."""</span>
         <span class=n>TransformerBase</span><span class=o>.</span><span class=n>get_timestamp</span><span class=p>()</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>set_timestamp</span><span class=p>(</span><span class=n>value</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Set the default timestamp value.&quot;&quot;&quot;</span>
-        <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>strptime</span><span class=p>(</span><span class=n>value</span><span class=p>,</span> <span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>T%H:%M:%S%z&#39;</span><span class=p>)</span>
+<span class=w>        </span><span class=sd>"""Set the default timestamp value."""</span>
+        <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>strptime</span><span class=p>(</span><span class=n>value</span><span class=p>,</span> <span class=s1>'%Y-%m-</span><span class=si>%d</span><span class=s1>T%H:%M:%S%z'</span><span class=p>)</span>
         <span class=n>TransformerBase</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>value</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>get_timestamp</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get the default timestamp value.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get the default timestamp value."""</span>
         <span class=k>if</span> <span class=n>TransformerBase</span><span class=o>.</span><span class=n>_timestamp</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>TransformerBase</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>(</span><span class=n>datetime</span><span class=o>.</span><span class=n>UTC</span><span class=p>)</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=n>microsecond</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span><span class=o>.</span><span class=n>isoformat</span><span class=p>()</span>
         <span class=k>return</span> <span class=n>TransformerBase</span><span class=o>.</span><span class=n>_timestamp</span>
 
     <span class=nd>@abstractmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>transform</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>blob</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Any</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Transform the blob into a general OscalBaseModel.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Transform the blob into a general OscalBaseModel."""</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.transforms.transformer_factory.TransformerBase-functions>Methods:<a href=#trestle.transforms.transformer_factory.TransformerBase-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.TransformerBase.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>()</span></code> <a href=#trestle.transforms.transformer_factory.TransformerBase.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize the transformer and set timestamp if not already set.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>33</span>
 <span class=normal>34</span>
 <span class=normal>35</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize the transformer and set timestamp if not already set.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize the transformer and set timestamp if not already set."""</span>
     <span class=n>TransformerBase</span><span class=o>.</span><span class=n>get_timestamp</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.TransformerBase.get_timestamp class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_timestamp</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.transforms.transformer_factory.TransformerBase.get_timestamp class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the default timestamp value.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>43</span>
 <span class=normal>44</span>
@@ -189,7 +189,7 @@
 <span class=normal>47</span>
 <span class=normal>48</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_timestamp</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the default timestamp value.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Get the default timestamp value."""</span>
     <span class=k>if</span> <span class=n>TransformerBase</span><span class=o>.</span><span class=n>_timestamp</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
         <span class=n>TransformerBase</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>(</span><span class=n>datetime</span><span class=o>.</span><span class=n>UTC</span><span class=p>)</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=n>microsecond</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span><span class=o>.</span><span class=n>isoformat</span><span class=p>()</span>
     <span class=k>return</span> <span class=n>TransformerBase</span><span class=o>.</span><span class=n>_timestamp</span>
@@ -199,14 +199,14 @@
 <span class=normal>40</span>
 <span class=normal>41</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>set_timestamp</span><span class=p>(</span><span class=n>value</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Set the default timestamp value.&quot;&quot;&quot;</span>
-    <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>strptime</span><span class=p>(</span><span class=n>value</span><span class=p>,</span> <span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>T%H:%M:%S%z&#39;</span><span class=p>)</span>
+<span class=w>    </span><span class=sd>"""Set the default timestamp value."""</span>
+    <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>strptime</span><span class=p>(</span><span class=n>value</span><span class=p>,</span> <span class=s1>'%Y-%m-</span><span class=si>%d</span><span class=s1>T%H:%M:%S%z'</span><span class=p>)</span>
     <span class=n>TransformerBase</span><span class=o>.</span><span class=n>_timestamp</span> <span class=o>=</span> <span class=n>value</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.TransformerBase.transform class="doc doc-heading"> <code class="highlight language-python"><span class=n>transform</span><span class=p>(</span><span class=n>blob</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small> </span> <a href=#trestle.transforms.transformer_factory.TransformerBase.transform class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Transform the blob into a general OscalBaseModel.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>50</span>
 <span class=normal>51</span>
 <span class=normal>52</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@abstractmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>transform</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>blob</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Any</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Transform the blob into a general OscalBaseModel.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Transform the blob into a general OscalBaseModel."""</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.transforms.transformer_factory.TransformerFactory class="doc doc-heading"> <code>TransformerFactory</code> <a href=#trestle.transforms.transformer_factory.TransformerFactory class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Perform registration and creation of transformers.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 79</span>
 <span class=normal> 80</span>
 <span class=normal> 81</span>
@@ -246,14 +246,14 @@
 <span class=normal>115</span>
 <span class=normal>116</span>
 <span class=normal>117</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TransformerFactory</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Perform registration and creation of transformers.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Perform registration and creation of transformers."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize the transformers dictionary as empty.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize the transformers dictionary as empty."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_transformers</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Type</span><span class=p>[</span><span class=n>TransformerBase</span><span class=p>]]</span> <span class=o>=</span> <span class=p>{}</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>register_transformer</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>transformer</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>TransformerBase</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Register the transformer.</span>
 
 <span class=sd>        This registers transformers in the factory so they may be created by name.</span>
@@ -264,11 +264,11 @@
 
 <span class=sd>        Returns:</span>
 <span class=sd>            None</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_transformers</span><span class=p>[</span><span class=n>name</span><span class=p>]</span> <span class=o>=</span> <span class=n>transformer</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TransformerBase</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Create an instance of the desired transformer based its name.</span>
 
 <span class=sd>        Args:</span>
@@ -279,15 +279,15 @@
 
 <span class=sd>        Raises:</span>
 <span class=sd>            TrestleError: if the name does not exist in the registry.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>t</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_transformers</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>t</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=k>return</span> <span class=n>t</span><span class=p>()</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Error getting non-registered transform </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Error getting non-registered transform </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.transforms.transformer_factory.TransformerFactory-functions>Methods:<a href=#trestle.transforms.transformer_factory.TransformerFactory-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.TransformerFactory.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>()</span></code> <a href=#trestle.transforms.transformer_factory.TransformerFactory.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize the transformers dictionary as empty.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>82</span>
 <span class=normal>83</span>
 <span class=normal>84</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize the transformers dictionary as empty.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize the transformers dictionary as empty."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_transformers</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Type</span><span class=p>[</span><span class=n>TransformerBase</span><span class=p>]]</span> <span class=o>=</span> <span class=p>{}</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.TransformerFactory.get class="doc doc-heading"> <code class="highlight language-python"><span class=n>get</span><span class=p>(</span><span class=n>name</span><span class=p>)</span></code> <a href=#trestle.transforms.transformer_factory.TransformerFactory.get class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create an instance of the desired transformer based its name.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the transformer.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><a class="autorefs autorefs-internal" title="TransformerBase (trestle.transforms.transformer_factory.TransformerBase)" href=#trestle.transforms.transformer_factory.TransformerBase>TransformerBase</a></code> </td> <td> <div class=doc-md-description> <p>An instance of the desired transformer.</p> </div> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Raises:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><a class="autorefs autorefs-internal" title="TrestleError (trestle.common.err.TrestleError)" href=../../common/err/#trestle.common.err.TrestleError>TrestleError</a></code> </td> <td> <div class=doc-md-description> <p>if the name does not exist in the registry.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>101</span>
 <span class=normal>102</span>
@@ -306,7 +306,7 @@
 <span class=normal>115</span>
 <span class=normal>116</span>
 <span class=normal>117</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TransformerBase</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Create an instance of the desired transformer based its name.</span>
 
 <span class=sd>    Args:</span>
@@ -317,11 +317,11 @@
 
 <span class=sd>    Raises:</span>
 <span class=sd>        TrestleError: if the name does not exist in the registry.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>t</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_transformers</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>t</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
         <span class=k>return</span> <span class=n>t</span><span class=p>()</span>
-    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Error getting non-registered transform </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Error getting non-registered transform </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.transforms.transformer_factory.TransformerFactory.register_transformer class="doc doc-heading"> <code class="highlight language-python"><span class=n>register_transformer</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>transformer</span><span class=p>)</span></code> <a href=#trestle.transforms.transformer_factory.TransformerFactory.register_transformer class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Register the transformer.</p> <p>This registers transformers in the factory so they may be created by name.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the transformer.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>transformer</code> </td> <td> <code><a class="autorefs autorefs-internal" title="TransformerBase (trestle.transforms.transformer_factory.TransformerBase)" href=#trestle.transforms.transformer_factory.TransformerBase>TransformerBase</a></code> </td> <td> <div class=doc-md-description> <p>The transformer class to be registered.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>None</code> </td> <td> <div class=doc-md-description> <p>None</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>86</span>
 <span class=normal>87</span>
 <span class=normal>88</span>
@@ -336,7 +336,7 @@
 <span class=normal>97</span>
 <span class=normal>98</span>
 <span class=normal>99</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>register_transformer</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>transformer</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>TransformerBase</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Register the transformer.</span>
 
 <span class=sd>    This registers transformers in the factory so they may be created by name.</span>
@@ -347,6 +347,6 @@
 
 <span class=sd>    Returns:</span>
 <span class=sd>        None</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_transformers</span><span class=p>[</span><span class=n>name</span><span class=p>]</span> <span class=o>=</span> <span class=n>transformer</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

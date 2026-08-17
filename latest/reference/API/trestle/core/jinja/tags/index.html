@@ -82,31 +82,31 @@
 <span class=normal>185</span>
 <span class=normal>186</span>
 <span class=normal>187</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>MDCleanInclude</span><span class=p>(</span><span class=n>TrestleJinjaExtension</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Inject the parameter of the tag as the resulting content.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Inject the parameter of the tag as the resulting content."""</span>
 
-    <span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;md_clean_include&#39;</span><span class=p>}</span>
+    <span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>'md_clean_include'</span><span class=p>}</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>environment</span><span class=p>:</span> <span class=n>Environment</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Ensure enviroment is set and carried into class vars."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>parse</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>parser</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute parsing of md token and return nodes.</span>
+<span class=w>        </span><span class=sd>"""Execute parsing of md token and return nodes.</span>
 
 <span class=sd>        Security Note: This method re-parses included markdown content using a</span>
 <span class=sd>        SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks.</span>
 <span class=sd>        The sandbox restricts access to unsafe Python attributes, preventing arbitrary</span>
 <span class=sd>        code execution even if untrusted OSCAL data contains Jinja syntax.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>kwargs</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
         <span class=k>while</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span><span class=o>.</span><span class=n>type</span> <span class=o>!=</span> <span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_BLOCK_END</span><span class=p>:</span>
             <span class=n>count</span> <span class=o>=</span> <span class=n>count</span> <span class=o>+</span> <span class=mi>1</span>
             <span class=k>if</span> <span class=n>count</span> <span class=o>&gt;</span> <span class=bp>self</span><span class=o>.</span><span class=n>max_tag_parse</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Unexpected Jinja tag structure provided, please review docs.&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Unexpected Jinja tag structure provided, please review docs.'</span><span class=p>)</span>
             <span class=n>token</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span>
-            <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>&#39;name:md_clean_include&#39;</span><span class=p>):</span>
+            <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>'name:md_clean_include'</span><span class=p>):</span>
                 <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_NAME</span><span class=p>)</span>
                 <span class=n>markdown_source</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_STRING</span><span class=p>)</span>
             <span class=k>elif</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
@@ -123,14 +123,14 @@
         <span class=n>md_content</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=o>.</span><span class=n>loader</span><span class=o>.</span><span class=n>get_source</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>markdown_source</span><span class=o>.</span><span class=n>value</span><span class=p>)</span>
         <span class=n>fm</span> <span class=o>=</span> <span class=n>frontmatter</span><span class=o>.</span><span class=n>loads</span><span class=p>(</span><span class=n>md_content</span><span class=p>)</span>
         <span class=n>content</span> <span class=o>=</span> <span class=n>fm</span><span class=o>.</span><span class=n>content</span>
-        <span class=n>content</span> <span class=o>+=</span> <span class=s1>&#39;</span><span class=se>\n\n</span><span class=s1>&#39;</span>
+        <span class=n>content</span> <span class=o>+=</span> <span class=s1>'</span><span class=se>\n\n</span><span class=s1>'</span>
         <span class=k>if</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=n>kwargs</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;heading_level&#39;</span><span class=p>)</span>
+            <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=n>kwargs</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'heading_level'</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>expected_heading_level</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>content</span> <span class=o>=</span> <span class=n>adjust_heading_level</span><span class=p>(</span><span class=n>content</span><span class=p>,</span> <span class=n>expected_heading_level</span><span class=p>)</span>
 
         <span class=c1># SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI</span>
-        <span class=c1># Create a sandboxed environment if the current one isn&#39;t already sandboxed</span>
+        <span class=c1># Create a sandboxed environment if the current one isn't already sandboxed</span>
         <span class=n>parse_env</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>SandboxedEnvironment</span><span class=p>):</span>
             <span class=n>parse_env</span> <span class=o>=</span> <span class=n>SandboxedEnvironment</span><span class=p>(</span>
@@ -144,10 +144,10 @@
         <span class=n>top_level_output</span> <span class=o>=</span> <span class=n>local_parser</span><span class=o>.</span><span class=n>parse</span><span class=p>()</span>
 
         <span class=k>return</span> <span class=n>top_level_output</span><span class=o>.</span><span class=n>body</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.jinja.tags.MDCleanInclude-attributes>Attributes<a href=#trestle.core.jinja.tags.MDCleanInclude-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.jinja.tags.MDCleanInclude.tags class="doc doc-heading"> <code class="highlight language-python"><span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;md_clean_include&#39;</span><span class=p>}</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.jinja.tags.MDCleanInclude.tags class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.jinja.tags.MDCleanInclude-functions>Methods:<a href=#trestle.core.jinja.tags.MDCleanInclude-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDCleanInclude.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDCleanInclude.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Ensure enviroment is set and carried into class vars.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>130</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.jinja.tags.MDCleanInclude-attributes>Attributes<a href=#trestle.core.jinja.tags.MDCleanInclude-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.jinja.tags.MDCleanInclude.tags class="doc doc-heading"> <code class="highlight language-python"><span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>'md_clean_include'</span><span class=p>}</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.jinja.tags.MDCleanInclude.tags class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.jinja.tags.MDCleanInclude-functions>Methods:<a href=#trestle.core.jinja.tags.MDCleanInclude-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDCleanInclude.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDCleanInclude.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Ensure enviroment is set and carried into class vars.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>130</span>
 <span class=normal>131</span>
 <span class=normal>132</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>environment</span><span class=p>:</span> <span class=n>Environment</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Ensure enviroment is set and carried into class vars."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDCleanInclude.parse class="doc doc-heading"> <code class="highlight language-python"><span class=n>parse</span><span class=p>(</span><span class=n>parser</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDCleanInclude.parse class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute parsing of md token and return nodes.</p> <p>Security Note: This method re-parses included markdown content using a SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks. The sandbox restricts access to unsafe Python attributes, preventing arbitrary code execution even if untrusted OSCAL data contains Jinja syntax.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>134</span>
 <span class=normal>135</span>
@@ -203,22 +203,22 @@
 <span class=normal>185</span>
 <span class=normal>186</span>
 <span class=normal>187</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>parser</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute parsing of md token and return nodes.</span>
+<span class=w>    </span><span class=sd>"""Execute parsing of md token and return nodes.</span>
 
 <span class=sd>    Security Note: This method re-parses included markdown content using a</span>
 <span class=sd>    SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks.</span>
 <span class=sd>    The sandbox restricts access to unsafe Python attributes, preventing arbitrary</span>
 <span class=sd>    code execution even if untrusted OSCAL data contains Jinja syntax.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>kwargs</span> <span class=o>=</span> <span class=kc>None</span>
     <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=kc>None</span>
     <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
     <span class=k>while</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span><span class=o>.</span><span class=n>type</span> <span class=o>!=</span> <span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_BLOCK_END</span><span class=p>:</span>
         <span class=n>count</span> <span class=o>=</span> <span class=n>count</span> <span class=o>+</span> <span class=mi>1</span>
         <span class=k>if</span> <span class=n>count</span> <span class=o>&gt;</span> <span class=bp>self</span><span class=o>.</span><span class=n>max_tag_parse</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Unexpected Jinja tag structure provided, please review docs.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Unexpected Jinja tag structure provided, please review docs.'</span><span class=p>)</span>
         <span class=n>token</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span>
-        <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>&#39;name:md_clean_include&#39;</span><span class=p>):</span>
+        <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>'name:md_clean_include'</span><span class=p>):</span>
             <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_NAME</span><span class=p>)</span>
             <span class=n>markdown_source</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_STRING</span><span class=p>)</span>
         <span class=k>elif</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
@@ -235,14 +235,14 @@
     <span class=n>md_content</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=o>.</span><span class=n>loader</span><span class=o>.</span><span class=n>get_source</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>markdown_source</span><span class=o>.</span><span class=n>value</span><span class=p>)</span>
     <span class=n>fm</span> <span class=o>=</span> <span class=n>frontmatter</span><span class=o>.</span><span class=n>loads</span><span class=p>(</span><span class=n>md_content</span><span class=p>)</span>
     <span class=n>content</span> <span class=o>=</span> <span class=n>fm</span><span class=o>.</span><span class=n>content</span>
-    <span class=n>content</span> <span class=o>+=</span> <span class=s1>&#39;</span><span class=se>\n\n</span><span class=s1>&#39;</span>
+    <span class=n>content</span> <span class=o>+=</span> <span class=s1>'</span><span class=se>\n\n</span><span class=s1>'</span>
     <span class=k>if</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=n>kwargs</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;heading_level&#39;</span><span class=p>)</span>
+        <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=n>kwargs</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'heading_level'</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>expected_heading_level</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
         <span class=n>content</span> <span class=o>=</span> <span class=n>adjust_heading_level</span><span class=p>(</span><span class=n>content</span><span class=p>,</span> <span class=n>expected_heading_level</span><span class=p>)</span>
 
     <span class=c1># SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI</span>
-    <span class=c1># Create a sandboxed environment if the current one isn&#39;t already sandboxed</span>
+    <span class=c1># Create a sandboxed environment if the current one isn't already sandboxed</span>
     <span class=n>parse_env</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>SandboxedEnvironment</span><span class=p>):</span>
         <span class=n>parse_env</span> <span class=o>=</span> <span class=n>SandboxedEnvironment</span><span class=p>(</span>
@@ -340,28 +340,28 @@
 <span class=normal>250</span>
 <span class=normal>251</span>
 <span class=normal>252</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>MDDatestamp</span><span class=p>(</span><span class=n>TrestleJinjaExtension</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Inject the parameter of the tag as the resulting content.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Inject the parameter of the tag as the resulting content."""</span>
 
-    <span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;md_datestamp&#39;</span><span class=p>}</span>
+    <span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>'md_datestamp'</span><span class=p>}</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>environment</span><span class=p>:</span> <span class=n>Environment</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Ensure enviroment is set and carried into class vars."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>parse</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>parser</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute parsing of md token and return nodes.</span>
+<span class=w>        </span><span class=sd>"""Execute parsing of md token and return nodes.</span>
 
 <span class=sd>        Security Note: This method re-parses the datestamp using a SandboxedEnvironment</span>
 <span class=sd>        to prevent potential SSTI attacks, though the risk is minimal for date strings.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>kwargs</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
         <span class=k>while</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span><span class=o>.</span><span class=n>type</span> <span class=o>!=</span> <span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_BLOCK_END</span><span class=p>:</span>
             <span class=n>count</span> <span class=o>=</span> <span class=n>count</span> <span class=o>+</span> <span class=mi>1</span>
             <span class=n>token</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span>
             <span class=k>if</span> <span class=n>count</span> <span class=o>&gt;</span> <span class=bp>self</span><span class=o>.</span><span class=n>max_tag_parse</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Unexpected Jinja tag structure provided at token </span><span class=si>{</span><span class=n>token</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-            <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>&#39;name:md_datestamp&#39;</span><span class=p>):</span>
+                <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Unexpected Jinja tag structure provided at token </span><span class=si>{</span><span class=n>token</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+            <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>'name:md_datestamp'</span><span class=p>):</span>
                 <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_NAME</span><span class=p>)</span>
             <span class=k>elif</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
                 <span class=n>arg</span> <span class=o>=</span> <span class=n>token</span><span class=o>.</span><span class=n>value</span>
@@ -376,19 +376,19 @@
                 <span class=k>continue</span>
 
         <span class=k>if</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=k>if</span> <span class=s1>&#39;format&#39;</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=nb>type</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>&#39;format&#39;</span><span class=p>]</span> <span class=ow>is</span> <span class=nb>str</span><span class=p>):</span>
-                <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>&#39;format&#39;</span><span class=p>])</span>
+            <span class=k>if</span> <span class=s1>'format'</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=nb>type</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>]</span> <span class=ow>is</span> <span class=nb>str</span><span class=p>):</span>
+                <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>])</span>
             <span class=k>else</span><span class=p>:</span>
                 <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>markdown_const</span><span class=o>.</span><span class=n>JINJA_DATESTAMP_FORMAT</span><span class=p>)</span>
-            <span class=k>if</span> <span class=s1>&#39;newline&#39;</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=n>kwargs</span><span class=p>[</span><span class=s1>&#39;newline&#39;</span><span class=p>]</span> <span class=ow>is</span> <span class=kc>False</span><span class=p>:</span>
+            <span class=k>if</span> <span class=s1>'newline'</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=n>kwargs</span><span class=p>[</span><span class=s1>'newline'</span><span class=p>]</span> <span class=ow>is</span> <span class=kc>False</span><span class=p>:</span>
                 <span class=k>pass</span>
             <span class=k>else</span><span class=p>:</span>
-                <span class=n>date_string</span> <span class=o>+=</span> <span class=s1>&#39;</span><span class=se>\n\n</span><span class=s1>&#39;</span>
+                <span class=n>date_string</span> <span class=o>+=</span> <span class=s1>'</span><span class=se>\n\n</span><span class=s1>'</span>
         <span class=k>else</span><span class=p>:</span>
-            <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>markdown_const</span><span class=o>.</span><span class=n>JINJA_DATESTAMP_FORMAT</span><span class=p>)</span> <span class=o>+</span> <span class=s1>&#39;</span><span class=se>\n\n</span><span class=s1>&#39;</span>
+            <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>markdown_const</span><span class=o>.</span><span class=n>JINJA_DATESTAMP_FORMAT</span><span class=p>)</span> <span class=o>+</span> <span class=s1>'</span><span class=se>\n\n</span><span class=s1>'</span>
 
         <span class=c1># SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI</span>
-        <span class=c1># Create a sandboxed environment if the current one isn&#39;t already sandboxed</span>
+        <span class=c1># Create a sandboxed environment if the current one isn't already sandboxed</span>
         <span class=n>parse_env</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>SandboxedEnvironment</span><span class=p>):</span>
             <span class=n>parse_env</span> <span class=o>=</span> <span class=n>SandboxedEnvironment</span><span class=p>(</span>
@@ -402,10 +402,10 @@
         <span class=n>datestamp_output</span> <span class=o>=</span> <span class=n>local_parser</span><span class=o>.</span><span class=n>parse</span><span class=p>()</span>
 
         <span class=k>return</span> <span class=n>datestamp_output</span><span class=o>.</span><span class=n>body</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.jinja.tags.MDDatestamp-attributes>Attributes<a href=#trestle.core.jinja.tags.MDDatestamp-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.jinja.tags.MDDatestamp.tags class="doc doc-heading"> <code class="highlight language-python"><span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;md_datestamp&#39;</span><span class=p>}</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.jinja.tags.MDDatestamp.tags class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.jinja.tags.MDDatestamp-functions>Methods:<a href=#trestle.core.jinja.tags.MDDatestamp-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDDatestamp.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDDatestamp.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Ensure enviroment is set and carried into class vars.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>195</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.jinja.tags.MDDatestamp-attributes>Attributes<a href=#trestle.core.jinja.tags.MDDatestamp-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.jinja.tags.MDDatestamp.tags class="doc doc-heading"> <code class="highlight language-python"><span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>'md_datestamp'</span><span class=p>}</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.jinja.tags.MDDatestamp.tags class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.jinja.tags.MDDatestamp-functions>Methods:<a href=#trestle.core.jinja.tags.MDDatestamp-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDDatestamp.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDDatestamp.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Ensure enviroment is set and carried into class vars.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>195</span>
 <span class=normal>196</span>
 <span class=normal>197</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>environment</span><span class=p>:</span> <span class=n>Environment</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Ensure enviroment is set and carried into class vars."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDDatestamp.parse class="doc doc-heading"> <code class="highlight language-python"><span class=n>parse</span><span class=p>(</span><span class=n>parser</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDDatestamp.parse class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute parsing of md token and return nodes.</p> <p>Security Note: This method re-parses the datestamp using a SandboxedEnvironment to prevent potential SSTI attacks, though the risk is minimal for date strings.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>199</span>
 <span class=normal>200</span>
@@ -461,19 +461,19 @@
 <span class=normal>250</span>
 <span class=normal>251</span>
 <span class=normal>252</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>parser</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute parsing of md token and return nodes.</span>
+<span class=w>    </span><span class=sd>"""Execute parsing of md token and return nodes.</span>
 
 <span class=sd>    Security Note: This method re-parses the datestamp using a SandboxedEnvironment</span>
 <span class=sd>    to prevent potential SSTI attacks, though the risk is minimal for date strings.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>kwargs</span> <span class=o>=</span> <span class=kc>None</span>
     <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
     <span class=k>while</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span><span class=o>.</span><span class=n>type</span> <span class=o>!=</span> <span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_BLOCK_END</span><span class=p>:</span>
         <span class=n>count</span> <span class=o>=</span> <span class=n>count</span> <span class=o>+</span> <span class=mi>1</span>
         <span class=n>token</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span>
         <span class=k>if</span> <span class=n>count</span> <span class=o>&gt;</span> <span class=bp>self</span><span class=o>.</span><span class=n>max_tag_parse</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Unexpected Jinja tag structure provided at token </span><span class=si>{</span><span class=n>token</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-        <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>&#39;name:md_datestamp&#39;</span><span class=p>):</span>
+            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Unexpected Jinja tag structure provided at token </span><span class=si>{</span><span class=n>token</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+        <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>'name:md_datestamp'</span><span class=p>):</span>
             <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_NAME</span><span class=p>)</span>
         <span class=k>elif</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>arg</span> <span class=o>=</span> <span class=n>token</span><span class=o>.</span><span class=n>value</span>
@@ -488,19 +488,19 @@
             <span class=k>continue</span>
 
     <span class=k>if</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>if</span> <span class=s1>&#39;format&#39;</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=nb>type</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>&#39;format&#39;</span><span class=p>]</span> <span class=ow>is</span> <span class=nb>str</span><span class=p>):</span>
-            <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>&#39;format&#39;</span><span class=p>])</span>
+        <span class=k>if</span> <span class=s1>'format'</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=nb>type</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>]</span> <span class=ow>is</span> <span class=nb>str</span><span class=p>):</span>
+            <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>])</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>markdown_const</span><span class=o>.</span><span class=n>JINJA_DATESTAMP_FORMAT</span><span class=p>)</span>
-        <span class=k>if</span> <span class=s1>&#39;newline&#39;</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=n>kwargs</span><span class=p>[</span><span class=s1>&#39;newline&#39;</span><span class=p>]</span> <span class=ow>is</span> <span class=kc>False</span><span class=p>:</span>
+        <span class=k>if</span> <span class=s1>'newline'</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=n>kwargs</span><span class=p>[</span><span class=s1>'newline'</span><span class=p>]</span> <span class=ow>is</span> <span class=kc>False</span><span class=p>:</span>
             <span class=k>pass</span>
         <span class=k>else</span><span class=p>:</span>
-            <span class=n>date_string</span> <span class=o>+=</span> <span class=s1>&#39;</span><span class=se>\n\n</span><span class=s1>&#39;</span>
+            <span class=n>date_string</span> <span class=o>+=</span> <span class=s1>'</span><span class=se>\n\n</span><span class=s1>'</span>
     <span class=k>else</span><span class=p>:</span>
-        <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>markdown_const</span><span class=o>.</span><span class=n>JINJA_DATESTAMP_FORMAT</span><span class=p>)</span> <span class=o>+</span> <span class=s1>&#39;</span><span class=se>\n\n</span><span class=s1>&#39;</span>
+        <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>markdown_const</span><span class=o>.</span><span class=n>JINJA_DATESTAMP_FORMAT</span><span class=p>)</span> <span class=o>+</span> <span class=s1>'</span><span class=se>\n\n</span><span class=s1>'</span>
 
     <span class=c1># SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI</span>
-    <span class=c1># Create a sandboxed environment if the current one isn&#39;t already sandboxed</span>
+    <span class=c1># Create a sandboxed environment if the current one isn't already sandboxed</span>
     <span class=n>parse_env</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>SandboxedEnvironment</span><span class=p>):</span>
         <span class=n>parse_env</span> <span class=o>=</span> <span class=n>SandboxedEnvironment</span><span class=p>(</span>
@@ -610,31 +610,31 @@
 <span class=normal>120</span>
 <span class=normal>121</span>
 <span class=normal>122</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>MDSectionInclude</span><span class=p>(</span><span class=n>TrestleJinjaExtension</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Inject the parameter of the tag as the resulting content.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Inject the parameter of the tag as the resulting content."""</span>
 
-    <span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;mdsection_include&#39;</span><span class=p>}</span>
+    <span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>'mdsection_include'</span><span class=p>}</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>environment</span><span class=p>:</span> <span class=n>Environment</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Ensure enviroment is set and carried into class vars."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>parse</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>parser</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute parsing of md token and return nodes.</span>
+<span class=w>        </span><span class=sd>"""Execute parsing of md token and return nodes.</span>
 
 <span class=sd>        Security Note: This method re-parses included markdown content using a</span>
 <span class=sd>        SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks.</span>
 <span class=sd>        The sandbox restricts access to unsafe Python attributes, preventing arbitrary</span>
 <span class=sd>        code execution even if untrusted OSCAL data contains Jinja syntax.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>kwargs</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
         <span class=k>while</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span><span class=o>.</span><span class=n>type</span> <span class=o>!=</span> <span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_BLOCK_END</span><span class=p>:</span>
             <span class=n>count</span> <span class=o>=</span> <span class=n>count</span> <span class=o>+</span> <span class=mi>1</span>
             <span class=k>if</span> <span class=n>count</span> <span class=o>&gt;</span> <span class=bp>self</span><span class=o>.</span><span class=n>max_tag_parse</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Unexpected Jinja tag structure provided, please review docs.&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Unexpected Jinja tag structure provided, please review docs.'</span><span class=p>)</span>
             <span class=n>token</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span>
-            <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>&#39;name:mdsection_include&#39;</span><span class=p>):</span>
+            <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>'name:mdsection_include'</span><span class=p>):</span>
                 <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_NAME</span><span class=p>)</span>
                 <span class=n>markdown_source</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_STRING</span><span class=p>)</span>
                 <span class=n>section_title</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_STRING</span><span class=p>)</span>
@@ -653,12 +653,12 @@
         <span class=n>md_content</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=o>.</span><span class=n>loader</span><span class=o>.</span><span class=n>get_source</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>markdown_source</span><span class=o>.</span><span class=n>value</span><span class=p>)</span>
         <span class=n>fm</span> <span class=o>=</span> <span class=n>frontmatter</span><span class=o>.</span><span class=n>loads</span><span class=p>(</span><span class=n>md_content</span><span class=p>)</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>fm</span><span class=o>.</span><span class=n>metadata</span> <span class=o>==</span> <span class=p>{}:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>&#39;Non zero metadata on MD section include - ignoring&#39;</span><span class=p>)</span>
-        <span class=n>full_md</span> <span class=o>=</span> <span class=n>docs_markdown_node</span><span class=o>.</span><span class=n>DocsMarkdownNode</span><span class=o>.</span><span class=n>build_tree_from_markdown</span><span class=p>(</span><span class=n>fm</span><span class=o>.</span><span class=n>content</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>))</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>'Non zero metadata on MD section include - ignoring'</span><span class=p>)</span>
+        <span class=n>full_md</span> <span class=o>=</span> <span class=n>docs_markdown_node</span><span class=o>.</span><span class=n>DocsMarkdownNode</span><span class=o>.</span><span class=n>build_tree_from_markdown</span><span class=p>(</span><span class=n>fm</span><span class=o>.</span><span class=n>content</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'</span><span class=se>\n</span><span class=s1>'</span><span class=p>))</span>
         <span class=n>md_section</span> <span class=o>=</span> <span class=n>full_md</span><span class=o>.</span><span class=n>get_node_for_key</span><span class=p>(</span><span class=n>section_title</span><span class=o>.</span><span class=n>value</span><span class=p>,</span> <span class=n>strict_matching</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
         <span class=c1># adjust</span>
         <span class=k>if</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=n>kwargs</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;heading_level&#39;</span><span class=p>)</span>
+            <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=n>kwargs</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'heading_level'</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>expected_heading_level</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>level</span> <span class=o>=</span> <span class=n>md_section</span><span class=o>.</span><span class=n>get_node_header_lvl</span><span class=p>()</span>
             <span class=n>delta</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>expected_heading_level</span><span class=p>)</span> <span class=o>-</span> <span class=n>level</span>
@@ -666,11 +666,11 @@
                 <span class=n>md_section</span><span class=o>.</span><span class=n>change_header_level_by</span><span class=p>(</span><span class=n>delta</span><span class=p>)</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>md_section</span><span class=p>:</span>
             <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span>
-                <span class=sa>f</span><span class=s1>&#39;Unable to retrieve section &quot;</span><span class=si>{</span><span class=n>section_title</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1>&quot;&quot; from </span><span class=si>{</span><span class=n>markdown_source</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1> jinja template.&#39;</span>
+                <span class=sa>f</span><span class=s1>'Unable to retrieve section "</span><span class=si>{</span><span class=n>section_title</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1>"" from </span><span class=si>{</span><span class=n>markdown_source</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1> jinja template.'</span>
             <span class=p>)</span>
 
         <span class=c1># SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI</span>
-        <span class=c1># Create a sandboxed environment if the current one isn&#39;t already sandboxed</span>
+        <span class=c1># Create a sandboxed environment if the current one isn't already sandboxed</span>
         <span class=n>parse_env</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>SandboxedEnvironment</span><span class=p>):</span>
             <span class=n>parse_env</span> <span class=o>=</span> <span class=n>SandboxedEnvironment</span><span class=p>(</span>
@@ -684,10 +684,10 @@
         <span class=n>top_level_output</span> <span class=o>=</span> <span class=n>local_parser</span><span class=o>.</span><span class=n>parse</span><span class=p>()</span>
 
         <span class=k>return</span> <span class=n>top_level_output</span><span class=o>.</span><span class=n>body</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.jinja.tags.MDSectionInclude-attributes>Attributes<a href=#trestle.core.jinja.tags.MDSectionInclude-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.jinja.tags.MDSectionInclude.tags class="doc doc-heading"> <code class="highlight language-python"><span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;mdsection_include&#39;</span><span class=p>}</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.jinja.tags.MDSectionInclude.tags class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.jinja.tags.MDSectionInclude-functions>Methods:<a href=#trestle.core.jinja.tags.MDSectionInclude-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDSectionInclude.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDSectionInclude.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Ensure enviroment is set and carried into class vars.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>53</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.jinja.tags.MDSectionInclude-attributes>Attributes<a href=#trestle.core.jinja.tags.MDSectionInclude-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.jinja.tags.MDSectionInclude.tags class="doc doc-heading"> <code class="highlight language-python"><span class=n>tags</span> <span class=o>=</span> <span class=p>{</span><span class=s1>'mdsection_include'</span><span class=p>}</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.jinja.tags.MDSectionInclude.tags class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.jinja.tags.MDSectionInclude-functions>Methods:<a href=#trestle.core.jinja.tags.MDSectionInclude-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDSectionInclude.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDSectionInclude.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Ensure enviroment is set and carried into class vars.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>53</span>
 <span class=normal>54</span>
 <span class=normal>55</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>environment</span><span class=p>:</span> <span class=n>Environment</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Ensure enviroment is set and carried into class vars."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.tags.MDSectionInclude.parse class="doc doc-heading"> <code class="highlight language-python"><span class=n>parse</span><span class=p>(</span><span class=n>parser</span><span class=p>)</span></code> <a href=#trestle.core.jinja.tags.MDSectionInclude.parse class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute parsing of md token and return nodes.</p> <p>Security Note: This method re-parses included markdown content using a SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks. The sandbox restricts access to unsafe Python attributes, preventing arbitrary code execution even if untrusted OSCAL data contains Jinja syntax.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/tags.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 57</span>
 <span class=normal> 58</span>
@@ -755,22 +755,22 @@
 <span class=normal>120</span>
 <span class=normal>121</span>
 <span class=normal>122</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>parser</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute parsing of md token and return nodes.</span>
+<span class=w>    </span><span class=sd>"""Execute parsing of md token and return nodes.</span>
 
 <span class=sd>    Security Note: This method re-parses included markdown content using a</span>
 <span class=sd>    SandboxedEnvironment to prevent Server-Side Template Injection (SSTI) attacks.</span>
 <span class=sd>    The sandbox restricts access to unsafe Python attributes, preventing arbitrary</span>
 <span class=sd>    code execution even if untrusted OSCAL data contains Jinja syntax.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>kwargs</span> <span class=o>=</span> <span class=kc>None</span>
     <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=kc>None</span>
     <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
     <span class=k>while</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span><span class=o>.</span><span class=n>type</span> <span class=o>!=</span> <span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_BLOCK_END</span><span class=p>:</span>
         <span class=n>count</span> <span class=o>=</span> <span class=n>count</span> <span class=o>+</span> <span class=mi>1</span>
         <span class=k>if</span> <span class=n>count</span> <span class=o>&gt;</span> <span class=bp>self</span><span class=o>.</span><span class=n>max_tag_parse</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Unexpected Jinja tag structure provided, please review docs.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Unexpected Jinja tag structure provided, please review docs.'</span><span class=p>)</span>
         <span class=n>token</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span>
-        <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>&#39;name:mdsection_include&#39;</span><span class=p>):</span>
+        <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=s1>'name:mdsection_include'</span><span class=p>):</span>
             <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_NAME</span><span class=p>)</span>
             <span class=n>markdown_source</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_STRING</span><span class=p>)</span>
             <span class=n>section_title</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>expect</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_STRING</span><span class=p>)</span>
@@ -789,12 +789,12 @@
     <span class=n>md_content</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=o>.</span><span class=n>loader</span><span class=o>.</span><span class=n>get_source</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>markdown_source</span><span class=o>.</span><span class=n>value</span><span class=p>)</span>
     <span class=n>fm</span> <span class=o>=</span> <span class=n>frontmatter</span><span class=o>.</span><span class=n>loads</span><span class=p>(</span><span class=n>md_content</span><span class=p>)</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>fm</span><span class=o>.</span><span class=n>metadata</span> <span class=o>==</span> <span class=p>{}:</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>&#39;Non zero metadata on MD section include - ignoring&#39;</span><span class=p>)</span>
-    <span class=n>full_md</span> <span class=o>=</span> <span class=n>docs_markdown_node</span><span class=o>.</span><span class=n>DocsMarkdownNode</span><span class=o>.</span><span class=n>build_tree_from_markdown</span><span class=p>(</span><span class=n>fm</span><span class=o>.</span><span class=n>content</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>))</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>'Non zero metadata on MD section include - ignoring'</span><span class=p>)</span>
+    <span class=n>full_md</span> <span class=o>=</span> <span class=n>docs_markdown_node</span><span class=o>.</span><span class=n>DocsMarkdownNode</span><span class=o>.</span><span class=n>build_tree_from_markdown</span><span class=p>(</span><span class=n>fm</span><span class=o>.</span><span class=n>content</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'</span><span class=se>\n</span><span class=s1>'</span><span class=p>))</span>
     <span class=n>md_section</span> <span class=o>=</span> <span class=n>full_md</span><span class=o>.</span><span class=n>get_node_for_key</span><span class=p>(</span><span class=n>section_title</span><span class=o>.</span><span class=n>value</span><span class=p>,</span> <span class=n>strict_matching</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
     <span class=c1># adjust</span>
     <span class=k>if</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=n>kwargs</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;heading_level&#39;</span><span class=p>)</span>
+        <span class=n>expected_heading_level</span> <span class=o>=</span> <span class=n>kwargs</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'heading_level'</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>expected_heading_level</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
         <span class=n>level</span> <span class=o>=</span> <span class=n>md_section</span><span class=o>.</span><span class=n>get_node_header_lvl</span><span class=p>()</span>
         <span class=n>delta</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>expected_heading_level</span><span class=p>)</span> <span class=o>-</span> <span class=n>level</span>
@@ -802,11 +802,11 @@
             <span class=n>md_section</span><span class=o>.</span><span class=n>change_header_level_by</span><span class=p>(</span><span class=n>delta</span><span class=p>)</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>md_section</span><span class=p>:</span>
         <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span>
-            <span class=sa>f</span><span class=s1>&#39;Unable to retrieve section &quot;</span><span class=si>{</span><span class=n>section_title</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1>&quot;&quot; from </span><span class=si>{</span><span class=n>markdown_source</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1> jinja template.&#39;</span>
+            <span class=sa>f</span><span class=s1>'Unable to retrieve section "</span><span class=si>{</span><span class=n>section_title</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1>"" from </span><span class=si>{</span><span class=n>markdown_source</span><span class=o>.</span><span class=n>value</span><span class=si>}</span><span class=s1> jinja template.'</span>
         <span class=p>)</span>
 
     <span class=c1># SECURITY FIX: Use sandboxed environment for re-parsing to prevent SSTI</span>
-    <span class=c1># Create a sandboxed environment if the current one isn&#39;t already sandboxed</span>
+    <span class=c1># Create a sandboxed environment if the current one isn't already sandboxed</span>
     <span class=n>parse_env</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>environment</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>environment</span><span class=p>,</span> <span class=n>SandboxedEnvironment</span><span class=p>):</span>
         <span class=n>parse_env</span> <span class=o>=</span> <span class=n>SandboxedEnvironment</span><span class=p>(</span>
@@ -831,9 +831,9 @@
 <span class=normal>43</span>
 <span class=normal>44</span>
 <span class=normal>45</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>adjust_heading_level</span><span class=p>(</span><span class=n>input_md</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>expected</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Adjust the header level of a markdown string such that the most significant header matches the expected #&#39;s.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Adjust the header level of a markdown string such that the most significant header matches the expected #'s."""</span>
     <span class=n>output_md</span> <span class=o>=</span> <span class=n>input_md</span>
-    <span class=n>mdn</span> <span class=o>=</span> <span class=n>docs_markdown_node</span><span class=o>.</span><span class=n>DocsMarkdownNode</span><span class=o>.</span><span class=n>build_tree_from_markdown</span><span class=p>(</span><span class=n>input_md</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>))</span>
+    <span class=n>mdn</span> <span class=o>=</span> <span class=n>docs_markdown_node</span><span class=o>.</span><span class=n>DocsMarkdownNode</span><span class=o>.</span><span class=n>build_tree_from_markdown</span><span class=p>(</span><span class=n>input_md</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'</span><span class=se>\n</span><span class=s1>'</span><span class=p>))</span>
     <span class=k>if</span> <span class=n>mdn</span><span class=o>.</span><span class=n>subnodes</span><span class=p>:</span>
         <span class=n>mdn_top_heading</span> <span class=o>=</span> <span class=n>mdn</span><span class=o>.</span><span class=n>subnodes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>get_node_header_lvl</span><span class=p>()</span>
         <span class=n>delta</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>expected</span><span class=p>)</span> <span class=o>-</span> <span class=n>mdn_top_heading</span>

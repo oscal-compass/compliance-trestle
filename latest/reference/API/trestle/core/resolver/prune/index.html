@@ -188,23 +188,23 @@
 <span class=normal>198</span>
 <span class=normal>199</span>
 <span class=normal>200</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Prune</span><span class=p>(</span><span class=n>Pipeline</span><span class=o>.</span><span class=n>Filter</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Prune the catalog based on the import include rule.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Prune the catalog based on the import include rule."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>import_</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import</span><span class=p>,</span> <span class=n>profile</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Inject the import.</span>
 
 <span class=sd>        This needs to be created prior to knowing the catalog.</span>
 <span class=sd>        The profile itself is only needed for debug messages.</span>
 <span class=sd>        The import is one possibly several imports in that profile.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_import</span> <span class=o>=</span> <span class=n>import_</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_profile</span> <span class=o>=</span> <span class=n>profile</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>CatalogInterface</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_set_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Set the catalog used by the catalog interface.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Set the catalog used by the catalog interface."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span> <span class=o>=</span> <span class=n>CatalogInterface</span><span class=p>(</span><span class=n>catalog</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span> <span class=o>=</span> <span class=n>catalog</span>
 
@@ -213,8 +213,8 @@
         <span class=k>if</span> <span class=n>select_list</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=k>for</span> <span class=n>select_control</span> <span class=ow>in</span> <span class=n>select_list</span><span class=p>:</span>
                 <span class=k>if</span> <span class=n>select_control</span><span class=o>.</span><span class=n>matching</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Profiles with SelectControl based on matching are not supported.&#39;</span><span class=p>)</span>
-                <span class=n>include_children</span> <span class=o>=</span> <span class=n>select_control</span><span class=o>.</span><span class=n>with_child_controls</span> <span class=o>==</span> <span class=s1>&#39;yes&#39;</span>
+                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Profiles with SelectControl based on matching are not supported.'</span><span class=p>)</span>
+                <span class=n>include_children</span> <span class=o>=</span> <span class=n>select_control</span><span class=o>.</span><span class=n>with_child_controls</span> <span class=o>==</span> <span class=s1>'yes'</span>
                 <span class=k>if</span> <span class=n>select_control</span><span class=o>.</span><span class=n>with_ids</span><span class=p>:</span>
                     <span class=c1># In OSCAL 1.2.0, with_ids is a list of strings directly</span>
                     <span class=k>for</span> <span class=n>id_</span> <span class=ow>in</span> <span class=n>select_control</span><span class=o>.</span><span class=n>with_ids</span><span class=p>:</span>
@@ -224,29 +224,29 @@
         <span class=k>return</span> <span class=n>control_ids</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_find_needed_control_ids</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get list of control_ids needed by profile and corresponding groups.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get list of control_ids needed by profile and corresponding groups."""</span>
         <span class=c1># Handle Union type: Import1 has include_all, Import2 has include_controls</span>
-        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=p>,</span> <span class=s1>&#39;include_controls&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>include_controls</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=p>,</span> <span class=s1>'include_controls'</span><span class=p>)</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>include_controls</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>include_ids</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_controls_selected</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>include_controls</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
-            <span class=k>if</span> <span class=ow>not</span> <span class=nb>hasattr</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=p>,</span> <span class=s1>&#39;include_all&#39;</span><span class=p>)</span> <span class=ow>or</span> <span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>include_all</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>&#39;Profile does not specify include-controls, so including all.&#39;</span><span class=p>)</span>
+            <span class=k>if</span> <span class=ow>not</span> <span class=nb>hasattr</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=p>,</span> <span class=s1>'include_all'</span><span class=p>)</span> <span class=ow>or</span> <span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>include_all</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>'Profile does not specify include-controls, so including all.'</span><span class=p>)</span>
             <span class=n>include_ids</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_control_ids</span><span class=p>()</span>
 
         <span class=n>exclude_ids</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_controls_selected</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>exclude_controls</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>set</span><span class=p>(</span><span class=n>include_ids</span><span class=p>)</span><span class=o>.</span><span class=n>issuperset</span><span class=p>(</span><span class=nb>set</span><span class=p>(</span><span class=n>exclude_ids</span><span class=p>)):</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;include_ids is not a superset of exclude_ids in import </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>href</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'include_ids is not a superset of exclude_ids in import </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>href</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=nb>sorted</span><span class=p>([</span><span class=n>id_</span> <span class=k>for</span> <span class=n>id_</span> <span class=ow>in</span> <span class=n>include_ids</span> <span class=k>if</span> <span class=n>id_</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>exclude_ids</span><span class=p>])</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_prune_control</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>needed_ids</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>exclude_ids</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Prune the control based on the Import requirements.</span>
 
 <span class=sd>        This is only called if the control is needed</span>
 <span class=sd>        Some or all of its sub_controls may not be needed</span>
 <span class=sd>        This always returns the original control, possibly with fewer subcontrols</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=k>if</span> <span class=n>control</span><span class=o>.</span><span class=n>controls</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
             <span class=k>return</span> <span class=n>control</span>
         <span class=n>controls</span> <span class=o>=</span> <span class=p>[]</span>
@@ -265,8 +265,8 @@
                 <span class=n>control</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_control</span><span class=p>(</span><span class=n>control_id</span><span class=p>)</span>
                 <span class=k>if</span> <span class=n>control</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
                     <span class=n>msg</span> <span class=o>=</span> <span class=p>(</span>
-                        <span class=sa>f</span><span class=s1>&#39;Profile titled &quot;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_profile</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&quot; references control </span><span class=si>{</span><span class=n>control_id</span><span class=si>}</span><span class=s1> &#39;</span>
-                        <span class=sa>f</span><span class=s1>&#39;but it is not in catalog titled &quot;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&quot;&#39;</span>
+                        <span class=sa>f</span><span class=s1>'Profile titled "</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_profile</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>" references control </span><span class=si>{</span><span class=n>control_id</span><span class=si>}</span><span class=s1> '</span>
+                        <span class=sa>f</span><span class=s1>'but it is not in catalog titled "</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>"'</span>
                     <span class=p>)</span>
                     <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
                 <span class=n>control</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prune_control</span><span class=p>(</span><span class=n>needed_ids</span><span class=p>,</span> <span class=n>control</span><span class=p>,</span> <span class=n>loaded_ids</span><span class=p>)</span>
@@ -276,7 +276,7 @@
         <span class=k>return</span> <span class=n>final_ids</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_re_insert_child_controls</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Re insert this control and its children recursively.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Re insert this control and its children recursively."""</span>
         <span class=n>new_controls</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>for</span> <span class=n>sub_control</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>controls</span><span class=p>):</span>
             <span class=n>new_control</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_re_insert_child_controls</span><span class=p>(</span><span class=n>sub_control</span><span class=p>)</span>
@@ -285,12 +285,12 @@
         <span class=k>return</span> <span class=n>control</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_re_insert_children</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Go through all controls in control dict and load child controls from control dict.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Go through all controls in control dict and load child controls from control dict."""</span>
         <span class=k>for</span> <span class=n>control</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_all_controls_from_dict</span><span class=p>():</span>
             <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_re_insert_child_controls</span><span class=p>(</span><span class=n>control</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_prune_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Prune the controls in the current catalog.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Prune the controls in the current catalog."""</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_import</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
             <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span>
 
@@ -347,14 +347,14 @@
         <span class=k>return</span> <span class=n>new_cat</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_iter</span><span class=p>:</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Prune the catalog based on the include rule in the import_.</span>
 
 <span class=sd>        This only processes the one catalog yielded by the one import in this pipeline.</span>
 <span class=sd>        It must yield in order to have the merge filter loop over available imported catalogs.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_set_catalog</span><span class=p>(</span><span class=nb>next</span><span class=p>(</span><span class=n>catalog_iter</span><span class=p>))</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;prune yielding catalog </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1> with import </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>href</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'prune yielding catalog </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1> with import </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>href</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>yield</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prune_catalog</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.resolver.prune.Prune-functions>Methods:<a href=#trestle.core.resolver.prune.Prune-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.resolver.prune.Prune.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>import_</span><span class=p>,</span> <span class=n>profile</span><span class=p>)</span></code> <a href=#trestle.core.resolver.prune.Prune.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Inject the import.</p> <p>This needs to be created prior to knowing the catalog. The profile itself is only needed for debug messages. The import is one possibly several imports in that profile.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/resolver/prune.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>35</span>
 <span class=normal>36</span>
@@ -368,13 +368,13 @@
 <span class=normal>44</span>
 <span class=normal>45</span>
 <span class=normal>46</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>import_</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import</span><span class=p>,</span> <span class=n>profile</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>Profile</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Inject the import.</span>
 
 <span class=sd>    This needs to be created prior to knowing the catalog.</span>
 <span class=sd>    The profile itself is only needed for debug messages.</span>
 <span class=sd>    The import is one possibly several imports in that profile.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_import</span> <span class=o>=</span> <span class=n>import_</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_profile</span> <span class=o>=</span> <span class=n>profile</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>CatalogInterface</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
@@ -389,13 +389,13 @@
 <span class=normal>198</span>
 <span class=normal>199</span>
 <span class=normal>200</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_iter</span><span class=p>:</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Prune the catalog based on the include rule in the import_.</span>
 
 <span class=sd>    This only processes the one catalog yielded by the one import in this pipeline.</span>
 <span class=sd>    It must yield in order to have the merge filter loop over available imported catalogs.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_set_catalog</span><span class=p>(</span><span class=nb>next</span><span class=p>(</span><span class=n>catalog_iter</span><span class=p>))</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;prune yielding catalog </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1> with import </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>href</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'prune yielding catalog </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_catalog</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1> with import </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_import</span><span class=o>.</span><span class=n>href</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
     <span class=k>yield</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prune_catalog</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <h3 id=trestle.core.resolver.prune-functions>Functions:<a href=#trestle.core.resolver.prune-functions class=headerlink title="Permanent link">¤</a></h3> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

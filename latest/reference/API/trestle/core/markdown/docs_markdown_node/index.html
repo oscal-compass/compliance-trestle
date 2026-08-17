@@ -103,37 +103,37 @@
 <span class=normal>133</span>
 <span class=normal>134</span>
 <span class=normal>135</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>DocsMarkdownNode</span><span class=p>(</span><span class=n>BaseMarkdownNode</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Markdown will be read to the tree.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Markdown will be read to the tree."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>key</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>content</span><span class=p>:</span> <span class=n>DocsSectionContent</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>:</span> <span class=nb>int</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize markdown node.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize markdown node."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>content</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>content</span><span class=p>:</span> <span class=n>DocsSectionContent</span> <span class=o>=</span> <span class=n>content</span>
 
     <span class=nd>@classmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>build_tree_from_markdown</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>lines</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>governed_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Construct a tree out of the given markdown.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Construct a tree out of the given markdown."""</span>
         <span class=n>ob</span> <span class=o>=</span> <span class=bp>cls</span><span class=o>.</span><span class=fm>__new__</span><span class=p>(</span><span class=bp>cls</span><span class=p>)</span>
         <span class=n>start_level</span> <span class=o>=</span> <span class=n>ob</span><span class=o>.</span><span class=n>_get_max_header_lvl</span><span class=p>(</span><span class=n>lines</span><span class=p>)</span>
-        <span class=n>ob</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ob</span><span class=o>.</span><span class=n>_build_tree</span><span class=p>(</span><span class=n>lines</span><span class=p>,</span> <span class=s1>&#39;root&#39;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>start_level</span><span class=p>,</span> <span class=n>governed_header</span><span class=p>)</span>
+        <span class=n>ob</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ob</span><span class=o>.</span><span class=n>_build_tree</span><span class=p>(</span><span class=n>lines</span><span class=p>,</span> <span class=s1>'root'</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>start_level</span><span class=p>,</span> <span class=n>governed_header</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>ob</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_build_tree</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>lines</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>root_key</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>:</span> <span class=nb>int</span><span class=p>,</span> <span class=n>level</span><span class=p>:</span> <span class=nb>int</span><span class=p>,</span> <span class=n>governed_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>DocsMarkdownNode</span><span class=p>,</span> <span class=nb>int</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Build a tree from the markdown recursively.</span>
 
-<span class=sd>        The tree is contructed with valid headers as node&#39;s keys</span>
-<span class=sd>        and node&#39;s content contains everything that is under that header.</span>
-<span class=sd>        The subsections are placed into node&#39;s children with the same structure.</span>
+<span class=sd>        The tree is contructed with valid headers as node's keys</span>
+<span class=sd>        and node's content contains everything that is under that header.</span>
+<span class=sd>        The subsections are placed into node's children with the same structure.</span>
 
 <span class=sd>        A header is valid iff the line starts with # and it is not:</span>
 <span class=sd>          1. Inside of the html blocks</span>
 <span class=sd>          2. Inside single lined in the &lt;&gt; tags</span>
 <span class=sd>          3. Inside the html comment</span>
 <span class=sd>          4. Inside any table, code block or blockquotes</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>content</span> <span class=o>=</span> <span class=n>DocsSectionContent</span><span class=p>()</span>
         <span class=n>node_children</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=n>i</span> <span class=o>=</span> <span class=n>starting_line</span>
@@ -141,7 +141,7 @@
         <span class=k>while</span> <span class=kc>True</span><span class=p>:</span>
             <span class=k>if</span> <span class=n>i</span> <span class=o>&gt;=</span> <span class=nb>len</span><span class=p>(</span><span class=n>lines</span><span class=p>):</span>
                 <span class=k>break</span>
-            <span class=n>line</span> <span class=o>=</span> <span class=n>lines</span><span class=p>[</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s1>&#39; &#39;</span><span class=p>)</span>
+            <span class=n>line</span> <span class=o>=</span> <span class=n>lines</span><span class=p>[</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s1>' '</span><span class=p>)</span>
             <span class=n>header_lvl</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_header_level_if_valid</span><span class=p>(</span><span class=n>line</span><span class=p>)</span>
 
             <span class=k>if</span> <span class=n>header_lvl</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
@@ -169,12 +169,12 @@
                 <span class=n>i</span> <span class=o>+=</span> <span class=mi>1</span>
             <span class=k>elif</span> <span class=p>(</span>
                 <span class=n>governed_header</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span>
-                <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_does_contain</span><span class=p>(</span><span class=n>root_key</span><span class=p>,</span> <span class=sa>rf</span><span class=s1>&#39;^[#]+ </span><span class=si>{</span><span class=n>governed_header</span><span class=si>}</span><span class=s1>$&#39;</span><span class=p>)</span>
+                <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_does_contain</span><span class=p>(</span><span class=n>root_key</span><span class=p>,</span> <span class=sa>rf</span><span class=s1>'^[#]+ </span><span class=si>{</span><span class=n>governed_header</span><span class=si>}</span><span class=s1>$'</span><span class=p>)</span>
                 <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_does_contain</span><span class=p>(</span><span class=n>line</span><span class=p>,</span> <span class=n>md_const</span><span class=o>.</span><span class=n>GOVERNED_DOC_REGEX</span><span class=p>)</span>
             <span class=p>):</span>
                 <span class=n>regexp</span> <span class=o>=</span> <span class=n>re</span><span class=o>.</span><span class=n>compile</span><span class=p>(</span><span class=n>md_const</span><span class=o>.</span><span class=n>GOVERNED_DOC_REGEX</span><span class=p>)</span>
                 <span class=n>match</span> <span class=o>=</span> <span class=n>regexp</span><span class=o>.</span><span class=n>search</span><span class=p>(</span><span class=n>line</span><span class=p>)</span>
-                <span class=n>header</span> <span class=o>=</span> <span class=n>match</span><span class=o>.</span><span class=n>group</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s1>&#39;*&#39;</span><span class=p>)</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s1>&#39;:&#39;</span><span class=p>)</span>
+                <span class=n>header</span> <span class=o>=</span> <span class=n>match</span><span class=o>.</span><span class=n>group</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s1>'*'</span><span class=p>)</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s1>':'</span><span class=p>)</span>
                 <span class=n>content</span><span class=o>.</span><span class=n>governed_document</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>header</span><span class=p>)</span>
                 <span class=n>i</span> <span class=o>+=</span> <span class=mi>1</span>
             <span class=k>else</span><span class=p>:</span>
@@ -182,7 +182,7 @@
                 <span class=n>i</span> <span class=o>+=</span> <span class=mi>1</span>
 
         <span class=n>first_line_to_grab</span> <span class=o>=</span> <span class=n>starting_line</span> <span class=o>-</span> <span class=mi>1</span> <span class=k>if</span> <span class=n>starting_line</span> <span class=k>else</span> <span class=mi>0</span>
-        <span class=n>content</span><span class=o>.</span><span class=n>raw_text</span> <span class=o>=</span> <span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>lines</span><span class=p>[</span><span class=n>first_line_to_grab</span><span class=p>:</span><span class=n>i</span><span class=p>])</span>
+        <span class=n>content</span><span class=o>.</span><span class=n>raw_text</span> <span class=o>=</span> <span class=s1>'</span><span class=se>\n</span><span class=s1>'</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>lines</span><span class=p>[</span><span class=n>first_line_to_grab</span><span class=p>:</span><span class=n>i</span><span class=p>])</span>
         <span class=n>md_node</span> <span class=o>=</span> <span class=n>DocsMarkdownNode</span><span class=p>(</span><span class=n>key</span><span class=o>=</span><span class=n>root_key</span><span class=p>,</span> <span class=n>content</span><span class=o>=</span><span class=n>content</span><span class=p>,</span> <span class=n>starting_line</span><span class=o>=</span><span class=n>first_line_to_grab</span><span class=p>)</span>
         <span class=n>md_node</span><span class=o>.</span><span class=n>subnodes</span> <span class=o>=</span> <span class=n>node_children</span>
         <span class=k>return</span> <span class=n>md_node</span><span class=p>,</span> <span class=n>i</span>
@@ -190,7 +190,7 @@
 <span class=normal>56</span>
 <span class=normal>57</span>
 <span class=normal>58</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>key</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>content</span><span class=p>:</span> <span class=n>DocsSectionContent</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>:</span> <span class=nb>int</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize markdown node.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize markdown node."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>content</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>content</span><span class=p>:</span> <span class=n>DocsSectionContent</span> <span class=o>=</span> <span class=n>content</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.markdown.docs_markdown_node.DocsMarkdownNode.build_tree_from_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>build_tree_from_markdown</span><span class=p>(</span><span class=n>lines</span><span class=p>,</span> <span class=n>governed_header</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.markdown.docs_markdown_node.DocsMarkdownNode.build_tree_from_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Construct a tree out of the given markdown.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/markdown/docs_markdown_node.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>60</span>
@@ -201,10 +201,10 @@
 <span class=normal>65</span>
 <span class=normal>66</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>build_tree_from_markdown</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>lines</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>governed_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Construct a tree out of the given markdown.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Construct a tree out of the given markdown."""</span>
     <span class=n>ob</span> <span class=o>=</span> <span class=bp>cls</span><span class=o>.</span><span class=fm>__new__</span><span class=p>(</span><span class=bp>cls</span><span class=p>)</span>
     <span class=n>start_level</span> <span class=o>=</span> <span class=n>ob</span><span class=o>.</span><span class=n>_get_max_header_lvl</span><span class=p>(</span><span class=n>lines</span><span class=p>)</span>
-    <span class=n>ob</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ob</span><span class=o>.</span><span class=n>_build_tree</span><span class=p>(</span><span class=n>lines</span><span class=p>,</span> <span class=s1>&#39;root&#39;</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>start_level</span><span class=p>,</span> <span class=n>governed_header</span><span class=p>)</span>
+    <span class=n>ob</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ob</span><span class=o>.</span><span class=n>_build_tree</span><span class=p>(</span><span class=n>lines</span><span class=p>,</span> <span class=s1>'root'</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>start_level</span><span class=p>,</span> <span class=n>governed_header</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>ob</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.core.markdown.docs_markdown_node.DocsSectionContent class="doc doc-heading"> <code>DocsSectionContent</code> <a href=#trestle.core.markdown.docs_markdown_node.DocsSectionContent class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><a class="autorefs autorefs-internal" title="BaseSectionContent (trestle.core.markdown.base_markdown_node.BaseSectionContent)" href=../base_markdown_node/#trestle.core.markdown.base_markdown_node.BaseSectionContent>BaseSectionContent</a></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="DocsSectionContent (trestle.core.markdown.docs_markdown_node.DocsSectionContent)" href=#trestle.core.markdown.docs_markdown_node.DocsSectionContent id=mermaid-link-trestle.core.markdown.docs_markdown_node.DocsSectionContent></a> <a class="autorefs autorefs-internal" title="BaseSectionContent (trestle.core.markdown.base_markdown_node.BaseSectionContent)" href=../base_markdown_node/#trestle.core.markdown.base_markdown_node.BaseSectionContent id=mermaid-link-trestle.core.markdown.base_markdown_node.BaseSectionContent></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.core.markdown.docs_markdown_node.DocsSectionContent>
               flowchart TD
@@ -247,10 +247,10 @@
 <span class=normal>47</span>
 <span class=normal>48</span>
 <span class=normal>49</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>DocsSectionContent</span><span class=p>(</span><span class=n>BaseSectionContent</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;A content of the node.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""A content of the node."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize section content.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize section content."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>()</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>tables</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>text</span> <span class=o>=</span> <span class=p>[]</span>
@@ -260,7 +260,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>governed_document</span> <span class=o>=</span> <span class=p>[]</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>union</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>node</span><span class=p>:</span> <span class=n>DocsMarkdownNode</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Unites contents together.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Unites contents together."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=n>union</span><span class=p>(</span><span class=n>node</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>code_lines</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>node</span><span class=o>.</span><span class=n>content</span><span class=o>.</span><span class=n>code_lines</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>html_lines</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>node</span><span class=o>.</span><span class=n>content</span><span class=o>.</span><span class=n>html_lines</span><span class=p>)</span>
@@ -275,7 +275,7 @@
 <span class=normal>39</span>
 <span class=normal>40</span>
 <span class=normal>41</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize section content.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize section content."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>()</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>tables</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>text</span> <span class=o>=</span> <span class=p>[]</span>
@@ -290,7 +290,7 @@
 <span class=normal>47</span>
 <span class=normal>48</span>
 <span class=normal>49</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>union</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>node</span><span class=p>:</span> <span class=n>DocsMarkdownNode</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Unites contents together.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Unites contents together."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=n>union</span><span class=p>(</span><span class=n>node</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>code_lines</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>node</span><span class=o>.</span><span class=n>content</span><span class=o>.</span><span class=n>code_lines</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>html_lines</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>node</span><span class=o>.</span><span class=n>content</span><span class=o>.</span><span class=n>html_lines</span><span class=p>)</span>

@@ -22,7 +22,7 @@
 <span class=normal>34</span>
 <span class=normal>35</span>
 <span class=normal>36</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ContextPurpose</span><span class=p>(</span><span class=n>Enum</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Specify the modality of the control markdown.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Specify the modality of the control markdown."""</span>
 
     <span class=n>CATALOG</span> <span class=o>=</span> <span class=mi>0</span>
     <span class=n>COMPONENT</span> <span class=o>=</span> <span class=mi>1</span>
@@ -150,7 +150,7 @@
 <span class=normal>158</span>
 <span class=normal>159</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@dataclass</span>
 <span class=k>class</span><span class=w> </span><span class=nc>ControlContext</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Class encapsulating control markdown usage.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Class encapsulating control markdown usage."""</span>
 
     <span class=n>purpose</span><span class=p>:</span> <span class=n>ContextPurpose</span>
     <span class=n>to_markdown</span><span class=p>:</span> <span class=nb>bool</span>
@@ -205,7 +205,7 @@
         <span class=n>comp_dict</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>CompDict</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
         <span class=n>merged_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ControlContext</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Generate control context of the needed type.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Generate control context of the needed type."""</span>
         <span class=n>context</span> <span class=o>=</span> <span class=bp>cls</span><span class=p>(</span>
             <span class=n>purpose</span><span class=p>,</span>
             <span class=n>to_markdown</span><span class=p>,</span>
@@ -241,7 +241,7 @@
 
     <span class=nd>@classmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>clone</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ControlContext</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Create a deep clone of the context without duplicating large objects.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Create a deep clone of the context without duplicating large objects."""</span>
         <span class=n>new_context</span> <span class=o>=</span> <span class=bp>cls</span><span class=p>(</span>
             <span class=n>context</span><span class=o>.</span><span class=n>purpose</span><span class=p>,</span>
             <span class=n>context</span><span class=o>.</span><span class=n>to_markdown</span><span class=p>,</span>
@@ -300,7 +300,7 @@
 <span class=normal>158</span>
 <span class=normal>159</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>clone</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ControlContext</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Create a deep clone of the context without duplicating large objects.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Create a deep clone of the context without duplicating large objects."""</span>
     <span class=n>new_context</span> <span class=o>=</span> <span class=bp>cls</span><span class=p>(</span>
         <span class=n>context</span><span class=o>.</span><span class=n>purpose</span><span class=p>,</span>
         <span class=n>context</span><span class=o>.</span><span class=n>to_markdown</span><span class=p>,</span>
@@ -416,7 +416,7 @@
     <span class=n>comp_dict</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>CompDict</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=n>merged_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ControlContext</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Generate control context of the needed type.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Generate control context of the needed type."""</span>
     <span class=n>context</span> <span class=o>=</span> <span class=bp>cls</span><span class=p>(</span>
         <span class=n>purpose</span><span class=p>,</span>
         <span class=n>to_markdown</span><span class=p>,</span>

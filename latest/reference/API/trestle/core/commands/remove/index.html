@@ -121,31 +121,31 @@
 <span class=normal>132</span>
 <span class=normal>133</span>
 <span class=normal>134</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RemoveCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Remove a subcomponent from an existing model.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Remove a subcomponent from an existing model."""</span>
 
-    <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;remove&#39;</span>
+    <span class=n>name</span> <span class=o>=</span> <span class=s1>'remove'</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_init_arguments</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
-            <span class=sa>f</span><span class=s1>&#39;-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE_SHORT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-            <span class=sa>f</span><span class=s1>&#39;--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-            <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_FILE</span> <span class=o>+</span> <span class=s1>&#39; to remove component/subcomponent to.&#39;</span><span class=p>,</span>
+            <span class=sa>f</span><span class=s1>'-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE_SHORT</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+            <span class=sa>f</span><span class=s1>'--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+            <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_FILE</span> <span class=o>+</span> <span class=s1>' to remove component/subcomponent to.'</span><span class=p>,</span>
             <span class=n>required</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
-            <span class=sa>f</span><span class=s1>&#39;-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT_SHORT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-            <span class=sa>f</span><span class=s1>&#39;--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-            <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_ELEMENT</span> <span class=o>+</span> <span class=s1>&#39; to remove.&#39;</span><span class=p>,</span>
+            <span class=sa>f</span><span class=s1>'-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT_SHORT</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+            <span class=sa>f</span><span class=s1>'--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+            <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_ELEMENT</span> <span class=o>+</span> <span class=s1>' to remove.'</span><span class=p>,</span>
             <span class=n>required</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span>
         <span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_run</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Remove an OSCAL component/subcomponent to the specified component.</span>
+<span class=w>        </span><span class=sd>"""Remove an OSCAL component/subcomponent to the specified component.</span>
 
 <span class=sd>        This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.</span>
 <span class=sd>        The method first finds the parent model from the file and loads the file into the model.</span>
-<span class=sd>        Then the method executes &#39;remove&#39; for each of the element paths specified.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        Then the method executes 'remove' for each of the element paths specified.</span>
+<span class=sd>        """</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>log</span><span class=o>.</span><span class=n>set_log_level_from_args</span><span class=p>(</span><span class=n>args</span><span class=p>)</span>
             <span class=n>args_dict</span> <span class=o>=</span> <span class=n>args</span><span class=o>.</span><span class=vm>__dict__</span>
@@ -161,7 +161,7 @@
             <span class=n>add_plan</span> <span class=o>=</span> <span class=n>Plan</span><span class=p>()</span>
 
             <span class=c1># Do _remove for each element_path specified in args</span>
-            <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>args_dict</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=p>])</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>)</span>
+            <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>args_dict</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=p>])</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>','</span><span class=p>)</span>
             <span class=k>for</span> <span class=n>elm_path_str</span> <span class=ow>in</span> <span class=n>element_paths</span><span class=p>:</span>
                 <span class=n>element_path</span> <span class=o>=</span> <span class=n>ElementPath</span><span class=p>(</span><span class=n>elm_path_str</span><span class=p>)</span>
                 <span class=n>remove_action</span><span class=p>,</span> <span class=n>parent_element</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>remove</span><span class=p>(</span><span class=n>element_path</span><span class=p>,</span> <span class=n>parent_element</span><span class=p>)</span>
@@ -178,11 +178,11 @@
             <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
 
         <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-            <span class=k>return</span> <span class=n>err</span><span class=o>.</span><span class=n>handle_generic_command_exception</span><span class=p>(</span><span class=n>e</span><span class=p>,</span> <span class=n>logger</span><span class=p>,</span> <span class=s1>&#39;Error while removing OSCAL component&#39;</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>err</span><span class=o>.</span><span class=n>handle_generic_command_exception</span><span class=p>(</span><span class=n>e</span><span class=p>,</span> <span class=n>logger</span><span class=p>,</span> <span class=s1>'Error while removing OSCAL component'</span><span class=p>)</span>
 
     <span class=nd>@classmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>remove</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>,</span> <span class=n>parent_element</span><span class=p>:</span> <span class=n>Element</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>RemoveAction</span><span class=p>,</span> <span class=n>Element</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;For the element_path, remove a model from the parent_element of a given parent_model.</span>
+<span class=w>        </span><span class=sd>"""For the element_path, remove a model from the parent_element of a given parent_model.</span>
 
 <span class=sd>        First we check if there is an existing element at that path</span>
 <span class=sd>        If not, we complain.</span>
@@ -192,12 +192,12 @@
 <span class=sd>        LIMITATIONS:</span>
 <span class=sd>        1. This does not remove elements of a list or dict. Instead, the entire list or dict is removed.</span>
 <span class=sd>        2. This cannot remove arbitrarily named elements that are not specified in the schema.</span>
-<span class=sd>        For example, &quot;responsible-parties&quot; contains named elements, e.g., &quot;organisation&quot;. The tool will not</span>
-<span class=sd>        remove the &quot;organisation&quot; as it is not in the schema, but one can remove its elements, e.g., &quot;party-uuids&quot;.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        For example, "responsible-parties" contains named elements, e.g., "organisation". The tool will not</span>
+<span class=sd>        remove the "organisation" as it is not in the schema, but one can remove its elements, e.g., "party-uuids".</span>
+<span class=sd>        """</span>
         <span class=n>element_path_list</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_full_path_parts</span><span class=p>()</span>
-        <span class=k>if</span> <span class=s1>&#39;*&#39;</span> <span class=ow>in</span> <span class=n>element_path_list</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;trestle remove does not support Wildcard element path.&#39;</span><span class=p>)</span>
+        <span class=k>if</span> <span class=s1>'*'</span> <span class=ow>in</span> <span class=n>element_path_list</span><span class=p>:</span>
+            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>'trestle remove does not support Wildcard element path.'</span><span class=p>)</span>
 
         <span class=n>deleting_element</span> <span class=o>=</span> <span class=n>parent_element</span><span class=o>.</span><span class=n>get_at</span><span class=p>(</span><span class=n>element_path</span><span class=p>)</span>
 
@@ -205,20 +205,20 @@
             <span class=c1># The element already exists</span>
             <span class=k>if</span> <span class=nb>type</span><span class=p>(</span><span class=n>deleting_element</span><span class=p>)</span> <span class=ow>is</span> <span class=nb>list</span><span class=p>:</span>
                 <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
-                    <span class=s1>&#39;Warning: trestle remove does not support removing elements of a list: this removes the entire list&#39;</span>
+                    <span class=s1>'Warning: trestle remove does not support removing elements of a list: this removes the entire list'</span>
                 <span class=p>)</span>
             <span class=k>elif</span> <span class=nb>type</span><span class=p>(</span><span class=n>deleting_element</span><span class=p>)</span> <span class=ow>is</span> <span class=nb>dict</span><span class=p>:</span>
                 <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
-                    <span class=s1>&#39;Warning: trestle remove does not support removing dict elements: &#39;</span>
-                    <span class=s1>&#39;this removes the entire dict element&#39;</span>
+                    <span class=s1>'Warning: trestle remove does not support removing dict elements: '</span>
+                    <span class=s1>'this removes the entire dict element'</span>
                 <span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Bad element path: </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>element_path</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Bad element path: </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>element_path</span><span class=p>)</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
         <span class=n>remove_action</span> <span class=o>=</span> <span class=n>RemoveAction</span><span class=p>(</span><span class=n>parent_element</span><span class=p>,</span> <span class=n>element_path</span><span class=p>)</span>
 
         <span class=k>return</span> <span class=n>remove_action</span><span class=p>,</span> <span class=n>parent_element</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.remove.RemoveCmd-attributes>Attributes<a href=#trestle.core.commands.remove.RemoveCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.remove.RemoveCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;remove&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.remove.RemoveCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.remove.RemoveCmd-functions>Methods:<a href=#trestle.core.commands.remove.RemoveCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.remove.RemoveCmd.remove class="doc doc-heading"> <code class="highlight language-python"><span class=n>remove</span><span class=p>(</span><span class=n>element_path</span><span class=p>,</span> <span class=n>parent_element</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.remove.RemoveCmd.remove class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>For the element_path, remove a model from the parent_element of a given parent_model.</p> <p>First we check if there is an existing element at that path If not, we complain. Then we set up an action plan to update the model (specified by file_path) in memory, return the action and return the parent_element.</p> <p>LIMITATIONS: 1. This does not remove elements of a list or dict. Instead, the entire list or dict is removed. 2. This cannot remove arbitrarily named elements that are not specified in the schema. For example, "responsible-parties" contains named elements, e.g., "organisation". The tool will not remove the "organisation" as it is not in the schema, but one can remove its elements, e.g., "party-uuids".</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/remove.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 97</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.remove.RemoveCmd-attributes>Attributes<a href=#trestle.core.commands.remove.RemoveCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.remove.RemoveCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'remove'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.remove.RemoveCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.remove.RemoveCmd-functions>Methods:<a href=#trestle.core.commands.remove.RemoveCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.remove.RemoveCmd.remove class="doc doc-heading"> <code class="highlight language-python"><span class=n>remove</span><span class=p>(</span><span class=n>element_path</span><span class=p>,</span> <span class=n>parent_element</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.remove.RemoveCmd.remove class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>For the element_path, remove a model from the parent_element of a given parent_model.</p> <p>First we check if there is an existing element at that path If not, we complain. Then we set up an action plan to update the model (specified by file_path) in memory, return the action and return the parent_element.</p> <p>LIMITATIONS: 1. This does not remove elements of a list or dict. Instead, the entire list or dict is removed. 2. This cannot remove arbitrarily named elements that are not specified in the schema. For example, "responsible-parties" contains named elements, e.g., "organisation". The tool will not remove the "organisation" as it is not in the schema, but one can remove its elements, e.g., "party-uuids".</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/remove.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 97</span>
 <span class=normal> 98</span>
 <span class=normal> 99</span>
 <span class=normal>100</span>
@@ -257,7 +257,7 @@
 <span class=normal>133</span>
 <span class=normal>134</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>remove</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>,</span> <span class=n>parent_element</span><span class=p>:</span> <span class=n>Element</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>RemoveAction</span><span class=p>,</span> <span class=n>Element</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;For the element_path, remove a model from the parent_element of a given parent_model.</span>
+<span class=w>    </span><span class=sd>"""For the element_path, remove a model from the parent_element of a given parent_model.</span>
 
 <span class=sd>    First we check if there is an existing element at that path</span>
 <span class=sd>    If not, we complain.</span>
@@ -267,12 +267,12 @@
 <span class=sd>    LIMITATIONS:</span>
 <span class=sd>    1. This does not remove elements of a list or dict. Instead, the entire list or dict is removed.</span>
 <span class=sd>    2. This cannot remove arbitrarily named elements that are not specified in the schema.</span>
-<span class=sd>    For example, &quot;responsible-parties&quot; contains named elements, e.g., &quot;organisation&quot;. The tool will not</span>
-<span class=sd>    remove the &quot;organisation&quot; as it is not in the schema, but one can remove its elements, e.g., &quot;party-uuids&quot;.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    For example, "responsible-parties" contains named elements, e.g., "organisation". The tool will not</span>
+<span class=sd>    remove the "organisation" as it is not in the schema, but one can remove its elements, e.g., "party-uuids".</span>
+<span class=sd>    """</span>
     <span class=n>element_path_list</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_full_path_parts</span><span class=p>()</span>
-    <span class=k>if</span> <span class=s1>&#39;*&#39;</span> <span class=ow>in</span> <span class=n>element_path_list</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;trestle remove does not support Wildcard element path.&#39;</span><span class=p>)</span>
+    <span class=k>if</span> <span class=s1>'*'</span> <span class=ow>in</span> <span class=n>element_path_list</span><span class=p>:</span>
+        <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>'trestle remove does not support Wildcard element path.'</span><span class=p>)</span>
 
     <span class=n>deleting_element</span> <span class=o>=</span> <span class=n>parent_element</span><span class=o>.</span><span class=n>get_at</span><span class=p>(</span><span class=n>element_path</span><span class=p>)</span>
 
@@ -280,15 +280,15 @@
         <span class=c1># The element already exists</span>
         <span class=k>if</span> <span class=nb>type</span><span class=p>(</span><span class=n>deleting_element</span><span class=p>)</span> <span class=ow>is</span> <span class=nb>list</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
-                <span class=s1>&#39;Warning: trestle remove does not support removing elements of a list: this removes the entire list&#39;</span>
+                <span class=s1>'Warning: trestle remove does not support removing elements of a list: this removes the entire list'</span>
             <span class=p>)</span>
         <span class=k>elif</span> <span class=nb>type</span><span class=p>(</span><span class=n>deleting_element</span><span class=p>)</span> <span class=ow>is</span> <span class=nb>dict</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
-                <span class=s1>&#39;Warning: trestle remove does not support removing dict elements: &#39;</span>
-                <span class=s1>&#39;this removes the entire dict element&#39;</span>
+                <span class=s1>'Warning: trestle remove does not support removing dict elements: '</span>
+                <span class=s1>'this removes the entire dict element'</span>
             <span class=p>)</span>
     <span class=k>else</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Bad element path: </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>element_path</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Bad element path: </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>element_path</span><span class=p>)</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
     <span class=n>remove_action</span> <span class=o>=</span> <span class=n>RemoveAction</span><span class=p>(</span><span class=n>parent_element</span><span class=p>,</span> <span class=n>element_path</span><span class=p>)</span>
 

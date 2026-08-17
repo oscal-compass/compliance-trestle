@@ -224,27 +224,27 @@
 <span class=normal>263</span>
 <span class=normal>264</span>
 <span class=normal>265</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ExportReader</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    By-Component Assembly Exports Markdown reader.</span>
 
 <span class=sd>    Export reader handles all operations related to reading authored inherited and satisfied statements from exports</span>
 <span class=sd>    in Markdown. The reader will read all the markdown files in the exports directory and update the SSP with the</span>
 <span class=sd>    inheritance.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Initialize export reader.</span>
 
 <span class=sd>        Arguments:</span>
-<span class=sd>            root_path: A root path object where an SSP&#39;s inheritance markdown is located.</span>
+<span class=sd>            root_path: A root path object where an SSP's inheritance markdown is located.</span>
 <span class=sd>            ssp: A system security plan object that will be updated with the inheritance information.</span>
 
 <span class=sd>        Notes:</span>
 <span class=sd>            The mapped components list is used to track which components have been mapped to controls in the markdown.</span>
 <span class=sd>            It can be retrieved with the get_leveraged_components method. This will be empty until the</span>
 <span class=sd>            read_exports_from_markdown method is called.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span> <span class=o>=</span> <span class=n>ssp</span>
 
         <span class=c1># Create a dictionary of implemented requirements keyed by control id for merging operations</span>
@@ -256,14 +256,14 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_root_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span> <span class=o>=</span> <span class=n>root_path</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_create_impl_req_dict</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Create a dictionary of implemented requirements keyed by control id.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Create a dictionary of implemented requirements keyed by control id."""</span>
         <span class=n>impl_req_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>for</span> <span class=n>impl_req</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_ssp</span><span class=o>.</span><span class=n>control_implementation</span><span class=o>.</span><span class=n>implemented_requirements</span><span class=p>):</span>
             <span class=n>impl_req_dict</span><span class=p>[</span><span class=n>impl_req</span><span class=o>.</span><span class=n>control_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>impl_req</span>
         <span class=k>return</span> <span class=n>impl_req_dict</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>read_exports_from_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Read inheritance markdown and update the SSP with the inheritance information.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Read inheritance markdown and update the SSP with the inheritance information."""</span>
         <span class=c1># Read the information from the markdown files into a dictionary for quick lookup</span>
         <span class=n>markdown_dict</span><span class=p>:</span> <span class=n>InheritanceViewDict</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_read_inheritance_markdown_directory</span><span class=p>()</span>
 
@@ -273,38 +273,38 @@
         <span class=c1># Process remaining markdown information that was not in the implemented requirements</span>
         <span class=k>for</span> <span class=n>control_id</span><span class=p>,</span> <span class=n>by_comp_dict</span> <span class=ow>in</span> <span class=n>markdown_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
             <span class=k>if</span> <span class=n>by_comp_dict</span><span class=p>:</span>
-                <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Adding control mapping </span><span class=si>{</span><span class=n>control_id</span><span class=si>}</span><span class=s1> to implemented requirements&#39;</span><span class=p>)</span>
+                <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Adding control mapping </span><span class=si>{</span><span class=n>control_id</span><span class=si>}</span><span class=s1> to implemented requirements'</span><span class=p>)</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_add_control_mappings_to_implemented_requirements</span><span class=p>(</span><span class=n>control_id</span><span class=p>,</span> <span class=n>by_comp_dict</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_ssp</span><span class=o>.</span><span class=n>control_implementation</span><span class=o>.</span><span class=n>implemented_requirements</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_implemented_requirements</span><span class=o>.</span><span class=n>values</span><span class=p>())</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_ssp</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_leveraged_ssp_href</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get the href of the leveraged SSP from a markdown file.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get the href of the leveraged SSP from a markdown file."""</span>
         <span class=n>comp_dirs</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_root_path</span><span class=p>)</span>
         <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>comp_dirs</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;No components were found in the markdown.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'No components were found in the markdown.'</span><span class=p>)</span>
 
         <span class=n>control_dirs</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_root_path</span><span class=o>.</span><span class=n>joinpath</span><span class=p>(</span><span class=n>comp_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>]))</span>
         <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>control_dirs</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;No controls were found in the markdown for component </span><span class=si>{comp_dirs[0]}</span><span class=s1>.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'No controls were found in the markdown for component </span><span class=si>{comp_dirs[0]}</span><span class=s1>.'</span><span class=p>)</span>
 
         <span class=n>control_dir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_root_path</span><span class=o>.</span><span class=n>joinpath</span><span class=p>(</span><span class=n>comp_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=n>control_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span>
 
         <span class=n>files</span> <span class=o>=</span> <span class=p>[</span><span class=n>f</span> <span class=k>for</span> <span class=n>f</span> <span class=ow>in</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=n>control_dir</span><span class=p>)</span> <span class=k>if</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>isfile</span><span class=p>(</span><span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>control_dir</span><span class=p>,</span> <span class=n>f</span><span class=p>))]</span>
         <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>files</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;No files were found in the markdown for control </span><span class=si>{</span><span class=n>control_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'No files were found in the markdown for control </span><span class=si>{</span><span class=n>control_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1>.'</span><span class=p>)</span>
 
         <span class=n>markdown_file_path</span> <span class=o>=</span> <span class=n>control_dir</span><span class=o>.</span><span class=n>joinpath</span><span class=p>(</span><span class=n>files</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span>
         <span class=n>reader</span> <span class=o>=</span> <span class=n>InheritanceMarkdownReader</span><span class=p>(</span><span class=n>markdown_file_path</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>reader</span><span class=o>.</span><span class=n>get_leveraged_ssp_reference</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_leveraged_components</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get a list of component titles that have been mapped to controls in the Markdown.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get a list of component titles that have been mapped to controls in the Markdown."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_mapped_components</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_merge_exports_implemented_requirements</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>markdown_dict</span><span class=p>:</span> <span class=n>InheritanceViewDict</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Merge all exported inheritance info from the markdown into the implemented requirement dict.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Merge all exported inheritance info from the markdown into the implemented requirement dict."""</span>
         <span class=k>for</span> <span class=n>implemented_requirement</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_implemented_requirements</span><span class=o>.</span><span class=n>values</span><span class=p>():</span>
             <span class=c1># If the control id existing in the markdown, then update the by_components</span>
             <span class=k>if</span> <span class=n>implemented_requirement</span><span class=o>.</span><span class=n>control_id</span> <span class=ow>in</span> <span class=n>markdown_dict</span><span class=p>:</span>
@@ -317,7 +317,7 @@
             <span class=n>new_statements</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Statement</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
 
             <span class=k>for</span> <span class=n>stm</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>implemented_requirement</span><span class=o>.</span><span class=n>statements</span><span class=p>):</span>
-                <span class=n>statement_id</span> <span class=o>=</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>stm</span><span class=p>,</span> <span class=s1>&#39;statement_id&#39;</span><span class=p>,</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>implemented_requirement</span><span class=o>.</span><span class=n>control_id</span><span class=si>}</span><span class=s1>_smt&#39;</span><span class=p>)</span>
+                <span class=n>statement_id</span> <span class=o>=</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>stm</span><span class=p>,</span> <span class=s1>'statement_id'</span><span class=p>,</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>implemented_requirement</span><span class=o>.</span><span class=n>control_id</span><span class=si>}</span><span class=s1>_smt'</span><span class=p>)</span>
 
                 <span class=c1># If the statement id existing in the markdown, then update the by_components</span>
                 <span class=k>if</span> <span class=n>statement_id</span> <span class=ow>in</span> <span class=n>markdown_dict</span><span class=p>:</span>
@@ -331,7 +331,7 @@
             <span class=n>implemented_requirement</span><span class=o>.</span><span class=n>statements</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>new_statements</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_update_type_with_by_comp</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>with_bycomp</span><span class=p>:</span> <span class=n>TypeWithByComps</span><span class=p>,</span> <span class=n>by_comp_dict</span><span class=p>:</span> <span class=n>ByComponentDict</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Update the by_components for a type with by_components.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Update the by_components for a type with by_components."""</span>
         <span class=n>new_by_comp</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
 
         <span class=n>by_comp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span>
@@ -355,10 +355,10 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_add_control_mappings_to_implemented_requirements</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>control_mapping</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>by_comps</span><span class=p>:</span> <span class=n>ByComponentDict</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Add control mappings to implemented requirements.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Add control mappings to implemented requirements."""</span>
         <span class=c1># Determine if the control id is actually a statement id</span>
-        <span class=k>if</span> <span class=s1>&#39;_smt.&#39;</span> <span class=ow>in</span> <span class=n>control_mapping</span><span class=p>:</span>
-            <span class=n>control_id</span> <span class=o>=</span> <span class=n>control_mapping</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;_smt&#39;</span><span class=p>)[</span><span class=mi>0</span><span class=p>]</span>
+        <span class=k>if</span> <span class=s1>'_smt.'</span> <span class=ow>in</span> <span class=n>control_mapping</span><span class=p>:</span>
+            <span class=n>control_id</span> <span class=o>=</span> <span class=n>control_mapping</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'_smt'</span><span class=p>)[</span><span class=mi>0</span><span class=p>]</span>
             <span class=n>implemented_req</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_add_or_get_implemented_requirement</span><span class=p>(</span><span class=n>control_id</span><span class=p>)</span>
             <span class=n>statement</span> <span class=o>=</span> <span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>ossp</span><span class=o>.</span><span class=n>Statement</span><span class=p>)</span>
             <span class=n>statement</span><span class=o>.</span><span class=n>statement_id</span> <span class=o>=</span> <span class=n>control_mapping</span>
@@ -374,7 +374,7 @@
             <span class=n>implemented_req</span><span class=o>.</span><span class=n>by_components</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>by_comps_list</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_add_or_get_implemented_requirement</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>control_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Add or get implemented requirement from implemented requirements dictionary.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Add or get implemented requirement from implemented requirements dictionary."""</span>
         <span class=k>if</span> <span class=n>control_id</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_implemented_requirements</span><span class=p>:</span>
             <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_implemented_requirements</span><span class=p>[</span><span class=n>control_id</span><span class=p>]</span>
 
@@ -385,7 +385,7 @@
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_add_new_by_comps</span><span class=p>(</span><span class=n>by_comp_dict</span><span class=p>:</span> <span class=n>ByComponentDict</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Add new by_components to the implemented requirement.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Add new by_components to the implemented requirement."""</span>
         <span class=n>new_by_comp</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>for</span> <span class=n>comp_uuid</span><span class=p>,</span> <span class=n>inheritance_info</span> <span class=ow>in</span> <span class=n>by_comp_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
             <span class=n>by_comp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span> <span class=o>=</span> <span class=n>gens</span><span class=o>.</span><span class=n>generate_sample_model</span><span class=p>(</span><span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>)</span>
@@ -396,7 +396,7 @@
         <span class=k>return</span> <span class=n>new_by_comp</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_read_inheritance_markdown_directory</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>InheritanceViewDict</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Read all inheritance markdown files and return a dictionary of all the information.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Read all inheritance markdown files and return a dictionary of all the information."""</span>
         <span class=n>markdown_dict</span><span class=p>:</span> <span class=n>InheritanceViewDict</span> <span class=o>=</span> <span class=p>{}</span>
 
         <span class=c1># Creating a dictionary to find the component uuid by title for faster lookup</span>
@@ -427,10 +427,10 @@
 
                     <span class=k>for</span> <span class=n>comp</span> <span class=ow>in</span> <span class=n>leveraged_info</span><span class=o>.</span><span class=n>leveraging_comp_titles</span><span class=p>:</span>
                         <span class=k>if</span> <span class=n>comp</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>uuid_by_title</span><span class=p>:</span>
-                            <span class=n>keys_as_string</span> <span class=o>=</span> <span class=s1>&#39;, &#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>uuid_by_title</span><span class=o>.</span><span class=n>keys</span><span class=p>())</span>
+                            <span class=n>keys_as_string</span> <span class=o>=</span> <span class=s1>', '</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>uuid_by_title</span><span class=o>.</span><span class=n>keys</span><span class=p>())</span>
                             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
-                                <span class=sa>f</span><span class=s1>&#39;Component &quot;</span><span class=si>{</span><span class=n>comp</span><span class=si>}</span><span class=s1>&quot; does not exist in the </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_ssp</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1> SSP. &#39;</span>
-                                <span class=sa>f</span><span class=s1>&#39;Please use options: </span><span class=si>{</span><span class=n>keys_as_string</span><span class=si>}</span><span class=s1>.&#39;</span>
+                                <span class=sa>f</span><span class=s1>'Component "</span><span class=si>{</span><span class=n>comp</span><span class=si>}</span><span class=s1>" does not exist in the </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_ssp</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1> SSP. '</span>
+                                <span class=sa>f</span><span class=s1>'Please use options: </span><span class=si>{</span><span class=n>keys_as_string</span><span class=si>}</span><span class=s1>.'</span>
                             <span class=p>)</span>
 
                         <span class=n>comp_uuid</span> <span class=o>=</span> <span class=n>uuid_by_title</span><span class=p>[</span><span class=n>comp</span><span class=p>]</span>
@@ -471,18 +471,18 @@
 <span class=normal>68</span>
 <span class=normal>69</span>
 <span class=normal>70</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Initialize export reader.</span>
 
 <span class=sd>    Arguments:</span>
-<span class=sd>        root_path: A root path object where an SSP&#39;s inheritance markdown is located.</span>
+<span class=sd>        root_path: A root path object where an SSP's inheritance markdown is located.</span>
 <span class=sd>        ssp: A system security plan object that will be updated with the inheritance information.</span>
 
 <span class=sd>    Notes:</span>
 <span class=sd>        The mapped components list is used to track which components have been mapped to controls in the markdown.</span>
 <span class=sd>        It can be retrieved with the get_leveraged_components method. This will be empty until the</span>
 <span class=sd>        read_exports_from_markdown method is called.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span> <span class=o>=</span> <span class=n>ssp</span>
 
     <span class=c1># Create a dictionary of implemented requirements keyed by control id for merging operations</span>
@@ -495,7 +495,7 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.crm.export_reader.ExportReader.get_leveraged_components class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_leveraged_components</span><span class=p>()</span></code> <a href=#trestle.core.crm.export_reader.ExportReader.get_leveraged_components class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get a list of component titles that have been mapped to controls in the Markdown.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/crm/export_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>116</span>
 <span class=normal>117</span>
 <span class=normal>118</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_leveraged_components</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Get a list of component titles that have been mapped to controls in the Markdown.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Get a list of component titles that have been mapped to controls in the Markdown."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_mapped_components</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.crm.export_reader.ExportReader.get_leveraged_ssp_href class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_leveraged_ssp_href</span><span class=p>()</span></code> <a href=#trestle.core.crm.export_reader.ExportReader.get_leveraged_ssp_href class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the href of the leveraged SSP from a markdown file.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/crm/export_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 96</span>
 <span class=normal> 97</span>
@@ -516,20 +516,20 @@
 <span class=normal>112</span>
 <span class=normal>113</span>
 <span class=normal>114</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_leveraged_ssp_href</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the href of the leveraged SSP from a markdown file.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Get the href of the leveraged SSP from a markdown file."""</span>
     <span class=n>comp_dirs</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_root_path</span><span class=p>)</span>
     <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>comp_dirs</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;No components were found in the markdown.&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'No components were found in the markdown.'</span><span class=p>)</span>
 
     <span class=n>control_dirs</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_root_path</span><span class=o>.</span><span class=n>joinpath</span><span class=p>(</span><span class=n>comp_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>]))</span>
     <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>control_dirs</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;No controls were found in the markdown for component </span><span class=si>{comp_dirs[0]}</span><span class=s1>.&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'No controls were found in the markdown for component </span><span class=si>{comp_dirs[0]}</span><span class=s1>.'</span><span class=p>)</span>
 
     <span class=n>control_dir</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_root_path</span><span class=o>.</span><span class=n>joinpath</span><span class=p>(</span><span class=n>comp_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=n>control_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span>
 
     <span class=n>files</span> <span class=o>=</span> <span class=p>[</span><span class=n>f</span> <span class=k>for</span> <span class=n>f</span> <span class=ow>in</span> <span class=n>os</span><span class=o>.</span><span class=n>listdir</span><span class=p>(</span><span class=n>control_dir</span><span class=p>)</span> <span class=k>if</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>isfile</span><span class=p>(</span><span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>control_dir</span><span class=p>,</span> <span class=n>f</span><span class=p>))]</span>
     <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>files</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;No files were found in the markdown for control </span><span class=si>{</span><span class=n>control_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'No files were found in the markdown for control </span><span class=si>{</span><span class=n>control_dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1>.'</span><span class=p>)</span>
 
     <span class=n>markdown_file_path</span> <span class=o>=</span> <span class=n>control_dir</span><span class=o>.</span><span class=n>joinpath</span><span class=p>(</span><span class=n>files</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span>
     <span class=n>reader</span> <span class=o>=</span> <span class=n>InheritanceMarkdownReader</span><span class=p>(</span><span class=n>markdown_file_path</span><span class=p>)</span>
@@ -550,7 +550,7 @@
 <span class=normal>92</span>
 <span class=normal>93</span>
 <span class=normal>94</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_exports_from_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Read inheritance markdown and update the SSP with the inheritance information.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Read inheritance markdown and update the SSP with the inheritance information."""</span>
     <span class=c1># Read the information from the markdown files into a dictionary for quick lookup</span>
     <span class=n>markdown_dict</span><span class=p>:</span> <span class=n>InheritanceViewDict</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_read_inheritance_markdown_directory</span><span class=p>()</span>
 
@@ -560,7 +560,7 @@
     <span class=c1># Process remaining markdown information that was not in the implemented requirements</span>
     <span class=k>for</span> <span class=n>control_id</span><span class=p>,</span> <span class=n>by_comp_dict</span> <span class=ow>in</span> <span class=n>markdown_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
         <span class=k>if</span> <span class=n>by_comp_dict</span><span class=p>:</span>
-            <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Adding control mapping </span><span class=si>{</span><span class=n>control_id</span><span class=si>}</span><span class=s1> to implemented requirements&#39;</span><span class=p>)</span>
+            <span class=n>logging</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Adding control mapping </span><span class=si>{</span><span class=n>control_id</span><span class=si>}</span><span class=s1> to implemented requirements'</span><span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_add_control_mappings_to_implemented_requirements</span><span class=p>(</span><span class=n>control_id</span><span class=p>,</span> <span class=n>by_comp_dict</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_ssp</span><span class=o>.</span><span class=n>control_implementation</span><span class=o>.</span><span class=n>implemented_requirements</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_implemented_requirements</span><span class=o>.</span><span class=n>values</span><span class=p>())</span>

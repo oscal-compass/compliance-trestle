@@ -42,24 +42,24 @@
 <span class=normal>47</span>
 <span class=normal>48</span>
 <span class=normal>49</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleJinjaExtension</span><span class=p>(</span><span class=n>Extension</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Class to define common methods to be inherited from for use in trestle.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Class to define common methods to be inherited from for use in trestle."""</span>
 
     <span class=n>max_tag_parse</span> <span class=o>=</span> <span class=mi>20</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>environment</span><span class=p>:</span> <span class=n>Environment</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Ensure enviroment is set and carried into class vars."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>parse_expression</span><span class=p>(</span><span class=n>parser</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Safely parse jinja expression.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Safely parse jinja expression."""</span>
         <span class=c1># Licensed under MIT from:</span>
         <span class=c1># https://github.com/MoritzS/jinja2-django-tags/blob/master/jdj_tags/extensions.py#L424</span>
-        <span class=c1># Due to how the jinja2 parser works, it treats &quot;foo&quot; &quot;bar&quot; as a single</span>
+        <span class=c1># Due to how the jinja2 parser works, it treats "foo" "bar" as a single</span>
         <span class=c1># string literal as it is the case in python.</span>
         <span class=c1># But the url tag in django supports multiple string arguments, e.g.</span>
-        <span class=c1># &quot;{% url &#39;my_view&#39; &#39;arg1&#39; &#39;arg2&#39; %}&quot;.</span>
-        <span class=c1># That&#39;s why we have to check if it&#39;s a string literal first.</span>
+        <span class=c1># "{% url 'my_view' 'arg1' 'arg2' %}".</span>
+        <span class=c1># That's why we have to check if it's a string literal first.</span>
         <span class=n>token</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span>
         <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_STRING</span><span class=p>):</span>
             <span class=n>expr</span> <span class=o>=</span> <span class=n>nodes</span><span class=o>.</span><span class=n>Const</span><span class=p>(</span><span class=n>token</span><span class=o>.</span><span class=n>value</span><span class=p>,</span> <span class=n>lineno</span><span class=o>=</span><span class=n>token</span><span class=o>.</span><span class=n>lineno</span><span class=p>)</span>
@@ -71,7 +71,7 @@
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.jinja.base.TrestleJinjaExtension-attributes>Attributes<a href=#trestle.core.jinja.base.TrestleJinjaExtension-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.jinja.base.TrestleJinjaExtension.max_tag_parse class="doc doc-heading"> <code class="highlight language-python"><span class=n>max_tag_parse</span> <span class=o>=</span> <span class=mi>20</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.jinja.base.TrestleJinjaExtension.max_tag_parse class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.jinja.base.TrestleJinjaExtension-functions>Methods:<a href=#trestle.core.jinja.base.TrestleJinjaExtension-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.base.TrestleJinjaExtension.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span></code> <a href=#trestle.core.jinja.base.TrestleJinjaExtension.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Ensure enviroment is set and carried into class vars.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/base.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>28</span>
 <span class=normal>29</span>
 <span class=normal>30</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>environment</span><span class=p>:</span> <span class=n>Environment</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Ensure enviroment is set and carried into class vars."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>environment</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.jinja.base.TrestleJinjaExtension.parse_expression class="doc doc-heading"> <code class="highlight language-python"><span class=n>parse_expression</span><span class=p>(</span><span class=n>parser</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.jinja.base.TrestleJinjaExtension.parse_expression class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Safely parse jinja expression.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/jinja/base.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>32</span>
 <span class=normal>33</span>
@@ -92,14 +92,14 @@
 <span class=normal>48</span>
 <span class=normal>49</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>parse_expression</span><span class=p>(</span><span class=n>parser</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Safely parse jinja expression.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Safely parse jinja expression."""</span>
     <span class=c1># Licensed under MIT from:</span>
     <span class=c1># https://github.com/MoritzS/jinja2-django-tags/blob/master/jdj_tags/extensions.py#L424</span>
-    <span class=c1># Due to how the jinja2 parser works, it treats &quot;foo&quot; &quot;bar&quot; as a single</span>
+    <span class=c1># Due to how the jinja2 parser works, it treats "foo" "bar" as a single</span>
     <span class=c1># string literal as it is the case in python.</span>
     <span class=c1># But the url tag in django supports multiple string arguments, e.g.</span>
-    <span class=c1># &quot;{% url &#39;my_view&#39; &#39;arg1&#39; &#39;arg2&#39; %}&quot;.</span>
-    <span class=c1># That&#39;s why we have to check if it&#39;s a string literal first.</span>
+    <span class=c1># "{% url 'my_view' 'arg1' 'arg2' %}".</span>
+    <span class=c1># That's why we have to check if it's a string literal first.</span>
     <span class=n>token</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>stream</span><span class=o>.</span><span class=n>current</span>
     <span class=k>if</span> <span class=n>token</span><span class=o>.</span><span class=n>test</span><span class=p>(</span><span class=n>lexer</span><span class=o>.</span><span class=n>TOKEN_STRING</span><span class=p>):</span>
         <span class=n>expr</span> <span class=o>=</span> <span class=n>nodes</span><span class=o>.</span><span class=n>Const</span><span class=p>(</span><span class=n>token</span><span class=o>.</span><span class=n>value</span><span class=p>,</span> <span class=n>lineno</span><span class=o>=</span><span class=n>token</span><span class=o>.</span><span class=n>lineno</span><span class=p>)</span>

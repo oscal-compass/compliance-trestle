@@ -128,33 +128,33 @@
 <span class=normal>168</span>
 <span class=normal>169</span>
 <span class=normal>170</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogMerger</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Catalog merger.</span>
 
 <span class=sd>    Catalog merger handles all operations related to</span>
 <span class=sd>    merging contents of one catalog to another.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_interface</span><span class=p>:</span> <span class=n>CatalogInterface</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize catalog merger.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize catalog merger."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span> <span class=o>=</span> <span class=n>catalog_interface</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>merge_controls</span><span class=p>(</span><span class=n>dest</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>src</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>replace_params</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Merge the src control into dest.</span>
 
 <span class=sd>        Args:</span>
 <span class=sd>            dest: destination control into which content will be added</span>
 <span class=sd>            src: source control with new content</span>
 <span class=sd>            replace_params: replace the control params with the new ones</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>ControlInterface</span><span class=o>.</span><span class=n>merge_parts</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>replace_params</span><span class=p>:</span>
             <span class=n>dest</span><span class=o>.</span><span class=n>params</span> <span class=o>=</span> <span class=n>src</span><span class=o>.</span><span class=n>params</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>merge_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>,</span> <span class=n>replace_params</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Merge the provided new catalog controls into the original catalog in this catalog interface.</span>
 
 <span class=sd>        Args:</span>
@@ -163,14 +163,14 @@
 
 <span class=sd>        Notes:</span>
 <span class=sd>            This is mainly to support the reading of a catalog from markdown.  It allows retention of content such as</span>
-<span class=sd>            metadata and backmatter, along with labels and other parameter attributes that aren&#39;t in markdown.</span>
-<span class=sd>            The list of controls and group structure is specified by the markdown structure - but this doesn&#39;t allow</span>
+<span class=sd>            metadata and backmatter, along with labels and other parameter attributes that aren't in markdown.</span>
+<span class=sd>            The list of controls and group structure is specified by the markdown structure - but this doesn't allow</span>
 <span class=sd>            controls to contain controls.  Group lists are specified per directory.</span>
 
 <span class=sd>            Reading the markdown tells you groups and controls in them - and groups in groups.</span>
 <span class=sd>            Controls cannot change groups.  If the control was in the original json, its parts are replaced,</span>
 <span class=sd>            including its parameters.  Only values may be specified.  If no value specified, the value is unset in json.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>cat_interface</span> <span class=o>=</span> <span class=n>CatalogInterface</span><span class=p>(</span><span class=n>catalog</span><span class=p>)</span>
         <span class=k>for</span> <span class=n>src</span> <span class=ow>in</span> <span class=n>cat_interface</span><span class=o>.</span><span class=n>get_all_controls_from_dict</span><span class=p>():</span>
             <span class=n>group_id</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>cat_interface</span><span class=o>.</span><span class=n>get_group_info_by_control</span><span class=p>(</span><span class=n>src</span><span class=o>.</span><span class=n>id</span><span class=p>)</span>
@@ -178,11 +178,11 @@
             <span class=k>if</span> <span class=n>dest</span><span class=p>:</span>
                 <span class=n>dest_group</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_group_info_by_control</span><span class=p>(</span><span class=n>dest</span><span class=o>.</span><span class=n>id</span><span class=p>)</span>
                 <span class=k>if</span> <span class=n>dest_group</span> <span class=o>!=</span> <span class=n>group_id</span><span class=p>:</span>
-                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Markdown for control </span><span class=si>{</span><span class=n>src</span><span class=o>.</span><span class=n>id</span><span class=si>}</span><span class=s1> has different group id.&#39;</span><span class=p>)</span>
+                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Markdown for control </span><span class=si>{</span><span class=n>src</span><span class=o>.</span><span class=n>id</span><span class=si>}</span><span class=s1> has different group id.'</span><span class=p>)</span>
                 <span class=n>CatalogMerger</span><span class=o>.</span><span class=n>merge_controls</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>,</span> <span class=n>replace_params</span><span class=p>)</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>replace_control</span><span class=p>(</span><span class=n>dest</span><span class=p>)</span>
             <span class=k>else</span><span class=p>:</span>
-                <span class=c1># this is a new control that isn&#39;t already in the merge destination</span>
+                <span class=c1># this is a new control that isn't already in the merge destination</span>
                 <span class=c1># need to add the control knowing its group must already exist</span>
                 <span class=c1># get group info from an arbitrary control already present in group</span>
                 <span class=n>_</span><span class=p>,</span> <span class=n>control_handle</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>_find_control_in_group</span><span class=p>(</span><span class=n>group_id</span><span class=p>)</span>
@@ -206,7 +206,7 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_merge_header_and_comp_dict</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>control_file_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Merge the header and the comp_dict.</span>
 
 <span class=sd>        Notes:</span>
@@ -218,12 +218,12 @@
 <span class=sd>            header for param values to set during assem</span>
 <span class=sd>            prose and status for This System</span>
 <span class=sd>            status for all parts that still have rules</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>memory_header</span><span class=p>,</span> <span class=n>memory_comp_dict</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>_get_control_memory_info</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>id</span><span class=p>,</span> <span class=n>context</span><span class=p>)</span>
         <span class=n>ControlInterface</span><span class=o>.</span><span class=n>merge_dicts_deep</span><span class=p>(</span><span class=n>memory_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>merged_header</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
         <span class=n>md_header</span><span class=p>,</span> <span class=n>md_comp_dict</span> <span class=o>=</span> <span class=n>CatalogReader</span><span class=o>.</span><span class=n>_read_comp_info_from_md</span><span class=p>(</span><span class=n>control_file_path</span><span class=p>,</span> <span class=n>context</span><span class=p>)</span>
         <span class=c1># md content replaces memory content but unless memory has no rules for it and the content is removed</span>
-        <span class=c1># but This System doesn&#39;t require rules, so its content is always kept</span>
+        <span class=c1># but This System doesn't require rules, so its content is always kept</span>
 
         <span class=c1># go through the just-read md_comp_dict and update the memory dict with contents in md</span>
         <span class=k>if</span> <span class=n>const</span><span class=o>.</span><span class=n>SSP_MAIN_COMP_NAME</span> <span class=ow>in</span> <span class=n>md_comp_dict</span><span class=p>:</span>
@@ -240,16 +240,16 @@
         <span class=n>memory_rules_param_vals</span> <span class=o>=</span> <span class=n>memory_header</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>const</span><span class=o>.</span><span class=n>COMP_DEF_RULES_PARAM_VALS_TAG</span><span class=p>,</span> <span class=p>{})</span>
         <span class=n>md_rules_param_vals</span> <span class=o>=</span> <span class=n>md_header</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>const</span><span class=o>.</span><span class=n>COMP_DEF_RULES_PARAM_VALS_TAG</span><span class=p>,</span> <span class=p>{})</span>
         <span class=k>for</span> <span class=n>comp_name</span><span class=p>,</span> <span class=n>val_list</span> <span class=ow>in</span> <span class=n>md_rules_param_vals</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
-            <span class=n>val_dict</span> <span class=o>=</span> <span class=p>{</span><span class=n>val</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]:</span> <span class=n>val</span> <span class=k>for</span> <span class=n>val</span> <span class=ow>in</span> <span class=n>val_list</span><span class=p>}</span>
+            <span class=n>val_dict</span> <span class=o>=</span> <span class=p>{</span><span class=n>val</span><span class=p>[</span><span class=s1>'name'</span><span class=p>]:</span> <span class=n>val</span> <span class=k>for</span> <span class=n>val</span> <span class=ow>in</span> <span class=n>val_list</span><span class=p>}</span>
             <span class=k>if</span> <span class=n>comp_name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>memory_rules_param_vals</span><span class=p>:</span>
                 <span class=n>memory_rules_param_vals</span><span class=p>[</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>val_list</span>
             <span class=k>else</span><span class=p>:</span>
                 <span class=c1># merge the lists with priority to md</span>
                 <span class=n>new_list</span> <span class=o>=</span> <span class=p>[]</span>
                 <span class=n>mem_list</span> <span class=o>=</span> <span class=n>memory_rules_param_vals</span><span class=p>[</span><span class=n>comp_name</span><span class=p>]</span>
-                <span class=n>mem_names</span> <span class=o>=</span> <span class=p>[</span><span class=n>mem</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>mem</span> <span class=ow>in</span> <span class=n>mem_list</span><span class=p>]</span>
+                <span class=n>mem_names</span> <span class=o>=</span> <span class=p>[</span><span class=n>mem</span><span class=p>[</span><span class=s1>'name'</span><span class=p>]</span> <span class=k>for</span> <span class=n>mem</span> <span class=ow>in</span> <span class=n>mem_list</span><span class=p>]</span>
                 <span class=k>for</span> <span class=n>val</span> <span class=ow>in</span> <span class=n>mem_list</span><span class=p>:</span>
-                    <span class=n>new_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>val_dict</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>val</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>],</span> <span class=n>val</span><span class=p>))</span>
+                    <span class=n>new_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>val_dict</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>val</span><span class=p>[</span><span class=s1>'name'</span><span class=p>],</span> <span class=n>val</span><span class=p>))</span>
                 <span class=k>for</span> <span class=n>key</span><span class=p>,</span> <span class=n>val</span> <span class=ow>in</span> <span class=n>val_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
                     <span class=k>if</span> <span class=n>key</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>mem_names</span><span class=p>:</span>
                         <span class=n>new_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>val</span><span class=p>)</span>
@@ -260,7 +260,7 @@
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.catalog.catalog_merger.CatalogMerger-functions>Methods:<a href=#trestle.core.catalog.catalog_merger.CatalogMerger-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_merger.CatalogMerger.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>catalog_interface</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_merger.CatalogMerger.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize catalog merger.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_merger.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>49</span>
 <span class=normal>50</span>
 <span class=normal>51</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_interface</span><span class=p>:</span> <span class=n>CatalogInterface</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize catalog merger.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize catalog merger."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span> <span class=o>=</span> <span class=n>catalog_interface</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_merger.CatalogMerger.merge_catalog class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_catalog</span><span class=p>(</span><span class=n>catalog</span><span class=p>,</span> <span class=n>replace_params</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_merger.CatalogMerger.merge_catalog class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge the provided new catalog controls into the original catalog in this catalog interface.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>catalog</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Catalog (trestle.oscal.catalog.Catalog)" href=../../../oscal/catalog/#trestle.oscal.catalog.Catalog>Catalog</a></code> </td> <td> <div class=doc-md-description> <p>catalog containing controls that are merged into the current catalog of the interface</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>replace_params</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>replace all params in the control with the new ones</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>This is mainly to support the reading of a catalog from markdown. It allows retention of content such as metadata and backmatter, along with labels and other parameter attributes that aren't in markdown. The list of controls and group structure is specified by the markdown structure - but this doesn't allow controls to contain controls. Group lists are specified per directory.</p> <p>Reading the markdown tells you groups and controls in them - and groups in groups. Controls cannot change groups. If the control was in the original json, its parts are replaced, including its parameters. Only values may be specified. If no value specified, the value is unset in json.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_merger.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 67</span>
 <span class=normal> 68</span>
@@ -311,7 +311,7 @@
 <span class=normal>113</span>
 <span class=normal>114</span>
 <span class=normal>115</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>merge_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>,</span> <span class=n>replace_params</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Merge the provided new catalog controls into the original catalog in this catalog interface.</span>
 
 <span class=sd>    Args:</span>
@@ -320,14 +320,14 @@
 
 <span class=sd>    Notes:</span>
 <span class=sd>        This is mainly to support the reading of a catalog from markdown.  It allows retention of content such as</span>
-<span class=sd>        metadata and backmatter, along with labels and other parameter attributes that aren&#39;t in markdown.</span>
-<span class=sd>        The list of controls and group structure is specified by the markdown structure - but this doesn&#39;t allow</span>
+<span class=sd>        metadata and backmatter, along with labels and other parameter attributes that aren't in markdown.</span>
+<span class=sd>        The list of controls and group structure is specified by the markdown structure - but this doesn't allow</span>
 <span class=sd>        controls to contain controls.  Group lists are specified per directory.</span>
 
 <span class=sd>        Reading the markdown tells you groups and controls in them - and groups in groups.</span>
 <span class=sd>        Controls cannot change groups.  If the control was in the original json, its parts are replaced,</span>
 <span class=sd>        including its parameters.  Only values may be specified.  If no value specified, the value is unset in json.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>cat_interface</span> <span class=o>=</span> <span class=n>CatalogInterface</span><span class=p>(</span><span class=n>catalog</span><span class=p>)</span>
     <span class=k>for</span> <span class=n>src</span> <span class=ow>in</span> <span class=n>cat_interface</span><span class=o>.</span><span class=n>get_all_controls_from_dict</span><span class=p>():</span>
         <span class=n>group_id</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>cat_interface</span><span class=o>.</span><span class=n>get_group_info_by_control</span><span class=p>(</span><span class=n>src</span><span class=o>.</span><span class=n>id</span><span class=p>)</span>
@@ -335,11 +335,11 @@
         <span class=k>if</span> <span class=n>dest</span><span class=p>:</span>
             <span class=n>dest_group</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_group_info_by_control</span><span class=p>(</span><span class=n>dest</span><span class=o>.</span><span class=n>id</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>dest_group</span> <span class=o>!=</span> <span class=n>group_id</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Markdown for control </span><span class=si>{</span><span class=n>src</span><span class=o>.</span><span class=n>id</span><span class=si>}</span><span class=s1> has different group id.&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Markdown for control </span><span class=si>{</span><span class=n>src</span><span class=o>.</span><span class=n>id</span><span class=si>}</span><span class=s1> has different group id.'</span><span class=p>)</span>
             <span class=n>CatalogMerger</span><span class=o>.</span><span class=n>merge_controls</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>,</span> <span class=n>replace_params</span><span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>replace_control</span><span class=p>(</span><span class=n>dest</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
-            <span class=c1># this is a new control that isn&#39;t already in the merge destination</span>
+            <span class=c1># this is a new control that isn't already in the merge destination</span>
             <span class=c1># need to add the control knowing its group must already exist</span>
             <span class=c1># get group info from an arbitrary control already present in group</span>
             <span class=n>_</span><span class=p>,</span> <span class=n>control_handle</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>_find_control_in_group</span><span class=p>(</span><span class=n>group_id</span><span class=p>)</span>
@@ -373,14 +373,14 @@
 <span class=normal>64</span>
 <span class=normal>65</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>merge_controls</span><span class=p>(</span><span class=n>dest</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>src</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>replace_params</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Merge the src control into dest.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        dest: destination control into which content will be added</span>
 <span class=sd>        src: source control with new content</span>
 <span class=sd>        replace_params: replace the control params with the new ones</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>ControlInterface</span><span class=o>.</span><span class=n>merge_parts</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>replace_params</span><span class=p>:</span>
         <span class=n>dest</span><span class=o>.</span><span class=n>params</span> <span class=o>=</span> <span class=n>src</span><span class=o>.</span><span class=n>params</span>

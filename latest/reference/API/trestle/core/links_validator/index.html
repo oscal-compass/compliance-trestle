@@ -68,21 +68,21 @@
 <span class=normal>75</span>
 <span class=normal>76</span>
 <span class=normal>77</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>LinksValidator</span><span class=p>(</span><span class=n>Validator</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Validator to confirm all uuids in links and prose match resources in backmatter.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Validator to confirm all uuids in links and prose match resources in backmatter."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>model_is_valid</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>model</span><span class=p>:</span> <span class=n>TopLevelOscalModel</span><span class=p>,</span> <span class=n>quiet</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Test if the model is valid.</span>
 
 <span class=sd>        args:</span>
 <span class=sd>            model: A top level OSCAL model.</span>
-<span class=sd>            quiet: Don&#39;t report msgs unless invalid.</span>
+<span class=sd>            quiet: Don't report msgs unless invalid.</span>
 
 <span class=sd>        returns:</span>
 <span class=sd>            Always returns True, but gives warning if links and resources are not one-to-one.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>refs</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>find_uuid_refs</span><span class=p>(</span><span class=n>model</span><span class=p>)</span>
 
         <span class=c1># find uuids in backmatter</span>
@@ -98,21 +98,21 @@
                     <span class=n>seen</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>uuid</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>dupes</span><span class=p>:</span>
                 <span class=k>if</span> <span class=ow>not</span> <span class=n>quiet</span><span class=p>:</span>
-                    <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Backmatter has  </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dupes</span><span class=p>)</span><span class=si>}</span><span class=s1> duplicate link uuids.&#39;</span><span class=p>)</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Backmatter has </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dupes</span><span class=p>)</span><span class=si>}</span><span class=s1> duplicate link uuids: </span><span class=si>{</span><span class=n>dupes</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Backmatter has  </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dupes</span><span class=p>)</span><span class=si>}</span><span class=s1> duplicate link uuids.'</span><span class=p>)</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Backmatter has </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dupes</span><span class=p>)</span><span class=si>}</span><span class=s1> duplicate link uuids: </span><span class=si>{</span><span class=n>dupes</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
         <span class=n>links</span> <span class=o>=</span> <span class=nb>set</span><span class=p>(</span><span class=n>links</span><span class=p>)</span>
         <span class=n>in_refs</span> <span class=o>=</span> <span class=n>refs</span><span class=o>.</span><span class=n>difference</span><span class=p>(</span><span class=n>links</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>in_refs</span><span class=p>:</span>
             <span class=k>if</span> <span class=ow>not</span> <span class=n>quiet</span><span class=p>:</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model references </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>refs</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids and </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_refs</span><span class=p>)</span><span class=si>}</span><span class=s1> of them are not in resources.&#39;</span><span class=p>)</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model references </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_refs</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids not in resources: </span><span class=si>{</span><span class=n>in_refs</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Model references </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>refs</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids and </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_refs</span><span class=p>)</span><span class=si>}</span><span class=s1> of them are not in resources.'</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Model references </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_refs</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids not in resources: </span><span class=si>{</span><span class=n>in_refs</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
         <span class=n>in_links</span> <span class=o>=</span> <span class=n>links</span><span class=o>.</span><span class=n>difference</span><span class=p>(</span><span class=n>refs</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>in_links</span><span class=p>:</span>
             <span class=k>if</span> <span class=ow>not</span> <span class=n>quiet</span><span class=p>:</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Resources have </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>links</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids and </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_links</span><span class=p>)</span><span class=si>}</span><span class=s1> are not referenced by model.&#39;</span><span class=p>)</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Resources have </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_links</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids not referenced by model: </span><span class=si>{</span><span class=n>in_links</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Resources have </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>links</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids and </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_links</span><span class=p>)</span><span class=si>}</span><span class=s1> are not referenced by model.'</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Resources have </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_links</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids not referenced by model: </span><span class=si>{</span><span class=n>in_links</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
         <span class=c1># This validator is intended just to give warnings, so it always returns True</span>
         <span class=k>return</span> <span class=kc>True</span>
@@ -168,16 +168,16 @@
 <span class=normal>77</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>model_is_valid</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>model</span><span class=p>:</span> <span class=n>TopLevelOscalModel</span><span class=p>,</span> <span class=n>quiet</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Test if the model is valid.</span>
 
 <span class=sd>    args:</span>
 <span class=sd>        model: A top level OSCAL model.</span>
-<span class=sd>        quiet: Don&#39;t report msgs unless invalid.</span>
+<span class=sd>        quiet: Don't report msgs unless invalid.</span>
 
 <span class=sd>    returns:</span>
 <span class=sd>        Always returns True, but gives warning if links and resources are not one-to-one.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>refs</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>find_uuid_refs</span><span class=p>(</span><span class=n>model</span><span class=p>)</span>
 
     <span class=c1># find uuids in backmatter</span>
@@ -193,21 +193,21 @@
                 <span class=n>seen</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>uuid</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>dupes</span><span class=p>:</span>
             <span class=k>if</span> <span class=ow>not</span> <span class=n>quiet</span><span class=p>:</span>
-                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Backmatter has  </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dupes</span><span class=p>)</span><span class=si>}</span><span class=s1> duplicate link uuids.&#39;</span><span class=p>)</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Backmatter has </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dupes</span><span class=p>)</span><span class=si>}</span><span class=s1> duplicate link uuids: </span><span class=si>{</span><span class=n>dupes</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Backmatter has  </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dupes</span><span class=p>)</span><span class=si>}</span><span class=s1> duplicate link uuids.'</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Backmatter has </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>dupes</span><span class=p>)</span><span class=si>}</span><span class=s1> duplicate link uuids: </span><span class=si>{</span><span class=n>dupes</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
     <span class=n>links</span> <span class=o>=</span> <span class=nb>set</span><span class=p>(</span><span class=n>links</span><span class=p>)</span>
     <span class=n>in_refs</span> <span class=o>=</span> <span class=n>refs</span><span class=o>.</span><span class=n>difference</span><span class=p>(</span><span class=n>links</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>in_refs</span><span class=p>:</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>quiet</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model references </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>refs</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids and </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_refs</span><span class=p>)</span><span class=si>}</span><span class=s1> of them are not in resources.&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model references </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_refs</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids not in resources: </span><span class=si>{</span><span class=n>in_refs</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Model references </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>refs</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids and </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_refs</span><span class=p>)</span><span class=si>}</span><span class=s1> of them are not in resources.'</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Model references </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_refs</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids not in resources: </span><span class=si>{</span><span class=n>in_refs</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
     <span class=n>in_links</span> <span class=o>=</span> <span class=n>links</span><span class=o>.</span><span class=n>difference</span><span class=p>(</span><span class=n>refs</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>in_links</span><span class=p>:</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>quiet</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Resources have </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>links</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids and </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_links</span><span class=p>)</span><span class=si>}</span><span class=s1> are not referenced by model.&#39;</span><span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Resources have </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_links</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids not referenced by model: </span><span class=si>{</span><span class=n>in_links</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Resources have </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>links</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids and </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_links</span><span class=p>)</span><span class=si>}</span><span class=s1> are not referenced by model.'</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Resources have </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>in_links</span><span class=p>)</span><span class=si>}</span><span class=s1> uuids not referenced by model: </span><span class=si>{</span><span class=n>in_links</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
     <span class=c1># This validator is intended just to give warnings, so it always returns True</span>
     <span class=k>return</span> <span class=kc>True</span>

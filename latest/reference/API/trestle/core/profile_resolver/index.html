@@ -126,11 +126,11 @@
 <span class=normal>157</span>
 <span class=normal>158</span>
 <span class=normal>159</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ProfileResolver</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Class to resolve a catalog given a profile.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Class to resolve a catalog given a profile."""</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_extract_inherited_props</span><span class=p>(</span><span class=n>res_cat</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Build the control dict of inherited props.</span>
 
 <span class=sd>        Args:</span>
@@ -143,7 +143,7 @@
 <span class=sd>        If an upstream profile adds props to the control they are tracked in a special temporary part in the control</span>
 <span class=sd>        called const.TRESTLE_INHERITED_PROPS_TRACKER.  If that part is present in a control its contents should be added</span>
 <span class=sd>        to the dict entry for that control, and the part removed from the control.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>prop_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=n>cat_interface</span> <span class=o>=</span> <span class=n>CatalogInterface</span><span class=p>(</span><span class=n>res_cat</span><span class=p>)</span>
         <span class=k>for</span> <span class=n>control</span> <span class=ow>in</span> <span class=n>cat_interface</span><span class=o>.</span><span class=n>get_all_controls_from_dict</span><span class=p>():</span>
@@ -151,10 +151,10 @@
             <span class=k>if</span> <span class=n>part</span><span class=p>:</span>
                 <span class=n>props_list</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]</span> <span class=o>=</span> <span class=p>[]</span>
                 <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>part</span><span class=o>.</span><span class=n>props</span><span class=p>):</span>
-                    <span class=n>props_list</span><span class=o>.</span><span class=n>append</span><span class=p>({</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=s1>&#39;value&#39;</span><span class=p>:</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span><span class=p>})</span>
+                    <span class=n>props_list</span><span class=o>.</span><span class=n>append</span><span class=p>({</span><span class=s1>'name'</span><span class=p>:</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=s1>'value'</span><span class=p>:</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span><span class=p>})</span>
                 <span class=k>for</span> <span class=n>sub_part</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>part</span><span class=o>.</span><span class=n>parts</span><span class=p>):</span>
                     <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>sub_part</span><span class=o>.</span><span class=n>props</span><span class=p>):</span>
-                        <span class=n>props_list</span><span class=o>.</span><span class=n>append</span><span class=p>({</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=s1>&#39;value&#39;</span><span class=p>:</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span><span class=p>,</span> <span class=s1>&#39;part_name&#39;</span><span class=p>:</span> <span class=n>sub_part</span><span class=o>.</span><span class=n>title</span><span class=p>})</span>
+                        <span class=n>props_list</span><span class=o>.</span><span class=n>append</span><span class=p>({</span><span class=s1>'name'</span><span class=p>:</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=s1>'value'</span><span class=p>:</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span><span class=p>,</span> <span class=s1>'part_name'</span><span class=p>:</span> <span class=n>sub_part</span><span class=o>.</span><span class=n>title</span><span class=p>})</span>
                 <span class=n>prop_dict</span><span class=p>[</span><span class=n>control</span><span class=o>.</span><span class=n>id</span><span class=p>]</span> <span class=o>=</span> <span class=n>props_list</span>
         <span class=n>cat_interface</span><span class=o>.</span><span class=n>update_catalog_controls</span><span class=p>()</span>
         <span class=n>clean_res_cat</span> <span class=o>=</span> <span class=n>cat_interface</span><span class=o>.</span><span class=n>get_catalog</span><span class=p>()</span>
@@ -172,7 +172,7 @@
         <span class=n>value_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
         <span class=n>value_not_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>,</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Create the resolved profile catalog given a profile path along with inherited props.</span>
 
 <span class=sd>        Args:</span>
@@ -188,8 +188,8 @@
 
 <span class=sd>        Returns:</span>
 <span class=sd>            The resolved profile catalog and a control dict of inherited props</span>
-<span class=sd>        &quot;&quot;&quot;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get resolved profile catalog and inherited props for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.&#39;</span><span class=p>)</span>
+<span class=sd>        """</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'get resolved profile catalog and inherited props for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.'</span><span class=p>)</span>
         <span class=n>import_</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import1</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>profile_path</span><span class=p>),</span> <span class=n>include_all</span><span class=o>=</span><span class=p>{})</span>
         <span class=c1># The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.</span>
         <span class=n>import_filter</span> <span class=o>=</span> <span class=n>Import</span><span class=p>(</span>
@@ -206,7 +206,7 @@
             <span class=n>value_assigned_prefix</span><span class=p>,</span>
             <span class=n>value_not_assigned_prefix</span><span class=p>,</span>
         <span class=p>)</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s1>&#39;launch pipeline&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s1>'launch pipeline'</span><span class=p>)</span>
         <span class=n>resolved_profile_catalog</span> <span class=o>=</span> <span class=nb>next</span><span class=p>(</span><span class=n>import_filter</span><span class=o>.</span><span class=n>process</span><span class=p>())</span>
         <span class=n>resolved_profile_catalog</span><span class=p>,</span> <span class=n>inherited_props</span> <span class=o>=</span> <span class=n>ProfileResolver</span><span class=o>.</span><span class=n>_extract_inherited_props</span><span class=p>(</span><span class=n>resolved_profile_catalog</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>resolved_profile_catalog</span><span class=p>,</span> <span class=n>inherited_props</span>
@@ -223,7 +223,7 @@
         <span class=n>value_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
         <span class=n>value_not_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""</span>
 <span class=sd>        Create the resolved profile catalog given a profile path.</span>
 
 <span class=sd>        Args:</span>
@@ -239,8 +239,8 @@
 
 <span class=sd>        Returns:</span>
 <span class=sd>            The resolved profile catalog</span>
-<span class=sd>        &quot;&quot;&quot;</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get resolved profile catalog for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.&#39;</span><span class=p>)</span>
+<span class=sd>        """</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'get resolved profile catalog for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.'</span><span class=p>)</span>
         <span class=n>resolved_profile_catalog</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ProfileResolver</span><span class=o>.</span><span class=n>get_resolved_profile_catalog_and_inherited_props</span><span class=p>(</span>
             <span class=n>trestle_root</span><span class=p>,</span>
             <span class=n>profile_path</span><span class=p>,</span>
@@ -311,7 +311,7 @@
     <span class=n>value_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=n>value_not_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Create the resolved profile catalog given a profile path.</span>
 
 <span class=sd>    Args:</span>
@@ -327,8 +327,8 @@
 
 <span class=sd>    Returns:</span>
 <span class=sd>        The resolved profile catalog</span>
-<span class=sd>    &quot;&quot;&quot;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get resolved profile catalog for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.&#39;</span><span class=p>)</span>
+<span class=sd>    """</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'get resolved profile catalog for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.'</span><span class=p>)</span>
     <span class=n>resolved_profile_catalog</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ProfileResolver</span><span class=o>.</span><span class=n>get_resolved_profile_catalog_and_inherited_props</span><span class=p>(</span>
         <span class=n>trestle_root</span><span class=p>,</span>
         <span class=n>profile_path</span><span class=p>,</span>
@@ -407,7 +407,7 @@
     <span class=n>value_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=n>value_not_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>,</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Create the resolved profile catalog given a profile path along with inherited props.</span>
 
 <span class=sd>    Args:</span>
@@ -423,8 +423,8 @@
 
 <span class=sd>    Returns:</span>
 <span class=sd>        The resolved profile catalog and a control dict of inherited props</span>
-<span class=sd>    &quot;&quot;&quot;</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get resolved profile catalog and inherited props for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.&#39;</span><span class=p>)</span>
+<span class=sd>    """</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'get resolved profile catalog and inherited props for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.'</span><span class=p>)</span>
     <span class=n>import_</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import1</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>profile_path</span><span class=p>),</span> <span class=n>include_all</span><span class=o>=</span><span class=p>{})</span>
     <span class=c1># The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.</span>
     <span class=n>import_filter</span> <span class=o>=</span> <span class=n>Import</span><span class=p>(</span>
@@ -441,7 +441,7 @@
         <span class=n>value_assigned_prefix</span><span class=p>,</span>
         <span class=n>value_not_assigned_prefix</span><span class=p>,</span>
     <span class=p>)</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s1>&#39;launch pipeline&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s1>'launch pipeline'</span><span class=p>)</span>
     <span class=n>resolved_profile_catalog</span> <span class=o>=</span> <span class=nb>next</span><span class=p>(</span><span class=n>import_filter</span><span class=o>.</span><span class=n>process</span><span class=p>())</span>
     <span class=n>resolved_profile_catalog</span><span class=p>,</span> <span class=n>inherited_props</span> <span class=o>=</span> <span class=n>ProfileResolver</span><span class=o>.</span><span class=n>_extract_inherited_props</span><span class=p>(</span><span class=n>resolved_profile_catalog</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>resolved_profile_catalog</span><span class=p>,</span> <span class=n>inherited_props</span>

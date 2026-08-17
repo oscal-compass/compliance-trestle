@@ -30,29 +30,29 @@
 <span class=normal>42</span>
 <span class=normal>43</span>
 <span class=normal>44</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SpecificLevelFilter</span><span class=p>(</span><span class=n>logging</span><span class=o>.</span><span class=n>Filter</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Filter for the same level as provided by setLevel for a log handler.</span>
 
 <span class=sd>    Python by default logs all levels above to a given destination. This makes it easy to split levels where you might</span>
 <span class=sd>    log all levels to file and only errors to std.err, however, does not allow logging a specific level elsewhere.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>level</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize providing maximum level to be pushed through the filter.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize providing maximum level to be pushed through the filter."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_level</span> <span class=o>=</span> <span class=n>level</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>filter</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>log_record</span><span class=p>:</span> <span class=n>logging</span><span class=o>.</span><span class=n>LogRecord</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>  <span class=c1># noqa: A003</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Filter log messages.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Filter log messages."""</span>
         <span class=k>return</span> <span class=n>log_record</span><span class=o>.</span><span class=n>levelno</span> <span class=o>==</span> <span class=bp>self</span><span class=o>.</span><span class=n>_level</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.log.SpecificLevelFilter-functions>Methods:<a href=#trestle.common.log.SpecificLevelFilter-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.log.SpecificLevelFilter.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>level</span><span class=p>)</span></code> <a href=#trestle.common.log.SpecificLevelFilter.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize providing maximum level to be pushed through the filter.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/log.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>38</span>
 <span class=normal>39</span>
 <span class=normal>40</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>level</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize providing maximum level to be pushed through the filter.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize providing maximum level to be pushed through the filter."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_level</span> <span class=o>=</span> <span class=n>level</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.common.log.SpecificLevelFilter.filter class="doc doc-heading"> <code class="highlight language-python"><span class=nb>filter</span><span class=p>(</span><span class=n>log_record</span><span class=p>)</span></code> <a href=#trestle.common.log.SpecificLevelFilter.filter class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Filter log messages.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/log.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>42</span>
 <span class=normal>43</span>
 <span class=normal>44</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>filter</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>log_record</span><span class=p>:</span> <span class=n>logging</span><span class=o>.</span><span class=n>LogRecord</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>  <span class=c1># noqa: A003</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Filter log messages.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Filter log messages."""</span>
     <span class=k>return</span> <span class=n>log_record</span><span class=o>.</span><span class=n>levelno</span> <span class=o>==</span> <span class=bp>self</span><span class=o>.</span><span class=n>_level</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.common.log.Trace class="doc doc-heading"> <code>Trace</code> <a href=#trestle.common.log.Trace class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Class allowing low priority trace message when verbose &gt; 1 and log level below DEBUG.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/log.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>115</span>
 <span class=normal>116</span>
@@ -66,28 +66,28 @@
 <span class=normal>124</span>
 <span class=normal>125</span>
 <span class=normal>126</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Trace</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Class allowing low priority trace message when verbose &gt; 1 and log level below DEBUG.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Class allowing low priority trace message when verbose &gt; 1 and log level below DEBUG."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>logger</span><span class=p>:</span> <span class=n>logging</span><span class=o>.</span><span class=n>Logger</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Store the main logger with its module name.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Store the main logger with its module name."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_logger</span> <span class=o>=</span> <span class=n>logger</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>log</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Output the trace msg if log level is below DEBUG.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Output the trace msg if log level is below DEBUG."""</span>
         <span class=n>level</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_logger</span><span class=o>.</span><span class=n>getEffectiveLevel</span><span class=p>()</span>
         <span class=k>if</span> <span class=n>level</span> <span class=o>&lt;</span> <span class=n>logging</span><span class=o>.</span><span class=n>DEBUG</span><span class=p>:</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.log.Trace-functions>Methods:<a href=#trestle.common.log.Trace-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.log.Trace.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>logger</span><span class=p>)</span></code> <a href=#trestle.common.log.Trace.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Store the main logger with its module name.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/log.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>118</span>
 <span class=normal>119</span>
 <span class=normal>120</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>logger</span><span class=p>:</span> <span class=n>logging</span><span class=o>.</span><span class=n>Logger</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Store the main logger with its module name.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Store the main logger with its module name."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_logger</span> <span class=o>=</span> <span class=n>logger</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.common.log.Trace.log class="doc doc-heading"> <code class="highlight language-python"><span class=n>log</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.log.Trace.log class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Output the trace msg if log level is below DEBUG.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/log.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>122</span>
 <span class=normal>123</span>
 <span class=normal>124</span>
 <span class=normal>125</span>
 <span class=normal>126</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>log</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Output the trace msg if log level is below DEBUG.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Output the trace msg if log level is below DEBUG."""</span>
     <span class=n>level</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_logger</span><span class=o>.</span><span class=n>getEffectiveLevel</span><span class=p>()</span>
     <span class=k>if</span> <span class=n>level</span> <span class=o>&lt;</span> <span class=n>logging</span><span class=o>.</span><span class=n>DEBUG</span><span class=p>:</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
@@ -99,7 +99,7 @@
 <span class=normal>110</span>
 <span class=normal>111</span>
 <span class=normal>112</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_current_verbosity_level</span><span class=p>(</span><span class=n>logger</span><span class=p>:</span> <span class=n>logging</span><span class=o>.</span><span class=n>Logger</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the current verbosity level based on logging level.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Get the current verbosity level based on logging level."""</span>
     <span class=n>level</span> <span class=o>=</span> <span class=n>logger</span><span class=o>.</span><span class=n>getEffectiveLevel</span><span class=p>()</span>
     <span class=k>if</span> <span class=n>level</span> <span class=o>&lt;</span> <span class=n>logging</span><span class=o>.</span><span class=n>DEBUG</span><span class=p>:</span>
         <span class=k>return</span> <span class=mi>2</span>
@@ -138,10 +138,10 @@
 <span class=normal>76</span>
 <span class=normal>77</span>
 <span class=normal>78</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>set_global_logging_levels</span><span class=p>(</span><span class=n>level</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=n>logging</span><span class=o>.</span><span class=n>INFO</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialise logging.</span>
+<span class=w>    </span><span class=sd>"""Initialise logging.</span>
 
 <span class=sd>    Should only be invoked by the CLI classes or similar.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=c1># This line stops default root loggers setup for a python context from logging extra messages.</span>
     <span class=c1># DO NOT USE THIS COMMAND directly from an SDK. Handle logs levels based on your own application</span>
     <span class=n>_logger</span><span class=o>.</span><span class=n>propagate</span> <span class=o>=</span> <span class=kc>False</span>
@@ -161,8 +161,8 @@
     <span class=n>console_error_handler</span> <span class=o>=</span> <span class=n>logging</span><span class=o>.</span><span class=n>StreamHandler</span><span class=p>(</span><span class=n>sys</span><span class=o>.</span><span class=n>stderr</span><span class=p>)</span>
     <span class=n>console_error_handler</span><span class=o>.</span><span class=n>setLevel</span><span class=p>(</span><span class=n>logging</span><span class=o>.</span><span class=n>WARNING</span><span class=p>)</span>
     <span class=c1># create formatters</span>
-    <span class=n>error_formatter</span> <span class=o>=</span> <span class=n>logging</span><span class=o>.</span><span class=n>Formatter</span><span class=p>(</span><span class=s1>&#39;</span><span class=si>%(name)s</span><span class=s1>:</span><span class=si>%(lineno)d</span><span class=s1> </span><span class=si>%(levelname)s</span><span class=s1>: </span><span class=si>%(message)s</span><span class=s1>&#39;</span><span class=p>)</span>
-    <span class=n>debug_formatter</span> <span class=o>=</span> <span class=n>logging</span><span class=o>.</span><span class=n>Formatter</span><span class=p>(</span><span class=s1>&#39;</span><span class=si>%(name)s</span><span class=s1>:</span><span class=si>%(lineno)d</span><span class=s1> </span><span class=si>%(levelname)s</span><span class=s1>: </span><span class=si>%(message)s</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>error_formatter</span> <span class=o>=</span> <span class=n>logging</span><span class=o>.</span><span class=n>Formatter</span><span class=p>(</span><span class=s1>'</span><span class=si>%(name)s</span><span class=s1>:</span><span class=si>%(lineno)d</span><span class=s1> </span><span class=si>%(levelname)s</span><span class=s1>: </span><span class=si>%(message)s</span><span class=s1>'</span><span class=p>)</span>
+    <span class=n>debug_formatter</span> <span class=o>=</span> <span class=n>logging</span><span class=o>.</span><span class=n>Formatter</span><span class=p>(</span><span class=s1>'</span><span class=si>%(name)s</span><span class=s1>:</span><span class=si>%(lineno)d</span><span class=s1> </span><span class=si>%(levelname)s</span><span class=s1>: </span><span class=si>%(message)s</span><span class=s1>'</span><span class=p>)</span>
     <span class=n>console_debug_handler</span><span class=o>.</span><span class=n>setFormatter</span><span class=p>(</span><span class=n>debug_formatter</span><span class=p>)</span>
     <span class=n>console_error_handler</span><span class=o>.</span><span class=n>setFormatter</span><span class=p>(</span><span class=n>error_formatter</span><span class=p>)</span>
     <span class=c1># add ch to logger</span>
@@ -179,7 +179,7 @@
 <span class=normal>100</span>
 <span class=normal>101</span>
 <span class=normal>102</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>set_log_level_from_args</span><span class=p>(</span><span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Vanity function to automatically set log levels based on verbosity flags.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Vanity function to automatically set log levels based on verbosity flags."""</span>
     <span class=k>if</span> <span class=n>args</span><span class=o>.</span><span class=n>verbose</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>:</span>
         <span class=c1># these msgs only output by trace calls</span>
         <span class=n>set_global_logging_levels</span><span class=p>(</span><span class=n>_get_trace_level</span><span class=p>())</span>

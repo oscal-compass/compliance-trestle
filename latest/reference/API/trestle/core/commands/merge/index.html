@@ -193,81 +193,81 @@
 <span class=normal>206</span>
 <span class=normal>207</span>
 <span class=normal>208</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>MergeCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Merge subcomponents on a trestle model.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Merge subcomponents on a trestle model."""</span>
 
-    <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;merge&#39;</span>
+    <span class=n>name</span> <span class=o>=</span> <span class=s1>'merge'</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_init_arguments</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
-            <span class=sa>f</span><span class=s1>&#39;-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT_SHORT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-            <span class=sa>f</span><span class=s1>&#39;--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-            <span class=n>help</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_ELEMENT</span><span class=si>}</span><span class=s1>(s) to be merged. The last element is merged into the second last element.&#39;</span><span class=p>,</span>
+            <span class=sa>f</span><span class=s1>'-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT_SHORT</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+            <span class=sa>f</span><span class=s1>'--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+            <span class=n>help</span><span class=o>=</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_ELEMENT</span><span class=si>}</span><span class=s1>(s) to be merged. The last element is merged into the second last element.'</span><span class=p>,</span>
             <span class=n>required</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span>
         <span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_run</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Merge elements into the parent oscal model.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Merge elements into the parent oscal model."""</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>log</span><span class=o>.</span><span class=n>set_log_level_from_args</span><span class=p>(</span><span class=n>args</span><span class=p>)</span>
 
             <span class=c1># remove any quotes passed in as on windows platforms</span>
-            <span class=n>elements_clean</span> <span class=o>=</span> <span class=n>args</span><span class=o>.</span><span class=n>element</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s2>&quot;&#39;&quot;</span><span class=p>)</span>
-            <span class=n>element_paths</span> <span class=o>=</span> <span class=n>elements_clean</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>)</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;merge _run element paths </span><span class=si>{</span><span class=n>element_paths</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>elements_clean</span> <span class=o>=</span> <span class=n>args</span><span class=o>.</span><span class=n>element</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s2>"'"</span><span class=p>)</span>
+            <span class=n>element_paths</span> <span class=o>=</span> <span class=n>elements_clean</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>','</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'merge _run element paths </span><span class=si>{</span><span class=n>element_paths</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>cwd</span> <span class=o>=</span> <span class=n>Path</span><span class=o>.</span><span class=n>cwd</span><span class=p>()</span>
             <span class=n>rc</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>perform_all_merges</span><span class=p>(</span><span class=n>element_paths</span><span class=p>,</span> <span class=n>cwd</span><span class=p>,</span> <span class=n>args</span><span class=o>.</span><span class=n>trestle_root</span><span class=p>)</span>
             <span class=k>return</span> <span class=n>rc</span>
         <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>  <span class=c1># pragma: no cover</span>
-            <span class=k>return</span> <span class=n>handle_generic_command_exception</span><span class=p>(</span><span class=n>e</span><span class=p>,</span> <span class=n>logger</span><span class=p>,</span> <span class=s1>&#39;Error while merging subcomponents on a trestle model&#39;</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>handle_generic_command_exception</span><span class=p>(</span><span class=n>e</span><span class=p>,</span> <span class=n>logger</span><span class=p>,</span> <span class=s1>'Error while merging subcomponents on a trestle model'</span><span class=p>)</span>
 
     <span class=nd>@classmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>perform_all_merges</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>effective_cwd</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Run all merges over a list of element paths.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Run all merges over a list of element paths."""</span>
         <span class=k>for</span> <span class=n>element_path</span> <span class=ow>in</span> <span class=n>element_paths</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;merge </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'merge </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>plan</span> <span class=o>=</span> <span class=bp>cls</span><span class=o>.</span><span class=n>merge</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>,</span> <span class=n>ElementPath</span><span class=p>(</span><span class=n>element_path</span><span class=p>),</span> <span class=n>trestle_root</span><span class=p>)</span>
             <span class=n>plan</span><span class=o>.</span><span class=n>execute</span><span class=p>()</span>
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
 
     <span class=nd>@classmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>merge</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>effective_cwd</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Plan</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Merge operations.</span>
+<span class=w>        </span><span class=sd>"""Merge operations.</span>
 
 <span class=sd>        It returns a plan for the operation</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>element_path</span><span class=o>.</span><span class=n>is_multipart</span><span class=p>():</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
-                <span class=s1>&#39;Multiple parts of an element path must be passed to merge e.g. catalog.* or catalog.groups&#39;</span>
+                <span class=s1>'Multiple parts of an element path must be passed to merge e.g. catalog.* or catalog.groups'</span>
             <span class=p>)</span>
 
         <span class=n>target_model_alias</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_last</span><span class=p>()</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;merge element path list: </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1> target model alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'merge element path list: </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1> target model alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=c1># 1. Load desination model into a stripped model</span>
         <span class=c1># Load destination model</span>
         <span class=n>destination_path</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_preceding_path</span><span class=p>()</span>
         <span class=n>destination_model_alias</span> <span class=o>=</span> <span class=n>destination_path</span><span class=o>.</span><span class=n>get_last</span><span class=p>()</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;merge destination model alias: </span><span class=si>{</span><span class=n>destination_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;merge getting contextual file type effective working directory&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'merge destination model alias: </span><span class=si>{</span><span class=n>destination_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>'merge getting contextual file type effective working directory'</span><span class=p>)</span>
         <span class=c1># Destination model filetype</span>
         <span class=n>file_type</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>get_contextual_file_type</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>)</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;contextual file type is </span><span class=si>{</span><span class=n>file_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'contextual file type is </span><span class=si>{</span><span class=n>file_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
         <span class=n>file_ext</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>file_type</span><span class=p>)</span>
         <span class=c1># Destination model filename</span>
         <span class=n>destination_model_path</span> <span class=o>=</span> <span class=p>(</span>
-            <span class=n>effective_cwd</span> <span class=o>/</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>classname_to_alias</span><span class=p>(</span><span class=n>destination_model_alias</span><span class=p>,</span><span class=w> </span><span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span><span class=si>}{</span><span class=n>file_ext</span><span class=si>}</span><span class=s1>&#39;</span>
+            <span class=n>effective_cwd</span> <span class=o>/</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>classname_to_alias</span><span class=p>(</span><span class=n>destination_model_alias</span><span class=p>,</span><span class=w> </span><span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span><span class=si>}{</span><span class=n>file_ext</span><span class=si>}</span><span class=s1>'</span>
         <span class=p>)</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;destination model filename is </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'destination model filename is </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>destination_model_type</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_stripped_model_type</span><span class=p>(</span><span class=n>destination_model_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
 
         <span class=n>destination_model_object</span><span class=p>:</span> <span class=n>OscalBaseModel</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=k>if</span> <span class=n>destination_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;dest filename exists so read it&#39;</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>'dest filename exists so read it'</span><span class=p>)</span>
             <span class=n>destination_model_object</span> <span class=o>=</span> <span class=n>destination_model_type</span><span class=o>.</span><span class=n>oscal_read</span><span class=p>(</span><span class=n>destination_model_path</span><span class=p>)</span>
         <span class=c1># 2. If target is wildcard, load distributed destination model and replace destination model.</span>
-        <span class=c1># Handle WILDCARD &#39;*&#39; match. Return plan to load the destination model, with its distributed attributes</span>
-        <span class=k>if</span> <span class=n>target_model_alias</span> <span class=o>==</span> <span class=s1>&#39;*&#39;</span><span class=p>:</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;handle target model alias wildcard&#39;</span><span class=p>)</span>
+        <span class=c1># Handle WILDCARD '*' match. Return plan to load the destination model, with its distributed attributes</span>
+        <span class=k>if</span> <span class=n>target_model_alias</span> <span class=o>==</span> <span class=s1>'*'</span><span class=p>:</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>'handle target model alias wildcard'</span><span class=p>)</span>
             <span class=n>collection_type</span> <span class=o>=</span> <span class=kc>None</span>
             <span class=k>if</span> <span class=n>destination_model_type</span><span class=o>.</span><span class=n>is_collection_container</span><span class=p>():</span>
                 <span class=n>collection_type</span> <span class=o>=</span> <span class=n>destination_model_type</span><span class=o>.</span><span class=n>get_collection_type</span><span class=p>()</span>
@@ -289,7 +289,7 @@
             <span class=n>plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>delete_target_action</span><span class=p>)</span>
             <span class=k>return</span> <span class=n>plan</span>
 
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get dest model with fields stripped: </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'get dest model with fields stripped: </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=c1># Get destination model without the target field stripped</span>
         <span class=n>merged_model_type</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_stripped_model_type</span><span class=p>(</span>
             <span class=n>destination_model_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>aliases_not_to_be_stripped</span><span class=o>=</span><span class=p>[</span><span class=n>target_model_alias</span><span class=p>]</span>
@@ -298,43 +298,43 @@
         <span class=k>try</span><span class=p>:</span>
             <span class=n>target_model_type</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_type</span><span class=p>(</span><span class=n>merged_model_type</span><span class=p>)</span>
         <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model not found, element path list </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1> type </span><span class=si>{</span><span class=n>merged_model_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model not found, element path list </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1> type </span><span class=si>{</span><span class=n>merged_model_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
-                <span class=sa>f</span><span class=s1>&#39;Target model not found. Possibly merge of the elements not allowed at this point. </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>e</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span>
+                <span class=sa>f</span><span class=s1>'Target model not found. Possibly merge of the elements not allowed at this point. </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>e</span><span class=p>)</span><span class=si>}</span><span class=s1>'</span>
             <span class=p>)</span>
         <span class=n>target_model_path</span> <span class=o>=</span> <span class=n>effective_cwd</span> <span class=o>/</span> <span class=n>destination_model_alias</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;look for target model path </span><span class=si>{</span><span class=n>target_model_path</span><span class=si>}</span><span class=s1> at dest alias </span><span class=si>{</span><span class=n>destination_model_alias</span><span class=si>}</span><span class=s1> rel to cwd&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'look for target model path </span><span class=si>{</span><span class=n>target_model_path</span><span class=si>}</span><span class=s1> at dest alias </span><span class=si>{</span><span class=n>destination_model_alias</span><span class=si>}</span><span class=s1> rel to cwd'</span><span class=p>)</span>
 
         <span class=c1># target_model filename - depends whether destination model is decomposed or not</span>
         <span class=k>if</span> <span class=n>target_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model path does exist so target path is subdir with target alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model path does exist so target path is subdir with target alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>target_model_path</span> <span class=o>=</span> <span class=n>target_model_path</span> <span class=o>/</span> <span class=n>target_model_alias</span>
         <span class=k>else</span><span class=p>:</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model filename does not exist so target path is target alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model filename does not exist so target path is target alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>target_model_path</span> <span class=o>=</span> <span class=n>target_model_path</span> <span class=o>/</span> <span class=n>target_model_alias</span>  <span class=c1># FIXME this is same as above</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;final target model path is </span><span class=si>{</span><span class=n>target_model_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'final target model path is </span><span class=si>{</span><span class=n>target_model_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
-        <span class=c1># if target model is a file then handle file. If file doesn&#39;t exist, handle the directory,</span>
-        <span class=c1># but in this case it&#39;s a list or a dict collection type</span>
+        <span class=c1># if target model is a file then handle file. If file doesn't exist, handle the directory,</span>
+        <span class=c1># but in this case it's a list or a dict collection type</span>
         <span class=n>target_model_filename</span> <span class=o>=</span> <span class=n>target_model_path</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=n>file_ext</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>target_model_filename</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model path with extension does exist so load distrib </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model path with extension does exist so load distrib </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>_</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>load_distributed</span><span class=p>(</span><span class=n>target_model_filename</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>target_model_filename</span> <span class=o>=</span> <span class=n>Path</span><span class=p>(</span><span class=n>target_model_path</span><span class=p>)</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model path plus extension does not exist so load distrib </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get collection type for model type </span><span class=si>{</span><span class=n>target_model_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model path plus extension does not exist so load distrib </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'get collection type for model type </span><span class=si>{</span><span class=n>target_model_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>collection_type</span> <span class=o>=</span> <span class=n>type_utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>target_model_type</span><span class=p>)</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;load </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1> as collection type </span><span class=si>{</span><span class=n>collection_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'load </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1> as collection type </span><span class=si>{</span><span class=n>collection_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=n>_</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>load_distributed</span><span class=p>(</span>
                 <span class=n>target_model_filename</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>collection_type</span>
             <span class=p>)</span>
 
-        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>target_model_object</span><span class=p>,</span> <span class=s1>&#39;__dict__&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>&#39;root&#39;</span> <span class=ow>in</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>:</span>
+        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>target_model_object</span><span class=p>,</span> <span class=s1>'__dict__'</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>'root'</span> <span class=ow>in</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>:</span>
             <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span>
-                <span class=s1>&#39;loaded object has dict and root so set target model object to root contents (Pydantic v2 RootModel)&#39;</span>
+                <span class=s1>'loaded object has dict and root so set target model object to root contents (Pydantic v2 RootModel)'</span>
             <span class=p>)</span>
-            <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>[</span><span class=s1>&#39;root&#39;</span><span class=p>]</span>
+            <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>[</span><span class=s1>'root'</span><span class=p>]</span>
         <span class=c1># 4. Insert target model into destination model.</span>
         <span class=n>merged_dict</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>if</span> <span class=n>destination_model_object</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
@@ -343,15 +343,15 @@
         <span class=n>merged_model_object</span> <span class=o>=</span> <span class=n>merged_model_type</span><span class=p>(</span><span class=o>**</span><span class=n>merged_dict</span><span class=p>)</span>
         <span class=n>merged_destination_element</span> <span class=o>=</span> <span class=n>Element</span><span class=p>(</span><span class=n>merged_model_object</span><span class=p>)</span>
         <span class=c1># 5. Create action  plan</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;create path action clear content: </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'create path action clear content: </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>reset_destination_action</span> <span class=o>=</span> <span class=n>CreatePathAction</span><span class=p>(</span><span class=n>destination_model_path</span><span class=p>,</span> <span class=n>clear_content</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;write file action </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'write file action </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>write_destination_action</span> <span class=o>=</span> <span class=n>WriteFileAction</span><span class=p>(</span>
             <span class=n>destination_model_path</span><span class=p>,</span> <span class=n>merged_destination_element</span><span class=p>,</span> <span class=n>content_type</span><span class=o>=</span><span class=n>file_type</span>
         <span class=p>)</span>
         <span class=c1># FIXME this will delete metadata.json but it will leave metadata/roles/roles.*</span>
         <span class=c1># need to clean up all lower dirs</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;remove path action </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'remove path action </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>delete_target_action</span> <span class=o>=</span> <span class=n>RemovePathAction</span><span class=p>(</span><span class=n>target_model_filename</span><span class=p>)</span>
 
         <span class=n>plan</span><span class=p>:</span> <span class=n>Plan</span> <span class=o>=</span> <span class=n>Plan</span><span class=p>()</span>
@@ -362,7 +362,7 @@
         <span class=c1># TODO: Destination model directory is empty or already merged? Then clean up.</span>
 
         <span class=k>return</span> <span class=n>plan</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.merge.MergeCmd-attributes>Attributes<a href=#trestle.core.commands.merge.MergeCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.merge.MergeCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;merge&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.merge.MergeCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.merge.MergeCmd-functions>Methods:<a href=#trestle.core.commands.merge.MergeCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.merge.MergeCmd.merge class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>,</span> <span class=n>element_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.merge.MergeCmd.merge class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge operations.</p> <p>It returns a plan for the operation</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/merge.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 76</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.merge.MergeCmd-attributes>Attributes<a href=#trestle.core.commands.merge.MergeCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.merge.MergeCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'merge'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.merge.MergeCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.merge.MergeCmd-functions>Methods:<a href=#trestle.core.commands.merge.MergeCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.merge.MergeCmd.merge class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>,</span> <span class=n>element_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.merge.MergeCmd.merge class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge operations.</p> <p>It returns a plan for the operation</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/merge.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 76</span>
 <span class=normal> 77</span>
 <span class=normal> 78</span>
 <span class=normal> 79</span>
@@ -496,43 +496,43 @@
 <span class=normal>207</span>
 <span class=normal>208</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>merge</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>effective_cwd</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Plan</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Merge operations.</span>
+<span class=w>    </span><span class=sd>"""Merge operations.</span>
 
 <span class=sd>    It returns a plan for the operation</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>element_path</span><span class=o>.</span><span class=n>is_multipart</span><span class=p>():</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
-            <span class=s1>&#39;Multiple parts of an element path must be passed to merge e.g. catalog.* or catalog.groups&#39;</span>
+            <span class=s1>'Multiple parts of an element path must be passed to merge e.g. catalog.* or catalog.groups'</span>
         <span class=p>)</span>
 
     <span class=n>target_model_alias</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_last</span><span class=p>()</span>
-    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;merge element path list: </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1> target model alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'merge element path list: </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1> target model alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
     <span class=c1># 1. Load desination model into a stripped model</span>
     <span class=c1># Load destination model</span>
     <span class=n>destination_path</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_preceding_path</span><span class=p>()</span>
     <span class=n>destination_model_alias</span> <span class=o>=</span> <span class=n>destination_path</span><span class=o>.</span><span class=n>get_last</span><span class=p>()</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;merge destination model alias: </span><span class=si>{</span><span class=n>destination_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;merge getting contextual file type effective working directory&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'merge destination model alias: </span><span class=si>{</span><span class=n>destination_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>'merge getting contextual file type effective working directory'</span><span class=p>)</span>
     <span class=c1># Destination model filetype</span>
     <span class=n>file_type</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>get_contextual_file_type</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>)</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;contextual file type is </span><span class=si>{</span><span class=n>file_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'contextual file type is </span><span class=si>{</span><span class=n>file_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
     <span class=n>file_ext</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>file_type</span><span class=p>)</span>
     <span class=c1># Destination model filename</span>
     <span class=n>destination_model_path</span> <span class=o>=</span> <span class=p>(</span>
-        <span class=n>effective_cwd</span> <span class=o>/</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>classname_to_alias</span><span class=p>(</span><span class=n>destination_model_alias</span><span class=p>,</span><span class=w> </span><span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span><span class=si>}{</span><span class=n>file_ext</span><span class=si>}</span><span class=s1>&#39;</span>
+        <span class=n>effective_cwd</span> <span class=o>/</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>classname_to_alias</span><span class=p>(</span><span class=n>destination_model_alias</span><span class=p>,</span><span class=w> </span><span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span><span class=si>}{</span><span class=n>file_ext</span><span class=si>}</span><span class=s1>'</span>
     <span class=p>)</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;destination model filename is </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'destination model filename is </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
     <span class=n>destination_model_type</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_stripped_model_type</span><span class=p>(</span><span class=n>destination_model_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
 
     <span class=n>destination_model_object</span><span class=p>:</span> <span class=n>OscalBaseModel</span> <span class=o>=</span> <span class=kc>None</span>
     <span class=k>if</span> <span class=n>destination_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;dest filename exists so read it&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>'dest filename exists so read it'</span><span class=p>)</span>
         <span class=n>destination_model_object</span> <span class=o>=</span> <span class=n>destination_model_type</span><span class=o>.</span><span class=n>oscal_read</span><span class=p>(</span><span class=n>destination_model_path</span><span class=p>)</span>
     <span class=c1># 2. If target is wildcard, load distributed destination model and replace destination model.</span>
-    <span class=c1># Handle WILDCARD &#39;*&#39; match. Return plan to load the destination model, with its distributed attributes</span>
-    <span class=k>if</span> <span class=n>target_model_alias</span> <span class=o>==</span> <span class=s1>&#39;*&#39;</span><span class=p>:</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;handle target model alias wildcard&#39;</span><span class=p>)</span>
+    <span class=c1># Handle WILDCARD '*' match. Return plan to load the destination model, with its distributed attributes</span>
+    <span class=k>if</span> <span class=n>target_model_alias</span> <span class=o>==</span> <span class=s1>'*'</span><span class=p>:</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>'handle target model alias wildcard'</span><span class=p>)</span>
         <span class=n>collection_type</span> <span class=o>=</span> <span class=kc>None</span>
         <span class=k>if</span> <span class=n>destination_model_type</span><span class=o>.</span><span class=n>is_collection_container</span><span class=p>():</span>
             <span class=n>collection_type</span> <span class=o>=</span> <span class=n>destination_model_type</span><span class=o>.</span><span class=n>get_collection_type</span><span class=p>()</span>
@@ -554,7 +554,7 @@
         <span class=n>plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>delete_target_action</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>plan</span>
 
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get dest model with fields stripped: </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'get dest model with fields stripped: </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
     <span class=c1># Get destination model without the target field stripped</span>
     <span class=n>merged_model_type</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_stripped_model_type</span><span class=p>(</span>
         <span class=n>destination_model_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>aliases_not_to_be_stripped</span><span class=o>=</span><span class=p>[</span><span class=n>target_model_alias</span><span class=p>]</span>
@@ -563,43 +563,43 @@
     <span class=k>try</span><span class=p>:</span>
         <span class=n>target_model_type</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_type</span><span class=p>(</span><span class=n>merged_model_type</span><span class=p>)</span>
     <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model not found, element path list </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1> type </span><span class=si>{</span><span class=n>merged_model_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model not found, element path list </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1> type </span><span class=si>{</span><span class=n>merged_model_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
-            <span class=sa>f</span><span class=s1>&#39;Target model not found. Possibly merge of the elements not allowed at this point. </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>e</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span>
+            <span class=sa>f</span><span class=s1>'Target model not found. Possibly merge of the elements not allowed at this point. </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>e</span><span class=p>)</span><span class=si>}</span><span class=s1>'</span>
         <span class=p>)</span>
     <span class=n>target_model_path</span> <span class=o>=</span> <span class=n>effective_cwd</span> <span class=o>/</span> <span class=n>destination_model_alias</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;look for target model path </span><span class=si>{</span><span class=n>target_model_path</span><span class=si>}</span><span class=s1> at dest alias </span><span class=si>{</span><span class=n>destination_model_alias</span><span class=si>}</span><span class=s1> rel to cwd&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'look for target model path </span><span class=si>{</span><span class=n>target_model_path</span><span class=si>}</span><span class=s1> at dest alias </span><span class=si>{</span><span class=n>destination_model_alias</span><span class=si>}</span><span class=s1> rel to cwd'</span><span class=p>)</span>
 
     <span class=c1># target_model filename - depends whether destination model is decomposed or not</span>
     <span class=k>if</span> <span class=n>target_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model path does exist so target path is subdir with target alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model path does exist so target path is subdir with target alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>target_model_path</span> <span class=o>=</span> <span class=n>target_model_path</span> <span class=o>/</span> <span class=n>target_model_alias</span>
     <span class=k>else</span><span class=p>:</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model filename does not exist so target path is target alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model filename does not exist so target path is target alias </span><span class=si>{</span><span class=n>target_model_alias</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>target_model_path</span> <span class=o>=</span> <span class=n>target_model_path</span> <span class=o>/</span> <span class=n>target_model_alias</span>  <span class=c1># FIXME this is same as above</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;final target model path is </span><span class=si>{</span><span class=n>target_model_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'final target model path is </span><span class=si>{</span><span class=n>target_model_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
-    <span class=c1># if target model is a file then handle file. If file doesn&#39;t exist, handle the directory,</span>
-    <span class=c1># but in this case it&#39;s a list or a dict collection type</span>
+    <span class=c1># if target model is a file then handle file. If file doesn't exist, handle the directory,</span>
+    <span class=c1># but in this case it's a list or a dict collection type</span>
     <span class=n>target_model_filename</span> <span class=o>=</span> <span class=n>target_model_path</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=n>file_ext</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>target_model_filename</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model path with extension does exist so load distrib </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model path with extension does exist so load distrib </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>_</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>load_distributed</span><span class=p>(</span><span class=n>target_model_filename</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
     <span class=k>else</span><span class=p>:</span>
         <span class=n>target_model_filename</span> <span class=o>=</span> <span class=n>Path</span><span class=p>(</span><span class=n>target_model_path</span><span class=p>)</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;target model path plus extension does not exist so load distrib </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get collection type for model type </span><span class=si>{</span><span class=n>target_model_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'target model path plus extension does not exist so load distrib </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'get collection type for model type </span><span class=si>{</span><span class=n>target_model_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>collection_type</span> <span class=o>=</span> <span class=n>type_utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>target_model_type</span><span class=p>)</span>
-        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;load </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1> as collection type </span><span class=si>{</span><span class=n>collection_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'load </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1> as collection type </span><span class=si>{</span><span class=n>collection_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>_</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>load_distributed</span><span class=p>(</span>
             <span class=n>target_model_filename</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>,</span> <span class=n>collection_type</span>
         <span class=p>)</span>
 
-    <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>target_model_object</span><span class=p>,</span> <span class=s1>&#39;__dict__&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>&#39;root&#39;</span> <span class=ow>in</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>:</span>
+    <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>target_model_object</span><span class=p>,</span> <span class=s1>'__dict__'</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>'root'</span> <span class=ow>in</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>:</span>
         <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span>
-            <span class=s1>&#39;loaded object has dict and root so set target model object to root contents (Pydantic v2 RootModel)&#39;</span>
+            <span class=s1>'loaded object has dict and root so set target model object to root contents (Pydantic v2 RootModel)'</span>
         <span class=p>)</span>
-        <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>[</span><span class=s1>&#39;root&#39;</span><span class=p>]</span>
+        <span class=n>target_model_object</span> <span class=o>=</span> <span class=n>target_model_object</span><span class=o>.</span><span class=vm>__dict__</span><span class=p>[</span><span class=s1>'root'</span><span class=p>]</span>
     <span class=c1># 4. Insert target model into destination model.</span>
     <span class=n>merged_dict</span> <span class=o>=</span> <span class=p>{}</span>
     <span class=k>if</span> <span class=n>destination_model_object</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
@@ -608,15 +608,15 @@
     <span class=n>merged_model_object</span> <span class=o>=</span> <span class=n>merged_model_type</span><span class=p>(</span><span class=o>**</span><span class=n>merged_dict</span><span class=p>)</span>
     <span class=n>merged_destination_element</span> <span class=o>=</span> <span class=n>Element</span><span class=p>(</span><span class=n>merged_model_object</span><span class=p>)</span>
     <span class=c1># 5. Create action  plan</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;create path action clear content: </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'create path action clear content: </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
     <span class=n>reset_destination_action</span> <span class=o>=</span> <span class=n>CreatePathAction</span><span class=p>(</span><span class=n>destination_model_path</span><span class=p>,</span> <span class=n>clear_content</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;write file action </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'write file action </span><span class=si>{</span><span class=n>destination_model_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
     <span class=n>write_destination_action</span> <span class=o>=</span> <span class=n>WriteFileAction</span><span class=p>(</span>
         <span class=n>destination_model_path</span><span class=p>,</span> <span class=n>merged_destination_element</span><span class=p>,</span> <span class=n>content_type</span><span class=o>=</span><span class=n>file_type</span>
     <span class=p>)</span>
     <span class=c1># FIXME this will delete metadata.json but it will leave metadata/roles/roles.*</span>
     <span class=c1># need to clean up all lower dirs</span>
-    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;remove path action </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+    <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'remove path action </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
     <span class=n>delete_target_action</span> <span class=o>=</span> <span class=n>RemovePathAction</span><span class=p>(</span><span class=n>target_model_filename</span><span class=p>)</span>
 
     <span class=n>plan</span><span class=p>:</span> <span class=n>Plan</span> <span class=o>=</span> <span class=n>Plan</span><span class=p>()</span>
@@ -636,9 +636,9 @@
 <span class=normal>73</span>
 <span class=normal>74</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>perform_all_merges</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>effective_cwd</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Run all merges over a list of element paths.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Run all merges over a list of element paths."""</span>
     <span class=k>for</span> <span class=n>element_path</span> <span class=ow>in</span> <span class=n>element_paths</span><span class=p>:</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;merge </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'merge </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>plan</span> <span class=o>=</span> <span class=bp>cls</span><span class=o>.</span><span class=n>merge</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>,</span> <span class=n>ElementPath</span><span class=p>(</span><span class=n>element_path</span><span class=p>),</span> <span class=n>trestle_root</span><span class=p>)</span>
         <span class=n>plan</span><span class=o>.</span><span class=n>execute</span><span class=p>()</span>
     <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>

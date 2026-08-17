@@ -77,10 +77,10 @@
 <span class=normal>116</span>
 <span class=normal>117</span>
 <span class=normal>118</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Action</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Action wrapper of a command.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Action wrapper of a command."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>action_type</span><span class=p>:</span> <span class=n>ActionType</span><span class=p>,</span> <span class=n>has_rollback</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize an base action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize an base action."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=p>:</span> <span class=n>ActionType</span> <span class=o>=</span> <span class=n>action_type</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_has_rollback</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=n>has_rollback</span>
 
@@ -88,31 +88,31 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_has_executed</span> <span class=o>=</span> <span class=kc>False</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>to_string</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return a string representation.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Return a string representation."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=fm>__str__</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_type</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ActionType</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return the action type.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Return the action type."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_type</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_mark_executed</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Set flag that the action has been executed.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Set flag that the action has been executed."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_has_executed</span> <span class=o>=</span> <span class=kc>True</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>has_executed</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return if the action has been executed.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Return if the action has been executed."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_has_executed</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_mark_rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Set flag that the action has been rollbacked.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Set flag that the action has been rollbacked."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_has_executed</span> <span class=o>=</span> <span class=kc>False</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>has_rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return if rollback of the action is possible.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Return if rollback of the action is possible."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_has_rollback</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__eq__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>other</span><span class=p>:</span> <span class=nb>object</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Check that two actions are equal.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Check that two actions are equal."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>other</span><span class=p>,</span> <span class=n>Action</span><span class=p>):</span>
             <span class=k>return</span> <span class=kc>False</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>get_type</span><span class=p>()</span> <span class=ow>is</span> <span class=ow>not</span> <span class=n>other</span><span class=o>.</span><span class=n>get_type</span><span class=p>():</span>
@@ -121,23 +121,23 @@
         <span class=n>self_dict</span> <span class=o>=</span> <span class=p>{</span>
             <span class=n>k</span><span class=p>:</span> <span class=n>v</span>
             <span class=k>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=vm>__dict__</span><span class=o>.</span><span class=n>items</span><span class=p>()</span>
-            <span class=k>if</span> <span class=ow>not</span> <span class=n>k</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;_has_&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>&#39;_writer&#39;</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>&#39;_lastStreamPos&#39;</span>
+            <span class=k>if</span> <span class=ow>not</span> <span class=n>k</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>'_has_'</span><span class=p>)</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>'_writer'</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>'_lastStreamPos'</span>
         <span class=p>}</span>
         <span class=n>other_dict</span> <span class=o>=</span> <span class=p>{</span>
             <span class=n>k</span><span class=p>:</span> <span class=n>v</span>
             <span class=k>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>other</span><span class=o>.</span><span class=vm>__dict__</span><span class=o>.</span><span class=n>items</span><span class=p>()</span>
-            <span class=k>if</span> <span class=ow>not</span> <span class=n>k</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;_has_&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>&#39;_writer&#39;</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>&#39;_lastStreamPos&#39;</span>
+            <span class=k>if</span> <span class=ow>not</span> <span class=n>k</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>'_has_'</span><span class=p>)</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>'_writer'</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>'_lastStreamPos'</span>
         <span class=p>}</span>
         <span class=n>is_eq</span> <span class=o>=</span> <span class=n>self_dict</span> <span class=o>==</span> <span class=n>other_dict</span>
         <span class=k>return</span> <span class=n>is_eq</span>
 
     <span class=nd>@abstractmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute the action."""</span>
 
     <span class=nd>@abstractmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Rollback the action."""</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.models.actions.Action-functions>Methods:<a href=#trestle.core.models.actions.Action-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.Action.__eq__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__eq__</span><span class=p>(</span><span class=n>other</span><span class=p>)</span></code> <a href=#trestle.core.models.actions.Action.__eq__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Check that two actions are equal.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 92</span>
 <span class=normal> 93</span>
 <span class=normal> 94</span>
@@ -157,7 +157,7 @@
 <span class=normal>108</span>
 <span class=normal>109</span>
 <span class=normal>110</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__eq__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>other</span><span class=p>:</span> <span class=nb>object</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Check that two actions are equal.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Check that two actions are equal."""</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>other</span><span class=p>,</span> <span class=n>Action</span><span class=p>):</span>
         <span class=k>return</span> <span class=kc>False</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>get_type</span><span class=p>()</span> <span class=ow>is</span> <span class=ow>not</span> <span class=n>other</span><span class=o>.</span><span class=n>get_type</span><span class=p>():</span>
@@ -166,12 +166,12 @@
     <span class=n>self_dict</span> <span class=o>=</span> <span class=p>{</span>
         <span class=n>k</span><span class=p>:</span> <span class=n>v</span>
         <span class=k>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=vm>__dict__</span><span class=o>.</span><span class=n>items</span><span class=p>()</span>
-        <span class=k>if</span> <span class=ow>not</span> <span class=n>k</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;_has_&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>&#39;_writer&#39;</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>&#39;_lastStreamPos&#39;</span>
+        <span class=k>if</span> <span class=ow>not</span> <span class=n>k</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>'_has_'</span><span class=p>)</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>'_writer'</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>'_lastStreamPos'</span>
     <span class=p>}</span>
     <span class=n>other_dict</span> <span class=o>=</span> <span class=p>{</span>
         <span class=n>k</span><span class=p>:</span> <span class=n>v</span>
         <span class=k>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>other</span><span class=o>.</span><span class=vm>__dict__</span><span class=o>.</span><span class=n>items</span><span class=p>()</span>
-        <span class=k>if</span> <span class=ow>not</span> <span class=n>k</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;_has_&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>&#39;_writer&#39;</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>&#39;_lastStreamPos&#39;</span>
+        <span class=k>if</span> <span class=ow>not</span> <span class=n>k</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>'_has_'</span><span class=p>)</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>'_writer'</span> <span class=ow>and</span> <span class=n>k</span> <span class=o>!=</span> <span class=s1>'_lastStreamPos'</span>
     <span class=p>}</span>
     <span class=n>is_eq</span> <span class=o>=</span> <span class=n>self_dict</span> <span class=o>==</span> <span class=n>other_dict</span>
     <span class=k>return</span> <span class=n>is_eq</span>
@@ -182,7 +182,7 @@
 <span class=normal>64</span>
 <span class=normal>65</span>
 <span class=normal>66</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>action_type</span><span class=p>:</span> <span class=n>ActionType</span><span class=p>,</span> <span class=n>has_rollback</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize an base action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize an base action."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=p>:</span> <span class=n>ActionType</span> <span class=o>=</span> <span class=n>action_type</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_has_rollback</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=n>has_rollback</span>
 
@@ -192,31 +192,31 @@
 <span class=normal>113</span>
 <span class=normal>114</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@abstractmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Execute the action."""</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.Action.get_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_type</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.Action.get_type class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return the action type.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>72</span>
 <span class=normal>73</span>
 <span class=normal>74</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_type</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ActionType</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return the action type.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Return the action type."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_type</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.Action.has_executed class="doc doc-heading"> <code class="highlight language-python"><span class=n>has_executed</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.Action.has_executed class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return if the action has been executed.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>80</span>
 <span class=normal>81</span>
 <span class=normal>82</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>has_executed</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return if the action has been executed.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Return if the action has been executed."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_has_executed</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.Action.has_rollback class="doc doc-heading"> <code class="highlight language-python"><span class=n>has_rollback</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.Action.has_rollback class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return if rollback of the action is possible.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>88</span>
 <span class=normal>89</span>
 <span class=normal>90</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>has_rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return if rollback of the action is possible.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Return if rollback of the action is possible."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_has_rollback</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.Action.rollback class="doc doc-heading"> <code class="highlight language-python"><span class=n>rollback</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small> </span> <a href=#trestle.core.models.actions.Action.rollback class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Rollback the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>116</span>
 <span class=normal>117</span>
 <span class=normal>118</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@abstractmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Rollback the action."""</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.Action.to_string class="doc doc-heading"> <code class="highlight language-python"><span class=n>to_string</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.Action.to_string class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return a string representation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>68</span>
 <span class=normal>69</span>
 <span class=normal>70</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>to_string</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return a string representation.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Return a string representation."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=fm>__str__</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.core.models.actions.ActionType class="doc doc-heading"> <code>ActionType</code> <a href=#trestle.core.models.actions.ActionType class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><span title=enum.Enum>Enum</span></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="ActionType (trestle.core.models.actions.ActionType)" href=#trestle.core.models.actions.ActionType id=mermaid-link-trestle.core.models.actions.ActionType></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.core.models.actions.ActionType>
               flowchart TD
@@ -256,11 +256,11 @@
 <span class=normal>52</span>
 <span class=normal>53</span>
 <span class=normal>54</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ActionType</span><span class=p>(</span><span class=n>Enum</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Action type enum for different action type.</span>
+<span class=w>    </span><span class=sd>"""Action type enum for different action type.</span>
 
 <span class=sd>    File system related actions have code like 1*</span>
 <span class=sd>    Model processing related actions have code like 2*</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
 
     <span class=c1># create a file or directory path</span>
     <span class=n>CREATE_PATH</span> <span class=o>=</span> <span class=mi>10</span>
@@ -401,22 +401,22 @@
 <span class=normal>334</span>
 <span class=normal>335</span>
 <span class=normal>336</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CreatePathAction</span><span class=p>(</span><span class=n>Action</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Create a file or directory path.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Create a file or directory path."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>sub_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>clear_content</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize a create path action.</span>
+<span class=w>        </span><span class=sd>"""Initialize a create path action.</span>
 
 <span class=sd>        It creates all the missing directories in the path.</span>
 <span class=sd>        If it is a file, then it also creates an empty file with the name provided</span>
 
 <span class=sd>        Arguments:</span>
 <span class=sd>            sub_path: this is the desired file or directory path that needs to be created under the project root</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>sub_path</span> <span class=o>=</span> <span class=n>sub_path</span><span class=o>.</span><span class=n>resolve</span><span class=p>()</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>extract_trestle_project_root</span><span class=p>(</span><span class=n>sub_path</span><span class=p>)</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Sub path &quot;</span><span class=si>{</span><span class=n>sub_path</span><span class=si>}</span><span class=s1>&quot; should be child of a valid trestle project&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Sub path "</span><span class=si>{</span><span class=n>sub_path</span><span class=si>}</span><span class=s1>" should be child of a valid trestle project'</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span> <span class=o>=</span> <span class=n>sub_path</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
@@ -428,15 +428,15 @@
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>ActionType</span><span class=o>.</span><span class=n>CREATE_PATH</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_trestle_project_root</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return the trestle workspace root path.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Return the trestle workspace root path."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_created_paths</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get the list of paths that were created after being executed.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get the list of paths that were created after being executed."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute the action."""</span>
         <span class=c1># find the start of the sub_path relative to trestle project root</span>
         <span class=n>cur_index</span> <span class=o>=</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span><span class=o>.</span><span class=n>parts</span><span class=p>)</span>
 
@@ -451,7 +451,7 @@
             <span class=n>cur_path</span> <span class=o>=</span> <span class=n>cur_path</span> <span class=o>/</span> <span class=n>part</span>  <span class=c1># type: ignore</span>
 
             <span class=c1># create the sub_path file or directory if it does not exists already</span>
-            <span class=k>if</span> <span class=n>cur_path</span><span class=o>.</span><span class=n>suffix</span> <span class=o>!=</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>  <span class=c1># suffix will denote a file</span>
+            <span class=k>if</span> <span class=n>cur_path</span><span class=o>.</span><span class=n>suffix</span> <span class=o>!=</span> <span class=s1>''</span><span class=p>:</span>  <span class=c1># suffix will denote a file</span>
                 <span class=k>if</span> <span class=ow>not</span> <span class=n>cur_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
                     <span class=c1># create file</span>
                     <span class=n>cur_path</span><span class=o>.</span><span class=n>touch</span><span class=p>()</span>
@@ -460,7 +460,7 @@
                     <span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>cur_path</span><span class=p>)</span>
                 <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>_clear_content</span><span class=p>:</span>
                     <span class=c1># read file content for rollback</span>
-                    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>cur_path</span><span class=p>,</span> <span class=s1>&#39;r+&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
+                    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>cur_path</span><span class=p>,</span> <span class=s1>'r+'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
                         <span class=c1># read all content</span>
                         <span class=bp>self</span><span class=o>.</span><span class=n>_old_file_content</span> <span class=o>=</span> <span class=n>fp</span><span class=o>.</span><span class=n>read</span><span class=p>()</span>
 
@@ -480,7 +480,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_executed</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Rollback the action."""</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
             <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
                 <span class=k>for</span> <span class=n>cur_path</span> <span class=ow>in</span> <span class=nb>reversed</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span><span class=p>):</span>
@@ -496,14 +496,14 @@
             <span class=c1># we should be here only if there were no path created and the sub_part already existed</span>
             <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=o>.</span><span class=n>is_file</span><span class=p>()</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=o>.</span><span class=n>exists</span><span class=p>()</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_clear_content</span> <span class=ow>is</span> <span class=kc>True</span><span class=p>:</span>
                 <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_old_file_content</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-                    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=p>,</span> <span class=s1>&#39;w&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
+                    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=p>,</span> <span class=s1>'w'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
                         <span class=n>fp</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_old_file_content</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_rollback</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>        </span><span class=sd>"""Return string representation."""</span>
+        <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.models.actions.CreatePathAction-functions>Methods:<a href=#trestle.core.models.actions.CreatePathAction-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.CreatePathAction.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>sub_path</span><span class=p>,</span> <span class=n>clear_content</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.models.actions.CreatePathAction.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize a create path action.</p> <p>It creates all the missing directories in the path. If it is a file, then it also creates an empty file with the name provided</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>sub_path</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>this is the desired file or directory path that needs to be created under the project root</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>236</span>
 <span class=normal>237</span>
 <span class=normal>238</span>
@@ -527,19 +527,19 @@
 <span class=normal>256</span>
 <span class=normal>257</span>
 <span class=normal>258</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>sub_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>clear_content</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize a create path action.</span>
+<span class=w>    </span><span class=sd>"""Initialize a create path action.</span>
 
 <span class=sd>    It creates all the missing directories in the path.</span>
 <span class=sd>    If it is a file, then it also creates an empty file with the name provided</span>
 
 <span class=sd>    Arguments:</span>
 <span class=sd>        sub_path: this is the desired file or directory path that needs to be created under the project root</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>sub_path</span> <span class=o>=</span> <span class=n>sub_path</span><span class=o>.</span><span class=n>resolve</span><span class=p>()</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>extract_trestle_project_root</span><span class=p>(</span><span class=n>sub_path</span><span class=p>)</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Sub path &quot;</span><span class=si>{</span><span class=n>sub_path</span><span class=si>}</span><span class=s1>&quot; should be child of a valid trestle project&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Sub path "</span><span class=si>{</span><span class=n>sub_path</span><span class=si>}</span><span class=s1>" should be child of a valid trestle project'</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span> <span class=o>=</span> <span class=n>sub_path</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
@@ -552,8 +552,8 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.CreatePathAction.__str__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__str__</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.CreatePathAction.__str__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return string representation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>334</span>
 <span class=normal>335</span>
 <span class=normal>336</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>    </span><span class=sd>"""Return string representation."""</span>
+    <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.CreatePathAction.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.CreatePathAction.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>268</span>
 <span class=normal>269</span>
 <span class=normal>270</span>
@@ -597,7 +597,7 @@
 <span class=normal>308</span>
 <span class=normal>309</span>
 <span class=normal>310</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Execute the action."""</span>
     <span class=c1># find the start of the sub_path relative to trestle project root</span>
     <span class=n>cur_index</span> <span class=o>=</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span><span class=o>.</span><span class=n>parts</span><span class=p>)</span>
 
@@ -612,7 +612,7 @@
         <span class=n>cur_path</span> <span class=o>=</span> <span class=n>cur_path</span> <span class=o>/</span> <span class=n>part</span>  <span class=c1># type: ignore</span>
 
         <span class=c1># create the sub_path file or directory if it does not exists already</span>
-        <span class=k>if</span> <span class=n>cur_path</span><span class=o>.</span><span class=n>suffix</span> <span class=o>!=</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>  <span class=c1># suffix will denote a file</span>
+        <span class=k>if</span> <span class=n>cur_path</span><span class=o>.</span><span class=n>suffix</span> <span class=o>!=</span> <span class=s1>''</span><span class=p>:</span>  <span class=c1># suffix will denote a file</span>
             <span class=k>if</span> <span class=ow>not</span> <span class=n>cur_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
                 <span class=c1># create file</span>
                 <span class=n>cur_path</span><span class=o>.</span><span class=n>touch</span><span class=p>()</span>
@@ -621,7 +621,7 @@
                 <span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>cur_path</span><span class=p>)</span>
             <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>_clear_content</span><span class=p>:</span>
                 <span class=c1># read file content for rollback</span>
-                <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>cur_path</span><span class=p>,</span> <span class=s1>&#39;r+&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
+                <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>cur_path</span><span class=p>,</span> <span class=s1>'r+'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
                     <span class=c1># read all content</span>
                     <span class=bp>self</span><span class=o>.</span><span class=n>_old_file_content</span> <span class=o>=</span> <span class=n>fp</span><span class=o>.</span><span class=n>read</span><span class=p>()</span>
 
@@ -642,12 +642,12 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.CreatePathAction.get_created_paths class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_created_paths</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.CreatePathAction.get_created_paths class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the list of paths that were created after being executed.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>264</span>
 <span class=normal>265</span>
 <span class=normal>266</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_created_paths</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the list of paths that were created after being executed.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Get the list of paths that were created after being executed."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.CreatePathAction.get_trestle_project_root class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_trestle_project_root</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.CreatePathAction.get_trestle_project_root class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return the trestle workspace root path.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>260</span>
 <span class=normal>261</span>
 <span class=normal>262</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_trestle_project_root</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return the trestle workspace root path.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Return the trestle workspace root path."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.CreatePathAction.rollback class="doc doc-heading"> <code class="highlight language-python"><span class=n>rollback</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.CreatePathAction.rollback class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Rollback the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>312</span>
 <span class=normal>313</span>
@@ -670,7 +670,7 @@
 <span class=normal>330</span>
 <span class=normal>331</span>
 <span class=normal>332</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Rollback the action."""</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
         <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
             <span class=k>for</span> <span class=n>cur_path</span> <span class=ow>in</span> <span class=nb>reversed</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_created_paths</span><span class=p>):</span>
@@ -686,7 +686,7 @@
         <span class=c1># we should be here only if there were no path created and the sub_part already existed</span>
         <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=o>.</span><span class=n>is_file</span><span class=p>()</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=o>.</span><span class=n>exists</span><span class=p>()</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_clear_content</span> <span class=ow>is</span> <span class=kc>True</span><span class=p>:</span>
             <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_old_file_content</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-                <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=p>,</span> <span class=s1>&#39;w&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
+                <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=p>,</span> <span class=s1>'w'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>fp</span><span class=p>:</span>
                     <span class=n>fp</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_old_file_content</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_mark_rollback</span><span class=p>()</span>
@@ -737,10 +737,10 @@
 <span class=normal>456</span>
 <span class=normal>457</span>
 <span class=normal>458</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RemoveAction</span><span class=p>(</span><span class=n>Action</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Remove sub element at the element path in the source element.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Remove sub element at the element path in the source element."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>src_element</span><span class=p>:</span> <span class=n>Element</span><span class=p>,</span> <span class=n>sub_element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize a remove element action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize a remove element action."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>ActionType</span><span class=o>.</span><span class=n>REMOVE</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=p>:</span> <span class=n>Element</span> <span class=o>=</span> <span class=n>src_element</span>
@@ -748,20 +748,20 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span> <span class=o>=</span> <span class=kc>None</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute the action."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=o>.</span><span class=n>get_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=o>.</span><span class=n>set_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_executed</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Rollback the action."""</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=o>.</span><span class=n>set_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_rollback</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> element at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=si>}</span><span class=s1> from </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>        </span><span class=sd>"""Return string representation."""</span>
+        <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> element at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=si>}</span><span class=s1> from </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.models.actions.RemoveAction-functions>Methods:<a href=#trestle.core.models.actions.RemoveAction-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.RemoveAction.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>src_element</span><span class=p>,</span> <span class=n>sub_element_path</span><span class=p>)</span></code> <a href=#trestle.core.models.actions.RemoveAction.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize a remove element action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>436</span>
 <span class=normal>437</span>
 <span class=normal>438</span>
@@ -769,7 +769,7 @@
 <span class=normal>440</span>
 <span class=normal>441</span>
 <span class=normal>442</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>src_element</span><span class=p>:</span> <span class=n>Element</span><span class=p>,</span> <span class=n>sub_element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize a remove element action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize a remove element action."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>ActionType</span><span class=o>.</span><span class=n>REMOVE</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=p>:</span> <span class=n>Element</span> <span class=o>=</span> <span class=n>src_element</span>
@@ -778,14 +778,14 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.RemoveAction.__str__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__str__</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.RemoveAction.__str__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return string representation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>456</span>
 <span class=normal>457</span>
 <span class=normal>458</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> element at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=si>}</span><span class=s1> from </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>    </span><span class=sd>"""Return string representation."""</span>
+    <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> element at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=si>}</span><span class=s1> from </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.RemoveAction.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.RemoveAction.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>444</span>
 <span class=normal>445</span>
 <span class=normal>446</span>
 <span class=normal>447</span>
 <span class=normal>448</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Execute the action."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=o>.</span><span class=n>get_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=o>.</span><span class=n>set_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_mark_executed</span><span class=p>()</span>
@@ -794,7 +794,7 @@
 <span class=normal>452</span>
 <span class=normal>453</span>
 <span class=normal>454</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Rollback the action."""</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_src_element</span><span class=o>.</span><span class=n>set_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_mark_rollback</span><span class=p>()</span>
@@ -873,35 +873,35 @@
 <span class=normal>390</span>
 <span class=normal>391</span>
 <span class=normal>392</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RemovePathAction</span><span class=p>(</span><span class=n>Action</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Remove a file or directory path.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Remove a file or directory path."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>sub_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize a remove path action.</span>
+<span class=w>        </span><span class=sd>"""Initialize a remove path action.</span>
 
 <span class=sd>        It removes the file or directory recursively into trash.</span>
 
 <span class=sd>        Arguments:</span>
 <span class=sd>            sub_path: this is the desired file or directory path that needs to be removed under the project root</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>sub_path</span><span class=p>,</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>):</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Sub path must be of type pathlib.Path&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Sub path must be of type pathlib.Path'</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>extract_trestle_project_root</span><span class=p>(</span><span class=n>sub_path</span><span class=p>)</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Sub path &quot;</span><span class=si>{</span><span class=n>sub_path</span><span class=si>}</span><span class=s1>&quot; should be child of a valid trestle project.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Sub path "</span><span class=si>{</span><span class=n>sub_path</span><span class=si>}</span><span class=s1>" should be child of a valid trestle project.'</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span> <span class=o>=</span> <span class=n>sub_path</span>
 
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>ActionType</span><span class=o>.</span><span class=n>REMOVE_PATH</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_trestle_project_root</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return the trestle workspace root path.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Return the trestle workspace root path."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute the action."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;path </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1> does not exist in remove path action - ignoring.&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'path </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1> does not exist in remove path action - ignoring.'</span><span class=p>)</span>
 
         <span class=n>trash</span><span class=o>.</span><span class=n>store</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
@@ -913,7 +913,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_executed</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Rollback the action."""</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
             <span class=n>trash_path</span> <span class=o>=</span> <span class=n>trash</span><span class=o>.</span><span class=n>to_trash_path</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>trash_path</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>or</span> <span class=n>trash_path</span><span class=o>.</span><span class=n>exists</span><span class=p>()</span> <span class=ow>is</span> <span class=kc>False</span><span class=p>:</span>
@@ -924,8 +924,8 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_rollback</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>        </span><span class=sd>"""Return string representation."""</span>
+        <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.models.actions.RemovePathAction-functions>Methods:<a href=#trestle.core.models.actions.RemovePathAction-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.RemovePathAction.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>sub_path</span><span class=p>)</span></code> <a href=#trestle.core.models.actions.RemovePathAction.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize a remove path action.</p> <p>It removes the file or directory recursively into trash.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>sub_path</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>this is the desired file or directory path that needs to be removed under the project root</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>342</span>
 <span class=normal>343</span>
 <span class=normal>344</span>
@@ -944,19 +944,19 @@
 <span class=normal>357</span>
 <span class=normal>358</span>
 <span class=normal>359</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>sub_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize a remove path action.</span>
+<span class=w>    </span><span class=sd>"""Initialize a remove path action.</span>
 
 <span class=sd>    It removes the file or directory recursively into trash.</span>
 
 <span class=sd>    Arguments:</span>
 <span class=sd>        sub_path: this is the desired file or directory path that needs to be removed under the project root</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>sub_path</span><span class=p>,</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>):</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Sub path must be of type pathlib.Path&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Sub path must be of type pathlib.Path'</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>extract_trestle_project_root</span><span class=p>(</span><span class=n>sub_path</span><span class=p>)</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Sub path &quot;</span><span class=si>{</span><span class=n>sub_path</span><span class=si>}</span><span class=s1>&quot; should be child of a valid trestle project.&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Sub path "</span><span class=si>{</span><span class=n>sub_path</span><span class=si>}</span><span class=s1>" should be child of a valid trestle project.'</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span> <span class=o>=</span> <span class=n>sub_path</span>
 
@@ -964,8 +964,8 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.RemovePathAction.__str__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__str__</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.RemovePathAction.__str__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return string representation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>390</span>
 <span class=normal>391</span>
 <span class=normal>392</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>    </span><span class=sd>"""Return string representation."""</span>
+    <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.RemovePathAction.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.RemovePathAction.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>365</span>
 <span class=normal>366</span>
 <span class=normal>367</span>
@@ -979,9 +979,9 @@
 <span class=normal>375</span>
 <span class=normal>376</span>
 <span class=normal>377</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Execute the action."""</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;path </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1> does not exist in remove path action - ignoring.&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'path </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=si>}</span><span class=s1> does not exist in remove path action - ignoring.'</span><span class=p>)</span>
 
     <span class=n>trash</span><span class=o>.</span><span class=n>store</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
@@ -994,7 +994,7 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.RemovePathAction.get_trestle_project_root class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_trestle_project_root</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.RemovePathAction.get_trestle_project_root class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return the trestle workspace root path.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>361</span>
 <span class=normal>362</span>
 <span class=normal>363</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_trestle_project_root</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return the trestle workspace root path.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Return the trestle workspace root path."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_project_root</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.RemovePathAction.rollback class="doc doc-heading"> <code class="highlight language-python"><span class=n>rollback</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.RemovePathAction.rollback class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Rollback the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>379</span>
 <span class=normal>380</span>
@@ -1006,7 +1006,7 @@
 <span class=normal>386</span>
 <span class=normal>387</span>
 <span class=normal>388</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Rollback the action."""</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
         <span class=n>trash_path</span> <span class=o>=</span> <span class=n>trash</span><span class=o>.</span><span class=n>to_trash_path</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_path</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>trash_path</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>or</span> <span class=n>trash_path</span><span class=o>.</span><span class=n>exists</span><span class=p>()</span> <span class=ow>is</span> <span class=kc>False</span><span class=p>:</span>
@@ -1072,19 +1072,19 @@
 <span class=normal>428</span>
 <span class=normal>429</span>
 <span class=normal>430</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>UpdateAction</span><span class=p>(</span><span class=n>Action</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Update element at the element path in the destination element with the source element.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Update element at the element path in the destination element with the source element."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>sub_element</span><span class=p>,</span> <span class=n>dest_element</span><span class=p>:</span> <span class=n>Element</span><span class=p>,</span> <span class=n>sub_element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize an add element action.</span>
+<span class=w>        </span><span class=sd>"""Initialize an add element action.</span>
 
 <span class=sd>        Sub element can be OscalBaseModel, Element, list or None</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>ActionType</span><span class=o>.</span><span class=n>UPDATE</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=ow>not</span> <span class=n>Element</span><span class=o>.</span><span class=n>is_allowed_sub_element_type</span><span class=p>(</span><span class=n>sub_element</span><span class=p>):</span>
             <span class=n>allowed_types</span> <span class=o>=</span> <span class=n>Element</span><span class=o>.</span><span class=n>get_allowed_sub_element_types</span><span class=p>()</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
-                <span class=sa>f</span><span class=s1>&#39;Sub element &quot;</span><span class=si>{</span><span class=n>sub_element</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1> is not a allowed sub element types in &quot;</span><span class=si>{</span><span class=n>allowed_types</span><span class=si>}</span><span class=s1>&quot;&#39;</span>
+                <span class=sa>f</span><span class=s1>'Sub element "</span><span class=si>{</span><span class=n>sub_element</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1> is not a allowed sub element types in "</span><span class=si>{</span><span class=n>allowed_types</span><span class=si>}</span><span class=s1>"'</span>
             <span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_sub_element</span> <span class=o>=</span> <span class=n>sub_element</span>
@@ -1093,20 +1093,20 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span> <span class=o>=</span> <span class=kc>None</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute the action."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=o>.</span><span class=n>get_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=o>.</span><span class=n>set_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_sub_element</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_executed</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Rollback the action."""</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=o>.</span><span class=n>set_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_rollback</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_model_obj</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1> to </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=si>}</span><span class=s1> at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>        </span><span class=sd>"""Return string representation."""</span>
+        <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_model_obj</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1> to </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=si>}</span><span class=s1> at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.models.actions.UpdateAction-functions>Methods:<a href=#trestle.core.models.actions.UpdateAction-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.UpdateAction.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>sub_element</span><span class=p>,</span> <span class=n>dest_element</span><span class=p>,</span> <span class=n>sub_element_path</span><span class=p>)</span></code> <a href=#trestle.core.models.actions.UpdateAction.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize an add element action.</p> <p>Sub element can be OscalBaseModel, Element, list or None</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>398</span>
 <span class=normal>399</span>
 <span class=normal>400</span>
@@ -1124,16 +1124,16 @@
 <span class=normal>412</span>
 <span class=normal>413</span>
 <span class=normal>414</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>sub_element</span><span class=p>,</span> <span class=n>dest_element</span><span class=p>:</span> <span class=n>Element</span><span class=p>,</span> <span class=n>sub_element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize an add element action.</span>
+<span class=w>    </span><span class=sd>"""Initialize an add element action.</span>
 
 <span class=sd>    Sub element can be OscalBaseModel, Element, list or None</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>ActionType</span><span class=o>.</span><span class=n>UPDATE</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=ow>not</span> <span class=n>Element</span><span class=o>.</span><span class=n>is_allowed_sub_element_type</span><span class=p>(</span><span class=n>sub_element</span><span class=p>):</span>
         <span class=n>allowed_types</span> <span class=o>=</span> <span class=n>Element</span><span class=o>.</span><span class=n>get_allowed_sub_element_types</span><span class=p>()</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
-            <span class=sa>f</span><span class=s1>&#39;Sub element &quot;</span><span class=si>{</span><span class=n>sub_element</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1> is not a allowed sub element types in &quot;</span><span class=si>{</span><span class=n>allowed_types</span><span class=si>}</span><span class=s1>&quot;&#39;</span>
+            <span class=sa>f</span><span class=s1>'Sub element "</span><span class=si>{</span><span class=n>sub_element</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1> is not a allowed sub element types in "</span><span class=si>{</span><span class=n>allowed_types</span><span class=si>}</span><span class=s1>"'</span>
         <span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_sub_element</span> <span class=o>=</span> <span class=n>sub_element</span>
@@ -1143,14 +1143,14 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.UpdateAction.__str__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__str__</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.UpdateAction.__str__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return string representation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>428</span>
 <span class=normal>429</span>
 <span class=normal>430</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_model_obj</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1> to </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=si>}</span><span class=s1> at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>    </span><span class=sd>"""Return string representation."""</span>
+    <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_model_obj</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1> to </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=si>}</span><span class=s1> at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.UpdateAction.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.UpdateAction.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>416</span>
 <span class=normal>417</span>
 <span class=normal>418</span>
 <span class=normal>419</span>
 <span class=normal>420</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Execute the action."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=o>.</span><span class=n>get_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=o>.</span><span class=n>set_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_sub_element</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_mark_executed</span><span class=p>()</span>
@@ -1159,7 +1159,7 @@
 <span class=normal>424</span>
 <span class=normal>425</span>
 <span class=normal>426</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Rollback the action."""</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_dest_element</span><span class=o>.</span><span class=n>set_at</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_sub_element_path</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_prev_sub_element</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_mark_rollback</span><span class=p>()</span>
@@ -1245,14 +1245,14 @@
 <span class=normal>179</span>
 <span class=normal>180</span>
 <span class=normal>181</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>WriteAction</span><span class=p>(</span><span class=n>Action</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Write the element to a destination stream.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Write the element to a destination stream."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>writer</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>io</span><span class=o>.</span><span class=n>TextIOWrapper</span><span class=p>],</span> <span class=n>element</span><span class=p>:</span> <span class=n>Element</span><span class=p>,</span> <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize an write file action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Initialize an write file action."""</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>ActionType</span><span class=o>.</span><span class=n>WRITE</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=n>writer</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=ow>not</span> <span class=nb>issubclass</span><span class=p>(</span><span class=n>io</span><span class=o>.</span><span class=n>TextIOWrapper</span><span class=p>,</span> <span class=n>writer</span><span class=o>.</span><span class=vm>__class__</span><span class=p>):</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Writer must be of io.TextIOWrapper, given f</span><span class=si>{</span><span class=n>writer</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Writer must be of io.TextIOWrapper, given f</span><span class=si>{</span><span class=n>writer</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>io</span><span class=o>.</span><span class=n>TextIOWrapper</span><span class=p>]</span> <span class=o>=</span> <span class=n>writer</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=p>:</span> <span class=n>Element</span> <span class=o>=</span> <span class=n>element</span>
@@ -1268,33 +1268,33 @@
         <span class=k>return</span> <span class=kc>False</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_encode</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Encode the element to appropriate content type.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Encode the element to appropriate content type."""</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_content_type</span> <span class=o>==</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>YAML</span><span class=p>:</span>
             <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=o>.</span><span class=n>to_yaml</span><span class=p>()</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_content_type</span> <span class=o>==</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span><span class=p>:</span>
             <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=o>.</span><span class=n>to_json</span><span class=p>()</span>
 
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Invalid content type </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_content_type</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Invalid content type </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_content_type</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute the action."""</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_element</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Element is empty and cannot write&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Element is empty and cannot write'</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_is_writer_valid</span><span class=p>():</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Writer is not provided or closed&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Writer is not provided or closed'</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_encode</span><span class=p>())</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span><span class=o>.</span><span class=n>flush</span><span class=p>()</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_executed</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Rollback the action."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_is_writer_valid</span><span class=p>():</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Writer is not provided or closed&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Writer is not provided or closed'</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_lastStreamPos</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Last stream position is not available to rollback to&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Last stream position is not available to rollback to'</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span><span class=o>.</span><span class=n>seek</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_lastStreamPos</span><span class=p>)</span>
@@ -1303,8 +1303,8 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_mark_rollback</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>get_type</span><span class=p>()</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>        </span><span class=sd>"""Return string representation."""</span>
+        <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>get_type</span><span class=p>()</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.models.actions.WriteAction-functions>Methods:<a href=#trestle.core.models.actions.WriteAction-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.WriteAction.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>writer</span><span class=p>,</span> <span class=n>element</span><span class=p>,</span> <span class=n>content_type</span><span class=p>)</span></code> <a href=#trestle.core.models.actions.WriteAction.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize an write file action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>124</span>
 <span class=normal>125</span>
 <span class=normal>126</span>
@@ -1318,11 +1318,11 @@
 <span class=normal>134</span>
 <span class=normal>135</span>
 <span class=normal>136</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>writer</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>io</span><span class=o>.</span><span class=n>TextIOWrapper</span><span class=p>],</span> <span class=n>element</span><span class=p>:</span> <span class=n>Element</span><span class=p>,</span> <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize an write file action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Initialize an write file action."""</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>ActionType</span><span class=o>.</span><span class=n>WRITE</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=n>writer</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=ow>not</span> <span class=nb>issubclass</span><span class=p>(</span><span class=n>io</span><span class=o>.</span><span class=n>TextIOWrapper</span><span class=p>,</span> <span class=n>writer</span><span class=o>.</span><span class=vm>__class__</span><span class=p>):</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Writer must be of io.TextIOWrapper, given f</span><span class=si>{</span><span class=n>writer</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Writer must be of io.TextIOWrapper, given f</span><span class=si>{</span><span class=n>writer</span><span class=o>.</span><span class=vm>__class__</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>io</span><span class=o>.</span><span class=n>TextIOWrapper</span><span class=p>]</span> <span class=o>=</span> <span class=n>writer</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=p>:</span> <span class=n>Element</span> <span class=o>=</span> <span class=n>element</span>
@@ -1333,8 +1333,8 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.WriteAction.__str__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__str__</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.WriteAction.__str__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return string representation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>179</span>
 <span class=normal>180</span>
 <span class=normal>181</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>get_type</span><span class=p>()</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=si>}</span><span class=s1>&#39;</span>
+<span class=w>    </span><span class=sd>"""Return string representation."""</span>
+    <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>get_type</span><span class=p>()</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.WriteAction.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.WriteAction.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>153</span>
 <span class=normal>154</span>
 <span class=normal>155</span>
@@ -1346,12 +1346,12 @@
 <span class=normal>161</span>
 <span class=normal>162</span>
 <span class=normal>163</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Execute the action."""</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_element</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Element is empty and cannot write&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Element is empty and cannot write'</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_is_writer_valid</span><span class=p>():</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Writer is not provided or closed&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Writer is not provided or closed'</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_encode</span><span class=p>())</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span><span class=o>.</span><span class=n>flush</span><span class=p>()</span>
@@ -1369,12 +1369,12 @@
 <span class=normal>175</span>
 <span class=normal>176</span>
 <span class=normal>177</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Rollback the action."""</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_is_writer_valid</span><span class=p>():</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Writer is not provided or closed&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Writer is not provided or closed'</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_lastStreamPos</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Last stream position is not available to rollback to&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Last stream position is not available to rollback to'</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>has_executed</span><span class=p>():</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span><span class=o>.</span><span class=n>seek</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_lastStreamPos</span><span class=p>)</span>
@@ -1453,19 +1453,19 @@
 <span class=normal>228</span>
 <span class=normal>229</span>
 <span class=normal>230</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>WriteFileAction</span><span class=p>(</span><span class=n>WriteAction</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Write the element to a destination file.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Write the element to a destination file."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>file_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>element</span><span class=p>:</span> <span class=n>Element</span><span class=p>,</span> <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize a write file action.</span>
+<span class=w>        </span><span class=sd>"""Initialize a write file action.</span>
 
 <span class=sd>        It opens the file in append mode. Therefore the file needs to exist even if it is a new file.</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>file_path</span><span class=p>,</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>):</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;file_path should be of type pathlib.Path&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'file_path should be of type pathlib.Path'</span><span class=p>)</span>
 
         <span class=n>inferred_content_type</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_content_type</span><span class=p>(</span><span class=n>file_path</span><span class=o>.</span><span class=n>suffix</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>inferred_content_type</span> <span class=o>!=</span> <span class=n>content_type</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Mismatch between stated content type </span><span class=si>{</span><span class=n>content_type</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> and file path </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Mismatch between stated content type </span><span class=si>{</span><span class=n>content_type</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> and file path </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span> <span class=o>=</span> <span class=n>file_path</span>
 
@@ -1474,11 +1474,11 @@
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=kc>None</span><span class=p>,</span> <span class=n>element</span><span class=p>,</span> <span class=n>content_type</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute the action."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;File at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1> does not exist&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'File at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1> does not exist'</span><span class=p>)</span>
 
-        <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=p>,</span> <span class=s1>&#39;a+&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>writer</span><span class=p>:</span>
+        <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=p>,</span> <span class=s1>'a+'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>writer</span><span class=p>:</span>
             <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_lastStreamPos</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_lastStreamPos</span> <span class=o>=</span> <span class=n>writer</span><span class=o>.</span><span class=n>tell</span><span class=p>()</span>
             <span class=k>else</span><span class=p>:</span>
@@ -1488,17 +1488,17 @@
             <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=n>execute</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Execute the rollback action.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Execute the rollback action."""</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;File at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1> does not exist&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'File at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1> does not exist'</span><span class=p>)</span>
 
-        <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=p>,</span> <span class=s1>&#39;a+&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>writer</span><span class=p>:</span>
+        <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=p>,</span> <span class=s1>'a+'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>writer</span><span class=p>:</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span> <span class=o>=</span> <span class=n>writer</span>
             <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=n>rollback</span><span class=p>()</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=si>}</span><span class=s1> to &quot;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1>&quot;&#39;</span>
+<span class=w>        </span><span class=sd>"""Return string representation."""</span>
+        <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=si>}</span><span class=s1> to "</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1>"'</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.models.actions.WriteFileAction-functions>Methods:<a href=#trestle.core.models.actions.WriteFileAction-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.WriteFileAction.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>file_path</span><span class=p>,</span> <span class=n>element</span><span class=p>,</span> <span class=n>content_type</span><span class=p>)</span></code> <a href=#trestle.core.models.actions.WriteFileAction.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize a write file action.</p> <p>It opens the file in append mode. Therefore the file needs to exist even if it is a new file.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>187</span>
 <span class=normal>188</span>
 <span class=normal>189</span>
@@ -1516,16 +1516,16 @@
 <span class=normal>201</span>
 <span class=normal>202</span>
 <span class=normal>203</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>file_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>element</span><span class=p>:</span> <span class=n>Element</span><span class=p>,</span> <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize a write file action.</span>
+<span class=w>    </span><span class=sd>"""Initialize a write file action.</span>
 
 <span class=sd>    It opens the file in append mode. Therefore the file needs to exist even if it is a new file.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>file_path</span><span class=p>,</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>):</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;file_path should be of type pathlib.Path&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'file_path should be of type pathlib.Path'</span><span class=p>)</span>
 
     <span class=n>inferred_content_type</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_content_type</span><span class=p>(</span><span class=n>file_path</span><span class=o>.</span><span class=n>suffix</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>inferred_content_type</span> <span class=o>!=</span> <span class=n>content_type</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Mismatch between stated content type </span><span class=si>{</span><span class=n>content_type</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> and file path </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Mismatch between stated content type </span><span class=si>{</span><span class=n>content_type</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> and file path </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span> <span class=o>=</span> <span class=n>file_path</span>
 
@@ -1535,8 +1535,8 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.WriteFileAction.__str__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__str__</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.WriteFileAction.__str__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return string representation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>228</span>
 <span class=normal>229</span>
 <span class=normal>230</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=si>}</span><span class=s1> to &quot;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1>&quot;&#39;</span>
+<span class=w>    </span><span class=sd>"""Return string representation."""</span>
+    <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_type</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_element</span><span class=si>}</span><span class=s1> to "</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1>"'</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.models.actions.WriteFileAction.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.core.models.actions.WriteFileAction.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Execute the action.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/models/actions.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>205</span>
 <span class=normal>206</span>
 <span class=normal>207</span>
@@ -1550,11 +1550,11 @@
 <span class=normal>215</span>
 <span class=normal>216</span>
 <span class=normal>217</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Execute the action."""</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;File at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1> does not exist&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'File at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1> does not exist'</span><span class=p>)</span>
 
-    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=p>,</span> <span class=s1>&#39;a+&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>writer</span><span class=p>:</span>
+    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=p>,</span> <span class=s1>'a+'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>writer</span><span class=p>:</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_lastStreamPos</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_lastStreamPos</span> <span class=o>=</span> <span class=n>writer</span><span class=o>.</span><span class=n>tell</span><span class=p>()</span>
         <span class=k>else</span><span class=p>:</span>
@@ -1570,11 +1570,11 @@
 <span class=normal>224</span>
 <span class=normal>225</span>
 <span class=normal>226</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>rollback</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Execute the rollback action.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Execute the rollback action."""</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;File at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1> does not exist&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'File at </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=si>}</span><span class=s1> does not exist'</span><span class=p>)</span>
 
-    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=p>,</span> <span class=s1>&#39;a+&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>writer</span><span class=p>:</span>
+    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_file_path</span><span class=p>,</span> <span class=s1>'a+'</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>writer</span><span class=p>:</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_writer</span> <span class=o>=</span> <span class=n>writer</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=n>rollback</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

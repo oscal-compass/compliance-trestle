@@ -44,7 +44,7 @@
 <span class=normal>190</span>
 <span class=normal>191</span>
 <span class=normal>192</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_inner_type</span><span class=p>(</span><span class=n>collection_field_type</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>Type</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>Any</span><span class=p>]],</span> <span class=n>Type</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]])</span> <span class=o>-&gt;</span> <span class=n>Type</span><span class=p>[</span><span class=n>Any</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the inner model in a generic collection model such as a List or a Dict.</span>
+<span class=w>    </span><span class=sd>"""Get the inner model in a generic collection model such as a List or a Dict.</span>
 
 <span class=sd>    For a dict the return type is of the value and not the key.</span>
 
@@ -53,7 +53,7 @@
 
 <span class=sd>    Returns:</span>
 <span class=sd>        The desired type.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>try</span><span class=p>:</span>
         <span class=n>origin_type</span> <span class=o>=</span> <span class=n>get_origin</span><span class=p>(</span><span class=n>collection_field_type</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>is_union_type</span><span class=p>(</span><span class=n>origin_type</span><span class=p>):</span>
@@ -63,7 +63,7 @@
 
         <span class=c1># Pydantic RootModel special cases must only unwrap collection roots.</span>
         <span class=n>_</span><span class=p>,</span> <span class=n>root_type</span><span class=p>,</span> <span class=n>singular_type</span> <span class=o>=</span> <span class=n>_get_model_field_info</span><span class=p>(</span><span class=n>collection_field_type</span><span class=p>)</span>
-        <span class=k>if</span> <span class=n>root_type</span> <span class=ow>in</span> <span class=p>(</span><span class=s1>&#39;List&#39;</span><span class=p>,</span> <span class=s1>&#39;Dict&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>singular_type</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+        <span class=k>if</span> <span class=n>root_type</span> <span class=ow>in</span> <span class=p>(</span><span class=s1>'List'</span><span class=p>,</span> <span class=s1>'Dict'</span><span class=p>)</span> <span class=ow>and</span> <span class=n>singular_type</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=k>return</span> <span class=n>get_inner_type</span><span class=p>(</span><span class=n>singular_type</span><span class=p>)</span>
 
         <span class=c1># Get type arguments - try both typing_extensions and typing.get_args</span>
@@ -77,18 +77,18 @@
         <span class=c1># But only if they come from type annotations, not runtime instances</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>args</span><span class=p>:</span>
             <span class=c1># Check if this is actually a type annotation (has __origin__ or is a typing construct)</span>
-            <span class=c1># vs a runtime instance type (which would just be &#39;list&#39; or &#39;dict&#39;)</span>
+            <span class=c1># vs a runtime instance type (which would just be 'list' or 'dict')</span>
             <span class=k>if</span> <span class=n>origin_type</span> <span class=ow>is</span> <span class=nb>list</span><span class=p>:</span>
                 <span class=k>return</span> <span class=n>Any</span>
             <span class=k>if</span> <span class=n>origin_type</span> <span class=ow>is</span> <span class=nb>dict</span><span class=p>:</span>
                 <span class=k>return</span> <span class=n>Any</span>
             <span class=c1># If no origin_type and no args, this is likely a runtime instance type, not a type annotation</span>
-            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Model type is not a Dict or List type annotation&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Model type is not a Dict or List type annotation'</span><span class=p>)</span>
 
         <span class=k>return</span> <span class=n>args</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
     <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=n>e</span><span class=p>)</span>
-        <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Model type is not a Dict or List&#39;</span><span class=p>)</span> <span class=kn>from</span><span class=w> </span><span class=nn>e</span>
+        <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Model type is not a Dict or List'</span><span class=p>)</span> <span class=kn>from</span><span class=w> </span><span class=nn>e</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.type_utils.get_origin class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_origin</span><span class=p>(</span><span class=n>field_type</span><span class=p>)</span></code> <a href=#trestle.common.type_utils.get_origin class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Generalized and robust get_origin function.</p> <p>This function is derived from work by pydantic, however, avoids complications from various python versions.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/type_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>46</span>
 <span class=normal>47</span>
 <span class=normal>48</span>
@@ -97,13 +97,13 @@
 <span class=normal>51</span>
 <span class=normal>52</span>
 <span class=normal>53</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_origin</span><span class=p>(</span><span class=n>field_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>Any</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Type</span><span class=p>[</span><span class=n>Any</span><span class=p>]]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Generalized and robust get_origin function.</span>
+<span class=w>    </span><span class=sd>"""Generalized and robust get_origin function.</span>
 
 <span class=sd>    This function is derived from work by pydantic, however, avoids complications</span>
 <span class=sd>    from various python versions.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=c1># This executes a fallback that allows a list to be generated from a constrained list.</span>
-    <span class=k>return</span> <span class=n>typing_extensions</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>field_type</span><span class=p>)</span> <span class=ow>or</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>field_type</span><span class=p>,</span> <span class=s1>&#39;__origin__&#39;</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
+    <span class=k>return</span> <span class=n>typing_extensions</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>field_type</span><span class=p>)</span> <span class=ow>or</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>field_type</span><span class=p>,</span> <span class=s1>'__origin__'</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.type_utils.is_collection_field_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_collection_field_type</span><span class=p>(</span><span class=n>field_type</span><span class=p>)</span></code> <a href=#trestle.common.type_utils.is_collection_field_type class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Check whether a type hint is a collection type as used by OSCAL.</p> <p>Specifically this is whether the type is a list or not.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>field_type</code> </td> <td> <code><span title=typing.Type>Type</span>[<span title=typing.Any>Any</span>]</code> </td> <td> <div class=doc-md-description> <p>A type or a type alias of a field typically as served via pydantic introspection</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>True if it is a collection type list.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/type_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>119</span>
 <span class=normal>120</span>
 <span class=normal>121</span>
@@ -130,7 +130,7 @@
 <span class=normal>142</span>
 <span class=normal>143</span>
 <span class=normal>144</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_collection_field_type</span><span class=p>(</span><span class=n>field_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>Any</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Check whether a type hint is a collection type as used by OSCAL.</span>
+<span class=w>    </span><span class=sd>"""Check whether a type hint is a collection type as used by OSCAL.</span>
 
 <span class=sd>    Specifically this is whether the type is a list or not.</span>
 
@@ -139,10 +139,10 @@
 
 <span class=sd>    Returns:</span>
 <span class=sd>        True if it is a collection type list.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=c1># first check if it is a pydantic root object (RootModel in v2)</span>
     <span class=n>_</span><span class=p>,</span> <span class=n>root_type</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>_get_model_field_info</span><span class=p>(</span><span class=n>field_type</span><span class=p>)</span>
-    <span class=k>if</span> <span class=n>root_type</span> <span class=o>==</span> <span class=s1>&#39;List&#39;</span><span class=p>:</span>
+    <span class=k>if</span> <span class=n>root_type</span> <span class=o>==</span> <span class=s1>'List'</span><span class=p>:</span>
         <span class=k>return</span> <span class=kc>True</span>
 
     <span class=n>origin_type</span> <span class=o>=</span> <span class=n>get_origin</span><span class=p>(</span><span class=n>field_type</span><span class=p>)</span>
@@ -169,17 +169,17 @@
 <span class=normal>41</span>
 <span class=normal>42</span>
 <span class=normal>43</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_union_type</span><span class=p>(</span><span class=n>origin</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return True if *origin* is any form of Union (typing.Union or Python 3.10+ X | Y).</span>
+<span class=w>    </span><span class=sd>"""Return True if *origin* is any form of Union (typing.Union or Python 3.10+ X | Y).</span>
 
-<span class=sd>    Replaces the fragile string comparison ``str(origin) == &quot;&lt;class &#39;types.UnionType&#39;&gt;&quot;``</span>
+<span class=sd>    Replaces the fragile string comparison ``str(origin) == "&lt;class 'types.UnionType'&gt;"``</span>
 <span class=sd>    with identity checks that are not tied to CPython string internals.</span>
 
 <span class=sd>    Background:</span>
 <span class=sd>        - ``get_origin(Union[A, B])``  → ``typing.Union``  (the special form)</span>
 <span class=sd>        - ``get_origin(A | B)``        → ``types.UnionType`` (the class, Python 3.10+)</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=n>origin</span> <span class=ow>is</span> <span class=n>Union</span><span class=p>:</span>
         <span class=k>return</span> <span class=kc>True</span>
     <span class=c1># types.UnionType is available on Python 3.10+; guard with hasattr for 3.9 compatibility.</span>
-    <span class=k>return</span> <span class=n>origin</span> <span class=ow>is</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>types</span><span class=p>,</span> <span class=s1>&#39;UnionType&#39;</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
+    <span class=k>return</span> <span class=n>origin</span> <span class=ow>is</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>types</span><span class=p>,</span> <span class=s1>'UnionType'</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

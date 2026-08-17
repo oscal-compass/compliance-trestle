@@ -24,11 +24,11 @@
 <span class=normal>30</span>
 <span class=normal>31</span>
 <span class=normal>32</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>AliasMode</span><span class=p>(</span><span class=n>enum</span><span class=o>.</span><span class=n>Enum</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Allowed formats for classname alias.</span>
 
 <span class=sd>    Currently there are only two.  If others are added, check they get handled properly in the code.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
 
     <span class=n>JSON</span> <span class=o>=</span> <span class=mi>1</span>
     <span class=n>FIELD</span> <span class=o>=</span> <span class=mi>2</span>
@@ -41,13 +41,13 @@
 <span class=normal>119</span>
 <span class=normal>120</span>
 <span class=normal>121</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>alias_to_classname</span><span class=p>(</span><span class=n>alias</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>mode</span><span class=p>:</span> <span class=n>AliasMode</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Return class name based dashed or snake alias.</span>
 
 <span class=sd>    This is applicable creating dynamic wrapper model for a list or dict field.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=n>mode</span> <span class=o>==</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>:</span>
-        <span class=k>return</span> <span class=n>_snake_to_upper_camel</span><span class=p>(</span><span class=n>alias</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>&#39;-&#39;</span><span class=p>,</span> <span class=s1>&#39;_&#39;</span><span class=p>))</span>
+        <span class=k>return</span> <span class=n>_snake_to_upper_camel</span><span class=p>(</span><span class=n>alias</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>'-'</span><span class=p>,</span> <span class=s1>'_'</span><span class=p>))</span>
     <span class=k>return</span> <span class=n>_snake_to_upper_camel</span><span class=p>(</span><span class=n>alias</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.as_bool class="doc doc-heading"> <code class="highlight language-python"><span class=n>as_bool</span><span class=p>(</span><span class=n>string_or_none</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.as_bool class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Convert string to boolean.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>145</span>
 <span class=normal>146</span>
@@ -59,9 +59,9 @@
 <span class=normal>152</span>
 <span class=normal>153</span>
 <span class=normal>154</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>as_bool</span><span class=p>(</span><span class=n>string_or_none</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convert string to boolean.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Convert string to boolean."""</span>
     <span class=k>if</span> <span class=n>string_or_none</span><span class=p>:</span>
-        <span class=k>if</span> <span class=n>string_or_none</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=ow>in</span> <span class=p>[</span><span class=s1>&#39;false&#39;</span><span class=p>]:</span>
+        <span class=k>if</span> <span class=n>string_or_none</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=ow>in</span> <span class=p>[</span><span class=s1>'false'</span><span class=p>]:</span>
             <span class=n>rval</span> <span class=o>=</span> <span class=kc>False</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>rval</span> <span class=o>=</span> <span class=kc>True</span>
@@ -71,8 +71,8 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.as_string class="doc doc-heading"> <code class="highlight language-python"><span class=n>as_string</span><span class=p>(</span><span class=n>string_or_none</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.as_string class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Convert string or None to itself or empty string.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>140</span>
 <span class=normal>141</span>
 <span class=normal>142</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>as_string</span><span class=p>(</span><span class=n>string_or_none</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convert string or None to itself or empty string.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=n>string_or_none</span> <span class=k>if</span> <span class=n>string_or_none</span> <span class=k>else</span> <span class=s1>&#39;&#39;</span>
+<span class=w>    </span><span class=sd>"""Convert string or None to itself or empty string."""</span>
+    <span class=k>return</span> <span class=n>string_or_none</span> <span class=k>if</span> <span class=n>string_or_none</span> <span class=k>else</span> <span class=s1>''</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.classname_to_alias class="doc doc-heading"> <code class="highlight language-python"><span class=n>classname_to_alias</span><span class=p>(</span><span class=n>classname</span><span class=p>,</span> <span class=n>mode</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.classname_to_alias class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Return oscal key name or field element name based on class name.</p> <p>This is applicable when asking for a singular element.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 78</span>
 <span class=normal> 79</span>
 <span class=normal> 80</span>
@@ -106,62 +106,62 @@
 <span class=normal>108</span>
 <span class=normal>109</span>
 <span class=normal>110</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>classname_to_alias</span><span class=p>(</span><span class=n>classname</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>mode</span><span class=p>:</span> <span class=n>AliasMode</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Return oscal key name or field element name based on class name.</span>
 
 <span class=sd>    This is applicable when asking for a singular element.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
-    <span class=n>suffix</span> <span class=o>=</span> <span class=n>classname</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+<span class=sd>    """</span>
+    <span class=n>suffix</span> <span class=o>=</span> <span class=n>classname</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
 
     <span class=c1># Root/datatype wrapper names should resolve to the underlying semantic alias.</span>
     <span class=n>root_suffix_aliases</span> <span class=o>=</span> <span class=p>{</span>
-        <span class=s1>&#39;StringDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;string&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;IntegerDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;integer&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;PositiveIntegerDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;positive-integer&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;NonNegativeIntegerDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;non-negative-integer&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;Base64Datatype&#39;</span><span class=p>:</span> <span class=s1>&#39;base64&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;DateTimeWithTimezoneDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;date-time-with-timezone&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;EmailAddressDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;email-address&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;MarkupLineDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;markup-line&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;MarkupMultilineDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;markup-multiline&#39;</span><span class=p>,</span>
-        <span class=s1>&#39;URIReferenceDatatype&#39;</span><span class=p>:</span> <span class=s1>&#39;uri-reference&#39;</span><span class=p>,</span>
+        <span class=s1>'StringDatatype'</span><span class=p>:</span> <span class=s1>'string'</span><span class=p>,</span>
+        <span class=s1>'IntegerDatatype'</span><span class=p>:</span> <span class=s1>'integer'</span><span class=p>,</span>
+        <span class=s1>'PositiveIntegerDatatype'</span><span class=p>:</span> <span class=s1>'positive-integer'</span><span class=p>,</span>
+        <span class=s1>'NonNegativeIntegerDatatype'</span><span class=p>:</span> <span class=s1>'non-negative-integer'</span><span class=p>,</span>
+        <span class=s1>'Base64Datatype'</span><span class=p>:</span> <span class=s1>'base64'</span><span class=p>,</span>
+        <span class=s1>'DateTimeWithTimezoneDatatype'</span><span class=p>:</span> <span class=s1>'date-time-with-timezone'</span><span class=p>,</span>
+        <span class=s1>'EmailAddressDatatype'</span><span class=p>:</span> <span class=s1>'email-address'</span><span class=p>,</span>
+        <span class=s1>'MarkupLineDatatype'</span><span class=p>:</span> <span class=s1>'markup-line'</span><span class=p>,</span>
+        <span class=s1>'MarkupMultilineDatatype'</span><span class=p>:</span> <span class=s1>'markup-multiline'</span><span class=p>,</span>
+        <span class=s1>'URIReferenceDatatype'</span><span class=p>:</span> <span class=s1>'uri-reference'</span><span class=p>,</span>
     <span class=p>}</span>
     <span class=k>if</span> <span class=n>mode</span> <span class=o>==</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>:</span>
-        <span class=k>if</span> <span class=n>suffix</span><span class=o>.</span><span class=n>endswith</span><span class=p>(</span><span class=s1>&#39;_&#39;</span><span class=p>):</span>
+        <span class=k>if</span> <span class=n>suffix</span><span class=o>.</span><span class=n>endswith</span><span class=p>(</span><span class=s1>'_'</span><span class=p>):</span>
             <span class=n>suffix</span> <span class=o>=</span> <span class=n>suffix</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
         <span class=k>if</span> <span class=n>suffix</span> <span class=ow>in</span> <span class=n>root_suffix_aliases</span><span class=p>:</span>
             <span class=k>return</span> <span class=n>root_suffix_aliases</span><span class=p>[</span><span class=n>suffix</span><span class=p>]</span>
         <span class=k>return</span> <span class=n>_camel_to_dash</span><span class=p>(</span><span class=n>suffix</span><span class=o>.</span><span class=n>rstrip</span><span class=p>(</span><span class=n>string</span><span class=o>.</span><span class=n>digits</span><span class=p>))</span>
     <span class=c1># else alias mode is field</span>
-    <span class=k>if</span> <span class=n>suffix</span><span class=o>.</span><span class=n>endswith</span><span class=p>(</span><span class=s1>&#39;_&#39;</span><span class=p>):</span>
+    <span class=k>if</span> <span class=n>suffix</span><span class=o>.</span><span class=n>endswith</span><span class=p>(</span><span class=s1>'_'</span><span class=p>):</span>
         <span class=n>suffix</span> <span class=o>=</span> <span class=n>suffix</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
     <span class=k>if</span> <span class=n>suffix</span> <span class=ow>in</span> <span class=n>root_suffix_aliases</span><span class=p>:</span>
-        <span class=k>return</span> <span class=n>root_suffix_aliases</span><span class=p>[</span><span class=n>suffix</span><span class=p>]</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>&#39;-&#39;</span><span class=p>,</span> <span class=s1>&#39;_&#39;</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>root_suffix_aliases</span><span class=p>[</span><span class=n>suffix</span><span class=p>]</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>'-'</span><span class=p>,</span> <span class=s1>'_'</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>_camel_to_snake</span><span class=p>(</span><span class=n>suffix</span><span class=o>.</span><span class=n>rstrip</span><span class=p>(</span><span class=n>string</span><span class=o>.</span><span class=n>digits</span><span class=p>))</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.dash_to_underscore class="doc doc-heading"> <code class="highlight language-python"><span class=n>dash_to_underscore</span><span class=p>(</span><span class=n>name</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.dash_to_underscore class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Convert dash to underscore.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>129</span>
 <span class=normal>130</span>
 <span class=normal>131</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>dash_to_underscore</span><span class=p>(</span><span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convert dash to underscore.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=n>name</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>&#39;-&#39;</span><span class=p>,</span> <span class=s1>&#39;_&#39;</span><span class=p>)</span>
+<span class=w>    </span><span class=sd>"""Convert dash to underscore."""</span>
+    <span class=k>return</span> <span class=n>name</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>'-'</span><span class=p>,</span> <span class=s1>'_'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.spaces_and_caps_to_lower_single_spaces class="doc doc-heading"> <code class="highlight language-python"><span class=n>spaces_and_caps_to_lower_single_spaces</span><span class=p>(</span><span class=n>spaced_str</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.spaces_and_caps_to_lower_single_spaces class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Convert caps and duplicate spaces to lower with single spaces.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>72</span>
 <span class=normal>73</span>
 <span class=normal>74</span>
 <span class=normal>75</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>spaces_and_caps_to_lower_single_spaces</span><span class=p>(</span><span class=n>spaced_str</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convert caps and duplicate spaces to lower with single spaces.&quot;&quot;&quot;</span>
-    <span class=n>single_space</span> <span class=o>=</span> <span class=s1>&#39; &#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>spaced_str</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>())</span>
+<span class=w>    </span><span class=sd>"""Convert caps and duplicate spaces to lower with single spaces."""</span>
+    <span class=n>single_space</span> <span class=o>=</span> <span class=s1>' '</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>spaced_str</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>())</span>
     <span class=k>return</span> <span class=n>single_space</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.spaces_and_caps_to_snake class="doc doc-heading"> <code class="highlight language-python"><span class=n>spaces_and_caps_to_snake</span><span class=p>(</span><span class=n>spaced_str</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.spaces_and_caps_to_snake class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Convert caps and spaces to snake.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>66</span>
 <span class=normal>67</span>
 <span class=normal>68</span>
 <span class=normal>69</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>spaces_and_caps_to_snake</span><span class=p>(</span><span class=n>spaced_str</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convert caps and spaces to snake.&quot;&quot;&quot;</span>
-    <span class=n>underscored</span> <span class=o>=</span> <span class=s1>&#39;_&#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>spaced_str</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>())</span>
+<span class=w>    </span><span class=sd>"""Convert caps and spaces to snake."""</span>
+    <span class=n>underscored</span> <span class=o>=</span> <span class=s1>'_'</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>spaced_str</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>split</span><span class=p>())</span>
     <span class=k>return</span> <span class=n>underscored</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.string_from_root class="doc doc-heading"> <code class="highlight language-python"><span class=n>string_from_root</span><span class=p>(</span><span class=n>item_with_root</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.string_from_root class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Convert root to string if present (Pydantic v2 RootModel).</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>157</span>
 <span class=normal>158</span>
 <span class=normal>159</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>string_from_root</span><span class=p>(</span><span class=n>item_with_root</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Any</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convert root to string if present (Pydantic v2 RootModel).&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=n>as_string</span><span class=p>(</span><span class=n>item_with_root</span><span class=o>.</span><span class=n>root</span><span class=p>)</span> <span class=k>if</span> <span class=n>item_with_root</span> <span class=k>else</span> <span class=s1>&#39;&#39;</span>
+<span class=w>    </span><span class=sd>"""Convert root to string if present (Pydantic v2 RootModel)."""</span>
+    <span class=k>return</span> <span class=n>as_string</span><span class=p>(</span><span class=n>item_with_root</span><span class=o>.</span><span class=n>root</span><span class=p>)</span> <span class=k>if</span> <span class=n>item_with_root</span> <span class=k>else</span> <span class=s1>''</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.strip_lower_equals class="doc doc-heading"> <code class="highlight language-python"><span class=n>strip_lower_equals</span><span class=p>(</span><span class=n>str_a</span><span class=p>,</span> <span class=n>str_b</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.strip_lower_equals class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Safe test of lower string equality allowing Nones.</p> <p>If either argument is None the result is False because the intent is to report if they are equal as actual strings.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>162</span>
 <span class=normal>163</span>
 <span class=normal>164</span>
@@ -171,11 +171,11 @@
 <span class=normal>168</span>
 <span class=normal>169</span>
 <span class=normal>170</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>strip_lower_equals</span><span class=p>(</span><span class=n>str_a</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>str_b</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Safe test of lower string equality allowing Nones.</span>
 
 <span class=sd>    If either argument is None the result is False because the intent is to report if they are equal as actual strings.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=n>str_a</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>or</span> <span class=n>str_b</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
         <span class=k>return</span> <span class=kc>False</span>
     <span class=k>return</span> <span class=n>str_a</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=o>==</span> <span class=n>str_b</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span>
@@ -185,16 +185,16 @@
 <span class=normal>176</span>
 <span class=normal>177</span>
 <span class=normal>178</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>to_ncname</span><span class=p>(</span><span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convert to NCName.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Convert to NCName."""</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=n>name</span>
     <span class=k>if</span> <span class=n>name</span><span class=p>:</span>
-        <span class=n>rval</span> <span class=o>=</span> <span class=n>re</span><span class=o>.</span><span class=n>sub</span><span class=p>(</span><span class=sa>r</span><span class=s1>&#39;[^A-Za-z0-9_.-]&#39;</span><span class=p>,</span> <span class=s1>&#39;_&#39;</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
+        <span class=n>rval</span> <span class=o>=</span> <span class=n>re</span><span class=o>.</span><span class=n>sub</span><span class=p>(</span><span class=sa>r</span><span class=s1>'[^A-Za-z0-9_.-]'</span><span class=p>,</span> <span class=s1>'_'</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>rval</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.common.str_utils.underscore_to_dash class="doc doc-heading"> <code class="highlight language-python"><span class=n>underscore_to_dash</span><span class=p>(</span><span class=n>name</span><span class=p>)</span></code> <a href=#trestle.common.str_utils.underscore_to_dash class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Convert underscore to dash and drop final dash if present.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/str_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>134</span>
 <span class=normal>135</span>
 <span class=normal>136</span>
 <span class=normal>137</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>underscore_to_dash</span><span class=p>(</span><span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convert underscore to dash and drop final dash if present.&quot;&quot;&quot;</span>
-    <span class=n>converted</span> <span class=o>=</span> <span class=n>name</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>&#39;_&#39;</span><span class=p>,</span> <span class=s1>&#39;-&#39;</span><span class=p>)</span>
-    <span class=k>return</span> <span class=n>converted</span> <span class=k>if</span> <span class=n>converted</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>!=</span> <span class=s1>&#39;-&#39;</span> <span class=k>else</span> <span class=n>converted</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+<span class=w>    </span><span class=sd>"""Convert underscore to dash and drop final dash if present."""</span>
+    <span class=n>converted</span> <span class=o>=</span> <span class=n>name</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>'_'</span><span class=p>,</span> <span class=s1>'-'</span><span class=p>)</span>
+    <span class=k>return</span> <span class=n>converted</span> <span class=k>if</span> <span class=n>converted</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>!=</span> <span class=s1>'-'</span> <span class=k>else</span> <span class=n>converted</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

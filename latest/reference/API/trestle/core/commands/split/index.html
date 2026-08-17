@@ -44,7 +44,7 @@
 <span class=normal>64</span>
 <span class=normal>65</span>
 <span class=normal>66</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>AliasTracker</span><span class=p>(</span><span class=n>TrestleBaseModel</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Convenience class to track writing out of models.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Convenience class to track writing out of models."""</span>
 
     <span class=c1># This tracks the parts that need to be split from each element</span>
     <span class=c1># and makes sure it is written out once</span>
@@ -53,42 +53,42 @@
     <span class=n>written</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>add_alias</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>alias</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Add alias.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Add alias."""</span>
         <span class=k>if</span> <span class=n>alias</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>aliases</span><span class=p>:</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>aliases</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>alias</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_aliases</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Get the list of aliases.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Get the list of aliases."""</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>aliases</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>needs_writing</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Need to write the model.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Need to write the model."""</span>
         <span class=k>return</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>written</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>mark_written</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Mark this model as written.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Mark this model as written."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>written</span> <span class=o>=</span> <span class=kc>True</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.split.AliasTracker-attributes>Attributes<a href=#trestle.core.commands.split.AliasTracker-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.split.AliasTracker.aliases class="doc doc-heading"> <code class="highlight language-python"><span class=n>aliases</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.split.AliasTracker.aliases class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.split.AliasTracker.written class="doc doc-heading"> <code class="highlight language-python"><span class=n>written</span> <span class=o>=</span> <span class=kc>False</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.split.AliasTracker.written class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.split.AliasTracker-functions>Methods:<a href=#trestle.core.commands.split.AliasTracker-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.AliasTracker.add_alias class="doc doc-heading"> <code class="highlight language-python"><span class=n>add_alias</span><span class=p>(</span><span class=n>alias</span><span class=p>)</span></code> <a href=#trestle.core.commands.split.AliasTracker.add_alias class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Add alias.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>51</span>
 <span class=normal>52</span>
 <span class=normal>53</span>
 <span class=normal>54</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>add_alias</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>alias</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Add alias.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Add alias."""</span>
     <span class=k>if</span> <span class=n>alias</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>aliases</span><span class=p>:</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>aliases</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>alias</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.AliasTracker.get_aliases class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_aliases</span><span class=p>()</span></code> <a href=#trestle.core.commands.split.AliasTracker.get_aliases class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the list of aliases.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>56</span>
 <span class=normal>57</span>
 <span class=normal>58</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_aliases</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the list of aliases.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Get the list of aliases."""</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>aliases</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.AliasTracker.mark_written class="doc doc-heading"> <code class="highlight language-python"><span class=n>mark_written</span><span class=p>()</span></code> <a href=#trestle.core.commands.split.AliasTracker.mark_written class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Mark this model as written.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>64</span>
 <span class=normal>65</span>
 <span class=normal>66</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>mark_written</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Mark this model as written.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Mark this model as written."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>written</span> <span class=o>=</span> <span class=kc>True</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.AliasTracker.needs_writing class="doc doc-heading"> <code class="highlight language-python"><span class=n>needs_writing</span><span class=p>()</span></code> <a href=#trestle.core.commands.split.AliasTracker.needs_writing class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Need to write the model.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>60</span>
 <span class=normal>61</span>
 <span class=normal>62</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>needs_writing</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Need to write the model.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Need to write the model."""</span>
     <span class=k>return</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>written</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.core.commands.split.SplitCmd class="doc doc-heading"> <code>SplitCmd</code> <a href=#trestle.core.commands.split.SplitCmd class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><a class="autorefs autorefs-internal" title="CommandPlusDocs (trestle.core.commands.command_docs.CommandPlusDocs)" href=../command_docs/#trestle.core.commands.command_docs.CommandPlusDocs>CommandPlusDocs</a></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="SplitCmd (trestle.core.commands.split.SplitCmd)" href=#trestle.core.commands.split.SplitCmd id=mermaid-link-trestle.core.commands.split.SplitCmd></a> <a class="autorefs autorefs-internal" title="CommandPlusDocs (trestle.core.commands.command_docs.CommandPlusDocs)" href=../command_docs/#trestle.core.commands.command_docs.CommandPlusDocs id=mermaid-link-trestle.core.commands.command_docs.CommandPlusDocs></a> <a class="autorefs autorefs-internal" title="CommandBase (trestle.core.commands.command_docs.CommandBase)" href=../command_docs/#trestle.core.commands.command_docs.CommandBase id=mermaid-link-trestle.core.commands.command_docs.CommandBase></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.core.commands.split.SplitCmd>
               flowchart TD
@@ -551,55 +551,55 @@
 <span class=normal>502</span>
 <span class=normal>503</span>
 <span class=normal>504</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SplitCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Split subcomponents on a trestle model.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Split subcomponents on a trestle model."""</span>
 
-    <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;split&#39;</span>
+    <span class=n>name</span> <span class=o>=</span> <span class=s1>'split'</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_init_arguments</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
-            <span class=sa>f</span><span class=s1>&#39;-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE_SHORT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span> <span class=sa>f</span><span class=s1>&#39;--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span> <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_FILE</span> <span class=o>+</span> <span class=s1>&#39; to split.&#39;</span><span class=p>,</span> <span class=n>required</span><span class=o>=</span><span class=kc>False</span>
+            <span class=sa>f</span><span class=s1>'-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE_SHORT</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span> <span class=sa>f</span><span class=s1>'--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span> <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_FILE</span> <span class=o>+</span> <span class=s1>' to split.'</span><span class=p>,</span> <span class=n>required</span><span class=o>=</span><span class=kc>False</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
-            <span class=sa>f</span><span class=s1>&#39;-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT_SHORT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-            <span class=sa>f</span><span class=s1>&#39;--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
-            <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_ELEMENT</span> <span class=o>+</span> <span class=s1>&#39; to split.&#39;</span><span class=p>,</span>
+            <span class=sa>f</span><span class=s1>'-</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT_SHORT</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+            <span class=sa>f</span><span class=s1>'--</span><span class=si>{</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=si>}</span><span class=s1>'</span><span class=p>,</span>
+            <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_DESC_ELEMENT</span> <span class=o>+</span> <span class=s1>' to split.'</span><span class=p>,</span>
             <span class=n>required</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span>
         <span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_run</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Split an OSCAL file into elements.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Split an OSCAL file into elements."""</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>log</span><span class=o>.</span><span class=n>set_log_level_from_args</span><span class=p>(</span><span class=n>args</span><span class=p>)</span>
-            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>&#39;Entering trestle split.&#39;</span><span class=p>)</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=s1>'Entering trestle split.'</span><span class=p>)</span>
             <span class=c1># get the Model</span>
             <span class=n>args_raw</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=n>args</span><span class=o>.</span><span class=vm>__dict__</span>
 
             <span class=c1># remove any quotes passed in as on windows platforms</span>
-            <span class=n>elements_clean</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=n>args_raw</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=p>]</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s2>&quot;&#39;&quot;</span><span class=p>)</span>
+            <span class=n>elements_clean</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=n>args_raw</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_ELEMENT</span><span class=p>]</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=s2>"'"</span><span class=p>)</span>
 
-            <span class=n>file_name</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
-            <span class=n>file_name</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span> <span class=k>if</span> <span class=ow>not</span> <span class=n>args_raw</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE</span><span class=p>]</span> <span class=k>else</span> <span class=n>args_raw</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE</span><span class=p>]</span>
+            <span class=n>file_name</span> <span class=o>=</span> <span class=s1>''</span>
+            <span class=n>file_name</span> <span class=o>=</span> <span class=s1>''</span> <span class=k>if</span> <span class=ow>not</span> <span class=n>args_raw</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE</span><span class=p>]</span> <span class=k>else</span> <span class=n>args_raw</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>ARG_FILE</span><span class=p>]</span>
             <span class=c1># cwd must be in the model directory if file to split is not specified</span>
             <span class=n>effective_cwd</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=o>.</span><span class=n>cwd</span><span class=p>()</span>
 
             <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>perform_split</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>,</span> <span class=n>file_name</span><span class=p>,</span> <span class=n>elements_clean</span><span class=p>,</span> <span class=n>args</span><span class=o>.</span><span class=n>trestle_root</span><span class=p>)</span>
         <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>  <span class=c1># pragma: no cover</span>
-            <span class=k>return</span> <span class=n>handle_generic_command_exception</span><span class=p>(</span><span class=n>e</span><span class=p>,</span> <span class=n>logger</span><span class=p>,</span> <span class=s1>&#39;Error while performing a split operation&#39;</span><span class=p>)</span>
+            <span class=k>return</span> <span class=n>handle_generic_command_exception</span><span class=p>(</span><span class=n>e</span><span class=p>,</span> <span class=n>logger</span><span class=p>,</span> <span class=s1>'Error while performing a split operation'</span><span class=p>)</span>
 
     <span class=nd>@classmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>perform_split</span><span class=p>(</span>
         <span class=bp>cls</span><span class=p>,</span> <span class=n>effective_cwd</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>file_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>elements</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Perform the split operation.</span>
+<span class=w>        </span><span class=sd>"""Perform the split operation.</span>
 
 <span class=sd>        Args:</span>
 <span class=sd>            effective_cwd: effective directory in which the the split operation is performed</span>
-<span class=sd>            file_name: file name of model to split, or &#39;&#39; if deduced from elements and cwd</span>
+<span class=sd>            file_name: file name of model to split, or '' if deduced from elements and cwd</span>
 <span class=sd>            elements: comma separated list of paths to strip from the file, with quotes removed</span>
 
 <span class=sd>        Returns:</span>
 <span class=sd>            0 on success and 1 on failure</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=n>file_path_list</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Tuple</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]</span> <span class=o>=</span> <span class=p>[]</span>
 
         <span class=k>if</span> <span class=n>file_name</span><span class=p>:</span>
@@ -609,12 +609,12 @@
             <span class=c1># find top directory for this model based on trestle root and cwd</span>
             <span class=n>model_dir</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>extract_project_model_path</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>model_dir</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Current directory must be within a model directory if file is not specified&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Current directory must be within a model directory if file is not specified'</span><span class=p>)</span>
 
             <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>dir_to_content_type</span><span class=p>(</span><span class=n>model_dir</span><span class=p>)</span>
 
             <span class=c1># determine the file needed for each split path</span>
-            <span class=n>element_paths</span> <span class=o>=</span> <span class=n>elements</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>)</span>
+            <span class=n>element_paths</span> <span class=o>=</span> <span class=n>elements</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>','</span><span class=p>)</span>
             <span class=k>for</span> <span class=n>path</span> <span class=ow>in</span> <span class=n>element_paths</span><span class=p>:</span>
                 <span class=n>element_path</span> <span class=o>=</span> <span class=n>ElementPath</span><span class=p>(</span><span class=n>path</span><span class=p>)</span>
                 <span class=c1># if element path is relative use directory context to determine absolute path</span>
@@ -622,7 +622,7 @@
                 <span class=n>file_path</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>find_last_file_in_path</span><span class=p>(</span><span class=n>content_type</span><span class=p>,</span> <span class=n>model_dir</span><span class=p>)</span>
                 <span class=c1># now make the element path relative to the model file to be loaded</span>
                 <span class=k>if</span> <span class=n>file_path</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>or</span> <span class=n>element_path</span><span class=o>.</span><span class=n>make_relative</span><span class=p>(</span><span class=n>file_path</span><span class=o>.</span><span class=n>relative_to</span><span class=p>(</span><span class=n>model_dir</span><span class=p>))</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>:</span>
-                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Unable to match element path with files in model directory </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Unable to match element path with files in model directory </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
                 <span class=n>file_path_list</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=n>file_path</span><span class=p>,</span> <span class=n>element_path</span><span class=o>.</span><span class=n>to_string</span><span class=p>()))</span>
 
@@ -635,13 +635,13 @@
                 <span class=n>file_path_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=n>path</span>
             <span class=k>else</span><span class=p>:</span>
                 <span class=n>current_path</span> <span class=o>=</span> <span class=n>file_path_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span>
-                <span class=n>file_path_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>current_path</span><span class=si>}</span><span class=s1>,</span><span class=si>{</span><span class=n>path</span><span class=si>}</span><span class=s1>&#39;</span>
+                <span class=n>file_path_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>current_path</span><span class=si>}</span><span class=s1>,</span><span class=si>{</span><span class=n>path</span><span class=si>}</span><span class=s1>'</span>
 
         <span class=k>for</span> <span class=n>raw_file_name</span><span class=p>,</span> <span class=n>element_path</span> <span class=ow>in</span> <span class=n>file_path_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
             <span class=n>file_path</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>relative_resolve</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>raw_file_name</span><span class=p>),</span> <span class=n>effective_cwd</span><span class=p>)</span>
             <span class=c1># this makes assumptions that the path is relative.</span>
             <span class=k>if</span> <span class=ow>not</span> <span class=n>file_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;File </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1> does not exist.&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'File </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1> does not exist.'</span><span class=p>)</span>
 
             <span class=n>content_type</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_content_type</span><span class=p>(</span><span class=n>file_path</span><span class=o>.</span><span class=n>suffix</span><span class=p>)</span>
 
@@ -653,21 +653,21 @@
 
             <span class=c1># If the model has root containing a Union type (not a list), unwrap it (Pydantic v2 RootModel)</span>
             <span class=c1># This happens when we wrap Union types for reading (e.g., Group1|Group2)</span>
-            <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=s1>&#39;root&#39;</span><span class=p>):</span>
+            <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=s1>'root'</span><span class=p>):</span>
                 <span class=n>root_val</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>root</span>
-                <span class=c1># Only unwrap if it&#39;s a single OscalBaseModel, not a list</span>
+                <span class=c1># Only unwrap if it's a single OscalBaseModel, not a list</span>
                 <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>root_val</span><span class=p>,</span> <span class=n>OscalBaseModel</span><span class=p>):</span>
                     <span class=n>model</span> <span class=o>=</span> <span class=n>root_val</span>
 
             <span class=k>if</span> <span class=n>cmd_utils</span><span class=o>.</span><span class=n>split_is_too_fine</span><span class=p>(</span><span class=n>element_path</span><span class=p>,</span> <span class=n>model</span><span class=p>):</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Cannot split the model to the level of uuids, strings, etc.&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Cannot split the model to the level of uuids, strings, etc.'</span><span class=p>)</span>
 
             <span class=c1># use the model itself to resolve any wildcards and create list of element paths</span>
-            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;split calling parse_element_args on </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'split calling parse_element_args on </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=c1># use contextual mode to parse</span>
 
             <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>]</span> <span class=o>=</span> <span class=n>cmd_utils</span><span class=o>.</span><span class=n>parse_element_args</span><span class=p>(</span>
-                <span class=n>model</span><span class=p>,</span> <span class=n>element_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>),</span> <span class=n>base_dir</span><span class=o>.</span><span class=n>relative_to</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>)</span>
+                <span class=n>model</span><span class=p>,</span> <span class=n>element_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>','</span><span class=p>),</span> <span class=n>base_dir</span><span class=o>.</span><span class=n>relative_to</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>)</span>
             <span class=p>)</span>
 
             <span class=c1># analyze the split tree and determine which aliases should be stripped from each file</span>
@@ -685,7 +685,7 @@
                 <span class=n>split_plan</span><span class=o>.</span><span class=n>execute</span><span class=p>()</span>
             <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
                 <span class=n>trash</span><span class=o>.</span><span class=n>recover</span><span class=p>(</span><span class=n>file_path</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Split has failed with error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Split has failed with error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>.'</span><span class=p>)</span>
 
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
 
@@ -697,7 +697,7 @@
         <span class=n>file_prefix</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Action</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Create split actions of sub model.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Create split actions of sub model."""</span>
         <span class=n>actions</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Action</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=n>file_name</span> <span class=o>=</span> <span class=n>cmd_utils</span><span class=o>.</span><span class=n>to_model_file_name</span><span class=p>(</span><span class=n>sub_model_item</span><span class=p>,</span> <span class=n>file_prefix</span><span class=p>,</span> <span class=n>content_type</span><span class=p>)</span>
         <span class=n>model_type</span> <span class=o>=</span> <span class=n>classname_to_alias</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>sub_model_item</span><span class=p>)</span><span class=o>.</span><span class=vm>__name__</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
@@ -720,7 +720,7 @@
         <span class=n>aliases_to_strip</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>],</span>
         <span class=n>last_one</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Recursively split the model at the provided chain of element paths.</span>
+<span class=w>        </span><span class=sd>"""Recursively split the model at the provided chain of element paths.</span>
 
 <span class=sd>        It assumes that a chain of element paths starts at the cur_path_index with the first path ending</span>
 <span class=sd>        with a wildcard (*)</span>
@@ -752,17 +752,17 @@
 <span class=sd>            chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively</span>
 <span class=sd>            to retrieve the sub-sub models:</span>
 <span class=sd>            [</span>
-<span class=sd>                &#39;component-definition.component.*&#39;,</span>
-<span class=sd>                &#39;component.control-implementations.*&#39;</span>
+<span class=sd>                'component-definition.component.*',</span>
+<span class=sd>                'component.control-implementations.*'</span>
 <span class=sd>            ]</span>
 <span class=sd>            for a command like below:</span>
 <span class=sd>            trestle split -f component.yaml -e component-definition.components.*.control-implementations.*</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=k>if</span> <span class=n>split_plan</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Split plan must have been initialized&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Split plan must have been initialized'</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=n>cur_path_index</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Current index of the chain of paths cannot be less than 0&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Current index of the chain of paths cannot be less than 0'</span><span class=p>)</span>
 
         <span class=c1># if there are no more element_paths, return the current plan</span>
         <span class=k>if</span> <span class=n>cur_path_index</span> <span class=o>&gt;=</span> <span class=nb>len</span><span class=p>(</span><span class=n>element_paths</span><span class=p>):</span>
@@ -783,9 +783,9 @@
         <span class=c1># root dir name for sub models dir</span>
         <span class=c1># 00000__group.json will have the root_dir name as 00000__group for sub models of group</span>
         <span class=c1># catalog.json will have the root_dir name as catalog</span>
-        <span class=n>root_dir</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
-        <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>
-            <span class=n>root_dir</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>root_file_name</span><span class=p>)</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>))</span>
+        <span class=n>root_dir</span> <span class=o>=</span> <span class=s1>''</span>
+        <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>''</span><span class=p>:</span>
+            <span class=n>root_dir</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>root_file_name</span><span class=p>)</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=s1>''</span><span class=p>))</span>
 
         <span class=n>sub_models</span> <span class=o>=</span> <span class=n>element</span><span class=o>.</span><span class=n>get_at</span><span class=p>(</span><span class=n>element_path</span><span class=p>,</span> <span class=kc>False</span><span class=p>)</span>  <span class=c1># we call sub_models as in plural, but it can be just one</span>
 
@@ -807,7 +807,7 @@
                 <span class=n>cur_path_index</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span>
                 <span class=n>sub_model_plan</span><span class=p>,</span>
                 <span class=kc>True</span><span class=p>,</span>
-                <span class=s1>&#39;&#39;</span><span class=p>,</span>
+                <span class=s1>''</span><span class=p>,</span>
                 <span class=n>aliases_to_strip</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=n>sub_model_actions</span> <span class=o>=</span> <span class=n>sub_model_plan</span><span class=o>.</span><span class=n>get_actions</span><span class=p>()</span>
@@ -858,7 +858,7 @@
                 <span class=n>split_plan</span><span class=o>.</span><span class=n>add_actions</span><span class=p>(</span><span class=n>sub_model_actions</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=c1># the chain of path ends at the current index.</span>
-            <span class=c1># so no recursive call. Let&#39;s just write the sub model to the file and get out</span>
+            <span class=c1># so no recursive call. Let's just write the sub model to the file and get out</span>
             <span class=k>if</span> <span class=n>sub_models</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
                 <span class=n>sub_model_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>element_path</span><span class=o>.</span><span class=n>to_file_path</span><span class=p>(</span><span class=n>content_type</span><span class=p>,</span> <span class=n>root_dir</span><span class=o>=</span><span class=n>root_dir</span><span class=p>)</span>
                 <span class=n>split_plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>CreatePathAction</span><span class=p>(</span><span class=n>sub_model_file</span><span class=p>))</span>
@@ -869,7 +869,7 @@
         <span class=c1># Strip the root model and add a WriteAction for the updated model object in the plan</span>
         <span class=k>if</span> <span class=n>strip_root</span><span class=p>:</span>
             <span class=n>full_path</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_full</span><span class=p>()</span>
-            <span class=n>path</span> <span class=o>=</span> <span class=s1>&#39;.&#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>full_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>
+            <span class=n>path</span> <span class=o>=</span> <span class=s1>'.'</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>full_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>
             <span class=n>aliases</span> <span class=o>=</span> <span class=p>[</span><span class=n>element_path</span><span class=o>.</span><span class=n>get_element_name</span><span class=p>()]</span>
             <span class=n>need_to_write</span> <span class=o>=</span> <span class=kc>True</span>
             <span class=n>use_alias_dict</span> <span class=o>=</span> <span class=n>aliases_to_strip</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>path</span> <span class=ow>in</span> <span class=n>aliases_to_strip</span>
@@ -878,11 +878,11 @@
                 <span class=n>need_to_write</span> <span class=o>=</span> <span class=n>aliases_to_strip</span><span class=p>[</span><span class=n>path</span><span class=p>]</span><span class=o>.</span><span class=n>needs_writing</span><span class=p>()</span>
 
             <span class=n>stripped_model</span> <span class=o>=</span> <span class=n>model_obj</span><span class=o>.</span><span class=n>stripped_instance</span><span class=p>(</span><span class=n>stripped_fields_aliases</span><span class=o>=</span><span class=n>aliases</span><span class=p>)</span>
-            <span class=c1># can mark it written even if it doesn&#39;t need writing since it is empty</span>
-            <span class=c1># but if an array only mark it written if it&#39;s the last one</span>
+            <span class=c1># can mark it written even if it doesn't need writing since it is empty</span>
+            <span class=c1># but if an array only mark it written if it's the last one</span>
             <span class=k>if</span> <span class=n>last_one</span> <span class=ow>and</span> <span class=n>use_alias_dict</span><span class=p>:</span>
                 <span class=n>aliases_to_strip</span><span class=p>[</span><span class=n>path</span><span class=p>]</span><span class=o>.</span><span class=n>mark_written</span><span class=p>()</span>
-            <span class=c1># If it&#39;s an empty model after stripping the fields, don&#39;t create path and don&#39;t write</span>
+            <span class=c1># If it's an empty model after stripping the fields, don't create path and don't write</span>
             <span class=c1># Access model_fields from class to avoid deprecation warning in Pydantic v2.11+</span>
             <span class=n>model_fields</span> <span class=o>=</span> <span class=n>model_obj</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=n>model_fields</span>
             <span class=n>field_list</span> <span class=o>=</span> <span class=p>[</span><span class=n>x</span> <span class=k>for</span> <span class=n>x</span> <span class=ow>in</span> <span class=n>model_fields</span><span class=o>.</span><span class=n>keys</span><span class=p>()</span> <span class=k>if</span> <span class=n>model_fields</span><span class=p>[</span><span class=n>x</span><span class=p>]</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>]</span>
@@ -890,7 +890,7 @@
                 <span class=k>return</span> <span class=n>path_chain_end</span>
 
             <span class=k>if</span> <span class=n>need_to_write</span><span class=p>:</span>
-                <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>
+                <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>''</span><span class=p>:</span>
                     <span class=n>root_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>root_file_name</span>
                 <span class=k>else</span><span class=p>:</span>
                     <span class=n>root_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>element_path</span><span class=o>.</span><span class=n>to_root_path</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
@@ -913,10 +913,10 @@
         <span class=n>root_file_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>aliases_to_strip</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>],</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Plan</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Split the model at the provided element paths.</span>
+<span class=w>        </span><span class=sd>"""Split the model at the provided element paths.</span>
 
 <span class=sd>        It returns a plan for the operation</span>
-<span class=sd>        &quot;&quot;&quot;</span>
+<span class=sd>        """</span>
         <span class=c1># initialize plan</span>
         <span class=n>split_plan</span> <span class=o>=</span> <span class=n>Plan</span><span class=p>()</span>
 
@@ -930,8 +930,8 @@
             <span class=k>if</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_parent</span><span class=p>()</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>and</span> <span class=nb>len</span><span class=p>(</span><span class=n>element_path</span><span class=o>.</span><span class=n>get</span><span class=p>())</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>:</span>
                 <span class=n>stripped_part</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get</span><span class=p>()[</span><span class=mi>1</span><span class=p>]</span>
                 <span class=k>if</span> <span class=n>stripped_part</span> <span class=o>==</span> <span class=n>ElementPath</span><span class=o>.</span><span class=n>WILDCARD</span><span class=p>:</span>
-                    <span class=c1># In Pydantic v2, RootModel uses &#39;root&#39; field</span>
-                    <span class=n>stripped_field_alias</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=s1>&#39;root&#39;</span><span class=p>)</span>
+                    <span class=c1># In Pydantic v2, RootModel uses 'root' field</span>
+                    <span class=n>stripped_field_alias</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=s1>'root'</span><span class=p>)</span>
                 <span class=k>else</span><span class=p>:</span>
                     <span class=k>if</span> <span class=n>stripped_part</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>stripped_field_alias</span><span class=p>:</span>
                         <span class=n>stripped_field_alias</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>stripped_part</span><span class=p>)</span>
@@ -953,11 +953,11 @@
 
         <span class=c1># strip the root model object and add a WriteAction</span>
         <span class=n>stripped_root</span> <span class=o>=</span> <span class=n>model_obj</span><span class=o>.</span><span class=n>stripped_instance</span><span class=p>(</span><span class=n>stripped_fields_aliases</span><span class=o>=</span><span class=n>stripped_field_alias</span><span class=p>)</span>
-        <span class=c1># If it&#39;s an empty model after stripping the fields, don&#39;t create path and don&#39;t write</span>
+        <span class=c1># If it's an empty model after stripping the fields, don't create path and don't write</span>
         <span class=c1># Access model_fields from class to avoid deprecation warning in Pydantic v2.11+</span>
         <span class=k>if</span> <span class=nb>set</span><span class=p>(</span><span class=n>model_obj</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=n>model_fields</span><span class=o>.</span><span class=n>keys</span><span class=p>())</span> <span class=o>==</span> <span class=nb>set</span><span class=p>(</span><span class=n>stripped_field_alias</span><span class=p>):</span>
             <span class=k>return</span> <span class=n>split_plan</span>
-        <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>
+        <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>''</span><span class=p>:</span>
             <span class=n>root_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>root_file_name</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>root_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>element_paths</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>to_root_path</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
@@ -970,23 +970,23 @@
 
     <span class=nd>@classmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>find_aliases_to_strip</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>]:</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot;Find list of aliases that need to be stripped as each element written out.&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>"""Find list of aliases that need to be stripped as each element written out."""</span>
         <span class=c1># A given path may be present in several split actions</span>
         <span class=c1># Need to determine all parts stripped at each node in order to strip them all and</span>
         <span class=c1># write the stripped model only once</span>
         <span class=n>tracker_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>for</span> <span class=n>element_path</span> <span class=ow>in</span> <span class=n>element_paths</span><span class=p>:</span>
             <span class=n>path</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_full</span><span class=p>()</span>
-            <span class=n>path_parts</span> <span class=o>=</span> <span class=n>path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)</span>
+            <span class=n>path_parts</span> <span class=o>=</span> <span class=n>path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)</span>
             <span class=n>alias</span> <span class=o>=</span> <span class=n>path_parts</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
-            <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>path_parts</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>2</span> <span class=ow>and</span> <span class=n>alias</span> <span class=o>!=</span> <span class=s1>&#39;*&#39;</span><span class=p>:</span>
-                <span class=n>root_path</span> <span class=o>=</span> <span class=s1>&#39;.&#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>path_parts</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>
+            <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>path_parts</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>2</span> <span class=ow>and</span> <span class=n>alias</span> <span class=o>!=</span> <span class=s1>'*'</span><span class=p>:</span>
+                <span class=n>root_path</span> <span class=o>=</span> <span class=s1>'.'</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>path_parts</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>
                 <span class=k>if</span> <span class=n>root_path</span> <span class=ow>in</span> <span class=n>tracker_map</span><span class=p>:</span>
                     <span class=n>tracker_map</span><span class=p>[</span><span class=n>root_path</span><span class=p>]</span><span class=o>.</span><span class=n>add_alias</span><span class=p>(</span><span class=n>alias</span><span class=p>)</span>
                 <span class=k>else</span><span class=p>:</span>
                     <span class=n>tracker_map</span><span class=p>[</span><span class=n>root_path</span><span class=p>]</span> <span class=o>=</span> <span class=n>AliasTracker</span><span class=p>(</span><span class=n>aliases</span><span class=o>=</span><span class=p>[</span><span class=n>alias</span><span class=p>])</span>
         <span class=k>return</span> <span class=n>tracker_map</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.split.SplitCmd-attributes>Attributes<a href=#trestle.core.commands.split.SplitCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.split.SplitCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;split&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.split.SplitCmd-functions>Methods:<a href=#trestle.core.commands.split.SplitCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.SplitCmd.find_aliases_to_strip class="doc doc-heading"> <code class="highlight language-python"><span class=n>find_aliases_to_strip</span><span class=p>(</span><span class=n>element_paths</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.find_aliases_to_strip class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Find list of aliases that need to be stripped as each element written out.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>487</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.split.SplitCmd-attributes>Attributes<a href=#trestle.core.commands.split.SplitCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.split.SplitCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'split'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.split.SplitCmd-functions>Methods:<a href=#trestle.core.commands.split.SplitCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.SplitCmd.find_aliases_to_strip class="doc doc-heading"> <code class="highlight language-python"><span class=n>find_aliases_to_strip</span><span class=p>(</span><span class=n>element_paths</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.find_aliases_to_strip class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Find list of aliases that need to be stripped as each element written out.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>487</span>
 <span class=normal>488</span>
 <span class=normal>489</span>
 <span class=normal>490</span>
@@ -1005,17 +1005,17 @@
 <span class=normal>503</span>
 <span class=normal>504</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>find_aliases_to_strip</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Find list of aliases that need to be stripped as each element written out.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Find list of aliases that need to be stripped as each element written out."""</span>
     <span class=c1># A given path may be present in several split actions</span>
     <span class=c1># Need to determine all parts stripped at each node in order to strip them all and</span>
     <span class=c1># write the stripped model only once</span>
     <span class=n>tracker_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
     <span class=k>for</span> <span class=n>element_path</span> <span class=ow>in</span> <span class=n>element_paths</span><span class=p>:</span>
         <span class=n>path</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_full</span><span class=p>()</span>
-        <span class=n>path_parts</span> <span class=o>=</span> <span class=n>path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)</span>
+        <span class=n>path_parts</span> <span class=o>=</span> <span class=n>path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)</span>
         <span class=n>alias</span> <span class=o>=</span> <span class=n>path_parts</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
-        <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>path_parts</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>2</span> <span class=ow>and</span> <span class=n>alias</span> <span class=o>!=</span> <span class=s1>&#39;*&#39;</span><span class=p>:</span>
-            <span class=n>root_path</span> <span class=o>=</span> <span class=s1>&#39;.&#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>path_parts</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>
+        <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>path_parts</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>2</span> <span class=ow>and</span> <span class=n>alias</span> <span class=o>!=</span> <span class=s1>'*'</span><span class=p>:</span>
+            <span class=n>root_path</span> <span class=o>=</span> <span class=s1>'.'</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>path_parts</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>
             <span class=k>if</span> <span class=n>root_path</span> <span class=ow>in</span> <span class=n>tracker_map</span><span class=p>:</span>
                 <span class=n>tracker_map</span><span class=p>[</span><span class=n>root_path</span><span class=p>]</span><span class=o>.</span><span class=n>add_alias</span><span class=p>(</span><span class=n>alias</span><span class=p>)</span>
             <span class=k>else</span><span class=p>:</span>
@@ -1126,16 +1126,16 @@
 <span class=k>def</span><span class=w> </span><span class=nf>perform_split</span><span class=p>(</span>
     <span class=bp>cls</span><span class=p>,</span> <span class=n>effective_cwd</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>file_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>elements</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Perform the split operation.</span>
+<span class=w>    </span><span class=sd>"""Perform the split operation.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        effective_cwd: effective directory in which the the split operation is performed</span>
-<span class=sd>        file_name: file name of model to split, or &#39;&#39; if deduced from elements and cwd</span>
+<span class=sd>        file_name: file name of model to split, or '' if deduced from elements and cwd</span>
 <span class=sd>        elements: comma separated list of paths to strip from the file, with quotes removed</span>
 
 <span class=sd>    Returns:</span>
 <span class=sd>        0 on success and 1 on failure</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>file_path_list</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Tuple</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]</span> <span class=o>=</span> <span class=p>[]</span>
 
     <span class=k>if</span> <span class=n>file_name</span><span class=p>:</span>
@@ -1145,12 +1145,12 @@
         <span class=c1># find top directory for this model based on trestle root and cwd</span>
         <span class=n>model_dir</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>extract_project_model_path</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>model_dir</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Current directory must be within a model directory if file is not specified&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Current directory must be within a model directory if file is not specified'</span><span class=p>)</span>
 
         <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>dir_to_content_type</span><span class=p>(</span><span class=n>model_dir</span><span class=p>)</span>
 
         <span class=c1># determine the file needed for each split path</span>
-        <span class=n>element_paths</span> <span class=o>=</span> <span class=n>elements</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>)</span>
+        <span class=n>element_paths</span> <span class=o>=</span> <span class=n>elements</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>','</span><span class=p>)</span>
         <span class=k>for</span> <span class=n>path</span> <span class=ow>in</span> <span class=n>element_paths</span><span class=p>:</span>
             <span class=n>element_path</span> <span class=o>=</span> <span class=n>ElementPath</span><span class=p>(</span><span class=n>path</span><span class=p>)</span>
             <span class=c1># if element path is relative use directory context to determine absolute path</span>
@@ -1158,7 +1158,7 @@
             <span class=n>file_path</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>find_last_file_in_path</span><span class=p>(</span><span class=n>content_type</span><span class=p>,</span> <span class=n>model_dir</span><span class=p>)</span>
             <span class=c1># now make the element path relative to the model file to be loaded</span>
             <span class=k>if</span> <span class=n>file_path</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>or</span> <span class=n>element_path</span><span class=o>.</span><span class=n>make_relative</span><span class=p>(</span><span class=n>file_path</span><span class=o>.</span><span class=n>relative_to</span><span class=p>(</span><span class=n>model_dir</span><span class=p>))</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Unable to match element path with files in model directory </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Unable to match element path with files in model directory </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
             <span class=n>file_path_list</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=n>file_path</span><span class=p>,</span> <span class=n>element_path</span><span class=o>.</span><span class=n>to_string</span><span class=p>()))</span>
 
@@ -1171,13 +1171,13 @@
             <span class=n>file_path_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=n>path</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>current_path</span> <span class=o>=</span> <span class=n>file_path_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span>
-            <span class=n>file_path_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>current_path</span><span class=si>}</span><span class=s1>,</span><span class=si>{</span><span class=n>path</span><span class=si>}</span><span class=s1>&#39;</span>
+            <span class=n>file_path_dict</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>current_path</span><span class=si>}</span><span class=s1>,</span><span class=si>{</span><span class=n>path</span><span class=si>}</span><span class=s1>'</span>
 
     <span class=k>for</span> <span class=n>raw_file_name</span><span class=p>,</span> <span class=n>element_path</span> <span class=ow>in</span> <span class=n>file_path_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
         <span class=n>file_path</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>relative_resolve</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>raw_file_name</span><span class=p>),</span> <span class=n>effective_cwd</span><span class=p>)</span>
         <span class=c1># this makes assumptions that the path is relative.</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>file_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;File </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1> does not exist.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'File </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1> does not exist.'</span><span class=p>)</span>
 
         <span class=n>content_type</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_content_type</span><span class=p>(</span><span class=n>file_path</span><span class=o>.</span><span class=n>suffix</span><span class=p>)</span>
 
@@ -1189,21 +1189,21 @@
 
         <span class=c1># If the model has root containing a Union type (not a list), unwrap it (Pydantic v2 RootModel)</span>
         <span class=c1># This happens when we wrap Union types for reading (e.g., Group1|Group2)</span>
-        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=s1>&#39;root&#39;</span><span class=p>):</span>
+        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=s1>'root'</span><span class=p>):</span>
             <span class=n>root_val</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>root</span>
-            <span class=c1># Only unwrap if it&#39;s a single OscalBaseModel, not a list</span>
+            <span class=c1># Only unwrap if it's a single OscalBaseModel, not a list</span>
             <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>root_val</span><span class=p>,</span> <span class=n>OscalBaseModel</span><span class=p>):</span>
                 <span class=n>model</span> <span class=o>=</span> <span class=n>root_val</span>
 
         <span class=k>if</span> <span class=n>cmd_utils</span><span class=o>.</span><span class=n>split_is_too_fine</span><span class=p>(</span><span class=n>element_path</span><span class=p>,</span> <span class=n>model</span><span class=p>):</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Cannot split the model to the level of uuids, strings, etc.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Cannot split the model to the level of uuids, strings, etc.'</span><span class=p>)</span>
 
         <span class=c1># use the model itself to resolve any wildcards and create list of element paths</span>
-        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;split calling parse_element_args on </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'split calling parse_element_args on </span><span class=si>{</span><span class=n>element_path</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=c1># use contextual mode to parse</span>
 
         <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>]</span> <span class=o>=</span> <span class=n>cmd_utils</span><span class=o>.</span><span class=n>parse_element_args</span><span class=p>(</span>
-            <span class=n>model</span><span class=p>,</span> <span class=n>element_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>),</span> <span class=n>base_dir</span><span class=o>.</span><span class=n>relative_to</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>)</span>
+            <span class=n>model</span><span class=p>,</span> <span class=n>element_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>','</span><span class=p>),</span> <span class=n>base_dir</span><span class=o>.</span><span class=n>relative_to</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>)</span>
         <span class=p>)</span>
 
         <span class=c1># analyze the split tree and determine which aliases should be stripped from each file</span>
@@ -1221,7 +1221,7 @@
             <span class=n>split_plan</span><span class=o>.</span><span class=n>execute</span><span class=p>()</span>
         <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
             <span class=n>trash</span><span class=o>.</span><span class=n>recover</span><span class=p>(</span><span class=n>file_path</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Split has failed with error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Split has failed with error: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>.'</span><span class=p>)</span>
 
     <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.SplitCmd.prepare_sub_model_split_actions class="doc doc-heading"> <code class="highlight language-python"><span class=n>prepare_sub_model_split_actions</span><span class=p>(</span><span class=n>sub_model_item</span><span class=p>,</span> <span class=n>sub_model_dir</span><span class=p>,</span> <span class=n>file_prefix</span><span class=p>,</span> <span class=n>content_type</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.prepare_sub_model_split_actions class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create split actions of sub model.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>208</span>
@@ -1247,7 +1247,7 @@
     <span class=n>file_prefix</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Action</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Create split actions of sub model.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Create split actions of sub model."""</span>
     <span class=n>actions</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Action</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=n>file_name</span> <span class=o>=</span> <span class=n>cmd_utils</span><span class=o>.</span><span class=n>to_model_file_name</span><span class=p>(</span><span class=n>sub_model_item</span><span class=p>,</span> <span class=n>file_prefix</span><span class=p>,</span> <span class=n>content_type</span><span class=p>)</span>
     <span class=n>model_type</span> <span class=o>=</span> <span class=n>classname_to_alias</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>sub_model_item</span><span class=p>)</span><span class=o>.</span><span class=vm>__name__</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
@@ -1328,10 +1328,10 @@
     <span class=n>root_file_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>aliases_to_strip</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>],</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Plan</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Split the model at the provided element paths.</span>
+<span class=w>    </span><span class=sd>"""Split the model at the provided element paths.</span>
 
 <span class=sd>    It returns a plan for the operation</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=c1># initialize plan</span>
     <span class=n>split_plan</span> <span class=o>=</span> <span class=n>Plan</span><span class=p>()</span>
 
@@ -1345,8 +1345,8 @@
         <span class=k>if</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_parent</span><span class=p>()</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>and</span> <span class=nb>len</span><span class=p>(</span><span class=n>element_path</span><span class=o>.</span><span class=n>get</span><span class=p>())</span> <span class=o>&gt;</span> <span class=mi>1</span><span class=p>:</span>
             <span class=n>stripped_part</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get</span><span class=p>()[</span><span class=mi>1</span><span class=p>]</span>
             <span class=k>if</span> <span class=n>stripped_part</span> <span class=o>==</span> <span class=n>ElementPath</span><span class=o>.</span><span class=n>WILDCARD</span><span class=p>:</span>
-                <span class=c1># In Pydantic v2, RootModel uses &#39;root&#39; field</span>
-                <span class=n>stripped_field_alias</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=s1>&#39;root&#39;</span><span class=p>)</span>
+                <span class=c1># In Pydantic v2, RootModel uses 'root' field</span>
+                <span class=n>stripped_field_alias</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=s1>'root'</span><span class=p>)</span>
             <span class=k>else</span><span class=p>:</span>
                 <span class=k>if</span> <span class=n>stripped_part</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>stripped_field_alias</span><span class=p>:</span>
                     <span class=n>stripped_field_alias</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>stripped_part</span><span class=p>)</span>
@@ -1368,11 +1368,11 @@
 
     <span class=c1># strip the root model object and add a WriteAction</span>
     <span class=n>stripped_root</span> <span class=o>=</span> <span class=n>model_obj</span><span class=o>.</span><span class=n>stripped_instance</span><span class=p>(</span><span class=n>stripped_fields_aliases</span><span class=o>=</span><span class=n>stripped_field_alias</span><span class=p>)</span>
-    <span class=c1># If it&#39;s an empty model after stripping the fields, don&#39;t create path and don&#39;t write</span>
+    <span class=c1># If it's an empty model after stripping the fields, don't create path and don't write</span>
     <span class=c1># Access model_fields from class to avoid deprecation warning in Pydantic v2.11+</span>
     <span class=k>if</span> <span class=nb>set</span><span class=p>(</span><span class=n>model_obj</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=n>model_fields</span><span class=o>.</span><span class=n>keys</span><span class=p>())</span> <span class=o>==</span> <span class=nb>set</span><span class=p>(</span><span class=n>stripped_field_alias</span><span class=p>):</span>
         <span class=k>return</span> <span class=n>split_plan</span>
-    <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>
+    <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>''</span><span class=p>:</span>
         <span class=n>root_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>root_file_name</span>
     <span class=k>else</span><span class=p>:</span>
         <span class=n>root_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>element_paths</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>to_root_path</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
@@ -1591,7 +1591,7 @@
     <span class=n>aliases_to_strip</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>],</span>
     <span class=n>last_one</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Recursively split the model at the provided chain of element paths.</span>
+<span class=w>    </span><span class=sd>"""Recursively split the model at the provided chain of element paths.</span>
 
 <span class=sd>    It assumes that a chain of element paths starts at the cur_path_index with the first path ending</span>
 <span class=sd>    with a wildcard (*)</span>
@@ -1623,17 +1623,17 @@
 <span class=sd>        chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively</span>
 <span class=sd>        to retrieve the sub-sub models:</span>
 <span class=sd>        [</span>
-<span class=sd>            &#39;component-definition.component.*&#39;,</span>
-<span class=sd>            &#39;component.control-implementations.*&#39;</span>
+<span class=sd>            'component-definition.component.*',</span>
+<span class=sd>            'component.control-implementations.*'</span>
 <span class=sd>        ]</span>
 <span class=sd>        for a command like below:</span>
 <span class=sd>        trestle split -f component.yaml -e component-definition.components.*.control-implementations.*</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=n>split_plan</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Split plan must have been initialized&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Split plan must have been initialized'</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=n>cur_path_index</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Current index of the chain of paths cannot be less than 0&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Current index of the chain of paths cannot be less than 0'</span><span class=p>)</span>
 
     <span class=c1># if there are no more element_paths, return the current plan</span>
     <span class=k>if</span> <span class=n>cur_path_index</span> <span class=o>&gt;=</span> <span class=nb>len</span><span class=p>(</span><span class=n>element_paths</span><span class=p>):</span>
@@ -1654,9 +1654,9 @@
     <span class=c1># root dir name for sub models dir</span>
     <span class=c1># 00000__group.json will have the root_dir name as 00000__group for sub models of group</span>
     <span class=c1># catalog.json will have the root_dir name as catalog</span>
-    <span class=n>root_dir</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
-    <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>
-        <span class=n>root_dir</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>root_file_name</span><span class=p>)</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>))</span>
+    <span class=n>root_dir</span> <span class=o>=</span> <span class=s1>''</span>
+    <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>''</span><span class=p>:</span>
+        <span class=n>root_dir</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>root_file_name</span><span class=p>)</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=s1>''</span><span class=p>))</span>
 
     <span class=n>sub_models</span> <span class=o>=</span> <span class=n>element</span><span class=o>.</span><span class=n>get_at</span><span class=p>(</span><span class=n>element_path</span><span class=p>,</span> <span class=kc>False</span><span class=p>)</span>  <span class=c1># we call sub_models as in plural, but it can be just one</span>
 
@@ -1678,7 +1678,7 @@
             <span class=n>cur_path_index</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span>
             <span class=n>sub_model_plan</span><span class=p>,</span>
             <span class=kc>True</span><span class=p>,</span>
-            <span class=s1>&#39;&#39;</span><span class=p>,</span>
+            <span class=s1>''</span><span class=p>,</span>
             <span class=n>aliases_to_strip</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=n>sub_model_actions</span> <span class=o>=</span> <span class=n>sub_model_plan</span><span class=o>.</span><span class=n>get_actions</span><span class=p>()</span>
@@ -1729,7 +1729,7 @@
             <span class=n>split_plan</span><span class=o>.</span><span class=n>add_actions</span><span class=p>(</span><span class=n>sub_model_actions</span><span class=p>)</span>
     <span class=k>else</span><span class=p>:</span>
         <span class=c1># the chain of path ends at the current index.</span>
-        <span class=c1># so no recursive call. Let&#39;s just write the sub model to the file and get out</span>
+        <span class=c1># so no recursive call. Let's just write the sub model to the file and get out</span>
         <span class=k>if</span> <span class=n>sub_models</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>sub_model_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>element_path</span><span class=o>.</span><span class=n>to_file_path</span><span class=p>(</span><span class=n>content_type</span><span class=p>,</span> <span class=n>root_dir</span><span class=o>=</span><span class=n>root_dir</span><span class=p>)</span>
             <span class=n>split_plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>CreatePathAction</span><span class=p>(</span><span class=n>sub_model_file</span><span class=p>))</span>
@@ -1740,7 +1740,7 @@
     <span class=c1># Strip the root model and add a WriteAction for the updated model object in the plan</span>
     <span class=k>if</span> <span class=n>strip_root</span><span class=p>:</span>
         <span class=n>full_path</span> <span class=o>=</span> <span class=n>element_path</span><span class=o>.</span><span class=n>get_full</span><span class=p>()</span>
-        <span class=n>path</span> <span class=o>=</span> <span class=s1>&#39;.&#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>full_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>
+        <span class=n>path</span> <span class=o>=</span> <span class=s1>'.'</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>full_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>
         <span class=n>aliases</span> <span class=o>=</span> <span class=p>[</span><span class=n>element_path</span><span class=o>.</span><span class=n>get_element_name</span><span class=p>()]</span>
         <span class=n>need_to_write</span> <span class=o>=</span> <span class=kc>True</span>
         <span class=n>use_alias_dict</span> <span class=o>=</span> <span class=n>aliases_to_strip</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>path</span> <span class=ow>in</span> <span class=n>aliases_to_strip</span>
@@ -1749,11 +1749,11 @@
             <span class=n>need_to_write</span> <span class=o>=</span> <span class=n>aliases_to_strip</span><span class=p>[</span><span class=n>path</span><span class=p>]</span><span class=o>.</span><span class=n>needs_writing</span><span class=p>()</span>
 
         <span class=n>stripped_model</span> <span class=o>=</span> <span class=n>model_obj</span><span class=o>.</span><span class=n>stripped_instance</span><span class=p>(</span><span class=n>stripped_fields_aliases</span><span class=o>=</span><span class=n>aliases</span><span class=p>)</span>
-        <span class=c1># can mark it written even if it doesn&#39;t need writing since it is empty</span>
-        <span class=c1># but if an array only mark it written if it&#39;s the last one</span>
+        <span class=c1># can mark it written even if it doesn't need writing since it is empty</span>
+        <span class=c1># but if an array only mark it written if it's the last one</span>
         <span class=k>if</span> <span class=n>last_one</span> <span class=ow>and</span> <span class=n>use_alias_dict</span><span class=p>:</span>
             <span class=n>aliases_to_strip</span><span class=p>[</span><span class=n>path</span><span class=p>]</span><span class=o>.</span><span class=n>mark_written</span><span class=p>()</span>
-        <span class=c1># If it&#39;s an empty model after stripping the fields, don&#39;t create path and don&#39;t write</span>
+        <span class=c1># If it's an empty model after stripping the fields, don't create path and don't write</span>
         <span class=c1># Access model_fields from class to avoid deprecation warning in Pydantic v2.11+</span>
         <span class=n>model_fields</span> <span class=o>=</span> <span class=n>model_obj</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=n>model_fields</span>
         <span class=n>field_list</span> <span class=o>=</span> <span class=p>[</span><span class=n>x</span> <span class=k>for</span> <span class=n>x</span> <span class=ow>in</span> <span class=n>model_fields</span><span class=o>.</span><span class=n>keys</span><span class=p>()</span> <span class=k>if</span> <span class=n>model_fields</span><span class=p>[</span><span class=n>x</span><span class=p>]</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>]</span>
@@ -1761,7 +1761,7 @@
             <span class=k>return</span> <span class=n>path_chain_end</span>
 
         <span class=k>if</span> <span class=n>need_to_write</span><span class=p>:</span>
-            <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>
+            <span class=k>if</span> <span class=n>root_file_name</span> <span class=o>!=</span> <span class=s1>''</span><span class=p>:</span>
                 <span class=n>root_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>root_file_name</span>
             <span class=k>else</span><span class=p>:</span>
                 <span class=n>root_file</span> <span class=o>=</span> <span class=n>base_dir</span> <span class=o>/</span> <span class=n>element_path</span><span class=o>.</span><span class=n>to_root_path</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>

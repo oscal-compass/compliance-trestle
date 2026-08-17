@@ -15,65 +15,65 @@ usage:<span class=w> </span>trestle<span class=w> </span><span class=o>[</span>-
 <span class=o>(</span>venv.trestle<span class=o>)</span>$<span class=w> </span>trestle<span class=w> </span>init
 Initialized<span class=w> </span>trestle<span class=w> </span>project<span class=w> </span>successfully<span class=w> </span><span class=k>in</span><span class=w> </span>/home/&lt;user&gt;/trestle.workspace
 </code></pre></div> <h2 id=step-2-transform-sample>Step 2: Transform sample<a class=headerlink href=#step-2-transform-sample title="Permanent link">¤</a></h2> <ul> <li>Create Tanium data folders.</li> </ul> <div class=highlight><pre><span></span><code><span class=o>(</span>venv.trestle<span class=o>)</span>$<span class=w> </span>mkdir<span class=w> </span>-p<span class=w> </span>tanium/tests/data/tasks/tanium/input
-</code></pre></div> <ul> <li>Fetch sample Tanium data file. It is a "raw" Tanium result for which a transformation to OSCAL is desired.</li> </ul> <div class=highlight><pre><span></span><code><span class=o>(</span>venv.trestle<span class=o>)</span>$<span class=w> </span>curl<span class=w> </span><span class=s1>&#39;https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.doc-json&#39;</span><span class=w> </span>&gt;<span class=w> </span>tanium/tests/data/tasks/tanium/input/Tanium.doc-json
+</code></pre></div> <ul> <li>Fetch sample Tanium data file. It is a "raw" Tanium result for which a transformation to OSCAL is desired.</li> </ul> <div class=highlight><pre><span></span><code><span class=o>(</span>venv.trestle<span class=o>)</span>$<span class=w> </span>curl<span class=w> </span><span class=s1>'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.doc-json'</span><span class=w> </span>&gt;<span class=w> </span>tanium/tests/data/tasks/tanium/input/Tanium.doc-json
 </code></pre></div> <details> <summary>sample: Tanium.doc-json</summary> <div class=highlight><pre><span></span><code><span class=p>{</span>
-<span class=w>  </span><span class=nt>&quot;Computer Name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;RHEL8&quot;</span><span class=p>,</span>
-<span class=w>  </span><span class=nt>&quot;Tanium Client IP Address&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;192.168.0.125&quot;</span><span class=p>,</span>
-<span class=w>  </span><span class=nt>&quot;IP Address&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>    </span><span class=s2>&quot;192.168.0.125&quot;</span><span class=p>,</span>
-<span class=w>    </span><span class=s2>&quot;192.168.122.1&quot;</span><span class=p>,</span>
-<span class=w>    </span><span class=s2>&quot;fe80::3c47:1aff:fe33:601&quot;</span>
+<span class=w>  </span><span class=nt>"Computer Name"</span><span class=p>:</span><span class=w> </span><span class=s2>"RHEL8"</span><span class=p>,</span>
+<span class=w>  </span><span class=nt>"Tanium Client IP Address"</span><span class=p>:</span><span class=w> </span><span class=s2>"192.168.0.125"</span><span class=p>,</span>
+<span class=w>  </span><span class=nt>"IP Address"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>    </span><span class=s2>"192.168.0.125"</span><span class=p>,</span>
+<span class=w>    </span><span class=s2>"192.168.122.1"</span><span class=p>,</span>
+<span class=w>    </span><span class=s2>"fe80::3c47:1aff:fe33:601"</span>
 <span class=w>  </span><span class=p>],</span>
-<span class=w>  </span><span class=nt>&quot;Comply - Compliance Findings&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>  </span><span class=nt>"Comply - Compliance Findings"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;fail&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"fail"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;fail&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"fail"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;fail&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"fail"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;pass&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"pass"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;pass&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"pass"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;pass&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"pass"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;pass&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"pass"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;fail&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"fail"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"</span>
 <span class=w>    </span><span class=p>},</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;Check ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;State&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;notchecked&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;Rule ID&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span>
+<span class=w>      </span><span class=nt>"Check ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"State"</span><span class=p>:</span><span class=w> </span><span class=s2>"notchecked"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"Rule ID"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"</span>
 <span class=w>    </span><span class=p>}</span>
 <span class=w>  </span><span class=p>],</span>
-<span class=w>  </span><span class=nt>&quot;Count&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1&quot;</span>
+<span class=w>  </span><span class=nt>"Count"</span><span class=p>:</span><span class=w> </span><span class=s2>"1"</span>
 <span class=p>}</span>
-</code></pre></div> </details> <ul> <li>Fetch sample trestle tanium-result-to-oscal-ar config file. It informs the trestle command where to read input and write output.</li> </ul> <div class=highlight><pre><span></span><code><span class=o>(</span>venv.trestle<span class=o>)</span>$<span class=w> </span>curl<span class=w> </span><span class=s1>&#39;https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config&#39;</span><span class=w> </span>&gt;<span class=w> </span>tanium/demo-tanium-result-to-oscal-ar.config
+</code></pre></div> </details> <ul> <li>Fetch sample trestle tanium-result-to-oscal-ar config file. It informs the trestle command where to read input and write output.</li> </ul> <div class=highlight><pre><span></span><code><span class=o>(</span>venv.trestle<span class=o>)</span>$<span class=w> </span>curl<span class=w> </span><span class=s1>'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config'</span><span class=w> </span>&gt;<span class=w> </span>tanium/demo-tanium-result-to-oscal-ar.config
 </code></pre></div> <details> <summary>sample: demo-tanium-result-to-oscal-ar.config</summary> <div class=highlight><pre><span></span><code>[task.tanium-result-to-oscal-ar]
 
 input-dir =  tests/data/tasks/tanium/input
@@ -87,683 +87,683 @@ observations:<span class=w> </span><span class=m>9</span>
 Task:<span class=w> </span>tanium-result-to-oscal-ar<span class=w> </span>executed<span class=w> </span>successfully.
 </code></pre></div> <ul> <li>View the generated OSCAL.</li> </ul> <div class=highlight><pre><span></span><code><span class=o>(</span>venv.trestle<span class=o>)</span>$<span class=w> </span>cat<span class=w> </span>tests/data/tasks/tanium/runtime/Tanium.oscal.json
 </code></pre></div> <details> <summary>sample: Tanium.oscal.json</summary> <div class=highlight><pre><span></span><code><span class=p>{</span>
-<span class=w>  </span><span class=nt>&quot;results&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>  </span><span class=nt>"results"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>    </span><span class=p>{</span>
-<span class=w>      </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;f79add8e-488a-45f3-9024-72ecf95c7952&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;title&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Tanium&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Tanium&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;start&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;end&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span><span class=p>,</span>
-<span class=w>      </span><span class=nt>&quot;local-definitions&quot;</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
-<span class=w>        </span><span class=nt>&quot;components&quot;</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;1ea447fe-a2af-4110-baae-c70ed5223261&quot;</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
-<span class=w>            </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Operating System&quot;</span><span class=p>,</span>
-<span class=w>            </span><span class=nt>&quot;title&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Red Hat Enterprise Linux 8&quot;</span><span class=p>,</span>
-<span class=w>            </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Red Hat Enterprise Linux 8&quot;</span><span class=p>,</span>
-<span class=w>            </span><span class=nt>&quot;status&quot;</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;state&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;operational&quot;</span>
+<span class=w>      </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"f79add8e-488a-45f3-9024-72ecf95c7952"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"title"</span><span class=p>:</span><span class=w> </span><span class=s2>"Tanium"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"Tanium"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"start"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"end"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span><span class=p>,</span>
+<span class=w>      </span><span class=nt>"local-definitions"</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
+<span class=w>        </span><span class=nt>"components"</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
+<span class=w>          </span><span class=nt>"1ea447fe-a2af-4110-baae-c70ed5223261"</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
+<span class=w>            </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"Operating System"</span><span class=p>,</span>
+<span class=w>            </span><span class=nt>"title"</span><span class=p>:</span><span class=w> </span><span class=s2>"Red Hat Enterprise Linux 8"</span><span class=p>,</span>
+<span class=w>            </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"Red Hat Enterprise Linux 8"</span><span class=p>,</span>
+<span class=w>            </span><span class=nt>"status"</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
+<span class=w>              </span><span class=nt>"state"</span><span class=p>:</span><span class=w> </span><span class=s2>"operational"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>}</span>
 <span class=w>        </span><span class=p>},</span>
-<span class=w>        </span><span class=nt>&quot;inventory-items&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>        </span><span class=nt>"inventory-items"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>          </span><span class=p>{</span>
-<span class=w>            </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>            </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory&quot;</span><span class=p>,</span>
-<span class=w>            </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>            </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory"</span><span class=p>,</span>
+<span class=w>            </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>              </span><span class=p>{</span>
-<span class=w>                </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Computer Name&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;RHEL8&quot;</span>
+<span class=w>                </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Computer Name"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"RHEL8"</span>
 <span class=w>              </span><span class=p>},</span>
 <span class=w>              </span><span class=p>{</span>
-<span class=w>                </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Tanium Client IP Address&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;192.168.0.125&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_inventory_item_id&quot;</span>
+<span class=w>                </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Tanium Client IP Address"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"192.168.0.125"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_inventory_item_id"</span>
 <span class=w>              </span><span class=p>},</span>
 <span class=w>              </span><span class=p>{</span>
-<span class=w>                </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;IP Address&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;[&#39;192.168.0.125&#39;, &#39;192.168.122.1&#39;, &#39;fe80::3c47:1aff:fe33:601&#39;]&quot;</span>
+<span class=w>                </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"IP Address"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"['192.168.0.125', '192.168.122.1', 'fe80::3c47:1aff:fe33:601']"</span>
 <span class=w>              </span><span class=p>},</span>
 <span class=w>              </span><span class=p>{</span>
-<span class=w>                </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Count&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>                </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1&quot;</span>
+<span class=w>                </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Count"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>                </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1"</span>
 <span class=w>              </span><span class=p>}</span>
 <span class=w>            </span><span class=p>],</span>
-<span class=w>            </span><span class=nt>&quot;implemented-components&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=nt>"implemented-components"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>              </span><span class=p>{</span>
-<span class=w>                </span><span class=nt>&quot;component-uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1ea447fe-a2af-4110-baae-c70ed5223261&quot;</span>
+<span class=w>                </span><span class=nt>"component-uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"1ea447fe-a2af-4110-baae-c70ed5223261"</span>
 <span class=w>              </span><span class=p>}</span>
 <span class=w>            </span><span class=p>]</span>
 <span class=w>          </span><span class=p>}</span>
 <span class=w>        </span><span class=p>]</span>
 <span class=w>      </span><span class=p>},</span>
-<span class=w>      </span><span class=nt>&quot;reviewed-controls&quot;</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
-<span class=w>        </span><span class=nt>&quot;control-selections&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>      </span><span class=nt>"reviewed-controls"</span><span class=p>:</span><span class=w> </span><span class=p>{</span>
+<span class=w>        </span><span class=nt>"control-selections"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>          </span><span class=p>{}</span>
 <span class=w>        </span><span class=p>]</span>
 <span class=w>      </span><span class=p>},</span>
-<span class=w>      </span><span class=nt>&quot;observations&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>      </span><span class=nt>"observations"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;e67f5fd9-5b1f-4134-a67e-cebdc2e5735c&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"e67f5fd9-5b1f-4134-a67e-cebdc2e5735c"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;fail&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"fail"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;6cb81459-9c25-4a8b-bf3c-d8ff08ee728c&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"6cb81459-9c25-4a8b-bf3c-d8ff08ee728c"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;fail&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"fail"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;9453eaed-db41-4a20-b684-2887de2d9657&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"9453eaed-db41-4a20-b684-2887de2d9657"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;fail&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"fail"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;a37c2569-8695-4cfe-8b5c-bd8d6eaf9df7&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"a37c2569-8695-4cfe-8b5c-bd8d6eaf9df7"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;pass&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"pass"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;b77e1b49-a818-4d43-adaf-69effcbd9219&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"b77e1b49-a818-4d43-adaf-69effcbd9219"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;pass&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"pass"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;ac25b329-7a4a-45f4-b42b-1cce470e237b&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"ac25b329-7a4a-45f4-b42b-1cce470e237b"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;pass&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"pass"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;f9c0f033-f08b-431d-b411-fe1f63c2c98c&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"f9c0f033-f08b-431d-b411-fe1f63c2c98c"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;pass&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"pass"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;149a814e-7f80-4e6d-a613-54f027e0d663&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"149a814e-7f80-4e6d-a613-54f027e0d663"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;fail&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"fail"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>},</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;a0e602b5-e587-41c5-846b-675b26cf3e18&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;props&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"a0e602b5-e587-41c5-846b-675b26cf3e18"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"props"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"CIS Red Hat Enterprise Linux 8 Benchmark"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Version&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;1.0.0-1&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_predefined_profile_version&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Version"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"1.0.0-1"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_predefined_profile_version"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Check ID Level&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Level 1 - Server&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Check ID Level"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"Level 1 - Server"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_goal_description&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_goal_description"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Rule ID&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_check_name_id&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Rule ID"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_check_name_id"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;State&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;notchecked&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_result&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"State"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"notchecked"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_result"</span>
 <span class=w>            </span><span class=p>},</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;name&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Timestamp&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;ns&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;value&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46+00:00&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;class&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;scc_timestamp&quot;</span>
+<span class=w>              </span><span class=nt>"name"</span><span class=p>:</span><span class=w> </span><span class=s2>"Timestamp"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"ns"</span><span class=p>:</span><span class=w> </span><span class=s2>"https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"value"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46+00:00"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"class"</span><span class=p>:</span><span class=w> </span><span class=s2>"scc_timestamp"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;methods&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
-<span class=w>            </span><span class=s2>&quot;TEST-AUTOMATED&quot;</span>
+<span class=w>          </span><span class=nt>"methods"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>            </span><span class=s2>"TEST-AUTOMATED"</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;subjects&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=nt>"subjects"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>            </span><span class=p>{</span>
-<span class=w>              </span><span class=nt>&quot;uuid-ref&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class=p>,</span>
-<span class=w>              </span><span class=nt>&quot;type&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;inventory-item&quot;</span>
+<span class=w>              </span><span class=nt>"uuid-ref"</span><span class=p>:</span><span class=w> </span><span class=s2>"2d33d2b0-af5c-4c37-85b1-e4f414183de2"</span><span class=p>,</span>
+<span class=w>              </span><span class=nt>"type"</span><span class=p>:</span><span class=w> </span><span class=s2>"inventory-item"</span>
 <span class=w>            </span><span class=p>}</span>
 <span class=w>          </span><span class=p>],</span>
-<span class=w>          </span><span class=nt>&quot;collected&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+<span class=w>          </span><span class=nt>"collected"</span><span class=p>:</span><span class=w> </span><span class=s2>"2021-05-12T13:46:46.000+00:00"</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>      </span><span class=p>],</span>
-<span class=w>      </span><span class=nt>&quot;findings&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>      </span><span class=nt>"findings"</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>        </span><span class=p>{</span>
-<span class=w>          </span><span class=nt>&quot;uuid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;00000000-0000-4000-8000-000000000000&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;title&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;No Finding.&quot;</span><span class=p>,</span>
-<span class=w>          </span><span class=nt>&quot;description&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;No Finding.&quot;</span>
+<span class=w>          </span><span class=nt>"uuid"</span><span class=p>:</span><span class=w> </span><span class=s2>"00000000-0000-4000-8000-000000000000"</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"title"</span><span class=p>:</span><span class=w> </span><span class=s2>"No Finding."</span><span class=p>,</span>
+<span class=w>          </span><span class=nt>"description"</span><span class=p>:</span><span class=w> </span><span class=s2>"No Finding."</span>
 <span class=w>        </span><span class=p>}</span>
 <span class=w>      </span><span class=p>]</span>
 <span class=w>    </span><span class=p>}</span>

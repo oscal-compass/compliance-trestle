@@ -30,33 +30,33 @@
 <span class=normal>63</span>
 <span class=normal>64</span>
 <span class=normal>65</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse_dict</span><span class=p>(</span><span class=n>data</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>model_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>OscalBaseModel</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Load a model from the data dict.</span>
+<span class=w>    </span><span class=sd>"""Load a model from the data dict.</span>
 
 <span class=sd>    This functionality is provided for situations when the OSCAL data type is not known ahead of time. Here the model</span>
 <span class=sd>    has been loaded into memory using json loads or similar and passed as a dict.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        data: Oscal data loaded into memory as a dictionary with the `root key` removed.</span>
-<span class=sd>        model_name: should be of the form &#39;module.class&#39; from trestle.oscal.* modules</span>
+<span class=sd>        model_name: should be of the form 'module.class' from trestle.oscal.* modules</span>
 
 <span class=sd>    Returns:</span>
 <span class=sd>        The oscal model of the desired model.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=n>data</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;data name is required&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'data name is required'</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=n>model_name</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;model_name is required&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'model_name is required'</span><span class=p>)</span>
 
-    <span class=n>parts</span> <span class=o>=</span> <span class=n>model_name</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)</span>
+    <span class=n>parts</span> <span class=o>=</span> <span class=n>model_name</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)</span>
     <span class=n>class_name</span> <span class=o>=</span> <span class=n>parts</span><span class=o>.</span><span class=n>pop</span><span class=p>()</span>
-    <span class=n>module_name</span> <span class=o>=</span> <span class=s1>&#39;.&#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>parts</span><span class=p>)</span>
+    <span class=n>module_name</span> <span class=o>=</span> <span class=s1>'.'</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>parts</span><span class=p>)</span>
 
-    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Loading class &quot;</span><span class=si>{</span><span class=n>class_name</span><span class=si>}</span><span class=s1>&quot; from &quot;</span><span class=si>{</span><span class=n>module_name</span><span class=si>}</span><span class=s1>&quot;&#39;</span><span class=p>)</span>
+    <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Loading class "</span><span class=si>{</span><span class=n>class_name</span><span class=si>}</span><span class=s1>" from "</span><span class=si>{</span><span class=n>module_name</span><span class=si>}</span><span class=s1>"'</span><span class=p>)</span>
     <span class=n>module</span> <span class=o>=</span> <span class=n>importlib</span><span class=o>.</span><span class=n>import_module</span><span class=p>(</span><span class=n>module_name</span><span class=p>)</span>
     <span class=n>mclass</span><span class=p>:</span> <span class=n>OscalBaseModel</span> <span class=o>=</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>module</span><span class=p>,</span> <span class=n>class_name</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>mclass</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;class &quot;</span><span class=si>{</span><span class=n>class_name</span><span class=si>}</span><span class=s1>&quot; could not be found in &quot;</span><span class=si>{</span><span class=n>module_name</span><span class=si>}</span><span class=s1>&quot;&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'class "</span><span class=si>{</span><span class=n>class_name</span><span class=si>}</span><span class=s1>" could not be found in "</span><span class=si>{</span><span class=n>module_name</span><span class=si>}</span><span class=s1>"'</span><span class=p>)</span>
 
     <span class=c1># Pydantic v2: parse_obj() → model_validate()</span>
     <span class=n>instance</span> <span class=o>=</span> <span class=n>mclass</span><span class=o>.</span><span class=n>model_validate</span><span class=p>(</span><span class=n>data</span><span class=p>)</span>
@@ -67,11 +67,11 @@
 <span class=normal>71</span>
 <span class=normal>72</span>
 <span class=normal>73</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>root_key</span><span class=p>(</span><span class=n>data</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Find root model name in the data.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Find root model name in the data."""</span>
     <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>data</span><span class=o>.</span><span class=n>items</span><span class=p>())</span> <span class=o>==</span> <span class=mi>1</span><span class=p>:</span>
         <span class=k>return</span> <span class=nb>next</span><span class=p>(</span><span class=nb>iter</span><span class=p>(</span><span class=n>data</span><span class=p>))</span>
 
-    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;data does not contain a root key&#39;</span><span class=p>)</span>
+    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'data does not contain a root key'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.parser.to_full_model_name class="doc doc-heading"> <code class="highlight language-python"><span class=n>to_full_model_name</span><span class=p>(</span><span class=n>root_key</span><span class=p>)</span></code> <a href=#trestle.core.parser.to_full_model_name class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Find model name from the root_key in the file.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>root_key</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>root key such as 'system-security-plan' from a top level OSCAL model.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/parser.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>76</span>
 <span class=normal>77</span>
 <span class=normal>78</span>
@@ -85,16 +85,16 @@
 <span class=normal>86</span>
 <span class=normal>87</span>
 <span class=normal>88</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>to_full_model_name</span><span class=p>(</span><span class=n>root_key</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Find model name from the root_key in the file.</span>
 
 <span class=sd>    Args:</span>
-<span class=sd>        root_key: root key such as &#39;system-security-plan&#39; from a top level OSCAL model.</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>        root_key: root key such as 'system-security-plan' from a top level OSCAL model.</span>
+<span class=sd>    """</span>
     <span class=k>if</span> <span class=n>root_key</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>const</span><span class=o>.</span><span class=n>MODEL_TYPE_LIST</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>root_key</span><span class=si>}</span><span class=s1> is not a top level model name.&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>root_key</span><span class=si>}</span><span class=s1> is not a top level model name.'</span><span class=p>)</span>
 
     <span class=n>module</span> <span class=o>=</span> <span class=n>const</span><span class=o>.</span><span class=n>MODEL_TYPE_TO_MODEL_MODULE</span><span class=p>[</span><span class=n>root_key</span><span class=p>]</span>
     <span class=n>class_name</span> <span class=o>=</span> <span class=n>alias_to_classname</span><span class=p>(</span><span class=n>root_key</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
-    <span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>module</span><span class=si>}</span><span class=s1>.</span><span class=si>{</span><span class=n>class_name</span><span class=si>}</span><span class=s1>&#39;</span>
+    <span class=k>return</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>module</span><span class=si>}</span><span class=s1>.</span><span class=si>{</span><span class=n>class_name</span><span class=si>}</span><span class=s1>'</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>

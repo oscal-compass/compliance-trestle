@@ -6,13 +6,13 @@
 <span class=normal>64</span>
 <span class=normal>65</span>
 <span class=normal>66</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>clear_folder</span><span class=p>(</span><span class=n>folder_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Clear all contents of the specified folder.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Clear all contents of the specified folder."""</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>folder_path</span><span class=o>.</span><span class=n>exists</span><span class=p>()</span> <span class=ow>or</span> <span class=ow>not</span> <span class=n>folder_path</span><span class=o>.</span><span class=n>is_dir</span><span class=p>():</span>
         <span class=k>return</span>
     <span class=k>try</span><span class=p>:</span>
         <span class=n>shutil</span><span class=o>.</span><span class=n>rmtree</span><span class=p>(</span><span class=n>folder_path</span><span class=p>)</span>
     <span class=k>except</span> <span class=ne>OSError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>  <span class=c1># pragma: no cover</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Error deleting contents of </span><span class=si>{</span><span class=n>folder_path</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Error deleting contents of </span><span class=si>{</span><span class=n>folder_path</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.commands.common.cmd_utils.model_type_is_too_granular class="doc doc-heading"> <code class="highlight language-python"><span class=n>model_type_is_too_granular</span><span class=p>(</span><span class=n>model_type</span><span class=p>)</span></code> <a href=#trestle.core.commands.common.cmd_utils.model_type_is_too_granular class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Is an model_type too fine to split.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/common/cmd_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>31</span>
 <span class=normal>32</span>
 <span class=normal>33</span>
@@ -39,12 +39,12 @@
 <span class=normal>54</span>
 <span class=normal>55</span>
 <span class=normal>56</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>model_type_is_too_granular</span><span class=p>(</span><span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>Any</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Is an model_type too fine to split.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Is an model_type too fine to split."""</span>
     <span class=k>if</span> <span class=n>type_utils</span><span class=o>.</span><span class=n>is_collection_field_type</span><span class=p>(</span><span class=n>model_type</span><span class=p>):</span>
         <span class=k>return</span> <span class=kc>False</span>
-    <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=s1>&#39;model_fields&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>&#39;root&#39;</span> <span class=ow>in</span> <span class=n>model_type</span><span class=o>.</span><span class=n>model_fields</span><span class=p>:</span>
-        <span class=c1># Check if &#39;root&#39; contains a collection type (list) - this is a RootModel</span>
-        <span class=n>root_field</span> <span class=o>=</span> <span class=n>model_type</span><span class=o>.</span><span class=n>model_fields</span><span class=p>[</span><span class=s1>&#39;root&#39;</span><span class=p>]</span>
+    <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=s1>'model_fields'</span><span class=p>)</span> <span class=ow>and</span> <span class=s1>'root'</span> <span class=ow>in</span> <span class=n>model_type</span><span class=o>.</span><span class=n>model_fields</span><span class=p>:</span>
+        <span class=c1># Check if 'root' contains a collection type (list) - this is a RootModel</span>
+        <span class=n>root_field</span> <span class=o>=</span> <span class=n>model_type</span><span class=o>.</span><span class=n>model_fields</span><span class=p>[</span><span class=s1>'root'</span><span class=p>]</span>
         <span class=n>root_type</span> <span class=o>=</span> <span class=n>root_field</span><span class=o>.</span><span class=n>annotation</span>
         <span class=k>if</span> <span class=n>type_utils</span><span class=o>.</span><span class=n>is_collection_field_type</span><span class=p>(</span><span class=n>root_type</span><span class=p>):</span>
             <span class=k>return</span> <span class=kc>False</span>
@@ -54,14 +54,14 @@
         <span class=kn>import</span><span class=w> </span><span class=nn>types</span>
 
         <span class=n>origin</span> <span class=o>=</span> <span class=n>get_origin</span><span class=p>(</span><span class=n>root_type</span><span class=p>)</span>
-        <span class=k>if</span> <span class=n>origin</span> <span class=ow>is</span> <span class=n>Union</span> <span class=ow>or</span> <span class=p>(</span><span class=nb>hasattr</span><span class=p>(</span><span class=n>types</span><span class=p>,</span> <span class=s1>&#39;UnionType&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>origin</span> <span class=ow>is</span> <span class=n>types</span><span class=o>.</span><span class=n>UnionType</span><span class=p>):</span>
+        <span class=k>if</span> <span class=n>origin</span> <span class=ow>is</span> <span class=n>Union</span> <span class=ow>or</span> <span class=p>(</span><span class=nb>hasattr</span><span class=p>(</span><span class=n>types</span><span class=p>,</span> <span class=s1>'UnionType'</span><span class=p>)</span> <span class=ow>and</span> <span class=n>origin</span> <span class=ow>is</span> <span class=n>types</span><span class=o>.</span><span class=n>UnionType</span><span class=p>):</span>
             <span class=n>union_args</span> <span class=o>=</span> <span class=n>get_args</span><span class=p>(</span><span class=n>root_type</span><span class=p>)</span>
-            <span class=c1># If any variant is an OscalBaseModel, it&#39;s splittable</span>
+            <span class=c1># If any variant is an OscalBaseModel, it's splittable</span>
             <span class=k>if</span> <span class=nb>any</span><span class=p>(</span><span class=nb>isinstance</span><span class=p>(</span><span class=n>arg</span><span class=p>,</span> <span class=nb>type</span><span class=p>)</span> <span class=ow>and</span> <span class=nb>issubclass</span><span class=p>(</span><span class=n>arg</span><span class=p>,</span> <span class=n>OscalBaseModel</span><span class=p>)</span> <span class=k>for</span> <span class=n>arg</span> <span class=ow>in</span> <span class=n>union_args</span><span class=p>):</span>
                 <span class=k>return</span> <span class=kc>False</span>
         <span class=c1># root with non-collection, non-Union types (like StringDatatype) are too granular (Pydantic v2 RootModel)</span>
         <span class=k>return</span> <span class=kc>True</span>
-    <span class=k>if</span> <span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span> <span class=ow>in</span> <span class=p>[</span><span class=s1>&#39;str&#39;</span><span class=p>,</span> <span class=s1>&#39;ConstrainedStrValue&#39;</span><span class=p>,</span> <span class=s1>&#39;int&#39;</span><span class=p>,</span> <span class=s1>&#39;float&#39;</span><span class=p>,</span> <span class=s1>&#39;datetime&#39;</span><span class=p>]:</span>
+    <span class=k>if</span> <span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span> <span class=ow>in</span> <span class=p>[</span><span class=s1>'str'</span><span class=p>,</span> <span class=s1>'ConstrainedStrValue'</span><span class=p>,</span> <span class=s1>'int'</span><span class=p>,</span> <span class=s1>'float'</span><span class=p>,</span> <span class=s1>'datetime'</span><span class=p>]:</span>
         <span class=k>return</span> <span class=kc>True</span>
     <span class=k>return</span> <span class=kc>False</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.commands.common.cmd_utils.parse_chain class="doc doc-heading"> <code class="highlight language-python"><span class=n>parse_chain</span><span class=p>(</span><span class=n>model_obj</span><span class=p>,</span> <span class=n>path_parts</span><span class=p>,</span> <span class=n>relative_path</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.commands.common.cmd_utils.parse_chain class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Parse the model chain starting from the beginning.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>model_obj</code> </td> <td> <code><span title=typing.Union>Union</span>[<a class="autorefs autorefs-internal" title="OscalBaseModel (trestle.core.base_model.OscalBaseModel)" href=../../../base_model/#trestle.core.base_model.OscalBaseModel>OscalBaseModel</a>, None]</code> </td> <td> <div class=doc-md-description> <p>Model to use for inspecting available elements, if available or none</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>path_parts</code> </td> <td> <code><span title=typing.List>List</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>list of string paths to parse including wildcards</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>relative_path</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=pathlib.Path>Path</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional relative path (w.r.t trestle workspace root directory)</p> </div> </td> <td> <code>None</code> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.List>List</span>[<a class="autorefs autorefs-internal" title="ElementPath (trestle.core.models.elements.ElementPath)" href=../../../models/elements/#trestle.core.models.elements.ElementPath>ElementPath</a>]</code> </td> <td> <div class=doc-md-description> <p>List of ElementPath</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/common/cmd_utils.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>138</span>
@@ -157,7 +157,7 @@
 <span class=normal>228</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse_chain</span><span class=p>(</span>
     <span class=n>model_obj</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>,</span> <span class=kc>None</span><span class=p>],</span> <span class=n>path_parts</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>relative_path</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Parse the model chain starting from the beginning.</span>
+<span class=w>    </span><span class=sd>"""Parse the model chain starting from the beginning.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        model_obj: Model to use for inspecting available elements, if available or none</span>
@@ -166,7 +166,7 @@
 
 <span class=sd>    Returns:</span>
 <span class=sd>        List of ElementPath</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=n>sub_model</span> <span class=o>=</span> <span class=n>model_obj</span>
     <span class=n>have_model_to_parse</span> <span class=o>=</span> <span class=n>model_obj</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span>
@@ -183,7 +183,7 @@
             <span class=c1># append wildcard to the latest element path</span>
             <span class=n>latest_path</span> <span class=o>=</span> <span class=n>element_paths</span><span class=o>.</span><span class=n>pop</span><span class=p>()</span>
             <span class=k>if</span> <span class=n>latest_path</span><span class=o>.</span><span class=n>get_last</span><span class=p>()</span> <span class=o>==</span> <span class=n>ElementPath</span><span class=o>.</span><span class=n>WILDCARD</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Invalid element path with consecutive </span><span class=si>{</span><span class=n>ElementPath</span><span class=o>.</span><span class=n>WILDCARD</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Invalid element path with consecutive </span><span class=si>{</span><span class=n>ElementPath</span><span class=o>.</span><span class=n>WILDCARD</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
             <span class=n>latest_path_str</span> <span class=o>=</span> <span class=n>ElementPath</span><span class=o>.</span><span class=n>PATH_SEPARATOR</span><span class=o>.</span><span class=n>join</span><span class=p>([</span><span class=n>latest_path</span><span class=o>.</span><span class=n>to_string</span><span class=p>(),</span> <span class=n>p</span><span class=p>])</span>
             <span class=n>element_path</span> <span class=o>=</span> <span class=n>ElementPath</span><span class=p>(</span><span class=n>latest_path_str</span><span class=p>,</span> <span class=n>latest_path</span><span class=o>.</span><span class=n>get_parent</span><span class=p>())</span>
@@ -216,25 +216,25 @@
             <span class=c1># Does wildcard mean we need to inspect the sub_model to determine what can be split off from it?</span>
             <span class=c1># If it has root it may mean it contains a list of objects and should be split as a list (Pydantic v2 RootModel)</span>
             <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>sub_model</span><span class=p>,</span> <span class=n>OscalBaseModel</span><span class=p>):</span>
-                <span class=n>root</span> <span class=o>=</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>sub_model</span><span class=p>,</span> <span class=s1>&#39;root&#39;</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
+                <span class=n>root</span> <span class=o>=</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>sub_model</span><span class=p>,</span> <span class=s1>'root'</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
                 <span class=k>if</span> <span class=n>root</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>or</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>root</span><span class=p>,</span> <span class=nb>list</span><span class=p>):</span>
-                    <span class=c1># Cannot have parts beyond * if it isn&#39;t a list</span>
+                    <span class=c1># Cannot have parts beyond * if it isn't a list</span>
                     <span class=k>if</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=nb>len</span><span class=p>(</span><span class=n>path_parts</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span><span class=p>:</span>
                         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
-                            <span class=sa>f</span><span class=s1>&#39;Cannot split beyond * when the wildcard does not refer to a list.  Path: </span><span class=si>{</span><span class=n>path_parts</span><span class=si>}</span><span class=s1>&#39;</span>
+                            <span class=sa>f</span><span class=s1>'Cannot split beyond * when the wildcard does not refer to a list.  Path: </span><span class=si>{</span><span class=n>path_parts</span><span class=si>}</span><span class=s1>'</span>
                         <span class=p>)</span>
                     <span class=k>for</span> <span class=n>key</span> <span class=ow>in</span> <span class=n>sub_model</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=n>model_fields</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
                         <span class=c1># only create element path is item is present in the sub_model</span>
                         <span class=k>if</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>sub_model</span><span class=p>,</span> <span class=n>key</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
                             <span class=k>continue</span>
                         <span class=n>new_alias</span> <span class=o>=</span> <span class=n>str_utils</span><span class=o>.</span><span class=n>underscore_to_dash</span><span class=p>(</span><span class=n>key</span><span class=p>)</span>
-                        <span class=n>new_path</span> <span class=o>=</span> <span class=n>full_path_str</span> <span class=o>+</span> <span class=s1>&#39;.&#39;</span> <span class=o>+</span> <span class=n>new_alias</span>
+                        <span class=n>new_path</span> <span class=o>=</span> <span class=n>full_path_str</span> <span class=o>+</span> <span class=s1>'.'</span> <span class=o>+</span> <span class=n>new_alias</span>
                         <span class=k>if</span> <span class=ow>not</span> <span class=n>split_is_too_fine</span><span class=p>(</span><span class=n>new_path</span><span class=p>,</span> <span class=n>model_obj</span><span class=p>):</span>
                             <span class=c1># to add parts of an element, need to add two links</span>
                             <span class=c1># prev_element_path may be None, for example catalog.*</span>
                             <span class=k>if</span> <span class=n>prev_element_path</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
                                 <span class=n>element_paths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prev_element_path</span><span class=p>)</span>
-                            <span class=n>element_paths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>ElementPath</span><span class=p>(</span><span class=n>parent_model</span> <span class=o>+</span> <span class=s1>&#39;.&#39;</span> <span class=o>+</span> <span class=n>new_alias</span><span class=p>,</span> <span class=n>latest_path</span><span class=p>))</span>
+                            <span class=n>element_paths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>ElementPath</span><span class=p>(</span><span class=n>parent_model</span> <span class=o>+</span> <span class=s1>'.'</span> <span class=o>+</span> <span class=n>new_alias</span><span class=p>,</span> <span class=n>latest_path</span><span class=p>))</span>
                     <span class=c1># Since wildcard is last in the chain when splitting an oscal model we are done</span>
                     <span class=k>return</span> <span class=n>element_paths</span>
         <span class=k>else</span><span class=p>:</span>
@@ -279,7 +279,7 @@
 <span class=normal>262</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse_element_arg</span><span class=p>(</span>
     <span class=n>model_obj</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>,</span> <span class=kc>None</span><span class=p>],</span> <span class=n>element_arg</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>relative_path</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Parse an element arg string into a list of ElementPath.</span>
+<span class=w>    </span><span class=sd>"""Parse an element arg string into a list of ElementPath.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        model_obj: The OscalBaseModel being inspected to determine available elements that can be split</span>
@@ -287,24 +287,24 @@
 <span class=sd>        relative_path: Optional relative path (from trestle root) used to validate element args are valid.</span>
 <span class=sd>    Returns:</span>
 <span class=sd>        The requested parsed list of ElementPath for use in split</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=n>element_arg</span> <span class=o>=</span> <span class=n>element_arg</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span>
 
-    <span class=k>if</span> <span class=n>element_arg</span> <span class=o>==</span> <span class=s1>&#39;*&#39;</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Invalid element path containing only a single wildcard.&#39;</span><span class=p>)</span>
+    <span class=k>if</span> <span class=n>element_arg</span> <span class=o>==</span> <span class=s1>'*'</span><span class=p>:</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Invalid element path containing only a single wildcard.'</span><span class=p>)</span>
 
-    <span class=k>if</span> <span class=n>element_arg</span> <span class=o>==</span> <span class=s1>&#39;&#39;</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Invalid element path is empty string.&#39;</span><span class=p>)</span>
+    <span class=k>if</span> <span class=n>element_arg</span> <span class=o>==</span> <span class=s1>''</span><span class=p>:</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>'Invalid element path is empty string.'</span><span class=p>)</span>
 
     <span class=c1># search for wildcards and create paths with its parent path</span>
     <span class=n>path_parts</span> <span class=o>=</span> <span class=n>element_arg</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=n>ElementPath</span><span class=o>.</span><span class=n>PATH_SEPARATOR</span><span class=p>)</span>
     <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>path_parts</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=mi>1</span><span class=p>:</span>
-        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Invalid element path &quot;</span><span class=si>{</span><span class=n>element_arg</span><span class=si>}</span><span class=s1>&quot; with only one element and no wildcard&#39;</span><span class=p>)</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Invalid element path "</span><span class=si>{</span><span class=n>element_arg</span><span class=si>}</span><span class=s1>" with only one element and no wildcard'</span><span class=p>)</span>
 
     <span class=n>element_paths</span> <span class=o>=</span> <span class=n>parse_chain</span><span class=p>(</span><span class=n>model_obj</span><span class=p>,</span> <span class=n>path_parts</span><span class=p>,</span> <span class=n>relative_path</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>element_paths</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>:</span>
-        <span class=c1># don&#39;t complain if nothing to split</span>
+        <span class=c1># don't complain if nothing to split</span>
         <span class=k>pass</span>
 
     <span class=k>return</span> <span class=n>element_paths</span>
@@ -346,7 +346,7 @@
 <span class=normal>135</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>parse_element_args</span><span class=p>(</span>
     <span class=n>model</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>,</span> <span class=kc>None</span><span class=p>],</span> <span class=n>element_args</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>relative_path</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>]:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Parse element args into a list of ElementPath.</span>
+<span class=w>    </span><span class=sd>"""Parse element args into a list of ElementPath.</span>
 
 <span class=sd>    The element paths are either simple links of two elements, or two elements followed by *.</span>
 <span class=sd>    The * represents either a list of the items in that element, or a splitting of that element into its parts.</span>
@@ -363,7 +363,7 @@
 <span class=sd>    and for each new part two element paths are created, one for the parent to the current element, and another from</span>
 <span class=sd>    the current element to the child.</span>
 
-<span class=sd>    A path may have multiple *&#39;s, but only the final one can represent splitting a model.</span>
+<span class=sd>    A path may have multiple *'s, but only the final one can represent splitting a model.</span>
 
 <span class=sd>    Args:</span>
 <span class=sd>        model: The OscalBaseModel being inspected to determine available elements that can be split</span>
@@ -371,7 +371,7 @@
 <span class=sd>        relative_path: Optional relative path (from trestle root) used to validate element args are valid.</span>
 <span class=sd>    Returns:</span>
 <span class=sd>        The requested parsed list of ElementPath for use in split</span>
-<span class=sd>    &quot;&quot;&quot;</span>
+<span class=sd>    """</span>
     <span class=c1># collect all paths</span>
     <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=k>for</span> <span class=n>element_arg</span> <span class=ow>in</span> <span class=n>element_args</span><span class=p>:</span>
@@ -408,21 +408,21 @@
 <span class=normal>95</span>
 <span class=normal>96</span>
 <span class=normal>97</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>split_is_too_fine</span><span class=p>(</span><span class=n>split_paths</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>model_obj</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Determine if the element path list goes too fine, e.g. individual strings.&quot;&quot;&quot;</span>
-    <span class=c1># When paths contain wildcards (e.g., &#39;groups.*.controls.*.id&#39;), ElementPath.get_type()</span>
+<span class=w>    </span><span class=sd>"""Determine if the element path list goes too fine, e.g. individual strings."""</span>
+    <span class=c1># When paths contain wildcards (e.g., 'groups.*.controls.*.id'), ElementPath.get_type()</span>
     <span class=c1># cannot determine the type. As a heuristic, we check if the final element name is a</span>
     <span class=c1># common primitive field that typically holds string/int/uuid values in OSCAL models.</span>
     <span class=c1># This prevents splitting at overly granular levels like individual IDs or names.</span>
-    <span class=n>primitive_fields</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;id&#39;</span><span class=p>,</span> <span class=s1>&#39;uuid&#39;</span><span class=p>,</span> <span class=s1>&#39;name&#39;</span><span class=p>,</span> <span class=s1>&#39;title&#39;</span><span class=p>,</span> <span class=s1>&#39;description&#39;</span><span class=p>,</span> <span class=s1>&#39;value&#39;</span><span class=p>,</span> <span class=s1>&#39;version&#39;</span><span class=p>,</span> <span class=s1>&#39;href&#39;</span><span class=p>,</span> <span class=s1>&#39;rel&#39;</span><span class=p>}</span>
+    <span class=n>primitive_fields</span> <span class=o>=</span> <span class=p>{</span><span class=s1>'id'</span><span class=p>,</span> <span class=s1>'uuid'</span><span class=p>,</span> <span class=s1>'name'</span><span class=p>,</span> <span class=s1>'title'</span><span class=p>,</span> <span class=s1>'description'</span><span class=p>,</span> <span class=s1>'value'</span><span class=p>,</span> <span class=s1>'version'</span><span class=p>,</span> <span class=s1>'href'</span><span class=p>,</span> <span class=s1>'rel'</span><span class=p>}</span>
 
-    <span class=k>for</span> <span class=n>split_path</span> <span class=ow>in</span> <span class=n>split_paths</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>):</span>
+    <span class=k>for</span> <span class=n>split_path</span> <span class=ow>in</span> <span class=n>split_paths</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>','</span><span class=p>):</span>
         <span class=c1># Strip all trailing .* patterns to get to the actual type</span>
         <span class=n>clean_path</span> <span class=o>=</span> <span class=n>split_path</span>
-        <span class=k>while</span> <span class=n>clean_path</span><span class=o>.</span><span class=n>endswith</span><span class=p>(</span><span class=s1>&#39;.*&#39;</span><span class=p>):</span>
+        <span class=k>while</span> <span class=n>clean_path</span><span class=o>.</span><span class=n>endswith</span><span class=p>(</span><span class=s1>'.*'</span><span class=p>):</span>
             <span class=n>clean_path</span> <span class=o>=</span> <span class=n>clean_path</span><span class=p>[:</span><span class=o>-</span><span class=mi>2</span><span class=p>]</span>
 
         <span class=c1># Check if the final element is a known primitive field</span>
-        <span class=n>final_element</span> <span class=o>=</span> <span class=n>clean_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+        <span class=n>final_element</span> <span class=o>=</span> <span class=n>clean_path</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>'.'</span><span class=p>)[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
         <span class=k>if</span> <span class=n>final_element</span> <span class=ow>in</span> <span class=n>primitive_fields</span><span class=p>:</span>
             <span class=k>return</span> <span class=kc>True</span>
 
@@ -432,7 +432,7 @@
             <span class=k>if</span> <span class=n>model_type_is_too_granular</span><span class=p>(</span><span class=n>model_type</span><span class=p>):</span>
                 <span class=k>return</span> <span class=kc>True</span>
         <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
-            <span class=c1># If we can&#39;t determine the type (e.g., due to wildcards), assume it&#39;s okay</span>
+            <span class=c1># If we can't determine the type (e.g., due to wildcards), assume it's okay</span>
             <span class=k>pass</span>
 
     <span class=k>return</span> <span class=kc>False</span>
@@ -442,9 +442,9 @@
 <span class=normal>268</span>
 <span class=normal>269</span>
 <span class=normal>270</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>to_model_file_name</span><span class=p>(</span><span class=n>model_obj</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>,</span> <span class=n>file_prefix</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Return the file name for the item.&quot;&quot;&quot;</span>
+<span class=w>    </span><span class=sd>"""Return the file name for the item."""</span>
     <span class=n>file_ext</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
     <span class=n>model_type</span> <span class=o>=</span> <span class=n>classname_to_alias</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>model_obj</span><span class=p>)</span><span class=o>.</span><span class=vm>__name__</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
-    <span class=n>file_name</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>file_prefix</span><span class=si>}{</span><span class=n>const</span><span class=o>.</span><span class=n>IDX_SEP</span><span class=si>}{</span><span class=n>model_type</span><span class=si>}{</span><span class=n>file_ext</span><span class=si>}</span><span class=s1>&#39;</span>
+    <span class=n>file_name</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>file_prefix</span><span class=si>}{</span><span class=n>const</span><span class=o>.</span><span class=n>IDX_SEP</span><span class=si>}{</span><span class=n>model_type</span><span class=si>}{</span><span class=n>file_ext</span><span class=si>}</span><span class=s1>'</span>
     <span class=k>return</span> <span class=n>file_name</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../../../assets/javascripts/bundle.d7400e89.min.js></script> </body> </html>
