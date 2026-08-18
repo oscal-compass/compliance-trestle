@@ -130,10 +130,11 @@ class AwsConfigResultToOscalAR(TaskBase):
             except Exception:
                 logger.warning('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
-        # ensure output dir exists
-        opth.mkdir(exist_ok=True, parents=True)
-        # process
+        if not self._simulate:
+            opth.mkdir(exist_ok=True, parents=True)
         for ifile in sorted(ipth.iterdir()):
+            if not ifile.is_file() or ifile.suffix not in ['.json', '.jsn']:
+                continue
             blob = self._read_file(ifile)
             transformer = AwsConfigResultToOscalARTransformer()
             results = transformer.transform(blob)

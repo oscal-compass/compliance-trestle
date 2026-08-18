@@ -56,7 +56,7 @@ class TestAwsConfigResultToOscalAR:
         task = AwsConfigResultToOscalAR(config)
         outcome = task.simulate()
         assert outcome == TaskOutcome.SIM_SUCCESS
-        assert not output_dir.exists() or not list(output_dir.iterdir())
+        assert not output_dir.exists()
 
     def test_execute_produces_valid_oscal_result(self, tmp_path):
         output_dir = tmp_path / 'out'
@@ -83,3 +83,19 @@ class TestAwsConfigResultToOscalAR:
         config2['output-overwrite'] = 'false'
         task2 = AwsConfigResultToOscalAR(config2)
         assert task2.execute() == TaskOutcome.FAILURE
+
+    def test_execute_skips_non_json_and_directories(self, tmp_path):
+        input_dir = tmp_path / 'in'
+        input_dir.mkdir()
+        (input_dir / 'nested').mkdir()
+        (input_dir / 'readme.txt').write_text('not json', encoding='utf-8')
+        sample = test_data_dir / 'aws-config-sample.json'
+        (input_dir / 'aws-config-sample.json').write_text(sample.read_text(encoding='utf-8'), encoding='utf-8')
+
+        output_dir = tmp_path / 'out'
+        config = _build_config(input_dir, output_dir)
+        task = AwsConfigResultToOscalAR(config)
+        assert task.execute() == TaskOutcome.SUCCESS
+        produced = list(output_dir.glob('*.oscal.json'))
+        assert len(produced) == 1
+        assert produced[0].name == 'aws-config-sample.oscal.json'
