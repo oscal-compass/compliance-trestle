@@ -23,6 +23,7 @@ https://docs.aws.amazon.com/config/latest/APIReference/API_EvaluationResult.html
 and API_EvaluationResultQualifier.html -- it is not a captured real AWS API
 response (no AWS account was used), but every field name and shape is real.
 """
+
 import pathlib
 
 import pytest
@@ -67,8 +68,7 @@ class TestTransform:
         results = transformer.transform(sample_blob)
         result = results.root[0]
         sg_item_uuid = next(
-            i.uuid for i in result.local_definitions.inventory_items
-            if 'sg-0a1b2c3d4e5f6g7h8' in i.description
+            i.uuid for i in result.local_definitions.inventory_items if 'sg-0a1b2c3d4e5f6g7h8' in i.description
         )
         sg_observations = [o for o in result.observations if 'restricted-ssh' in o.description]
         assert len(sg_observations) == 2
@@ -81,7 +81,8 @@ class TestTransform:
         results = transformer.transform(sample_blob)
         result = results.root[0]
         non_compliant = [
-            o for o in result.observations
+            o
+            for o in result.observations
             if any(p.name == 'compliance-type' and p.value == 'NON_COMPLIANT' for p in o.props)
         ]
         # 3 of the 4 fixture entries are NON_COMPLIANT.

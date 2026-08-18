@@ -23,6 +23,7 @@ into OSCAL Assessment Results, following the same
 Task + ResultsTransformer + private results-factory shape used by
 ``osco.py`` / ``tanium.py`` in this package.
 """
+
 import json
 import logging
 import uuid
@@ -88,11 +89,9 @@ class AwsConfigResultToOscalARTransformer(ResultsTransformer):
 class _OscalResultsFactory:
     """Build OSCAL entities from AWS Config EvaluationResult objects."""
 
-    default_timestamp = ResultsTransformer.get_timestamp()
-
-    def __init__(self, timestamp: str = default_timestamp) -> None:
+    def __init__(self, timestamp: str | None = None) -> None:
         """Initialize."""
-        self._timestamp = timestamp
+        self._timestamp = timestamp if timestamp is not None else ResultsTransformer.get_timestamp()
         self._observation_list: List[Observation] = []
         self._inventory_map: Dict[str, InventoryItem] = {}
         self._ns = AnyUrl('https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/aws-config')
@@ -163,11 +162,7 @@ class _OscalResultsFactory:
                 Property.model_construct(name='resource-id', value=resource_id, ns=self._ns),
             ]
             item = InventoryItem.model_validate(
-                {
-                    'uuid': str(uuid.uuid4()),
-                    'description': f'{resource_type} {resource_id}',
-                    'props': props,
-                }
+                {'uuid': str(uuid.uuid4()), 'description': f'{resource_type} {resource_id}', 'props': props}
             )
             self._inventory_map[key] = item
         return self._inventory_map[key].uuid
@@ -187,6 +182,10 @@ class _OscalResultsFactory:
             ('result-token', evaluation_result.get('ResultToken')),
         ):
             if value is not None:
+                # Only compliance-type is classed for downstream filtering,
+                # matching osco.py's scc_result pattern. Prop names stay
+                # hyphenated (OSCAL); class_ uses the underscored identifier
+                # style of osco's scc_* values.
                 class_ = 'aws_config_compliance' if name == 'compliance-type' else None
                 if class_:
                     props.append(Property.model_construct(name=name, value=str(value), ns=self._ns, class_=class_))
@@ -202,9 +201,7 @@ class _OscalResultsFactory:
         rule_name = qualifier.get('ConfigRuleName', 'Unknown')
         inventory_ref = self._inventory_extract(resource_type, resource_id)
 
-        subject_reference = SubjectReference.model_validate(
-            {'subject-uuid': inventory_ref, 'type': 'inventory-item'}
-        )
+        subject_reference = SubjectReference.model_validate({'subject-uuid': inventory_ref, 'type': 'inventory-item'})
         annotation = evaluation_result.get('Annotation')
         description = f'{rule_name} ({resource_type} {resource_id})'
         if annotation:
