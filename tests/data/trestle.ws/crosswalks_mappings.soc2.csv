@@ -1,0 +1,6 @@
+$$Source_Resource,$$Target_Resource,$$Map_Source_ID_Ref_list,$$Map_Target_ID_Ref_list,$$Map_Relationship,$Map_Confidence_Score,$Map_Coverage
+A reference to a resource that has the source controls of a mapping.,A reference to a resource that has the target controls of a mapping.,A list of source reference IDs.,A list of target reference IDs.,The relationship type for the mapping entry.,An estimation of the confidence that this mapping is correct and accurate expressed as percentage.,An estimation of the percentage coverage of the targets by the sources.
+catalogs/SOC2/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,d4,ra-5_smt.a ra-5_smt.b ra-5_smt.c ra-5_smt.d si-2_smt.a,subset-of,20%,20%
+catalogs/SOC2/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,d7,ra-5_smt.a ra-5_smt.b ra-5_smt.c ra-5_smt.d ra-5_smt.e si-2_smt.a,subset-of,10%,10%
+catalogs/SOC2/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,e8,ra-5_smt.a ra-5_smt.b ra-5_smt.c ra-5_smt.d si-2_smt.a,subset-of,20%,20%
+catalogs/SOC2/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,e9,ra-5_smt.a ra-5_smt.b ra-5_smt.c ra-5_smt.d si-2_smt.a,subset-of,10%,10%

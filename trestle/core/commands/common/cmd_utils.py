@@ -32,7 +32,24 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     """Is an model_type too fine to split."""
     if type_utils.is_collection_field_type(model_type):
         return False
-    if hasattr(model_type, '__fields__') and '__root__' in model_type.__fields__:
+    if hasattr(model_type, 'model_fields') and 'root' in model_type.model_fields:
+        # Check if 'root' contains a collection type (list) - this is a RootModel
+        root_field = model_type.model_fields['root']
+        root_type = root_field.annotation
+        if type_utils.is_collection_field_type(root_type):
+            return False
+        # Check if root contains a Union type of OscalBaseModel variants (Pydantic v2 RootModel)
+        # These are splittable (e.g., Group1|Group2, Parameter1|Parameter2)
+        from typing import get_origin, get_args
+        import types
+
+        origin = get_origin(root_type)
+        if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
+            union_args = get_args(root_type)
+            # If any variant is an OscalBaseModel, it's splittable
+            if any(isinstance(arg, type) and issubclass(arg, OscalBaseModel) for arg in union_args):
+                return False
+        # root with non-collection, non-Union types (like StringDatatype) are too granular (Pydantic v2 RootModel)
         return True
     if model_type.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float', 'datetime']:
         return True
@@ -51,11 +68,32 @@ def clear_folder(folder_path: pathlib.Path) -> None:
 
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     """Determine if the element path list goes too fine, e.g. individual strings."""
+    # When paths contain wildcards (e.g., 'groups.*.controls.*.id'), ElementPath.get_type()
+    # cannot determine the type. As a heuristic, we check if the final element name is a
+    # common primitive field that typically holds string/int/uuid values in OSCAL models.
+    # This prevents splitting at overly granular levels like individual IDs or names.
+    primitive_fields = {'id', 'uuid', 'name', 'title', 'description', 'value', 'version', 'href', 'rel'}
+
     for split_path in split_paths.split(','):
-        # find model type one level above if finishing with '.*'
-        model_type = ElementPath(split_path.rstrip('.*')).get_type(type(model_obj))
-        if model_type_is_too_granular(model_type):
+        # Strip all trailing .* patterns to get to the actual type
+        clean_path = split_path
+        while clean_path.endswith('.*'):
+            clean_path = clean_path[:-2]
+
+        # Check if the final element is a known primitive field
+        final_element = clean_path.split('.')[-1]
+        if final_element in primitive_fields:
             return True
+
+        # For paths without wildcards, check the actual type
+        try:
+            model_type = ElementPath(clean_path).get_type(type(model_obj))
+            if model_type_is_too_granular(model_type):
+                return True
+        except Exception:
+            # If we can't determine the type (e.g., due to wildcards), assume it's okay
+            pass
+
     return False
 
 
@@ -157,16 +195,16 @@ def parse_chain(
             full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
             parent_model = ModelUtils.get_singular_alias(full_path_str, relative_path)
             # Does wildcard mean we need to inspect the sub_model to determine what can be split off from it?
-            # If it has __root__ it may mean it contains a list of objects and should be split as a list
+            # If it has root it may mean it contains a list of objects and should be split as a list (Pydantic v2 RootModel)
             if isinstance(sub_model, OscalBaseModel):
-                root = getattr(sub_model, '__root__', None)
+                root = getattr(sub_model, 'root', None)
                 if root is None or not isinstance(root, list):
                     # Cannot have parts beyond * if it isn't a list
                     if i < len(path_parts) - 1:
                         raise TrestleError(
                             f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {path_parts}'
                         )
-                    for key in sub_model.__fields__.keys():
+                    for key in sub_model.__class__.model_fields.keys():
                         # only create element path is item is present in the sub_model
                         if getattr(sub_model, key, None) is None:
                             continue

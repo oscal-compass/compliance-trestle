@@ -247,7 +247,7 @@ def test_managed_invalid_root(tmp_path: pathlib.Path) -> None:
 def test_managed_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
     """Invalid top model while creating Managed OSCAL object."""
     with pytest.raises(TrestleError, match='not a top level model'):
-        ManagedOSCAL(tmp_trestle_dir, oscal.catalog.Group, 'anything')
+        ManagedOSCAL(tmp_trestle_dir, oscal.catalog.Group2, 'anything')
 
 
 def test_managed_invalid_model(tmp_trestle_dir: pathlib.Path) -> None:
@@ -300,7 +300,7 @@ def test_managed_write_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
     managed = repo.import_model(catalog_data, 'imported')
 
     # generate another catalog data for writing
-    catalog_data = generators.generate_sample_model(oscal.catalog.Group)
+    catalog_data = generators.generate_sample_model(oscal.catalog.Group2)
 
     with pytest.raises(TrestleError, match='not a top level model'):
         managed.write(catalog_data)
@@ -461,3 +461,197 @@ def test_agile_authoring_ssp(tmp_trestle_dir: pathlib.Path) -> None:
     success = authoring.assemble_ssp_markdown(ssp_name, ssp_name, args.output, args.compdefs)
     assert success
     assert pathlib.Path(tmp_trestle_dir, const.MODEL_DIR_SSP, args.output).exists()
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/repository.py
+# ---------------------------------------------------------------------------
+
+
+def test_managed_oscal_invalid_top_model_write(tmp_trestle_dir: pathlib.Path) -> None:
+    """ManagedOSCAL.write: line 94 – raises TrestleError when non-top-level model is written."""
+    catalog_data = generators.generate_sample_model(cat.Catalog)
+    repo = Repository(tmp_trestle_dir)
+    managed = repo.import_model(catalog_data, 'imported')
+    import trestle.oscal as oscal
+
+    non_top = generators.generate_sample_model(oscal.catalog.Group2)
+    with pytest.raises(TrestleError, match='not a top level model'):
+        managed.write(non_top)
+
+
+def test_managed_split_exception(tmp_trestle_dir: pathlib.Path) -> None:
+    """ManagedOSCAL.split: lines 145-146 – bad element path raises TrestleError."""
+    catalog_data = generators.generate_sample_model(cat.Catalog)
+    repo = Repository(tmp_trestle_dir)
+    managed = repo.import_model(catalog_data, 'imported')
+    with pytest.raises(TrestleError, match='Error in splitting model'):
+        managed.split(pathlib.Path('catalog.json'), ['catalog.NONEXISTENT_FIELD.*'])
+
+
+def test_managed_merge_exception(tmp_trestle_dir: pathlib.Path) -> None:
+    """ManagedOSCAL.merge: lines 170-171 – bad element path raises TrestleError."""
+    catalog_data = generators.generate_sample_model(cat.Catalog)
+    repo = Repository(tmp_trestle_dir)
+    managed = repo.import_model(catalog_data, 'imported')
+    with pytest.raises(TrestleError, match='Error in merging model'):
+        managed.merge(['catalog.NONEXISTENT_FIELD.*'])
+
+
+def test_repository_import_validation_rollback(tmp_trestle_dir: pathlib.Path) -> None:
+    """Repository.import_model: lines 240-252 – validation failure triggers rollback."""
+    import trestle.oscal as oscal
+    from trestle.core import parser
+
+    dup_cat = {
+        'uuid': '525f94af-8007-4376-8069-aa40179e0f6e',
+        'metadata': {
+            'title': 'Generic catalog created by trestle.',
+            'last-modified': '2020-12-11T02:04:51.053+00:00',
+            'version': '0.0.0',
+            'oscal-version': oscal.OSCAL_VERSION,
+        },
+        'back-matter': {
+            'resources': [
+                {'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'},
+                {'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'},
+            ]
+        },
+    }
+    catalog_data = parser.parse_dict(dup_cat, 'trestle.oscal.catalog.Catalog')
+    repo = Repository(tmp_trestle_dir)
+    with pytest.raises(TrestleError, match='Validation'):
+        repo.import_model(catalog_data, 'imported')
+    # After rollback the file should not exist
+    cat_path = tmp_trestle_dir / 'catalogs' / 'imported' / 'catalog.json'
+    assert not cat_path.exists()
+
+
+def test_repository_delete_with_dist_file(tmp_trestle_dir: pathlib.Path) -> None:
+    """Repository.delete_model: lines 310-315 – dist file is cleaned up when it exists."""
+    catalog_data = generators.generate_sample_model(cat.Catalog)
+    repo = Repository(tmp_trestle_dir)
+    repo.import_model(catalog_data, 'imported')
+    # Assemble to create dist file
+    repo.assemble_model(cat.Catalog, 'imported')
+    dist_path = tmp_trestle_dir / 'dist' / 'catalogs' / 'imported.json'
+    assert dist_path.exists()
+    success = repo.delete_model(cat.Catalog, 'imported')
+    assert success
+    assert not dist_path.exists()
+
+
+def test_repository_assemble_exception(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
+    """Repository.assemble_model: lines 338-339 – exception from AssembleCmd is re-raised."""
+    import trestle.core.commands.assemble as assemblecmd
+
+    catalog_data = generators.generate_sample_model(cat.Catalog)
+    repo = Repository(tmp_trestle_dir)
+    repo.import_model(catalog_data, 'imported')
+
+    def _bad_assemble(*args, **kwargs):
+        raise RuntimeError('forced assemble error')
+
+    monkeypatch.setattr(assemblecmd.AssembleCmd, 'assemble_model', _bad_assemble)
+    with pytest.raises(TrestleError, match='Error in assembling model'):
+        repo.assemble_model(cat.Catalog, 'imported')
+
+
+def test_repository_validate_exception(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
+    """Repository.validate_model: lines 360-361 – exception from ValidateCmd is re-raised."""
+    import trestle.core.commands.validate as validatecmd
+
+    catalog_data = generators.generate_sample_model(cat.Catalog)
+    repo = Repository(tmp_trestle_dir)
+    repo.import_model(catalog_data, 'imported')
+
+    def _bad_validate(*args, **kwargs):
+        raise RuntimeError('forced validate error')
+
+    monkeypatch.setattr(validatecmd.ValidateCmd, '_run', _bad_validate)
+    with pytest.raises(TrestleError, match='Error in validating model'):
+        repo.validate_model(cat.Catalog, 'imported')
+
+
+def test_agile_authoring_catalog_exception(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
+    """AgileAuthoring.generate_catalog_markdown and assemble: exception paths (lines 409-410, 546-547)."""
+    import trestle.core.commands.author.catalog as catalogauthorcmd
+    from trestle.core.repository import AgileAuthoring
+    import tests.test_utils as test_utils
+
+    test_utils.load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+    authoring = AgileAuthoring(tmp_trestle_dir)
+
+    def _bad_run(*args, **kwargs):
+        raise RuntimeError('forced error')
+
+    monkeypatch.setattr(catalogauthorcmd.CatalogGenerate, '_run', _bad_run)
+    with pytest.raises(TrestleError, match='Error generate markdown for catalog'):
+        authoring.generate_catalog_markdown('simplified_nist_catalog', 'md_out')
+
+    monkeypatch.setattr(catalogauthorcmd.CatalogAssemble, '_run', _bad_run)
+    with pytest.raises(TrestleError, match='Error assembling catalog'):
+        authoring.assemble_catalog_markdown('simplified_nist_catalog', 'new_cat', 'md_out')
+
+
+def test_agile_authoring_profile_exception(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
+    """AgileAuthoring profile generate/assemble exception paths (lines 450-451, 583-584)."""
+    import trestle.core.commands.author.prof as profileauthorcmd
+    from trestle.core.repository import AgileAuthoring
+    import tests.test_utils as test_utils
+
+    test_utils.load_from_json(tmp_trestle_dir, 'comp_prof', 'comp_prof', prof.Profile)
+    authoring = AgileAuthoring(tmp_trestle_dir)
+
+    def _bad_run(*args, **kwargs):
+        raise RuntimeError('forced error')
+
+    monkeypatch.setattr(profileauthorcmd.ProfileGenerate, '_run', _bad_run)
+    with pytest.raises(TrestleError, match='Error generate markdown for profile'):
+        authoring.generate_profile_markdown('comp_prof', 'md_out')
+
+    monkeypatch.setattr(profileauthorcmd.ProfileAssemble, '_run', _bad_run)
+    with pytest.raises(TrestleError, match='Error assembling profile'):
+        authoring.assemble_profile_markdown('comp_prof', 'new_prof', 'md_out')
+
+
+def test_agile_authoring_component_exception(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
+    """AgileAuthoring component generate/assemble exception paths (lines 478-479, 603-604)."""
+    import trestle.core.commands.author.component as componentauthorcmd
+    from trestle.core.repository import AgileAuthoring
+    import tests.test_utils as test_utils
+
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    authoring = AgileAuthoring(tmp_trestle_dir)
+
+    def _bad_run(*args, **kwargs):
+        raise RuntimeError('forced error')
+
+    monkeypatch.setattr(componentauthorcmd.ComponentGenerate, '_run', _bad_run)
+    with pytest.raises(TrestleError, match='Error generating markdown for component definition'):
+        authoring.generate_component_definition_markdown(comp_name, 'md_out')
+
+    monkeypatch.setattr(componentauthorcmd.ComponentAssemble, '_run', _bad_run)
+    with pytest.raises(TrestleError, match='Error assembling component definition'):
+        authoring.assemble_component_definition_markdown(comp_name, 'new_comp', 'md_out')
+
+
+def test_agile_authoring_ssp_exception(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
+    """AgileAuthoring ssp generate/assemble exception paths (lines 513-514, 642-643)."""
+    import trestle.core.commands.author.ssp as sspauthorcmd
+    from trestle.core.repository import AgileAuthoring
+    import tests.test_utils as test_utils
+
+    args, _ = test_utils.setup_for_ssp(tmp_trestle_dir, 'comp_prof', 'my_ssp')
+    authoring = AgileAuthoring(tmp_trestle_dir)
+
+    def _bad_run(*args, **kwargs):
+        raise RuntimeError('forced error')
+
+    monkeypatch.setattr(sspauthorcmd.SSPGenerate, '_run', _bad_run)
+    with pytest.raises(TrestleError, match='Error in generating markdown for ssp'):
+        authoring.generate_ssp_markdown(args.profile, args.output, args.compdefs)
+
+    monkeypatch.setattr(sspauthorcmd.SSPAssemble, '_run', _bad_run)
+    with pytest.raises(TrestleError, match='Error assembling ssp'):
+        authoring.assemble_ssp_markdown('my_ssp', 'my_ssp', args.output, args.compdefs)

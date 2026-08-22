@@ -79,7 +79,7 @@ class MarkdownValidator:
                 a. No additional headers of the level 1 were added
                 b. Headers were not reordered
                 c. Headers in the instance should be a superset of the template headers
-                d. Headers must be in heirarchical order (i.e. # then ### then ## is not allowed)
+                d. Headers must be in hierarchical order (i.e. # then ### then ## is not allowed)
             3. If Governed Header is given then:
                 a. Governed Header is not modified
                 b. All keys (i.e. key: something) inside the section are present

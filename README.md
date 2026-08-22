@@ -30,6 +30,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Tooling manage authoring and governance of markdown and drawio files within a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artifacts.
+- Detached signing and verification for JSON artifacts.
 
 ## Why Trestle
 
@@ -90,13 +91,26 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-### v3: stable (actively developed)
+### v5: stable (actively developed)
+
+- supports NIST OSCAL 1.2.1 as well as previous versions
+- uses pydantic in v2 mode
+
+### v4: stable (maintenance mode)
+
+- supports NIST OSCAL 1.2.1 as well as previous versions
+- supports newly released Mapping Model
+- limited support until December 31, 2026
+
+### v3: stable (deprecated)
 
 - supports NIST OSCAL 1.1.3 as well as previous versions
+- no longer supported
 
-### v2: stable (maintenance mode)
+### v2: stable (deprecated)
 
 - supports NIST OSCAL 1.0.4 as well as previous versions
+- no longer supported
 
 ## Community meetings and communications
 
@@ -105,6 +119,10 @@ Please refer to the community [README](https://github.com/oscal-compass/communit
 ## Contributing to Trestle
 
 Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/latest/contributing/mkdocs_contributing/) to get started.
+
+## Security
+
+For information about security features, best practices, and how to report security vulnerabilities, please see our [Security Policy](SECURITY.md).
 
 ## Code of Conduct
 
@@ -116,7 +134,7 @@ If you would like to see the detailed LICENSE click [here](LICENSE).
 Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
-# Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
+# Copyright (c) 2026 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -140,6 +158,8 @@ We are a Cloud Native Computing Foundation sandbox project.
   <img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
 </picture>
 
-The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage).
 
-*Trestle was originally created by IBM.*
+*OSCAL Compass is an independent open source project. It is not affiliated with, endorsed by, or sponsored by the National Institute of Standards and Technology (NIST) or any other government agency.*
+
+*OSCAL Compass was originally contributed by IBM.*

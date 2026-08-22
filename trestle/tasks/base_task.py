@@ -16,10 +16,13 @@
 """Trestle tasks base templating."""
 
 import configparser
+import datetime
 import logging
+import os
+import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Optional
+from typing import Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +51,42 @@ class TaskBase(ABC):
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """Initialize task base and store config."""
         self._config = config_object
+
+    def _configure_csv_common(self) -> Tuple[bool, Optional[str]]:
+        """Configure common CSV task fields shared across CSV-based tasks.
+
+        Sets self._timestamp, self._quiet, self._verbose, self._title,
+        self._version, self._csv_file, self._csv_path, self._workspace.
+
+        Returns:
+            Tuple of (success, error_message). success is True when all
+            required fields are present and valid, False otherwise.
+        """
+        self._timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
+        # config verbosity
+        self._quiet = self._config.get('quiet', False)
+        self._verbose = not self._quiet
+        # title
+        self._title = self._config.get('title')
+        if self._title is None:
+            return False, 'config missing "title"'
+        # version
+        self._version = self._config.get('version')
+        if self._version is None:
+            return False, 'config missing "version"'
+        # config csv
+        self._csv_file = self._config.get('csv-file')
+        if self._csv_file is None:
+            return False, 'config missing "csv-file"'
+        self._csv_path = pathlib.Path(self._csv_file)
+        if not self._csv_path.exists():
+            return False, '"csv-file" not found'
+        # announce csv
+        if self._verbose:
+            logger.info(f'input: {self._csv_file}')
+        # workspace
+        self._workspace = os.getcwd()
+        return True, None
 
     @abstractmethod
     def print_info(self) -> None:
@@ -86,14 +125,14 @@ class PassFail(TaskBase):
         logger.info(f'Help information for {self.name} task.')
         logger.info('This is a template task which reports pass fail depending on the specific configuration.')
         logger.info(
-            'In this case if no config section is provided the task will fail. This a a task specific behavior.'
+            'In this case if no config section is provided the task will fail. This is a task specific behavior.'
         )
         logger.info('Configuration flags sit under [task.pass-fail]')
         logger.info('with two boolean flags')
         logger.info('execute_status = True/False with a default pass')
         logger.info('simulate_status = True/False with a default fail')
         logger.info('Note that if the config file does not have the appropriate section this should fail.')
-        logger.info('The princple goal is a simple development example.')
+        logger.info('The principle goal is a simple development example.')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""

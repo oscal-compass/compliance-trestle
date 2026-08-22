@@ -7,33 +7,37 @@
       "version": "2021-01-01",
       "oscal-version": "1.0.4"
     },
+    "provenance": {
+      "method": "manual",
+      "matching-rationale": "semantic",
+      "status": "draft",
+      "mapping-description": "Simple test mapping collection for trestle validation"
+    },
     "mappings": [
       {
-        "uuid":"A0000000-0000-4000-8000-000000000060",
+        "uuid": "A0000000-0000-4000-8000-000000000060",
         "source-resource": {
-          "type": "SemanticType",
+          "type": "catalog",
           "href": "https://foo/bar.json"
         },
         "target-resource": {
-          "type": "SemanticType",
+          "type": "catalog",
           "href": "https://dog/cat.json"
         },
         "maps": [
           {
-            "uuid":"A0000000-0000-4000-8000-000000000070",
-            "relationship": {
-              "type": "brother"
-            },
+            "uuid": "A0000000-0000-4000-8000-000000000070",
+            "relationship": "subset-of",
             "sources": [
               {
-                "type": "SemanticType",
-                "id_ref": "IdRefSource"
+                "type": "control",
+                "id-ref": "ac-1"
               }
             ],
             "targets": [
               {
-                "type": "SemanticType",
-                "id_ref": "IdRefTarget"
+                "type": "control",
+                "id-ref": "ac-2"
               }
             ]
           }

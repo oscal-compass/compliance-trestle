@@ -114,7 +114,7 @@ class DrawIO:
 
     @classmethod
     def restructure_metadata(cls, input_dict: Dict[str, str]) -> Dict[str, Any]:
-        """Restructure metadata into a hierarchial dict assuming a period separator."""
+        """Restructure metadata into a hierarchical dict assuming a period separator."""
         # get the list of duplicate keys
         # Get a count of keys
         result = {}
@@ -183,7 +183,7 @@ class DrawIO:
             self.raw_xml.write(path)
 
     def _flatten_dictionary(self, metadata: Dict, parent_key='', separator='.') -> Dict[str, str]:
-        """Flatten hierarchial dict back to xml attributes."""
+        """Flatten hierarchical dict back to xml attributes."""
         items = []
         for key, value in metadata.items():
             new_key = parent_key + separator + key if parent_key else key

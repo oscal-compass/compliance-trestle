@@ -17,7 +17,7 @@
 
 from typing import Any, Type, TypeVar
 
-from pydantic.v1 import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError, model_validator
 
 from trestle.common.err import TrestleError
 
@@ -28,13 +28,32 @@ class TrestleBaseModel(BaseModel):
     """Trestle Base Model. Serves as wrapper around BaseModel for overriding methods."""
 
     @classmethod
-    def parse_obj(cls: Type['Model'], obj: Any) -> 'Model':
-        """Parse object to the given class."""
+    def model_validate(
+        cls: Type['Model'],
+        obj: Any,
+        *,
+        strict: bool | None = None,
+        from_attributes: bool | None = None,
+        context: dict[str, Any] | None = None,
+        extra: Any = None,
+        by_alias: bool | None = None,
+        by_name: bool | None = None,
+    ) -> 'Model':
+        """Validate object to the given class."""
         try:
-            return super().parse_obj(obj)
+            return super().model_validate(
+                obj,
+                strict=strict,
+                from_attributes=from_attributes,
+                context=context,
+                extra=extra,
+                by_alias=by_alias,
+                by_name=by_name,
+            )
         except ValidationError as e:
             # check if failed due to the wrong OSCAL version:
             oscal_version_error = False
+            message = ''
             for err in e.errors():
                 for field in err['loc']:
                     if field == 'oscal-version':
@@ -45,3 +64,8 @@ class TrestleBaseModel(BaseModel):
                 raise TrestleError(f'{message}')
             else:
                 raise
+
+    @classmethod
+    def parse_obj(cls: Type['Model'], obj: Any) -> 'Model':
+        """Parse object to the given class. Deprecated: use model_validate instead."""
+        return cls.model_validate(obj)

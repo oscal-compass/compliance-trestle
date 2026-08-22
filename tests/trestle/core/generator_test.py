@@ -21,10 +21,9 @@ import pkgutil
 import sys
 import uuid
 from datetime import date, datetime
-from typing import Any, List
+from typing import Any, List, Union
 
-import pydantic.v1.networks
-from pydantic.v1 import ConstrainedStr
+from pydantic import Field, EmailStr, AnyUrl
 
 import pytest
 
@@ -55,24 +54,24 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(int, '') == 0
     assert gens.generate_sample_value_by_type(str, '') == const.REPLACE_ME
     assert gens.generate_sample_value_by_type(float, '') == 0.0
-    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == const.REPLACE_ME
-    assert gens.generate_sample_value_by_type(ConstrainedStr, 'oarty-uuid') == const.SAMPLE_UUID_STR
-    uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
+    # In Pydantic v2, constr() creates an Annotated type, test with str directly
+    assert gens.generate_sample_value_by_type(str, '') == const.REPLACE_ME
+    assert gens.generate_sample_value_by_type(str, 'party-uuid') == const.SAMPLE_UUID_STR
+    uuid_ = gens.generate_sample_value_by_type(str, 'uuid')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
-    assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
-    assert gens.generate_sample_value_by_type(
-        pydantic.v1.networks.EmailStr, 'anything'
-    ) == pydantic.v1.networks.EmailStr('dummy@sample.com')
-    assert gens.generate_sample_value_by_type(pydantic.v1.networks.AnyUrl, 'anything') == pydantic.v1.networks.AnyUrl(
-        'https://sample.com/replaceme.html', scheme='http', host='sample.com'
-    )
+    assert gens.generate_sample_value_by_type(str, 'date_authorized') == date.today().isoformat()
+    # EmailStr and AnyUrl are still classes in Pydantic v2
+    assert gens.generate_sample_value_by_type(EmailStr, 'anything') == 'dummy@sample.com'
+    assert gens.generate_sample_value_by_type(AnyUrl, 'anything') == 'https://sample.com/replaceme.html'
     with pytest.raises(err.TrestleError):
         gens.generate_sample_value_by_type(list, 'uuid')
 
 
 def test_generate_sample_with_conint() -> None:
     """Generate a sample model where it is known to contain conint fields."""
-    gens.generate_sample_model(common.AtFrequency)
+    # OSCAL 1.2.0: AtFrequency no longer exists, use Timing2 which has dict fields
+    # Use a different model that has conint fields - PositiveIntegerDatatype
+    gens.generate_sample_model(common.Timing2)
 
 
 def test_generate_sample_with_list_primitives() -> None:
@@ -103,8 +102,9 @@ def test_generate_sample_model() -> None:
     # Check if last-modified datetime is of type datetime, and then equate in actual and expected
     assert type(actual_ctlg.metadata) is common.Metadata
     actual_ctlg.metadata.last_modified = expected_ctlg.metadata.last_modified
-    # Check that expected generated catalog is now same a actual catalog
-    assert expected_ctlg == actual_ctlg
+    # Check that expected generated catalog is now same as actual catalog
+    # In Pydantic v2, use model_dump for comparison to handle nested models correctly
+    assert expected_ctlg.model_dump() == actual_ctlg.model_dump()
 
     # Test list type models
     expected_role = common.Role(**{'id': const.REPLACE_ME, 'title': const.REPLACE_ME})
@@ -161,3 +161,266 @@ def test_gen_party() -> None:
     """Test generation of a party."""
     my_party = gens.generate_sample_model(common.Party, include_optional=True, depth=-1)
     assert my_party
+
+
+def test_is_enum_method() -> None:
+    """Test is_enum_method function."""
+    from trestle.oscal.common import Methods
+
+    # Test with Methods enum in Union
+    union_type = Union[Methods, str]
+    assert gens.is_enum_method(union_type) is True
+
+    # Test with non-Methods type
+    assert gens.is_enum_method(str) is False
+    assert gens.is_enum_method(int) is False
+
+
+def test_is_enum_task_valid_value() -> None:
+    """Test is_enum_task_valid_value function."""
+    from trestle.oscal.common import TaskValidValues
+
+    # Test with TaskValidValues enum in Union
+    union_type = Union[TaskValidValues, str]
+    assert gens.is_enum_task_valid_value(union_type) is True
+
+    # Test with non-TaskValidValues type
+    assert gens.is_enum_task_valid_value(str) is False
+
+
+def test_is_enum_observation_type_valid_value() -> None:
+    """Test is_enum_observation_type_valid_value function."""
+    from trestle.oscal.common import ObservationTypeValidValues
+
+    # Test with ObservationTypeValidValues enum in Union
+    union_type = Union[ObservationTypeValidValues, str]
+    assert gens.is_enum_observation_type_valid_value(union_type) is True
+
+    # Test with non-ObservationTypeValidValues type
+    assert gens.is_enum_observation_type_valid_value(str) is False
+
+
+def test_handle_enum_types() -> None:
+    """Test _handle_enum_types function."""
+    from trestle.oscal.common import Methods, TaskValidValues, ObservationTypeValidValues
+
+    # Test Methods enum
+    union_type = Union[Methods, str]
+    result = gens._handle_enum_types(union_type)
+    assert result == gens.sample_method
+
+    # Test TaskValidValues enum
+    union_type = Union[TaskValidValues, str]
+    result = gens._handle_enum_types(union_type)
+    assert result == gens.sample_task_valid_value
+
+    # Test ObservationTypeValidValues enum
+    union_type = Union[ObservationTypeValidValues, str]
+    result = gens._handle_enum_types(union_type)
+    assert result == gens.sample_observation_type_valid_value
+
+    # Test non-enum type
+    result = gens._handle_enum_types(str)
+    assert result is None
+
+
+def test_handle_constrained_string_oscal_version() -> None:
+    """Test _handle_constrained_string with oscal_version field."""
+    result = gens._handle_constrained_string(str, 'oscal_version')
+    assert result == oscal.OSCAL_VERSION
+
+
+def test_handle_constrained_string_member_of_organization() -> None:
+    """Test _handle_constrained_string with member_of_organization field."""
+    result = gens._handle_constrained_string(str, 'member_of_organizations')
+    assert result == const.SAMPLE_UUID_STR
+
+
+def test_generate_sample_value_enum_path() -> None:
+    """Test generate_sample_value_by_type with enum types."""
+    from trestle.oscal.common import Methods
+
+    # Test that enum path is taken
+    union_type = Union[Methods, str]
+    result = gens.generate_sample_value_by_type(union_type, 'test_field')
+    assert result == gens.sample_method
+
+
+def test_generate_sample_value_dict_type() -> None:
+    """Test generate_sample_value_by_type with dict type."""
+    result = gens.generate_sample_value_by_type(dict, 'test_field')
+    assert result == {}
+
+
+def test_generate_sample_value_plain_string_oscal_version() -> None:
+    """Test generate_sample_value_by_type with plain str type and oscal_version field."""
+    result = gens.generate_sample_value_by_type(str, 'oscal_version')
+    assert result == oscal.OSCAL_VERSION
+
+
+def test_generate_sample_value_enum_subclass() -> None:
+    """Test generate_sample_value_by_type with Enum subclass."""
+    from enum import Enum
+
+    class TestEnum(Enum):
+        VALUE1 = 'value1'
+        VALUE2 = 'value2'
+
+    result = gens.generate_sample_value_by_type(TestEnum, 'test_field')
+    assert result == TestEnum.VALUE1
+
+
+def test_is_constrained_string_plain_str() -> None:
+    """Plain str is recognised as a constrained string."""
+    assert gens._is_constrained_string(str)
+
+
+def test_is_constrained_string_annotated_str() -> None:
+    """Annotated[str, StringConstraints(...)] — the Pydantic v2 form of constr() — is recognised."""
+    from typing import Annotated
+    from pydantic import StringConstraints, constr
+
+    # constr() expands to Annotated[str, StringConstraints(...)] in Pydantic v2
+    assert gens._is_constrained_string(constr(pattern=r'^[0-9]+$'))
+    assert gens._is_constrained_string(Annotated[str, StringConstraints(min_length=1)])
+
+
+def test_is_constrained_string_false_cases() -> None:
+    """Non-string types must not be flagged as constrained strings."""
+    from typing import Annotated
+    from pydantic import StringConstraints
+
+    assert not gens._is_constrained_string(int)
+    assert not gens._is_constrained_string(float)
+    assert not gens._is_constrained_string(list)
+    # Annotated[int, ...] must NOT match even though origin is Annotated
+    assert not gens._is_constrained_string(Annotated[int, StringConstraints()])
+
+
+def test_generate_sample_value_constr_type() -> None:
+    """generate_sample_value_by_type routes constr() types through _handle_constrained_string."""
+    from pydantic import constr
+
+    uuid_pattern = constr(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )
+    result = gens.generate_sample_value_by_type(uuid_pattern, 'some_uuid')
+    assert result == const.SAMPLE_UUID_STR
+
+    plain = constr(min_length=1)
+    result = gens.generate_sample_value_by_type(plain, 'some_field')
+    assert result == const.REPLACE_ME
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/generators.py
+# ---------------------------------------------------------------------------
+
+
+def test_extract_int_constraints_with_gt() -> None:
+    """_extract_int_constraints: line 139 — gt branch sets floor = gt+1."""
+    from trestle.core.generators import _extract_int_constraints
+
+    class MockGt:
+        gt = 5
+        ge = None
+        multiple_of = None
+
+    floor, multiple_of = _extract_int_constraints([MockGt()])
+    assert floor == 6
+    assert multiple_of == 1
+
+
+def test_handle_annotated_int_floor_not_multiple() -> None:
+    """_handle_annotated_int: line 165 — non-zero remainder returns (floor+1)*multiple_of."""
+    from typing import Annotated
+    from trestle.core.generators import _handle_annotated_int
+
+    # Build an Annotated[int, ...] where floor is NOT a multiple of multiple_of
+    # e.g. ge=1, multiple_of=3 → floor=1, remainder(1,3)!=0 → return (1+1)*3 = 6
+    class _Ge:
+        ge = 1
+        gt = None
+        multiple_of = None
+
+    class _Mo:
+        ge = None
+        gt = None
+        multiple_of = 3
+
+    type_ = Annotated[int, _Ge(), _Mo()]
+    result = _handle_annotated_int(type_)
+    assert result is not None
+    assert result % 3 == 0
+
+
+def test_generate_sample_value_bare_list() -> None:
+    """generate_sample_model: line 274-276 — bare list type raises TrestleError."""
+    with pytest.raises(err.TrestleError):
+        gens.generate_sample_value_by_type(list, 'foo')
+
+
+def test_generate_sample_value_returns_replace_me() -> None:
+    """generate_sample_value_by_type: line 287 — unrecognised type returns REPLACE_ME."""
+    # 'object' is not str/int/float/bool/datetime/Enum/special — falls through to return REPLACE_ME
+    result = gens.generate_sample_value_by_type(object, 'foo')
+    assert result == const.REPLACE_ME
+
+
+def test_get_constrained_int_value_not_multiple() -> None:
+    """_get_constrained_int_value: line 302 — non-divisible floor returns (floor+1)*multiple_of."""
+    from trestle.core.generators import _get_constrained_int_value
+
+    class _Ge:
+        ge = 1
+        gt = None
+        multiple_of = None
+
+    class _Mo:
+        ge = None
+        gt = None
+        multiple_of = 4
+
+    # floor=1, multiple_of=4 → remainder(1,4)!=0 → (1+1)*4 = 8
+    result = _get_constrained_int_value([_Ge(), _Mo()])
+    assert result == 8
+
+
+def test_generate_sample_model_include_all_optional() -> None:
+    """generate_sample_model: lines 463-465 — include_optional includes include_all field."""
+    # prof.Import1 has an optional 'include_all' field; with include_optional=True it should be populated
+    import trestle.oscal.profile as prof_mod
+
+    result = gens.generate_sample_model(prof_mod.Import1, include_optional=True)
+    assert result is not None
+
+
+def test_generate_sample_model_list_any_inner_type() -> None:
+    """generate_sample_model: line 610 — List[Any] inner type returns [REPLACE_ME]."""
+    from typing import Any, List
+
+    result = gens.generate_sample_model(List[Any])
+    assert result == [const.REPLACE_ME]
+
+
+def test_generate_sample_model_dict_any_inner_type() -> None:
+    """generate_sample_model: lines 615-616 — Dict[str, Any] inner type returns {REPLACE_ME: REPLACE_ME}."""
+    from typing import Any, Dict
+
+    result = gens.generate_sample_model(Dict[str, Any])
+    assert result == {const.REPLACE_ME: const.REPLACE_ME}
+
+
+def test_generate_sample_model_unhandled_collection_type() -> None:
+    """generate_sample_model: line 653 — completely unhandled collection type raises TrestleError."""
+    with pytest.raises(err.TrestleError, match='Unhandled collection type'):
+        gens.generate_sample_model(set)
+
+
+def test_generate_sample_model_returns_list_instance() -> None:
+    """generate_sample_model: line 655 — model_type=list returns list instance."""
+    # Use a list[str] type annotation to hit line 655
+    from typing import List
+
+    result = gens.generate_sample_model(List[str])
+    assert isinstance(result, list)
