@@ -74,7 +74,8 @@ Complete documentation, tutorials, and background on compliance can be found [he
 
 ## Agentic Agile Authoring
 
-Agentic Agile Authoring is compliance authoring for OSCAL artifacts based on MCP Server and GenAI agentic solution with Human-in-the-Loop (HITL). More information can be found [here](https://github.com/oscal-compass/agentic-agile-authoring).
+Compliance authoring for OSCAL artifacts based on the OSCAL Compass MCP Server and a GenAI agentic solution with Human-in-the-Loop (HITL) by design, as authoring skills run inside your IDE (Claude Code, OpenCode).
+More information can be found [here](https://github.com/oscal-compass/agentic-agile-authoring).
 
 ## Agile Authoring
 
