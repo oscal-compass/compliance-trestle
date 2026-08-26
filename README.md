@@ -72,6 +72,11 @@ See [Install trestle in a python virtual environment](https://oscal-compass.gith
 
 Complete documentation, tutorials, and background on compliance can be found [here](https://oscal-compass.github.io/compliance-trestle/latest).
 
+## Agentic Agile Authoring
+
+Compliance authoring for OSCAL artifacts based on the OSCAL Compass MCP Server and a GenAI agentic solution with Human-in-the-Loop (HITL) by design, as authoring skills run inside your IDE (Claude Code, OpenCode).
+More information can be found [here](https://github.com/oscal-compass/agentic-agile-authoring).
+
 ## Agile Authoring
 
 A trestle-based agile authoring repository setup tool, documentation and tutorial can be found [here](https://github.com/oscal-compass/compliance-trestle-agile-authoring).
