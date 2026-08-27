@@ -39,7 +39,7 @@ dependencies = [
     "paramiko==5.0.0",
     "ruamel.yaml",
     "furl",
-    "pydantic[email]>=2.0.0",
+    "pydantic[email]>=2.11.0",
     "python-dotenv>=0.10.4",
     "python-frontmatter",
     "pywin32 >= 1.0;platform_system=='Windows'",
