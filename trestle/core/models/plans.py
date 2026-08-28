@@ -82,4 +82,20 @@ class Plan:
         if not isinstance(other, Plan):
             return False
 
-        return self.get_actions() == other.get_actions()
+        # Compare actions by their content, not by object identity
+        if len(self.get_actions()) != len(other.get_actions()):
+            return False
+
+        for i, (self_action, other_action) in enumerate(zip(self.get_actions(), other.get_actions(), strict=True)):
+            if self_action != other_action:
+                # Debug: print which action differs
+                logger.debug(f'Action {i} differs:')
+                logger.debug(f'  Self: {self_action}')
+                logger.debug(f'  Other: {other_action}')
+                return False
+
+        return True
+
+    def __repr__(self) -> str:
+        """Return a detailed representation of the plan."""
+        return f'Plan(actions={[str(a) for a in self._actions]})'

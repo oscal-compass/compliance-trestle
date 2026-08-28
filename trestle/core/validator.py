@@ -24,6 +24,7 @@ import trestle.common.file_utils
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
+from trestle.core import oscal_backward_compatibility
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
 
@@ -72,10 +73,12 @@ class Validator(ABC):
                     return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
                 extension_type = trestle.common.file_utils.get_contextual_file_type(model_dir)
                 model_path = model_dir / f'{args.type}{FileContentType.to_file_extension(extension_type)}'
+                if _check_compat(model_path):
+                    return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
                 try:
                     _, _, model = ModelUtils.load_distributed(model_path, trestle_root)
                 except TrestleError as e:
-                    logger.warning(f'File load error {e}')
+                    logger.error(f'INVALID: Model {model_path} failed to load:\n{e}')
                     return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
                 if not self.model_is_valid(model, args.quiet, trestle_root):  # type: ignore
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')
@@ -91,7 +94,13 @@ class Validator(ABC):
                 model_dir = trestle_root / ModelUtils.model_type_to_model_dir(mt[0]) / mt[1]
                 extension_type = trestle.common.file_utils.get_contextual_file_type(model_dir)
                 model_path = model_dir / f'{mt[0]}{FileContentType.to_file_extension(extension_type)}'
-                _, _, model = ModelUtils.load_distributed(model_path, trestle_root)
+                if _check_compat(model_path):
+                    return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
+                try:
+                    _, _, model = ModelUtils.load_distributed(model_path, trestle_root)
+                except TrestleError as e:
+                    logger.error(f'INVALID: Model {model_path} failed to load:\n{e}')
+                    return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
                 if not self.model_is_valid(model, args.quiet, trestle_root):  # type: ignore
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')
                     return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
@@ -102,10 +111,37 @@ class Validator(ABC):
         # validate file
         if args.file:
             file_path = trestle_root / args.file
-            _, _, model = ModelUtils.load_distributed(file_path, trestle_root)
+            if _check_compat(file_path):
+                return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
+            try:
+                _, _, model = ModelUtils.load_distributed(file_path, trestle_root)
+            except TrestleError as e:
+                logger.error(f'INVALID: Model {file_path} failed to load:\n{e}')
+                return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
             if not self.model_is_valid(model, args.quiet, trestle_root):  # type: ignore
                 logger.info(f'INVALID: Model {file_path} did not pass the {self.error_msg()}')
                 return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
             if not args.quiet:
                 logger.info(f'VALID: Model {file_path} passed the {self.error_msg()}')
         return CmdReturnCodes.SUCCESS.value
+
+
+def _check_compat(model_path: pathlib.Path) -> bool:
+    """Run pre-parse OSCAL compatibility checks on a JSON file.
+
+    Logs all issues found.  Returns True if any ERROR-level issues are present
+    (meaning validation should be halted), False if only warnings or nothing.
+    """
+    if model_path.suffix != '.json':
+        return False
+    issues = oscal_backward_compatibility.check_file(model_path)
+    if not issues:
+        return False
+    has_errors = False
+    for issue in issues:
+        if issue.severity == 'ERROR':
+            logger.error(str(issue))
+            has_errors = True
+        else:
+            logger.warning(str(issue))
+    return has_errors

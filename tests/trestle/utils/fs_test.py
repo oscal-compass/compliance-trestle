@@ -14,7 +14,7 @@
 """Tests for fs module."""
 
 import pathlib
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import List, Union
 
 import pytest
@@ -554,6 +554,18 @@ def test_get_models_of_type(tmp_trestle_dir) -> None:
         ModelUtils.get_models_of_type('foo', tmp_trestle_dir)
 
 
+def test_get_models_of_type_preserves_dots(tmp_trestle_dir) -> None:
+    """Test model discovery preserves dots in top-level model directory names."""
+    catalogs_dir = tmp_trestle_dir.resolve() / 'catalogs'
+    (catalogs_dir / 'foo.bar').mkdir()
+
+    models = ModelUtils.get_models_of_type('catalog', tmp_trestle_dir)
+    all_models = ModelUtils.get_all_models(tmp_trestle_dir)
+
+    assert 'foo.bar' in models
+    assert ('catalog', 'foo.bar') in all_models
+
+
 def test_get_models_of_type_bad_cwd(tmp_path) -> None:
     """Test fs.get_models_of_type() from outside trestle dir."""
     with pytest.raises(TrestleError):
@@ -609,6 +621,13 @@ def test_is_hidden_windows(tmp_path) -> None:
         ('component-definitions', False),
         ('hello.world', False),
         ('component-definitions/hello', False),
+        # Path traversal attack vectors (CVE-2026-46345 fix)
+        ('/tmp/pwned', False),  # Absolute path
+        ('/etc/passwd', False),  # Absolute path
+        ('../../tmp/pwned', False),  # Leading .. traversal
+        ('subdir/../../../tmp/pwned', False),  # Non-leading .. traversal
+        ('subdir/../../etc/passwd', False),  # Non-leading .. traversal
+        ('normal/../path', False),  # Any .. component
     ],
 )
 def test_allowed_task_name(task_name: str, outcome: bool) -> None:
@@ -806,7 +825,7 @@ def test_dict_to_parameter_value_not_in_choices() -> None:
 
 
 def test_objects_differ_enum_and_root_comparisons() -> None:
-    """Test _objects_differ with enum and __root__ wrapper comparisons."""
+    """Test _objects_differ with enum and root wrapper comparisons."""
     from enum import Enum
 
     class TestEnum(Enum):
@@ -815,7 +834,8 @@ def test_objects_differ_enum_and_root_comparisons() -> None:
 
     class MockRootWrapper:
         def __init__(self, value):
-            self.__root__ = value
+            # Pydantic v2: RootModel uses 'root' instead of '__root__'
+            self.root = value
 
     enum_val = TestEnum.VALUE1
     assert not ModelUtils._objects_differ(enum_val, 'value1', [], [], False)
@@ -830,7 +850,7 @@ def test_objects_differ_enum_and_root_comparisons() -> None:
     root_wrapper_diff = MockRootWrapper('value2')
     assert ModelUtils._objects_differ(enum_val, root_wrapper_diff, [], [], False)
 
-    from pydantic.v1 import BaseModel as PydanticBaseModel
+    from pydantic import BaseModel as PydanticBaseModel
 
     class TestModel(PydanticBaseModel):
         value: str
@@ -867,7 +887,7 @@ def test_last_modified_at_time() -> None:
     """Test last_modified_at_time with and without timestamp."""
     from datetime import timezone
 
-    test_timestamp = datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc)
+    test_timestamp = datetime(2024, 1, 15, 10, 30, 0, tzinfo=UTC)
     result = ModelUtils.last_modified_at_time(test_timestamp)
     assert result == test_timestamp
 

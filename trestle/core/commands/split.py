@@ -167,10 +167,10 @@ class SplitCmd(CommandPlusDocs):
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
 
-            # If the model has __root__ containing a Union type (not a list), unwrap it
+            # If the model has root containing a Union type (not a list), unwrap it (Pydantic v2 RootModel)
             # This happens when we wrap Union types for reading (e.g., Group1|Group2)
-            if hasattr(model, '__root__'):
-                root_val = model.__root__
+            if hasattr(model, 'root'):
+                root_val = model.root
                 # Only unwrap if it's a single OscalBaseModel, not a list
                 if isinstance(root_val, OscalBaseModel):
                     model = root_val
@@ -399,7 +399,9 @@ class SplitCmd(CommandPlusDocs):
             if last_one and use_alias_dict:
                 aliases_to_strip[path].mark_written()
             # If it's an empty model after stripping the fields, don't create path and don't write
-            field_list = [x for x in model_obj.__fields__.keys() if model_obj.__fields__[x] is not None]
+            # Access model_fields from class to avoid deprecation warning in Pydantic v2.11+
+            model_fields = model_obj.__class__.model_fields
+            field_list = [x for x in model_fields.keys() if model_fields[x] is not None]
             if set(field_list) == set(stripped_field_alias):
                 return path_chain_end
 
@@ -410,8 +412,9 @@ class SplitCmd(CommandPlusDocs):
                     root_file = base_dir / element_path.to_root_path(content_type)
 
                 split_plan.add_action(CreatePathAction(root_file))
-                wrapper_alias = classname_to_alias(stripped_model.__class__.__name__, AliasMode.JSON)
-                split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
+                split_plan.add_action(
+                    WriteFileAction(root_file, Element(stripped_model, element_path.get_first()), content_type)
+                )
 
         # return the end of the current path chain
         return path_chain_end
@@ -443,7 +446,8 @@ class SplitCmd(CommandPlusDocs):
             if element_path.get_parent() is None and len(element_path.get()) > 1:
                 stripped_part = element_path.get()[1]
                 if stripped_part == ElementPath.WILDCARD:
-                    stripped_field_alias.append('__root__')
+                    # In Pydantic v2, RootModel uses 'root' field
+                    stripped_field_alias.append('root')
                 else:
                     if stripped_part not in stripped_field_alias:
                         stripped_field_alias.append(stripped_part)
@@ -466,15 +470,17 @@ class SplitCmd(CommandPlusDocs):
         # strip the root model object and add a WriteAction
         stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
         # If it's an empty model after stripping the fields, don't create path and don't write
-        if set(model_obj.__fields__.keys()) == set(stripped_field_alias):
+        # Access model_fields from class to avoid deprecation warning in Pydantic v2.11+
+        if set(model_obj.__class__.model_fields.keys()) == set(stripped_field_alias):
             return split_plan
         if root_file_name != '':
             root_file = base_dir / root_file_name
         else:
             root_file = base_dir / element_paths[0].to_root_path(content_type)
         split_plan.add_action(CreatePathAction(root_file, True))
-        wrapper_alias = classname_to_alias(stripped_root.__class__.__name__, AliasMode.JSON)
-        split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
+        split_plan.add_action(
+            WriteFileAction(root_file, Element(stripped_root, element_paths[0].get_first()), content_type)
+        )
 
         return split_plan
 

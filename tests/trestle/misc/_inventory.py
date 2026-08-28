@@ -6,15 +6,13 @@ from trestle.oscal.common import InventoryItem, ResponsibleParty
 try:
     role_id = 'x'
     party_uuids = [str(uuid4())]
-    rp = ResponsibleParty(role_id=role_id, party_uuids=party_uuids)
+    # In Pydantic v2, use Field aliases with by_alias=True or use model_validate
+    rp = ResponsibleParty.model_validate({'role-id': role_id, 'party-uuids': party_uuids})
     list_rp = [rp]
-    item = InventoryItem(
-        uuid=str(uuid4()),
-        description='an item',
-        props=[],
-        links=[],
-        responsible_parties=list_rp,
-        implemented_components=[],
+    item = InventoryItem.model_validate(
+        {'uuid': str(uuid4()), 'description': 'an item', 'responsible-parties': list_rp}
     )
 except Exception as e:
     raise RuntimeError(f'{e}')
+
+# Made with Bob

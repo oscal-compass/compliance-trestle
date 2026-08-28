@@ -63,7 +63,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
-        self._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+        self._timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
 
     def set_timestamp(self, timestamp: str) -> None:
         """Set the timestamp."""
@@ -234,8 +234,14 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         # defined component
         component_title = component_name
         component_description = component_name
+        # Convert string to enum member for Pydantic v2
+        from trestle.oscal.component import DefinedComponentTypeValidValues
+
         defined_component = DefinedComponent(
-            uuid=str(uuid.uuid4()), description=component_description, title=component_title, type='Service'
+            uuid=str(uuid.uuid4()),
+            description=component_description,
+            title=component_title,
+            type=DefinedComponentTypeValidValues.service,
         )
         # add control implementation per profile
         prop1 = Property(name='profile_name', value=profile_name, class_='scc_profile_name', ns=profile_ns)

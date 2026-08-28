@@ -25,6 +25,8 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
+from pydantic import AnyUrl
+
 from trestle.oscal.assessment_results import AssessmentAssets, LocalDefinitions1, Observation, Result, SystemComponent
 from trestle.oscal.common import (
     AssessmentPlatform,
@@ -109,8 +111,8 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
             self._results_factory.ingest_xml(resource)
         else:
             return None
-        results = Results()
-        results.__root__.append(self._results_factory.result)
+        results = Results.model_construct(root=[])
+        results.root.append(self._results_factory.result)
         return results
 
     def _ingest_configmaps(self, jdata: dict) -> None:
@@ -145,8 +147,8 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
                 self._ingest_auditree(jdata)
         except json.decoder.JSONDecodeError:
             return None
-        results = Results()
-        results.__root__.append(self._results_factory.result)
+        results = Results.model_construct(root=[])
+        results.root.append(self._results_factory.result)
         return results
 
     def _ingest_yaml(self, blob: str) -> Results:
@@ -158,8 +160,8 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
             self._results_factory.ingest(resource)
         except Exception as e:
             raise RuntimeError(e)
-        results = Results()
-        results.__root__.append(self._results_factory.result)
+        results = Results.model_construct(root=[])
+        results.root.append(self._results_factory.result)
         return results
 
 
@@ -201,7 +203,7 @@ class RuleUse:
     @property
     def ns(self):
         """Derive namespace."""
-        return f'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'  # noqa: E231
+        return AnyUrl(f'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}')
 
 
 class _XccdfResult:
@@ -403,9 +405,9 @@ class _OscalResultsFactory:
     @property
     def control_selections(self) -> List[ControlSelections]:
         """OSCAL control selections."""
-        prop = []
-        prop.append(ControlSelections(include_controls=[]))
-        return prop
+        # Return empty list - reviewed_controls is now optional in Result
+        # so we don't need to provide control_selections
+        return []
 
     @property
     def inventory(self) -> ValuesView[InventoryItem]:
@@ -433,11 +435,14 @@ class _OscalResultsFactory:
             status=_status,
         )
         if self.assessment_asset_properties:
-            component.props = []
+            # Build the props list first, then assign to avoid Pydantic v2 validation on empty list
+            props_list = []
             for prop in self.assessment_asset_properties:
                 if prop.name == 'time':
                     continue
-                component.props.append(prop)
+                props_list.append(prop)
+            if props_list:
+                component.props = props_list
         components = [component]
         assessment_platform = AssessmentPlatform(uuid=str(uuid.uuid4()))
         assessment_platforms = [assessment_platform]
@@ -475,10 +480,10 @@ class _OscalResultsFactory:
         return self._assessment_asset_properties_list
 
     @property
-    def reviewed_controls(self) -> ReviewedControls:
+    def reviewed_controls(self) -> Optional[ReviewedControls]:
         """OSCAL reviewed controls."""
-        prop = ReviewedControls(control_selections=self.control_selections)
-        return prop
+        # Return None since control_selections is empty and reviewed_controls is now optional
+        return None
 
     @property
     def result(self) -> Result:
@@ -488,14 +493,22 @@ class _OscalResultsFactory:
             self._assessment_asset_properties_list = TransformerHelper().remove_common_observation_properties(
                 self.observations
             )
-        # produce result
+        # produce result - reviewed_controls is required, so provide a default if None
+        reviewed_controls_value = self.reviewed_controls
+        if reviewed_controls_value is None:
+            # Create a minimal ReviewedControls with a control selection that includes all
+            from trestle.oscal.common import ControlSelectionsAll, IncludeAll
+
+            control_selection = ControlSelectionsAll(include_all=IncludeAll())
+            reviewed_controls_value = ReviewedControls(control_selections=[control_selection])
+
         prop = Result(
             uuid=str(uuid.uuid4()),
             title=f'{self._title}',
             description=f'{self._description}',
             start=self.time,
             end=self.time,
-            reviewed_controls=self.reviewed_controls,
+            reviewed_controls=reviewed_controls_value,
         )
         if self.inventory:
             prop.local_definitions = self.local_definitions
@@ -513,7 +526,7 @@ class _OscalResultsFactory:
 
     def _component_extract(self, rule_use: RuleUse) -> None:
         """Extract component from RuleUse."""
-        _type = 'Service'
+        _type = 'service'
         _title = f'{rule_use.target_type}'
         _desc = _title
         for component in self._component_map.values():
@@ -561,10 +574,11 @@ class _OscalResultsFactory:
             elif ns:
                 prop = Property(name=name, value=value, ns=ns)
         else:
+            # Pydantic v2: construct() → model_construct()
             if ns and class_:
-                prop = Property.construct(name=name, value=value, ns=ns, class_=class_)
+                prop = Property.model_construct(name=name, value=value, ns=ns, class_=class_)
             elif ns:
-                prop = Property.construct(name=name, value=value, ns=ns)
+                prop = Property.model_construct(name=name, value=value, ns=ns)
         return prop
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> str:

@@ -142,7 +142,8 @@ class Merge(Pipeline.Filter):
 
     def _merge_items(self, dest: OBT, src: OBT, merge_method: Optional[str]) -> None:
         """Merge two items recursively."""
-        for field in src.__fields_set__:
+        # Pydantic v2: __fields_set__ → model_fields_set
+        for field in src.model_fields_set:
             self._merge_attrs(dest, src, field, merge_method)
 
     def _group_contents(self, group: cat.Group1 | cat.Group2) -> Tuple[List[cat.Control], List[com.Parameter]]:
@@ -164,14 +165,15 @@ class Merge(Pipeline.Filter):
             return catalog
 
         # as_is is False so flatten the controls into a single list
-        catalog.controls = as_list(catalog.controls)
-        catalog.params = as_list(catalog.params)
+        # Pydantic v2: Use temp variables to avoid assigning empty lists (min_length validation)
+        temp_controls = as_list(catalog.controls)
+        temp_params = as_list(catalog.params)
         for group in catalog.groups:
             new_controls, new_params = self._group_contents(group)
-            catalog.controls.extend(new_controls)
-            catalog.params.extend(new_params)
-        catalog.controls = none_if_empty(catalog.controls)
-        catalog.params = none_if_empty(catalog.params)
+            temp_controls.extend(new_controls)
+            temp_params.extend(new_params)
+        catalog.controls = none_if_empty(temp_controls)
+        catalog.params = none_if_empty(temp_params)
         catalog.groups = None
         return catalog
 
@@ -201,8 +203,9 @@ class Merge(Pipeline.Filter):
         # unstructured controls should appear after any loose params
 
         # make copies to avoid changing input objects
-        local_cat = catalog.copy(deep=True)
-        local_merged = merged.copy(deep=True) if merged else None
+        # Pydantic v2: copy() → model_copy()
+        local_cat = catalog.model_copy(deep=True)
+        local_merged = merged.model_copy(deep=True) if merged else None
 
         merge_method = prof.CombinationMethodValidValues.keep.value
         as_is = False
@@ -239,7 +242,7 @@ class Merge(Pipeline.Filter):
         # merge the incoming catalog with merged based on merge_method and as_is
         return self._merge_two_catalogs(local_merged, local_cat, merge_method, as_is)
 
-    def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:  # type: ignore
+    def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:
         """
         Merge the incoming catalogs.
 

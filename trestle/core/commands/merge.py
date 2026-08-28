@@ -174,9 +174,11 @@ class MergeCmd(CommandPlusDocs):
                 target_model_filename, trestle_root, collection_type
             )
 
-        if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:
-            trace.log('loaded object has dict and root so set target model object to root contents')
-            target_model_object = target_model_object.__dict__['__root__']
+        if hasattr(target_model_object, '__dict__') and 'root' in target_model_object.__dict__:
+            trace.log(
+                'loaded object has dict and root so set target model object to root contents (Pydantic v2 RootModel)'
+            )
+            target_model_object = target_model_object.__dict__['root']
         # 4. Insert target model into destination model.
         merged_dict = {}
         if destination_model_object is not None:
