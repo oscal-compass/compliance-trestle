@@ -192,7 +192,12 @@
 <span class=normal>205</span>
 <span class=normal>206</span>
 <span class=normal>207</span>
-<span class=normal>208</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>MergeCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>208</span>
+<span class=normal>209</span>
+<span class=normal>210</span>
+<span class=normal>211</span>
+<span class=normal>212</span>
+<span class=normal>213</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>MergeCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>"""Merge subcomponents on a trestle model."""</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>'merge'</span>
@@ -349,8 +354,6 @@
         <span class=n>write_destination_action</span> <span class=o>=</span> <span class=n>WriteFileAction</span><span class=p>(</span>
             <span class=n>destination_model_path</span><span class=p>,</span> <span class=n>merged_destination_element</span><span class=p>,</span> <span class=n>content_type</span><span class=o>=</span><span class=n>file_type</span>
         <span class=p>)</span>
-        <span class=c1># FIXME this will delete metadata.json but it will leave metadata/roles/roles.*</span>
-        <span class=c1># need to clean up all lower dirs</span>
         <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'remove path action </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>delete_target_action</span> <span class=o>=</span> <span class=n>RemovePathAction</span><span class=p>(</span><span class=n>target_model_filename</span><span class=p>)</span>
 
@@ -359,7 +362,14 @@
         <span class=n>plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>write_destination_action</span><span class=p>)</span>
         <span class=n>plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>delete_target_action</span><span class=p>)</span>
 
-        <span class=c1># TODO: Destination model directory is empty or already merged? Then clean up.</span>
+        <span class=c1># If merge loaded from &lt;alias&gt;.json and a sibling distributed folder &lt;alias&gt;/ exists,</span>
+        <span class=c1># remove it as well to avoid leaving stale decomposed content behind.</span>
+        <span class=k>if</span> <span class=n>target_model_filename</span><span class=o>.</span><span class=n>is_file</span><span class=p>():</span>
+            <span class=n>distributed_target_dir</span> <span class=o>=</span> <span class=n>target_model_filename</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
+            <span class=k>if</span> <span class=n>distributed_target_dir</span><span class=o>.</span><span class=n>exists</span><span class=p>()</span> <span class=ow>and</span> <span class=n>distributed_target_dir</span><span class=o>.</span><span class=n>is_dir</span><span class=p>():</span>
+                <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'remove distributed target dir action </span><span class=si>{</span><span class=n>distributed_target_dir</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+                <span class=n>delete_distributed_target_action</span> <span class=o>=</span> <span class=n>RemovePathAction</span><span class=p>(</span><span class=n>distributed_target_dir</span><span class=p>)</span>
+                <span class=n>plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>delete_distributed_target_action</span><span class=p>)</span>
 
         <span class=k>return</span> <span class=n>plan</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.merge.MergeCmd-attributes>Attributes<a href=#trestle.core.commands.merge.MergeCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.merge.MergeCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'merge'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.merge.MergeCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.merge.MergeCmd-functions>Methods:<a href=#trestle.core.commands.merge.MergeCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.merge.MergeCmd.merge class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge</span><span class=p>(</span><span class=n>effective_cwd</span><span class=p>,</span> <span class=n>element_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.merge.MergeCmd.merge class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge operations.</p> <p>It returns a plan for the operation</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/merge.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 76</span>
@@ -494,7 +504,12 @@
 <span class=normal>205</span>
 <span class=normal>206</span>
 <span class=normal>207</span>
-<span class=normal>208</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>208</span>
+<span class=normal>209</span>
+<span class=normal>210</span>
+<span class=normal>211</span>
+<span class=normal>212</span>
+<span class=normal>213</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>merge</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>effective_cwd</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>element_path</span><span class=p>:</span> <span class=n>ElementPath</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Plan</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""Merge operations.</span>
 
@@ -614,8 +629,6 @@
     <span class=n>write_destination_action</span> <span class=o>=</span> <span class=n>WriteFileAction</span><span class=p>(</span>
         <span class=n>destination_model_path</span><span class=p>,</span> <span class=n>merged_destination_element</span><span class=p>,</span> <span class=n>content_type</span><span class=o>=</span><span class=n>file_type</span>
     <span class=p>)</span>
-    <span class=c1># FIXME this will delete metadata.json but it will leave metadata/roles/roles.*</span>
-    <span class=c1># need to clean up all lower dirs</span>
     <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'remove path action </span><span class=si>{</span><span class=n>target_model_filename</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
     <span class=n>delete_target_action</span> <span class=o>=</span> <span class=n>RemovePathAction</span><span class=p>(</span><span class=n>target_model_filename</span><span class=p>)</span>
 
@@ -624,7 +637,14 @@
     <span class=n>plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>write_destination_action</span><span class=p>)</span>
     <span class=n>plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>delete_target_action</span><span class=p>)</span>
 
-    <span class=c1># TODO: Destination model directory is empty or already merged? Then clean up.</span>
+    <span class=c1># If merge loaded from &lt;alias&gt;.json and a sibling distributed folder &lt;alias&gt;/ exists,</span>
+    <span class=c1># remove it as well to avoid leaving stale decomposed content behind.</span>
+    <span class=k>if</span> <span class=n>target_model_filename</span><span class=o>.</span><span class=n>is_file</span><span class=p>():</span>
+        <span class=n>distributed_target_dir</span> <span class=o>=</span> <span class=n>target_model_filename</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
+        <span class=k>if</span> <span class=n>distributed_target_dir</span><span class=o>.</span><span class=n>exists</span><span class=p>()</span> <span class=ow>and</span> <span class=n>distributed_target_dir</span><span class=o>.</span><span class=n>is_dir</span><span class=p>():</span>
+            <span class=n>trace</span><span class=o>.</span><span class=n>log</span><span class=p>(</span><span class=sa>f</span><span class=s1>'remove distributed target dir action </span><span class=si>{</span><span class=n>distributed_target_dir</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
+            <span class=n>delete_distributed_target_action</span> <span class=o>=</span> <span class=n>RemovePathAction</span><span class=p>(</span><span class=n>distributed_target_dir</span><span class=p>)</span>
+            <span class=n>plan</span><span class=o>.</span><span class=n>add_action</span><span class=p>(</span><span class=n>delete_distributed_target_action</span><span class=p>)</span>
 
     <span class=k>return</span> <span class=n>plan</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.merge.MergeCmd.perform_all_merges class="doc doc-heading"> <code class="highlight language-python"><span class=n>perform_all_merges</span><span class=p>(</span><span class=n>element_paths</span><span class=p>,</span> <span class=n>effective_cwd</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.merge.MergeCmd.perform_all_merges class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Run all merges over a list of element paths.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/merge.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>67</span>
