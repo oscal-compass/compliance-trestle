@@ -1,0 +1,23 @@
+{
+  "profile": {
+    "uuid": "11111111-0000-4000-8000-000000000001",
+    "metadata": {
+      "title": "Old combine method profile",
+      "last-modified": "2022-06-01T00:00:00+00:00",
+      "version": "1.0",
+      "oscal-version": "1.0.4"
+    },
+    "imports": [
+      {
+        "href": "some-catalog.json",
+        "include-all": {}
+      }
+    ],
+    "merge": {
+      "combine": {
+        "method": "use-first"
+      },
+      "flat": {}
+    }
+  }
+}

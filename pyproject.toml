@@ -7,7 +7,7 @@ name = "compliance-trestle"
 dynamic = ["version"]
 description = "Tools to manage & autogenerate python objects representing the OSCAL layers/models"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 keywords = [
@@ -27,18 +27,19 @@ classifiers = [
     "Operating System :: POSIX",
     "Operating System :: Microsoft",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12"
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==46.0.6",
-    "paramiko==4.0.0",
+    "cryptography>=46.0.7",
+    "paramiko==5.0.0",
     "ruamel.yaml",
     "furl",
-    "pydantic[email]>=2.0.0",
+    "pydantic[email]>=2.11.0",
     "python-dotenv>=0.10.4",
     "python-frontmatter",
     "pywin32 >= 1.0;platform_system=='Windows'",
@@ -47,6 +48,8 @@ dependencies = [
     "Jinja2 == 3.1.6",
     "cmarkgfm>=2024.1,<2025.11",
     "orjson",
+    "rfc8785>=0.1.4",
+    "securesystemslib[crypto]>=1.3.1,<2.0",
     "requests>=2.32.2",
     "importlib_resources",
 ]
@@ -63,11 +66,11 @@ typing = [
 # Documentation website
 docs = [
     "mike",
-    "mkdocs>=1.6.0",
+    "mkdocs>=1.6.0,<2.0.0",
     "mkdocs-awesome-pages-plugin",
     "mkdocstrings[python]>=0.25.2",
     "mkdocs-htmlproofer-plugin",
-    "mkdocs-material",
+    "mkdocs-material>=9.0.0,<10.0.0",
     "markdown-include",
     "mkdocs-minify-plugin",
     "mkdocs-git-revision-date-localized-plugin",
@@ -83,7 +86,7 @@ dev = [
     "pre-commit>=2.4.0",
     "python-semantic-release>=10.4.0",
     "pylint",
-    "datamodel-code-generator[http]<0.55.0",
+    "datamodel-code-generator[http]",
     "gitpython",
 ]
 
@@ -114,6 +117,9 @@ dependencies = [
   "coverage[toml]~=7.4",
 ]
 
+[tool.hatch.envs.default.scripts]
+cov-combine = "coverage combine"
+
 [tool.hatch.envs.hatch-test]
 default-args = ["tests"]
 parallel = true
@@ -126,8 +132,20 @@ dependencies = [
     "mypy",
 ]
 
+[tool.hatch.envs.hatch-test.scripts]
+run = [
+    "rm -f .coverage .coverage.*",
+    "coverage run -m pytest{env:HATCH_TEST_ARGS:} --dist loadfile {args}",
+]
+run-cov = [
+    "rm -f .coverage .coverage.*",
+    "coverage run -m pytest{env:HATCH_TEST_ARGS:} --dist loadfile {args}",
+]
+cov-combine = "coverage combine"
+cov-report = "coverage report"
+
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.10", "3.11", "3.12"]
+python = ["3.11", "3.12", "3.13", "3.14"]
 
 [tool.hatch.envs.docs]
 features = ["docs"]
@@ -150,7 +168,7 @@ testpaths = [
 [tool.ruff]
 line-length = 120
 indent-width = 4
-target-version = "py310"
+target-version = "py311"
 exclude = [
     ".bzr",
     ".direnv",
@@ -280,7 +298,8 @@ no_implicit_reexport = true
 show_error_codes = true
 show_error_context = true
 disallow_untyped_defs = true
-disable_error_code = ["union-attr", "attr-defined", "no-redef", "assignment", "arg-type", "list-item"]
+# Disable only the specific error codes needed for dynamic Python patterns
+disable_error_code = ["assignment", "attr-defined"]
 
 [[tool.mypy.overrides]]
 module = "trestle.oscal.*"
@@ -290,10 +309,16 @@ ignore_errors = true
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
-warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true
+parallel = true
+concurrency = ["thread", "multiprocessing"]
+sigterm = true
+omit = [
+    "*/tmp*/*.j2",
+    "*/tmp*/*.md.j2",
+]
 
 [tool.semantic_release]
 build_command = """
@@ -317,6 +342,10 @@ default_bump_level = 0
 [tool.semantic_release.branches.main]
 match = "(main)"
 prerelease_token = "rc"
+prerelease = false
+
+[tool.semantic_release.branches.maintenance]
+match = "^v\\d+$"
 prerelease = false
 
 [tool.semantic_release.remote]

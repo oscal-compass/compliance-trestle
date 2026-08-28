@@ -65,7 +65,7 @@
     "components": [
       {
         "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
+        "type": "service",
         "title": "OSCO",
         "description": "OSCO",
         "control-implementations": [
