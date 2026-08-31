@@ -67,6 +67,13 @@ class CatalogWriter:
 
             if set_param_dict:
                 self._add_set_params_from_cli_yaml_header_to_header(new_context, set_param_dict, control_param_dict)
+                # ControlWriter merges cli_yaml_header into existing markdown headers. For profile set-params:
+                # - When overwrite_header_values is True, use the computed set_param_dict to override stale values.
+                # - When False, prevent a second merge from altering existing markdown set-params.
+                if new_context.overwrite_header_values:
+                    new_context.cli_yaml_header[const.SET_PARAMS_TAG] = set_param_dict
+                else:
+                    new_context.cli_yaml_header.pop(const.SET_PARAMS_TAG, None)
 
             elif const.SET_PARAMS_TAG in new_context.merged_header:
                 # need to cull any params that are not in control
