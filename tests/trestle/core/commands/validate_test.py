@@ -540,7 +540,7 @@ def test_validate_component_definition_ports_invalid(
 
     shutil.copyfile(spth, tpth)
     validate_command = f'trestle validate -f {tpth}'
-    test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
+    test_utils.execute_command_and_assert(validate_command, CmdReturnCodes.OSCAL_VALIDATION_ERROR.value, monkeypatch)
 
 
 def test_validate_mapping_simple(
