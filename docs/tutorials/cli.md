@@ -1086,6 +1086,31 @@ Example output OSCAL Observations file contents (snippet):
 
 </details>
 
+## `trestle task aws-config-result-to-oscal-ar`
+
+The *trestle task aws-config-result-to-oscal-ar* command transforms AWS Config compliance evaluation results into OSCAL partial results `.json` files. Each input file is the JSON shape returned by `get-compliance-details-by-config-rule` / `get-compliance-details-by-resource` (`{"EvaluationResults": [EvaluationResult, ...]}`).
+
+Specify required config parameters for input and output directories. Optional `output-overwrite` controls whether existing output may be replaced. Optional `timestamp` is an ISO 8601 string that overrides the Result/Observation timestamps.
+
+<span style="color:green">
+Example command invocation:
+</span>
+
+`$TRESTLE_BASEDIR$ trestle task aws-config-result-to-oscal-ar -c /home/user/task.config`
+
+<span style="color:green">
+Example config:
+</span>
+
+```conf
+[task.aws-config-result-to-oscal-ar]
+input-dir = /home/user/git/compliance/aws-config/input
+output-dir = /home/user/git/compliance/oscal/output
+output-overwrite = true
+```
+
+Only `.json` / `.jsn` files in `input-dir` are processed. Nested directories and other extensions are skipped. `simulate` does not create the output directory.
+
 ## `trestle task tanium-result-to-oscal-ar`
 
 The *trestle task tanium-result-to-oscal-ar* command facilitates transformation of Tanuim reports, each
