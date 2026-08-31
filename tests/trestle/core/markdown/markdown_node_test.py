@@ -202,3 +202,38 @@ def test_get_header_level() -> None:
     assert node._get_header_level_if_valid('## #') == 2
     assert node._get_header_level_if_valid('### #') == 3
     assert node._get_header_level_if_valid('foo # bar') is None
+
+
+def test_html_comment_regex_multiline_and_alternative_endings() -> None:
+    """Test that HTML comment regex handles multi-line comments and alternative endings."""
+    from trestle.core.markdown.base_markdown_node import BaseMarkdownNode
+    from trestle.core.markdown.docs_markdown_node import DocsSectionContent
+    import trestle.core.markdown.markdown_const as md_const
+
+    node = DocsMarkdownNode('test', DocsSectionContent(), 0)
+
+    # Test single-line comment with standard ending
+    assert node._does_contain('<!-- single line -->', md_const.HTML_COMMENT_END_REGEX)
+
+    # Test single-line comment with alternative ending (--!>)
+    assert node._does_contain('<!-- alternative ending --!>', md_const.HTML_COMMENT_END_REGEX)
+
+    # Test multi-line comment with standard ending
+    multiline_standard = """<!-- multi
+    line
+    comment -->"""
+    assert node._does_contain(multiline_standard, md_const.HTML_COMMENT_END_REGEX)
+
+    # Test multi-line comment with alternative ending
+    multiline_alternative = """<!-- multi
+    line
+    comment --!>"""
+    assert node._does_contain(multiline_alternative, md_const.HTML_COMMENT_END_REGEX)
+
+    # Test that it doesn't match incomplete comments
+    assert not node._does_contain('<!-- incomplete', md_const.HTML_COMMENT_END_REGEX)
+
+    # Test XSS scenario - multi-line malicious comment
+    xss_multiline = """<!-- <script>alert('xss')
+    </script> -->"""
+    assert node._does_contain(xss_multiline, md_const.HTML_COMMENT_END_REGEX)

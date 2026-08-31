@@ -368,3 +368,62 @@ def test_update_type_with_by_comp(sample_implemented_requirement: ossp.Implement
     assert new_by_comp.component_uuid == test_comp_uuid
     assert new_by_comp.satisfied is None
     assert new_by_comp.inherited is None
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/crm/export_reader.py
+# ---------------------------------------------------------------------------
+
+
+def test_get_leveraged_ssp_href_no_components(tmp_trestle_dir: pathlib.Path) -> None:
+    """ExportReader.get_leveraged_ssp_href line 100 — empty dir raises TrestleError."""
+    empty_path = tmp_trestle_dir / 'empty_inheritance'
+    empty_path.mkdir(parents=True)
+    ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+    reader = exportreader.ExportReader(empty_path, ssp)
+    with pytest.raises(TrestleError, match='No components'):
+        reader.get_leveraged_ssp_href()
+
+
+def test_get_leveraged_ssp_href_no_controls(tmp_trestle_dir: pathlib.Path) -> None:
+    """ExportReader.get_leveraged_ssp_href line 104 — component dir with no controls raises TrestleError."""
+    path = tmp_trestle_dir / 'inh'
+    comp_dir = path / 'My Component'
+    comp_dir.mkdir(parents=True)
+    ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+    reader = exportreader.ExportReader(path, ssp)
+    with pytest.raises(TrestleError, match='No controls'):
+        reader.get_leveraged_ssp_href()
+
+
+def test_get_leveraged_ssp_href_no_files(tmp_trestle_dir: pathlib.Path) -> None:
+    """ExportReader.get_leveraged_ssp_href line 110 — control dir with no files raises TrestleError."""
+    path = tmp_trestle_dir / 'inh'
+    control_dir = path / 'My Component' / 'ac-1'
+    control_dir.mkdir(parents=True)
+    ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+    reader = exportreader.ExportReader(path, ssp)
+    with pytest.raises(TrestleError, match='No files'):
+        reader.get_leveraged_ssp_href()
+
+
+def test_add_control_mappings_non_statement(tmp_trestle_dir: pathlib.Path) -> None:
+    """ExportReader._add_control_mappings_to_implemented_requirements lines 185-188 — non-statement control mapping."""
+    ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+    reader = exportreader.ExportReader('', ssp)
+    # 'ac-1' has no '_smt.' so it goes to the else branch (lines 185-188)
+    # Use a real UUID as the key to pass ByComponent validation
+    real_uuid = str(uuid.uuid4())
+    reader._add_control_mappings_to_implemented_requirements('ac-1', {real_uuid: ([], [])})
+    assert 'ac-1' in reader._implemented_requirements
+
+
+def test_add_or_get_implemented_requirement_creates_new(tmp_trestle_dir: pathlib.Path) -> None:
+    """ExportReader._add_or_get_implemented_requirement lines 195-198 — creates new req if not present."""
+    ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+    reader = exportreader.ExportReader('', ssp)
+    req = reader._add_or_get_implemented_requirement('ac-99')
+    assert req.control_id == 'ac-99'
+    # Second call returns the same object
+    req2 = reader._add_or_get_implemented_requirement('ac-99')
+    assert req is req2

@@ -34,14 +34,17 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Tooling manage authoring and governance of markdown and drawio files withn a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artefacts.
+- Detached signing and verification for JSON artifacts and JSON package manifests. See the [`trestle sign`](tutorials/cli.md#trestle-sign) and [`trestle sign-manifest`](tutorials/cli.md#trestle-sign-manifest) CLI documentation.
 
 ## Important Note:
 
-The current version of trestle 3.x supports NIST OSCAL 1.1.2.
+The current version of trestle 5.x supports NIST OSCAL 1.2.1.
 Below shows trestle versions correspondence with OSCAL versions:
 
 ```
-trestle 3.x => OSCAL 1.1.2
+trestle 5.x => OSCAL 1.2.1
+trestle 4.x => OSCAL 1.2.1
+trestle 3.x => OSCAL 1.1.3
 trestle 2.x => OSCAL 1.0.4
 trestle 1.x => OSCAL 1.0.2
 trestle 0.37.x => OSCAL 1.0.0
@@ -51,46 +54,28 @@ Visit [pypi](https://pypi.org/project/compliance-trestle/#history) for trestle r
 
 ## Notes for install of current and older versions of trestle
 
-#### Install of trestle 3.x
+#### Install of trestle 5.x
+
+Use python 3.14.
+
+```
+python3.14 -m venv venv.trestle
+source venv.trestle/bin/activate
+pip install compliance-trestle
+trestle version
+Trestle version v5.0.0 based on OSCAL version 1.2.1
+```
+
+#### Install of trestle 4.x
 
 Use python 3.11.
 
 ```
 python3.11 -m venv venv.trestle
 source venv.trestle/bin/activate
-pip install compliance-trestle==3.6.0
+pip install compliance-trestle=4.2.0
 trestle version
-Trestle version v3.6.0 based on OSCAL version 1.1.2
-```
-
-#### Install of trestle 2.x
-
-Use python 3.10 or higher.
-
-```
-python3.10 -m venv venv.trestle
-source venv.trestle/bin/activate
-pip install compliance-trestle==2.6.0
-trestle version
-Trestle version v2.6.0 based on OSCAL version 1.0.4
-```
-
-#### Install of trestle 1.x
-
-Use python 3.9.
-
-Due to dependency updates since the release of trestle 1.2.0, perform the following in your venv:
-
-```
-python3.9 -m venv venv.trestle
-source venv.trestle/bin/activate
-pip install compliance-trestle==1.2.0
-pip uninstall pydantic
-pip uninstall pydantic_core
-pip install pydantic==1.10.2
-pip install requests
-trestle version
-Trestle version v1.2.0 based on OSCAL version 1.0.2
+Trestle version v4.2.0 based on OSCAL version 1.2.1
 ```
 
 ## Why Trestle
@@ -118,7 +103,7 @@ By building human managed artifacts into OSCAL, Trestle is not only able to vali
 OSCAL supports `xml`, `json` and `yaml` with their [metaschema](https://github.com/usnistgov/metaschema) tooling. Trestle
 natively supports only `json` and `yaml` formats at this time.
 
-Future roadmap anticipates that support for xml [import](https://github.com/oscal-compass/compliance-trestle/issues/177) and [upstream references](https://github.com/oscal-compass/compliance-trestle/issues/178) will be enabled. However, it is expected
+Future roadmap anticipates that support for xml import and upstream references will be enabled (tracked in the [issue tracker](https://github.com/oscal-compass/compliance-trestle/issues)). However, it is expected
 that full support will remain only for `json` and  `yaml`.
 
 Users needing to import XML OSCAL artifacts are recommended to look at NIST's OSCAL converters page [here](https://github.com/usnistgov/OSCAL/blob/main/build/README.md#converters).
@@ -129,7 +114,7 @@ Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is avai
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2, with active development continuing.
+Compliance trestle is currently stable and is based on NIST OSCAL version 1.2.1, with active development continuing.
 
 ## Contributing to Trestle
 
@@ -165,6 +150,8 @@ We are a Cloud Native Computing Foundation sandbox project.
   <img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
 </picture>
 
-The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage).
 
-*Trestle was originally created by IBM.*
+*OSCAL Compass is an independent open source project. It is not affiliated with, endorsed by, or sponsored by the National Institute of Standards and Technology (NIST) or any other government agency.*
+
+*OSCAL Compass was originally contributed by IBM.*

@@ -176,6 +176,8 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir, kee
     expected_plan.add_action(write_destination_action)
     delete_element_action = RemovePathAction(metadata_file)
     expected_plan.add_action(delete_element_action)
+    delete_metadata_dir_action = RemovePathAction(metadata_dir.resolve())
+    expected_plan.add_action(delete_metadata_dir_action)
 
     # Call merge()
     generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.metadata'), tmp_trestle_dir)
@@ -397,7 +399,7 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, 
     # Read and store the catalog before split
     stripped_catalog_type, _ = ModelUtils.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
     pre_split_catalog = stripped_catalog_type.oscal_read(catalog_file)
-    assert 'groups' in pre_split_catalog.__fields__.keys()
+    assert 'groups' in pre_split_catalog.__class__.model_fields.keys()
 
     # Split the catalog
     args = argparse.Namespace(
@@ -413,7 +415,7 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, 
 
     interim_catalog_type, _ = ModelUtils.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
     interim_catalog = interim_catalog_type.oscal_read(catalog_file.resolve())
-    assert 'groups' not in interim_catalog.__fields__.keys()
+    assert 'groups' not in interim_catalog.__class__.model_fields.keys()
 
     # Merge everything back into the catalog
     # Equivalent to trestle merge -e catalog.*
@@ -480,7 +482,7 @@ def test_split_merge_out_of_context(
     # Read and store the catalog before split
     stripped_catalog_type, _ = ModelUtils.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
     pre_split_catalog = stripped_catalog_type.oscal_read(full_path_to_model)
-    assert 'groups' in pre_split_catalog.__fields__.keys()
+    assert 'groups' in pre_split_catalog.__class__.model_fields.keys()
 
     # Split the catalog
     args = argparse.Namespace(
@@ -492,7 +494,7 @@ def test_split_merge_out_of_context(
 
     interim_catalog_type, _ = ModelUtils.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
     interim_catalog = interim_catalog_type.oscal_read(full_path_to_model.resolve())
-    assert 'groups' not in interim_catalog.__fields__.keys()
+    assert 'groups' not in interim_catalog.__class__.model_fields.keys()
 
     # Merge everything back into the catalog
     # Equivalent to trestle merge -e catalog.*

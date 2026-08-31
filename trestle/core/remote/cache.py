@@ -26,6 +26,7 @@ import os
 import pathlib
 import platform
 import re
+import tempfile
 from abc import ABC, abstractmethod
 from enum import Enum
 from io import StringIO
@@ -41,6 +42,7 @@ from trestle.common import const, file_utils
 from trestle.common.err import TrestleError
 from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.remote.security import PathSecurityValidator, URLSecurityValidator, get_block_private_ips_config
 
 logger = logging.getLogger(__name__)
 
@@ -48,18 +50,22 @@ logger = logging.getLogger(__name__)
 class FetcherBase(ABC):
     """FetcherBase - base class for caching and fetching remote oscal objects."""
 
-    def __init__(self, trestle_root: pathlib.Path, uri: str) -> None:
+    def __init__(self, trestle_root: pathlib.Path, uri: str, max_size_bytes: Optional[int] = None) -> None:
         """Intialize fetcher base.
 
         Args:
             trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the source object to cache.
+            max_size_bytes: Optional maximum fetched object size.
         """
         logger.debug('Initializing FetcherBase')
         self._cached_object_path: pathlib.Path
         self._uri = uri
         self._trestle_root = trestle_root.resolve()
         self._trestle_cache_path: pathlib.Path = self._trestle_root / const.TRESTLE_CACHE_DIR
+        if max_size_bytes is not None and max_size_bytes <= 0:
+            raise TrestleError('Maximum fetched object size must be greater than zero.')
+        self._max_size_bytes = max_size_bytes
         # ensure trestle cache directory exists.
         self._trestle_cache_path.mkdir(exist_ok=True)
         self._expiration_seconds = const.DAY_SECONDS
@@ -67,8 +73,8 @@ class FetcherBase(ABC):
     @staticmethod
     def _time_since_modification(file_path: pathlib.Path) -> datetime.timedelta:
         """Get time since last modification."""
-        last_modification = datetime.datetime.fromtimestamp(file_path.stat().st_mtime, tz=datetime.timezone.utc)
-        return datetime.datetime.now(tz=datetime.timezone.utc) - last_modification
+        last_modification = datetime.datetime.fromtimestamp(file_path.stat().st_mtime, tz=datetime.UTC)
+        return datetime.datetime.now(datetime.UTC) - last_modification
 
     @abstractmethod
     def _do_fetch(self) -> None:
@@ -109,15 +115,24 @@ class FetcherBase(ABC):
     def get_raw(self, force_update: bool = False) -> Dict[str, Any]:
         """Retrieve the raw dictionary representing the underlying object."""
         self._update_cache(force_update)
-        # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
+        # Return cached data; fs.load_file handles format-specific parsing (JSON/YAML).
         try:
-            raw_data = file_utils.load_file(self._cached_object_path)
-        except Exception:
-            try:
-                raw_data = file_utils.load_file(self._cached_object_path)
-            except Exception as e:
-                raise TrestleError(f'Cache get failure for {self._uri}: {e}.') from e
-        return raw_data
+            return file_utils.load_file(self._cached_object_path)
+        except Exception as e:
+            raise TrestleError(f'Cache get failure for {self._uri}: {e}.') from e
+
+    def get_cached_path(self, force_update: bool = False) -> pathlib.Path:
+        """Retrieve the local path containing the fetched object."""
+        self._update_cache(force_update)
+        if not self._cached_object_path.exists() or not self._cached_object_path.is_file():
+            raise TrestleError(f'Cache get failure for {self._uri}: cached object is not a file.')
+        self._enforce_max_size(self._cached_object_path.stat().st_size)
+        return self._cached_object_path
+
+    def _enforce_max_size(self, size_bytes: int) -> None:
+        """Reject an object that exceeds the configured maximum size."""
+        if self._max_size_bytes is not None and size_bytes > self._max_size_bytes:
+            raise TrestleError(f'Remote object exceeds maximum size of {self._max_size_bytes} bytes: {self._uri}')
 
     def get_oscal_with_model_type(
         self, model_type: Type[OscalBaseModel], force_update: bool = False
@@ -160,25 +175,38 @@ class LocalFetcher(FetcherBase):
     LocalFetcher does not do any caching and assumes the file is quickly accessible.
     """
 
-    def __init__(self, trestle_root: pathlib.Path, uri: str) -> None:
+    def __init__(self, trestle_root: pathlib.Path, uri: str, max_size_bytes: Optional[int] = None) -> None:
         """Initialize local fetcher.
 
         Args:
             trestle_root: trestle root path
             uri: Reference to the file in the local filesystem to cache, which must be outside trestle_root.
         """
-        super().__init__(trestle_root, uri)
+        super().__init__(trestle_root, uri, max_size_bytes)
+
+        original_uri = uri
+        is_file_uri = uri.startswith(const.FILE_URI)
 
         # Handle as file:/// form
-        if uri.startswith(const.FILE_URI):
+        if is_file_uri:
             # strip off entire header including /
             uri = uri[len(const.FILE_URI) :]
 
             # if it has a drive letter don't add / to front
             uri = uri if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri) else '/' + uri
         elif uri.startswith(const.TRESTLE_HREF_HEADING):
-            uri = str(trestle_root / uri[len(const.TRESTLE_HREF_HEADING) :])
+            # Extract the path after 'trestle://'
+            trestle_path = uri[len(const.TRESTLE_HREF_HEADING) :]
+
+            # Layer 1: Validate the trestle:// URI path for traversal sequences
+            PathSecurityValidator.validate_trestle_uri_path(trestle_path)
+
+            uri = str(trestle_root / trestle_path)
             self._abs_path = pathlib.Path(uri).resolve()
+
+            # Layer 2: Validate resolved path stays within trestle workspace
+            PathSecurityValidator.validate_local_path(self._abs_path, self._trestle_root)
+
             self._cached_object_path = self._abs_path
             return
 
@@ -199,6 +227,13 @@ class LocalFetcher(FetcherBase):
         except Exception:
             raise TrestleError(f'The uri provided is invalid or unresolvable as a file path: {uri}')
 
+        # Security validation for file:// URIs and relative paths
+        # LocalFetcher is designed to access files outside workspace (e.g., test data, external catalogs)
+        # Security is provided by blocking sensitive system files, not workspace boundaries
+        # This prevents arbitrary file read vulnerabilities (PT-002) while allowing legitimate use
+        logger.info(f'Validating local file access: {original_uri}')
+        PathSecurityValidator.validate_local_file_path(self._trestle_root, self._abs_path, allow_outside_workspace=True)
+
         # set the cached path to be the actual file path
         self._cached_object_path = self._abs_path
 
@@ -215,10 +250,24 @@ class HTTPSFetcher(FetcherBase):
     """Fetcher for https content."""
 
     # Use request: https://requests.readthedocs.io/en/master/
-    def __init__(self, trestle_root: pathlib.Path, uri: str) -> None:
+    def __init__(
+        self,
+        trestle_root: pathlib.Path,
+        uri: str,
+        max_size_bytes: Optional[int] = None,
+        block_private_ips: Optional[bool] = None,
+    ) -> None:
         """Initialize HTTPS fetcher."""
         logger.debug('Initializing HTTPSFetcher')
-        super().__init__(trestle_root, uri)
+        super().__init__(trestle_root, uri, max_size_bytes)
+
+        # Security validation: Check URL for SSRF vulnerabilities
+        # Always blocks: loopback, link-local, cloud metadata endpoints
+        # Optionally blocks: RFC 1918 private ranges (caller override or TRESTLE_BLOCK_PRIVATE_IPS)
+        block_private = get_block_private_ips_config() if block_private_ips is None else block_private_ips
+        self._url_validator = URLSecurityValidator(block_private_ips=block_private)
+        self._url_validator.validate_url(uri)
+
         self._username = None
         self._password = None
         u = parse.urlparse(self._uri)
@@ -262,14 +311,31 @@ class HTTPSFetcher(FetcherBase):
             )
         if u.hostname is None:
             raise TrestleError(f'Cache request for {self._uri} requires hostname')
+
+        # Validate the URL path to prevent path traversal attacks
+        PathSecurityValidator.validate_url_path_for_cache(u.path)
+
         https_cached_dir = self._trestle_cache_path / u.hostname
-        # Skip any number of back- or forward slashes preceding the URI path (u.path)
-        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0] :]).parent
+
+        # Skip any number of back- or forward slashes preceding the URI path
+        match = re.search('[^/\\\\]', u.path)
+        if match:
+            path_parent = pathlib.Path(u.path[match.span()[0] :]).parent
+        else:
+            path_parent = pathlib.Path('.')
+
         https_cached_dir = https_cached_dir / path_parent
         https_cached_dir.mkdir(parents=True, exist_ok=True)
         self._cached_object_path = https_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
+        # Validate that the resolved cache path stays within the cache directory (defense in depth)
+        PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
+
     def _do_fetch(self) -> None:
+        # Re-validate URL before fetch to prevent DNS rebinding attacks
+        # This closes the TOCTOU window between init and actual request
+        self._url_validator.validate_url(self._url)
+
         auth = None
         verify = None
         # This order reflects requests library behavior: REQUESTS_CA_BUNDLE comes first.
@@ -286,33 +352,84 @@ class HTTPSFetcher(FetcherBase):
             auth = HTTPBasicAuth(self._username, self._password)
 
         try:
-            response = requests.get(self._url, auth=auth, verify=verify, timeout=30)
+            response = requests.get(
+                self._url,
+                auth=auth,
+                verify=verify,
+                timeout=30,
+                allow_redirects=False,
+                stream=self._max_size_bytes is not None,
+            )
         except Exception as e:
             raise TrestleError(f'Cache update failure to connect via HTTPS: {self._url} ({e})')
 
-        if response.status_code == 200:
-            try:
-                result = response.text
-            except Exception as err:
-                raise TrestleError(f'Cache update failure reading response via HTTPS: {self._url} ({err})')
+        try:
+            if response.status_code == 200:
+                if self._max_size_bytes is None:
+                    result = response.text
+                    self._cached_object_path.write_text(result, encoding=const.FILE_ENCODING)
+                else:
+                    self._write_limited_response(response)
             else:
-                self._cached_object_path.write_text(result, encoding=const.FILE_ENCODING)
-        else:
-            raise TrestleError(f'GET returned code {response.status_code}: {self._uri}')
+                raise TrestleError(f'GET returned code {response.status_code}: {self._uri}')
+        except TrestleError:
+            raise
+        except Exception as err:
+            raise TrestleError(f'Cache update failure reading response via HTTPS: {self._url} ({err})')
+        finally:
+            response.close()
+
+    def _write_limited_response(self, response: requests.Response) -> None:
+        """Stream a bounded HTTPS response into the cache atomically."""
+        content_length = response.headers.get('Content-Length')
+        if content_length and content_length.isdigit():
+            self._enforce_max_size(int(content_length))
+
+        temporary_path: Optional[pathlib.Path] = None
+        try:
+            with tempfile.NamedTemporaryFile('wb', dir=self._cached_object_path.parent, delete=False) as temporary_file:
+                temporary_path = pathlib.Path(temporary_file.name)
+                size_bytes = 0
+                for chunk in response.iter_content(chunk_size=64 * 1024):
+                    if not chunk:
+                        continue
+                    size_bytes += len(chunk)
+                    self._enforce_max_size(size_bytes)
+                    temporary_file.write(chunk)
+            temporary_path.replace(self._cached_object_path)
+        finally:
+            if temporary_path and temporary_path.exists():
+                temporary_path.unlink()
 
 
 class SFTPFetcher(FetcherBase):
     """Fetcher for SFTP content."""
 
-    def __init__(self, trestle_root: pathlib.Path, uri: str) -> None:
+    def __init__(
+        self,
+        trestle_root: pathlib.Path,
+        uri: str,
+        max_size_bytes: Optional[int] = None,
+        block_private_ips: Optional[bool] = None,
+    ) -> None:
         """Initialize SFTP fetcher. Update the expected cache path as per caching specs.
 
         Args:
             trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
+            max_size_bytes: Optional maximum fetched object size.
+            block_private_ips: Optional override for blocking private network addresses.
         """
         logger.debug(f'initialize SFTPFetcher for uri {uri}')
-        super().__init__(trestle_root, uri)
+        super().__init__(trestle_root, uri, max_size_bytes)
+
+        # Security validation: Check URL for SSRF vulnerabilities
+        # Always blocks: loopback, link-local, cloud metadata endpoints
+        # Optionally blocks: RFC 1918 private ranges (caller override or TRESTLE_BLOCK_PRIVATE_IPS)
+        block_private = get_block_private_ips_config() if block_private_ips is None else block_private_ips
+        self._url_validator = URLSecurityValidator(block_private_ips=block_private)
+        self._url_validator.validate_url(uri)
+
         # Is this a valid URI, however? Username and password are optional, of course.
         try:
             u = parse.urlparse(self._uri)
@@ -329,12 +446,24 @@ class SFTPFetcher(FetcherBase):
             logger.warning(f'Malformed URI, cannot parse path in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing file path {self._uri}')
 
+        # Validate the URL path to prevent path traversal attacks
+        PathSecurityValidator.validate_url_path_for_cache(u.path)
+
         sftp_cached_dir = self._trestle_cache_path / u.hostname
-        # Skip any number of back- or forward slashes preceding the URL path (u.path)
-        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0] :]).parent
+
+        # Skip any number of back- or forward slashes preceding the URL path
+        match = re.search('[^/\\\\]', u.path)
+        if match:
+            path_parent = pathlib.Path(u.path[match.span()[0] :]).parent
+        else:
+            path_parent = pathlib.Path('.')
+
         sftp_cached_dir = sftp_cached_dir / path_parent
         sftp_cached_dir.mkdir(parents=True, exist_ok=True)
         self._cached_object_path = sftp_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
+
+        # Validate that the resolved cache path stays within the cache directory (defense in depth)
+        PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
 
     def _do_fetch(self) -> None:
         """Fetch remote object and update the cache if appropriate and possible to do so.
@@ -342,6 +471,10 @@ class SFTPFetcher(FetcherBase):
         Authentication relies on the user's private key being either active via ssh-agent or
         supplied via environment variable SSH_KEY. In the latter case, it must not require a passphrase prompt.
         """
+        # Re-validate URL before fetch to prevent DNS rebinding attacks
+        # This closes the TOCTOU window between init and actual request
+        self._url_validator.validate_url(self._uri)
+
         u = parse.urlparse(self._uri)
         client = paramiko.SSHClient()
         # Must pick up host keys from the default known_hosts on this environment:
@@ -358,9 +491,11 @@ class SFTPFetcher(FetcherBase):
             look_for_keys = True
 
         username = getpass.getuser() if not u.username else u.username
+        # u.hostname is guaranteed to be non-None due to earlier validation
+        hostname = u.hostname if u.hostname else 'localhost'
         try:
             client.connect(
-                u.hostname,
+                hostname,
                 username=username,
                 password=u.password,
                 pkey=pkey,
@@ -375,9 +510,31 @@ class SFTPFetcher(FetcherBase):
         except Exception as e:
             raise TrestleError(f'Cache update failure to open sftp for {u.hostname}: {e}.')
 
+        remotepath = u.path[1:]
         localpath = self._cached_object_path
         try:
-            sftp_client.get(remotepath=u.path[1:], localpath=(localpath.__str__()))
+            if self._max_size_bytes is None:
+                sftp_client.get(remotepath=remotepath, localpath=str(localpath))
+            else:
+                remote_size = sftp_client.stat(remotepath).st_size
+                if remote_size is not None:
+                    self._enforce_max_size(remote_size)
+                with tempfile.NamedTemporaryFile(dir=localpath.parent, delete=False) as temporary_file:
+                    temporary_path = pathlib.Path(temporary_file.name)
+
+                def _enforce_transfer_size(transferred: int, total: int) -> None:
+                    self._enforce_max_size(transferred)
+                    self._enforce_max_size(total)
+
+                try:
+                    sftp_client.get(
+                        remotepath=remotepath, localpath=str(temporary_path), callback=_enforce_transfer_size
+                    )
+                    self._enforce_max_size(temporary_path.stat().st_size)
+                    temporary_path.replace(localpath)
+                finally:
+                    if temporary_path.exists():
+                        temporary_path.unlink()
         except Exception as e:
             raise TrestleError(f'Error getting remote resource {self._uri} into cache {localpath}: {e}')
 
@@ -441,12 +598,20 @@ class FetcherFactory:
         return True
 
     @classmethod
-    def get_fetcher(cls, trestle_root: pathlib.Path, uri: str) -> Union[LocalFetcher, SFTPFetcher, HTTPSFetcher]:
+    def get_fetcher(
+        cls,
+        trestle_root: pathlib.Path,
+        uri: str,
+        max_size_bytes: Optional[int] = None,
+        block_private_ips: Optional[bool] = None,
+    ) -> Union[LocalFetcher, SFTPFetcher, HTTPSFetcher]:
         """Return an instantiated fetcher object based on the type of URI.
 
         Args:
             trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote object to cache.
+            max_size_bytes: Optional maximum fetched object size.
+            block_private_ips: Optional override for blocking private network addresses.
 
         Returns:
             fetcher object for the given URI.
@@ -458,4 +623,7 @@ class FetcherFactory:
             FetcherFactory.UriType.TRESTLE: LocalFetcher,
         }
         uri_type = cls.get_uri_type(uri)
-        return fetcher_dict[uri_type](trestle_root, uri)  # type: ignore
+        fetcher_type = fetcher_dict[uri_type]
+        if cls.uri_type_is_not_local(uri_type):
+            return fetcher_type(trestle_root, uri, max_size_bytes, block_private_ips)  # type: ignore
+        return fetcher_type(trestle_root, uri, max_size_bytes)  # type: ignore

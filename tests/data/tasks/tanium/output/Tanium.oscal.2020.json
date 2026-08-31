@@ -423,14 +423,15 @@
       },
       "reviewed-controls": {
         "control-selections": [
-          {}
+          {
+            "include-all": {}
+          }
         ]
       },
       "observations": [
         {
           "uuid": "47732991-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -445,7 +446,6 @@
         {
           "uuid": "47732992-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -460,7 +460,6 @@
         {
           "uuid": "47732993-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -475,7 +474,6 @@
         {
           "uuid": "47732994-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -490,7 +488,6 @@
         {
           "uuid": "47732995-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -505,7 +502,6 @@
         {
           "uuid": "47732996-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -520,7 +516,6 @@
         {
           "uuid": "47732997-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -535,7 +530,6 @@
         {
           "uuid": "47732998-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -550,7 +544,6 @@
         {
           "uuid": "47732999-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -565,7 +558,6 @@
         {
           "uuid": "47733000-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -580,7 +572,6 @@
         {
           "uuid": "47733001-5c28-45ba-8f0f-9d8c7f51c46e",
           "description": "[no results]",
-          "props": [],
           "methods": [
             "TEST-AUTOMATED"
           ],
@@ -668,7 +659,9 @@
       },
       "reviewed-controls": {
         "control-selections": [
-          {}
+          {
+            "include-all": {}
+          }
         ]
       },
       "observations": [
@@ -17843,7 +17836,9 @@
       },
       "reviewed-controls": {
         "control-selections": [
-          {}
+          {
+            "include-all": {}
+          }
         ]
       },
       "observations": [

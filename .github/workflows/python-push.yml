@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - 'v[0-9]*'
 
 permissions: {}
 
@@ -16,12 +17,12 @@ jobs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
         max_version=$(jq '.PYTHON_MAX' -r version.json)
-        echo "min=$min_version" 
+        echo "min=$min_version"
         echo "max=$max_version"
         echo "min=$min_version" >> $GITHUB_OUTPUT
         echo "max=$max_version" >> $GITHUB_OUTPUT
@@ -51,14 +52,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           ${{ matrix.pip-cache }}
@@ -101,8 +102,15 @@ jobs:
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
       if: steps.core-version.outputs.core == 'true'
+      env:
+        NO_MKDOCS_2_WARNING: '1'
       run: |
         make docs-validate
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Pytest Fast
       if: steps.core-version.outputs.core != 'true'
       run: |
@@ -128,15 +136,15 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 0
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           ${{ matrix.pip-cache }}
@@ -151,11 +159,19 @@ jobs:
     - name: gen OSCAL models
       run: |
         make gen-oscal
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Run tests
       run: |
         make test
   deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: false
     needs: [ build, test-with-codegen, set-versions ]
     permissions:
       id-token: write
@@ -164,51 +180,139 @@ jobs:
     environment:
       name: release
       url: https://pypi.org/p/compliance-trestle
-    if: github.ref == 'refs/heads/main' && github.repository == 'oscal-compass/compliance-trestle'
+    if: >-
+      github.repository == 'oscal-compass/compliance-trestle'
+      && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/v'))
     steps:
-    - uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+    - name: Validate branch name
+      if: github.ref != 'refs/heads/main'
+      run: |
+        if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+$ ]]; then
+          echo "::error::Branch '$GITHUB_REF_NAME' does not match required pattern ^v[0-9]+$"
+          exit 1
+        fi
+    - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
       id: app-token
       with:
         app-id: ${{ secrets.APP_ID }}
         private-key: ${{ secrets.PRIVATE_KEY }}
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         submodules: true
         fetch-depth: 0
         token: ${{ steps.app-token.outputs.token }}
     - name: Set up Python ${{ needs.set-versions.outputs.max }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
     - name: Install build tools
       run: |
         make develop
 
+    - name: Validate build command
+      if: github.ref != 'refs/heads/main'
+      run: |
+        BUILD_CMD=$(python -c "
+        import tomllib, sys
+        with open('pyproject.toml', 'rb') as f:
+            cfg = tomllib.load(f)
+        cmd = cfg.get('tool', {}).get('semantic_release', {}).get('build_command', '')
+        sys.stdout.write(cmd)
+        ")
+        ALLOWED='
+            python -m pip install build --upgrade
+            python -m build
+        '
+        NORM_BUILD=$(echo "$BUILD_CMD" | tr -s '[:space:]' ' ' | sed 's/^ *//;s/ *$//')
+        NORM_ALLOW=$(echo "$ALLOWED" | tr -s '[:space:]' ' ' | sed 's/^ *//;s/ *$//')
+        if [ "$NORM_BUILD" != "$NORM_ALLOW" ]; then
+          echo "::error::build_command in pyproject.toml has been modified from the expected value."
+          echo "::error::Expected: $NORM_ALLOW"
+          echo "::error::Got: $NORM_BUILD"
+          exit 1
+        fi
+
+    - name: Validate version matches branch
+      if: github.ref != 'refs/heads/main'
+      run: |
+        BRANCH_MAJOR="${GITHUB_REF_NAME#v}"
+        FILE_VERSION=$(python -c "
+        import re
+        with open('trestle/__init__.py') as f:
+            m = re.search(r\"__version__\s*=\s*['\\\"]([^'\\\"]+)\", f.read())
+            print(m.group(1) if m else '')
+        ")
+        FILE_MAJOR="${FILE_VERSION%%.*}"
+        if [ "$BRANCH_MAJOR" != "$FILE_MAJOR" ]; then
+          echo "::error::Version mismatch: branch $GITHUB_REF_NAME expects major version $BRANCH_MAJOR but trestle/__init__.py has $FILE_VERSION (major: $FILE_MAJOR)"
+          exit 1
+        fi
+
+    - name: Validate commit types on maintenance branch
+      if: github.ref != 'refs/heads/main'
+      run: |
+        LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+        if [ -z "$LAST_TAG" ]; then
+          LAST_TAG=$(git merge-base HEAD origin/main)
+          echo "No tag found; scanning commits since merge-base with main ($LAST_TAG)"
+        fi
+        ALLOWED_TYPES='^(fix|perf|chore|ci|docs|build|refactor|style|test|revert)(\(.*\))?:'
+        BAD_COMMITS=$(git log "$LAST_TAG"..HEAD --no-merges --format='%s' | grep -iEvx "$ALLOWED_TYPES.*" || true)
+        if [ -n "$BAD_COMMITS" ]; then
+          echo "::error::All commits on maintenance branches must use an allowed type: fix, perf, chore, ci, docs, build, refactor, style, test, revert."
+          echo "::error::The following commits do not match:"
+          echo "$BAD_COMMITS"
+          exit 1
+        fi
+
     - name: Python Semantic Release
       id: release
-      uses: python-semantic-release/python-semantic-release@350c48fcb3ffcdfd2e0a235206bc2ecea6b69df0 # v10.5.3
+      uses: python-semantic-release/python-semantic-release@9a026e9303981c866c3425723009becb2437c757 # v10.6.2
       with:
         github_token: ${{ steps.app-token.outputs.token }}
 
+    - name: Ensure non-main releases are not marked latest
+      if: github.ref != 'refs/heads/main' && steps.release.outputs.released == 'true'
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      run: |
+        echo "Un-marking release ${{ steps.release.outputs.tag }} as latest"
+        gh release edit "${{ steps.release.outputs.tag }}" --latest=false
+
     # --- Generate provenance for the ACTUAL RELEASE ARTIFACTS ---
 
+    - name: Generate SLSA build provenance
+      id: attest
+      if: steps.release.outputs.released == 'true'
+      uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+      with:
+        subject-path: "dist/*"
+
     - name: Publish package distributions to PyPI
-      uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # release/v1
+      uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
       # NOTE: DO NOT wrap the conditional in ${{ }} as it will always evaluate to true.
       # See https://github.com/actions/runner/issues/1173
       if: steps.release.outputs.released == 'true'
 
     # Sign artifacts to be uploaded to github releases after pypi. Pypi signs it's own
-    - uses: sigstore/gh-action-sigstore-python@v3.2.0
+    - uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9 # v3.5.0
       if: steps.release.outputs.released == 'true'
       with:
         inputs: "dist/*"
+
+    # Copy the SLSA provenance bundle into dist/ AFTER PyPI publish (PyPI must not
+    # receive it) so that upload-to-gh-release attaches it to the GitHub Release.
+    # Scorecard's releasesHaveProvenance probe requires a *.intoto.jsonl asset.
+    - name: Stage provenance bundle for GitHub Release
+      if: steps.release.outputs.released == 'true'
+      run: cp "${{ steps.attest.outputs.bundle-path }}" dist/attestation.intoto.jsonl
 
     - name: Publish package distributions to GitHub Releases
       uses: python-semantic-release/upload-to-gh-release@0a92b5d7ebfc15a84f9801ebd1bf706343d43711 # v9.8.9
       if: steps.release.outputs.released == 'true'
       with:
         github_token: ${{ steps.app-token.outputs.token }}
+        tag: ${{ steps.release.outputs.tag }}
 
   merge-main-to-develop:
     name: Merge main -> develop
@@ -219,12 +323,12 @@ jobs:
       cancel-in-progress: true
     if: github.ref == 'refs/heads/main'
     steps:
-    - uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+    - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
       id: app-token
       with:
         app-id: ${{ secrets.APP_ID }}
         private-key: ${{ secrets.PRIVATE_KEY }}
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         submodules: true
         ref: main

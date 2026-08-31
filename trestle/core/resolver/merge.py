@@ -14,6 +14,7 @@
 """Create resolved catalog from profile."""
 
 import logging
+from enum import Enum
 from typing import Iterator, List, Optional, Tuple, Union
 
 import trestle.oscal.catalog as cat
@@ -25,6 +26,21 @@ from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
+
+
+# Backward compatibility for combination method values
+# In OSCAL 1.2.0, CombinationMethodValidValues was removed from the generated profile module
+# These string constants are used for profile merge operations
+class CombinationMethodValidValues(Enum):
+    """Combination method values for profile merge operations."""
+
+    keep = 'keep'
+    merge = 'merge'
+    use_first = 'use-first'
+
+
+# Make it available as prof.CombinationMethodValidValues for backward compatibility
+prof.CombinationMethodValidValues = CombinationMethodValidValues
 
 ID = 'id'
 
@@ -126,16 +142,17 @@ class Merge(Pipeline.Filter):
 
     def _merge_items(self, dest: OBT, src: OBT, merge_method: Optional[str]) -> None:
         """Merge two items recursively."""
-        for field in src.__fields_set__:
+        # Pydantic v2: __fields_set__ → model_fields_set
+        for field in src.model_fields_set:
             self._merge_attrs(dest, src, field, merge_method)
 
-    def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[com.Parameter]]:
+    def _group_contents(self, group: cat.Group1 | cat.Group2) -> Tuple[List[cat.Control], List[com.Parameter]]:
         """Get flattened content of group and its groups recursively."""
         controls = []
         params = []
-        controls.extend(as_list(group.controls))
+        controls.extend(as_list(getattr(group, 'controls', None)))
         params.extend(as_list(group.params))
-        if group.groups is not None:
+        if hasattr(group, 'groups') and group.groups is not None:
             for sub_group in group.groups:
                 new_controls, new_params = self._group_contents(sub_group)
                 controls.extend(new_controls)
@@ -148,14 +165,15 @@ class Merge(Pipeline.Filter):
             return catalog
 
         # as_is is False so flatten the controls into a single list
-        catalog.controls = as_list(catalog.controls)
-        catalog.params = as_list(catalog.params)
+        # Pydantic v2: Use temp variables to avoid assigning empty lists (min_length validation)
+        temp_controls = as_list(catalog.controls)
+        temp_params = as_list(catalog.params)
         for group in catalog.groups:
             new_controls, new_params = self._group_contents(group)
-            catalog.controls.extend(new_controls)
-            catalog.params.extend(new_params)
-        catalog.controls = none_if_empty(catalog.controls)
-        catalog.params = none_if_empty(catalog.params)
+            temp_controls.extend(new_controls)
+            temp_params.extend(new_params)
+        catalog.controls = none_if_empty(temp_controls)
+        catalog.params = none_if_empty(temp_params)
         catalog.groups = None
         return catalog
 
@@ -185,26 +203,38 @@ class Merge(Pipeline.Filter):
         # unstructured controls should appear after any loose params
 
         # make copies to avoid changing input objects
-        local_cat = catalog.copy(deep=True)
-        local_merged = merged.copy(deep=True) if merged else None
+        # Pydantic v2: copy() → model_copy()
+        local_cat = catalog.model_copy(deep=True)
+        local_merged = merged.model_copy(deep=True) if merged else None
 
         merge_method = prof.CombinationMethodValidValues.keep.value
         as_is = False
         if self._profile.merge is not None:
-            if self._profile.merge.custom is not None:
+            # Check which Merge variant we have (Merge1, Merge2, or Merge3)
+            if hasattr(self._profile.merge, 'custom') and self._profile.merge.custom is not None:
                 raise TrestleError('Profile with custom merge is not supported.')
-            if self._profile.merge.as_is is not None:
+            if hasattr(self._profile.merge, 'as_is') and self._profile.merge.as_is is not None:
                 as_is = self._profile.merge.as_is
             if self._profile.merge.combine is None:
                 logger.debug('Profile has merge but no combine so defaulting to combine/merge.')
                 merge_method = prof.CombinationMethodValidValues.merge.value
             else:
                 merge_combine = self._profile.merge.combine
-                if merge_combine.method.value is None:
-                    logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
-                    merge_method = prof.CombinationMethodValidValues.merge.value
+                # In OSCAL 1.2.0, combine is a dict, not an object with a method attribute
+                if isinstance(merge_combine, dict):
+                    method_value = merge_combine.get('method')
+                    if method_value is None:
+                        logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
+                        merge_method = prof.CombinationMethodValidValues.merge.value
+                    else:
+                        merge_method = method_value
                 else:
-                    merge_method = merge_combine.method.value
+                    # Fallback for older OSCAL versions
+                    if merge_combine.method.value is None:
+                        logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
+                        merge_method = prof.CombinationMethodValidValues.merge.value
+                    else:
+                        merge_method = merge_combine.method.value
 
         if local_merged is None:
             return self._flatten_catalog(local_cat, as_is)
@@ -212,7 +242,7 @@ class Merge(Pipeline.Filter):
         # merge the incoming catalog with merged based on merge_method and as_is
         return self._merge_two_catalogs(local_merged, local_cat, merge_method, as_is)
 
-    def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:  # type: ignore
+    def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:
         """
         Merge the incoming catalogs.
 

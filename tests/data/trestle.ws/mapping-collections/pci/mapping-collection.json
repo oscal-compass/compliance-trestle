@@ -1,0 +1,292 @@
+{
+  "mapping-collection": {
+    "uuid": "abeb8a31-1f13-4d4a-a6f5-85f492b9f40d",
+    "metadata": {
+      "title": "Mapping collection for PCI to FedRAMP",
+      "last-modified": "2026-02-06T20:19:05+00:00",
+      "version": "1.0.0",
+      "oscal-version": "1.2.0"
+    },
+    "provenance": {
+      "method": "manual",
+      "matching-rationale": "semantic",
+      "status": "complete",
+      "mapping-description": "Mapping collection for Mapping collection for PCI to FedRAMP"
+    },
+    "mappings": [
+      {
+        "uuid": "ee9d5d9f-d1b3-4522-b65e-fd6165bd1652",
+        "source-resource": {
+          "type": "catalog",
+          "href": "catalogs/PCI/catalog.json"
+        },
+        "target-resource": {
+          "type": "catalog",
+          "href": "catalogs/FedRAMP_rev5_HIGH/catalog.json"
+        },
+        "maps": [
+          {
+            "uuid": "31b77e9e-06ce-40a8-9221-ac0eec13f7d5",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-6.3.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.5,
+              "STRVALUE": "0.5"
+            },
+            "coverage": {
+              "generation-method": "arbitrary",
+              "STRVALUE": 0.5
+            }
+          },
+          {
+            "uuid": "72f5340d-41fa-4761-8301-f0a733a409a7",
+            "relationship": "subset-of",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-6.3.3"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.c"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.9,
+              "STRVALUE": "0.9"
+            },
+            "coverage": {
+              "generation-method": "arbitrary",
+              "STRVALUE": 0.9
+            }
+          },
+          {
+            "uuid": "ec028949-e46e-4de5-8684-6efe70034d67",
+            "relationship": "subset-of",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-6.4.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.1,
+              "STRVALUE": "0.1"
+            },
+            "coverage": {
+              "generation-method": "arbitrary",
+              "STRVALUE": 0.1
+            }
+          },
+          {
+            "uuid": "d75cb7fa-13ff-45c3-82ca-60be27fd0053",
+            "relationship": "subset-of",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-11.3.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.f"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.1,
+              "STRVALUE": "0.1"
+            },
+            "coverage": {
+              "generation-method": "arbitrary",
+              "STRVALUE": 0.1
+            }
+          },
+          {
+            "uuid": "465cfbc7-26ea-4e16-8a45-6ce203af7468",
+            "relationship": "subset-of",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-11.3.1.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.1,
+              "STRVALUE": "0.1"
+            },
+            "coverage": {
+              "generation-method": "arbitrary",
+              "STRVALUE": 0.1
+            }
+          },
+          {
+            "uuid": "bf6ec84f-bb86-446f-b7a8-a9425402f14a",
+            "relationship": "subset-of",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-11.3.1.2"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5.5_smt"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.1,
+              "STRVALUE": "0.1"
+            },
+            "coverage": {
+              "generation-method": "arbitrary",
+              "STRVALUE": 0.1
+            }
+          },
+          {
+            "uuid": "033ed350-0a32-4548-998e-a98debcb7989",
+            "relationship": "subset-of",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-11.3.1.3"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.1,
+              "STRVALUE": "0.1"
+            },
+            "coverage": {
+              "generation-method": "arbitrary",
+              "STRVALUE": 0.1
+            }
+          },
+          {
+            "uuid": "5eafea15-24e4-41e3-b5b1-0d0180bff095",
+            "relationship": "subset-of",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-a1.2.3"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.9,
+              "STRVALUE": "0.9"
+            },
+            "coverage": {
+              "generation-method": "arbitrary",
+              "STRVALUE": 0.9
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

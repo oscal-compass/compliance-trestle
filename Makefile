@@ -55,13 +55,13 @@ pre-commit-update: ## Update pre-commit hooks to latest versions
 .PHONY: code-format code-lint code-lint-fix code-typing code-check mdformat
 
 code-format: ## Format code with ruff
-	hatch fmt --formatter
+	hatch check fmt --fix
 
 code-lint: ## Check code style with ruff (no fixes)
-	hatch fmt --linter --check
+	hatch check code
 
 code-lint-fix: ## Fix code style issues with ruff
-	hatch fmt --linter
+	hatch check code --fix
 
 code-typing: ## Run mypy type checking
 	hatch run -- mypy --pretty trestle
@@ -79,7 +79,7 @@ mdformat: ## Format markdown files
 # Testing (via hatch test)
 # ============================================================================
 
-.PHONY: test test-all test-cov test-cov-xml test-bdist
+.PHONY: test test-all test-cov test-cov-seq test-cov-xml test-cov-xml-seq test-bdist
 
 test: ## Run tests (stops on first failure)
 	hatch test
@@ -87,10 +87,10 @@ test: ## Run tests (stops on first failure)
 test-all: ## Run all tests in parallel
 	hatch test --all
 
-test-cov: ## Run tests with coverage report
+test-cov: ## Run tests with coverage report (parallel)
 	hatch test --cover
 
-test-cov-xml: test-cov ## Run tests with coverage and generate XML report
+test-cov-xml: test-cov ## Run tests with coverage and generate XML report (parallel)
 	hatch run coverage xml
 
 test-bdist: clean ## Test binary distribution (wheel install)
@@ -135,12 +135,34 @@ docs-validate: docs-clean ## Validate documentation (build + link check)
 docs-clean: clean-tmp
 
 # ============================================================================
+# Workflow Testing (via act + podman)
+# ============================================================================
+
+.PHONY: act-lint act-actionlint act-test-dry act-deploy-dry act-conventional-dry
+
+ACT_FLAGS := --container-architecture linux/amd64
+
+act-lint: ## Run the actionlint workflow locally with act
+	act -W .github/workflows/actionlint.yml $(ACT_FLAGS)
+
+act-actionlint: act-lint ## Alias for act-lint
+
+act-test-dry: ## Dry-run the PR test pipeline locally with act
+	act -n -W .github/workflows/python-test.yml $(ACT_FLAGS)
+
+act-deploy-dry: ## Dry-run the deploy pipeline locally with act
+	act -n -W .github/workflows/python-push.yml $(ACT_FLAGS)
+
+act-conventional-dry: ## Dry-run the conventional PR pipeline locally with act
+	act -n -W .github/workflows/conventional-pr.yml $(ACT_FLAGS)
+
+# ============================================================================
 # Utilities
 # ============================================================================
 
 .PHONY: gen-oscal simplified-catalog check-for-changes clean clean-env
 
-gen-oscal: ## Generate OSCAL Python models from JSON schemas
+gen-oscal: clean-tmp ## Generate OSCAL Python models from JSON schemas
 	hatch run python ./scripts/gen_oscal.py
 
 simplified-catalog: ## Generate simplified NIST catalog for testing

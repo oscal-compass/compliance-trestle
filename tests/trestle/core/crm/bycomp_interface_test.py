@@ -74,8 +74,9 @@ def test_get_export_sets() -> None:
 def test_reconcile_inheritance_by_component() -> None:
     """Test retrieving isolated responsibilities statements."""
     by_comp: ossp.ByComponent = test_utils.generate_test_by_comp()
-    by_comp.inherited = []
-    by_comp.satisfied = []
+    # In Pydantic v2, cannot set list fields with min_length=1 to empty list
+    by_comp.inherited = None
+    by_comp.satisfied = None
 
     # Set up default inherited and satisfied statements
     inherited = gens.generate_sample_model(ossp.Inherited)
@@ -85,8 +86,9 @@ def test_reconcile_inheritance_by_component() -> None:
     satisfied.responsibility_uuid = test_responsibility_uuid
     satisfied.description = 'satisfied description'
 
-    by_comp.inherited.append(inherited)
-    by_comp.satisfied.append(satisfied)
+    # In Pydantic v2, initialize with list containing items instead of appending to empty list
+    by_comp.inherited = [inherited]
+    by_comp.satisfied = [satisfied]
 
     bycomp_interface: ByComponentInterface = ByComponentInterface(by_comp)
 
