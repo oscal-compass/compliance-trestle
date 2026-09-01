@@ -953,9 +953,7 @@ class TestHttpsRedirectSsrfBypass:
 
         monkeypatch.setattr(socket, 'getaddrinfo', _getaddrinfo)
 
-    def test_redirect_to_link_local_is_rejected_at_fetcher_layer(
-        self, tmp_path: pathlib.Path, monkeypatch
-    ) -> None:
+    def test_redirect_to_link_local_is_rejected_at_fetcher_layer(self, tmp_path: pathlib.Path, monkeypatch) -> None:
         """HTTPSFetcher rejects a 302 response and does not write anything to cache.
 
         Verifies the lowest-level fix: allow_redirects=False causes requests.get() to surface
@@ -965,7 +963,9 @@ class TestHttpsRedirectSsrfBypass:
         test_utils.ensure_trestle_config_dir(tmp_path)
         self._mock_attacker_dns(monkeypatch)
 
-        redirect_response = _Redirect302Response('http://169.254.169.254/latest/meta-data/iam/security-credentials/MyRole')
+        redirect_response = _Redirect302Response(
+            'http://169.254.169.254/latest/meta-data/iam/security-credentials/MyRole'
+        )
         monkeypatch.setattr(cache.requests, 'get', lambda *args, **kwargs: redirect_response)
 
         fetcher = HTTPSFetcher(tmp_path, 'https://attacker.com/redir')
@@ -977,9 +977,7 @@ class TestHttpsRedirectSsrfBypass:
         # The cache file must not exist — no data was written before the error.
         assert not cache_file.exists(), 'Cache file written despite 302 redirect — SSRF protection failed'
 
-    def test_redirect_rejected_through_profile_import_chain(
-        self, tmp_path: pathlib.Path, monkeypatch
-    ) -> None:
+    def test_redirect_rejected_through_profile_import_chain(self, tmp_path: pathlib.Path, monkeypatch) -> None:
         """Full chain: Import.process() → FetcherFactory → HTTPSFetcher._do_fetch rejects 302.
 
         The attacker controls import.href in an OSCAL profile; processing it via the profile
@@ -990,21 +988,16 @@ class TestHttpsRedirectSsrfBypass:
         test_utils.ensure_trestle_config_dir(tmp_path)
         self._mock_attacker_dns(monkeypatch)
 
-        redirect_response = _Redirect302Response('http://169.254.169.254/latest/meta-data/iam/security-credentials/MyRole')
+        redirect_response = _Redirect302Response(
+            'http://169.254.169.254/latest/meta-data/iam/security-credentials/MyRole'
+        )
         monkeypatch.setattr(cache.requests, 'get', lambda *args, **kwargs: redirect_response)
 
         # OSCAL profile with import.href pointing at attacker-controlled URL.
-        malicious_import = prof.Import1(
-            href='https://attacker.com/redir',
-            include_all={},
-        )
+        malicious_import = prof.Import1(href='https://attacker.com/redir', include_all={})
 
         # process() calls FetcherFactory.get_fetcher then get_oscal().
-        import_filter = Import(
-            trestle_root=tmp_path,
-            import_=malicious_import,
-            uuid_chain=[],
-        )
+        import_filter = Import(trestle_root=tmp_path, import_=malicious_import, uuid_chain=[])
 
         # The generator is lazy; we must iterate to trigger the fetch.
         with pytest.raises(TrestleError, match='GET returned code 302'):
@@ -1014,13 +1007,9 @@ class TestHttpsRedirectSsrfBypass:
         cache_dir = tmp_path / '.trestle' / 'cache'
         written_files = list(cache_dir.rglob('*')) if cache_dir.exists() else []
         data_files = [f for f in written_files if f.is_file()]
-        assert data_files == [], (
-            f'Cache files written despite redirect: {data_files} — SSRF protection failed'
-        )
+        assert data_files == [], f'Cache files written despite redirect: {data_files} — SSRF protection failed'
 
-    def test_requests_get_called_with_allow_redirects_false(
-        self, tmp_path: pathlib.Path, monkeypatch
-    ) -> None:
+    def test_requests_get_called_with_allow_redirects_false(self, tmp_path: pathlib.Path, monkeypatch) -> None:
         """requests.get is always called with allow_redirects=False.
 
         Independently verifies the fix primitive: the keyword argument that prevents redirect
