@@ -376,7 +376,7 @@
                 <span class=k>continue</span>
 
         <span class=k>if</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-            <span class=k>if</span> <span class=s1>'format'</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=nb>type</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>]</span> <span class=ow>is</span> <span class=nb>str</span><span class=p>):</span>
+            <span class=k>if</span> <span class=s1>'format'</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>],</span> <span class=nb>str</span><span class=p>):</span>
                 <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>])</span>
             <span class=k>else</span><span class=p>:</span>
                 <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>markdown_const</span><span class=o>.</span><span class=n>JINJA_DATESTAMP_FORMAT</span><span class=p>)</span>
@@ -488,7 +488,7 @@
             <span class=k>continue</span>
 
     <span class=k>if</span> <span class=n>kwargs</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-        <span class=k>if</span> <span class=s1>'format'</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=nb>type</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>]</span> <span class=ow>is</span> <span class=nb>str</span><span class=p>):</span>
+        <span class=k>if</span> <span class=s1>'format'</span> <span class=ow>in</span> <span class=n>kwargs</span> <span class=ow>and</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>],</span> <span class=nb>str</span><span class=p>):</span>
             <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>kwargs</span><span class=p>[</span><span class=s1>'format'</span><span class=p>])</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>date_string</span> <span class=o>=</span> <span class=n>date</span><span class=o>.</span><span class=n>today</span><span class=p>()</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=n>markdown_const</span><span class=o>.</span><span class=n>JINJA_DATESTAMP_FORMAT</span><span class=p>)</span>
