@@ -544,7 +544,7 @@ class OscalBaseModel(TrestleBaseModel):
         return False
 
     @classmethod
-    def get_collection_type(cls) -> Optional[type]:
+    def get_collection_type(cls) -> Optional[Type[Any]]:
         """
         If the type wraps an collection, return the collection type.
 
@@ -673,7 +673,7 @@ class OscalRootModel(RootModel[Any]):
         return False
 
     @classmethod
-    def get_collection_type(cls) -> Optional[type]:
+    def get_collection_type(cls) -> Optional[Type[Any]]:
         """Return the underlying collection type (list or dict) for this RootModel wrapper.
 
         Raises:
@@ -681,7 +681,10 @@ class OscalRootModel(RootModel[Any]):
         """
         if not cls.is_collection_container():
             raise err.TrestleError('OscalRootModel is not wrapping a collection type')
-        return get_origin(cls.model_fields['root'].annotation)
+        annotation = cls.model_fields['root'].annotation
+        if annotation is None:
+            raise err.TrestleError('root field has no annotation')
+        return get_origin(annotation)
 
     @classmethod
     def alias_to_field_map(cls) -> Dict[str, FieldWrapper]:
