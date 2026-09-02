@@ -77,7 +77,7 @@ class TemplateVersioning:
             pattern = re.compile(TEMPLATE_VERSION_REGEX)
             all_non_template_directories = list(
                 filter(
-                    lambda p: p.is_dir() and pattern.search(p.parts[-1]) is None,
+                    lambda p: p.is_dir() and pattern.fullmatch(p.parts[-1]) is None,
                     file_utils.iterdir_without_hidden_files(task_path),
                 )
             )
@@ -139,7 +139,7 @@ class TemplateVersioning:
             logger.debug(f'No template versions were found for task: {task_path}, defaulting to 0.0.1')
             max_version = START_TEMPLATE_VERSION
         else:
-            max_version = max(all_versions)
+            max_version = max(all_versions, key=TemplateVersioning._version_sort_key)
 
         latest_path = Path(f'{task_path}/{max_version}')
 
@@ -150,13 +150,9 @@ class TemplateVersioning:
         """Get all versions for the task."""
         pattern = re.compile(TEMPLATE_VERSION_REGEX)
         all_versions = []
-        max_version = START_TEMPLATE_VERSION
         for p in task_path.iterdir():
-            if p.is_dir() and pattern.search(p.parts[-1]) is not None:
-                match = pattern.search(p.parts[-1]).string
-                all_versions.append(match)
-                if match > max_version:
-                    max_version = match
+            if p.is_dir() and pattern.fullmatch(p.parts[-1]) is not None:
+                all_versions.append(p.parts[-1])
 
         return all_versions
 
@@ -213,12 +209,19 @@ class TemplateVersioning:
             return True  # we can have empty version
         if template_version == '0.0.0':
             return False
-        version_regex = r'^[0-9]+\.[0-9]+\.[0-9]+$'
-        pattern = re.compile(version_regex)
-        if pattern.search(template_version):
+        if re.fullmatch(TEMPLATE_VERSION_REGEX, template_version):
             return True
         else:
             return False
+
+    @staticmethod
+    def _version_sort_key(version: str) -> Tuple[int, int, int]:
+        """Convert a semantic version string into an integer tuple for numeric comparisons."""
+        if not re.fullmatch(TEMPLATE_VERSION_REGEX, version):
+            raise TrestleError(f'Invalid template version format: {version}')
+
+        major, minor, patch = version.split('.')
+        return int(major), int(minor), int(patch)
 
     @staticmethod
     def _check_if_exists_and_dir(task_path: Path) -> None:
