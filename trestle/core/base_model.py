@@ -660,6 +660,30 @@ class OscalRootModel(RootModel[Any]):
         return OscalBaseModel.oscal_write(cast(Any, self), path)
 
     @classmethod
+    def is_collection_container(cls) -> bool:
+        """Return True when this RootModel subclass wraps a collection (list or dict).
+
+        OscalRootModel subclasses are always created to wrap collection field types, so
+        this applies the same test used by OscalBaseModel.is_collection_container().
+        """
+        if len(cls.model_fields) == 1 and 'root' in cls.model_fields:
+            annotation = cls.model_fields['root'].annotation
+            if annotation is not None and is_collection_field_type(annotation):
+                return True
+        return False
+
+    @classmethod
+    def get_collection_type(cls) -> Optional[type]:
+        """Return the underlying collection type (list or dict) for this RootModel wrapper.
+
+        Raises:
+            err.TrestleError: if the model is not wrapping a collection type.
+        """
+        if not cls.is_collection_container():
+            raise err.TrestleError('OscalRootModel is not wrapping a collection type')
+        return get_origin(cls.model_fields['root'].annotation)
+
+    @classmethod
     def alias_to_field_map(cls) -> Dict[str, FieldWrapper]:
         """Get alias to field mapping."""
         return OscalBaseModel.alias_to_field_map.__func__(cls)

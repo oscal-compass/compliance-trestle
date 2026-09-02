@@ -512,6 +512,60 @@ def test_split_merge_out_of_context(
     assert post_merge_catalog == pre_split_catalog
 
 
+def test_merge_collection_element_groups_wildcard(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, keep_cwd, monkeypatch: MonkeyPatch
+) -> None:
+    """Regression test for issue #2346: trestle merge fails on collection elements.
+
+    Reproduces the exact tutorial sequence that triggered the bug:
+      trestle split -f catalog.json -e catalog.metadata,catalog.groups,catalog.back-matter
+      trestle split -f groups.json  -e groups.*.controls.*    (from catalog/)
+      trestle merge -e groups.*                               (← crashed with AttributeError)
+      trestle merge -e catalog.*
+
+    The root cause was that DynamicRootModel(OscalRootModel) — returned by
+    get_stripped_model_type for collection fields — was missing is_collection_container()
+    and get_collection_type(), which are called by merge.py at the wildcard branch.
+    """
+    catalog = testdata_dir / 'json/minimal_catalog_with_groups_and_controls.json'
+
+    command_import = f'trestle import -f {catalog} -o mycatalog'
+    execute_command_and_assert(command_import, 0, monkeypatch)
+
+    catalog_dir = tmp_trestle_dir / 'catalogs/mycatalog'
+    os.chdir(catalog_dir)
+
+    # Step 1 — split top-level elements (matches tutorial step 4)
+    command_split1 = "trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'"
+    execute_command_and_assert(command_split1, 0, monkeypatch)
+    assert (catalog_dir / 'catalog' / 'groups.json').exists()
+
+    # Step 2 — split controls out of groups (matches tutorial step 5)
+    os.chdir(catalog_dir / 'catalog')
+    command_split2 = "trestle split -f ./groups.json -e 'groups.*.controls.*'"
+    execute_command_and_assert(command_split2, 0, monkeypatch)
+
+    # Step 3 — merge groups/* back into groups.json  ← this was the crash site
+    command_merge_groups = "trestle merge -e 'groups.*'"
+    execute_command_and_assert(command_merge_groups, 0, monkeypatch)
+    assert (catalog_dir / 'catalog' / 'groups.json').exists()
+    assert not (catalog_dir / 'catalog' / 'groups').exists()
+
+    # Step 4 — merge everything back into catalog.json
+    os.chdir(catalog_dir)
+    command_merge_catalog = "trestle merge -e 'catalog.*'"
+    execute_command_and_assert(command_merge_catalog, 0, monkeypatch)
+    assert (catalog_dir / 'catalog.json').exists()
+    assert not (catalog_dir / 'catalog').exists()
+
+    # Verify round-trip: the re-merged catalog equals the original import
+    import trestle.oscal.catalog as oscatalog
+
+    merged = oscatalog.Catalog.oscal_read(catalog_dir / 'catalog.json')
+    original = oscatalog.Catalog.oscal_read(catalog)
+    assert merged == original
+
+
 def test_merge_deletes_folders(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, keep_cwd, monkeypatch: MonkeyPatch
 ) -> None:
