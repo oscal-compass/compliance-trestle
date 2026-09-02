@@ -396,7 +396,7 @@ def test_managed_validate(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_agile_authoring_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     """Test catalog generate and assemble through API."""
-    test_utils.load_from_json(tmp_trestle_dir, cat_name, cat_name, cat.Catalog)
+    test_utils.load_valid_model_from_json(tmp_trestle_dir, cat_name, cat_name, cat.Catalog)
 
     authoring = AgileAuthoring(tmp_trestle_dir)
 
@@ -414,8 +414,8 @@ def test_agile_authoring_catalog(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_agile_authoring_profile(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile generate and assemble through API."""
-    test_utils.load_from_json(tmp_trestle_dir, cat_name, cat_name, cat.Catalog)
-    test_utils.load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    test_utils.load_valid_model_from_json(tmp_trestle_dir, cat_name, cat_name, cat.Catalog)
+    test_utils.load_valid_model_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
 
     authoring = AgileAuthoring(tmp_trestle_dir)
 
