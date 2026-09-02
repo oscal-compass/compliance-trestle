@@ -14,7 +14,7 @@
 """Tests for fs module."""
 
 import pathlib
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import List, Union
 
 import pytest
@@ -887,7 +887,7 @@ def test_last_modified_at_time() -> None:
     """Test last_modified_at_time with and without timestamp."""
     from datetime import timezone
 
-    test_timestamp = datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc)
+    test_timestamp = datetime(2024, 1, 15, 10, 30, 0, tzinfo=UTC)
     result = ModelUtils.last_modified_at_time(test_timestamp)
     assert result == test_timestamp
 

@@ -886,7 +886,7 @@ def test_xlsx_helper_parse_date_with_timezone():
     helper = PoamXlsxHelper()
 
     # Create datetime with timezone
-    dt_with_tz = datetime.datetime(2024, 1, 15, 10, 30, tzinfo=datetime.timezone.utc)
+    dt_with_tz = datetime.datetime(2024, 1, 15, 10, 30, tzinfo=datetime.UTC)
     result = helper.parse_date(dt_with_tz)
 
     assert result is not None
@@ -937,7 +937,7 @@ def test_builder_create_risk_with_integer_statement():
     assert risk.statement == '12345'
 
     # Create datetime with timezone
-    dt_with_tz = datetime.datetime(2024, 1, 15, 10, 30, tzinfo=datetime.timezone.utc)
+    dt_with_tz = datetime.datetime(2024, 1, 15, 10, 30, tzinfo=datetime.UTC)
     result = helper.parse_date(dt_with_tz)
 
     assert result is not None

@@ -193,8 +193,6 @@ class MergeCmd(CommandPlusDocs):
         write_destination_action = WriteFileAction(
             destination_model_path, merged_destination_element, content_type=file_type
         )
-        # FIXME this will delete metadata.json but it will leave metadata/roles/roles.*
-        # need to clean up all lower dirs
         trace.log(f'remove path action {target_model_filename}')
         delete_target_action = RemovePathAction(target_model_filename)
 
@@ -203,6 +201,13 @@ class MergeCmd(CommandPlusDocs):
         plan.add_action(write_destination_action)
         plan.add_action(delete_target_action)
 
-        # TODO: Destination model directory is empty or already merged? Then clean up.
+        # If merge loaded from <alias>.json and a sibling distributed folder <alias>/ exists,
+        # remove it as well to avoid leaving stale decomposed content behind.
+        if target_model_filename.is_file():
+            distributed_target_dir = target_model_filename.with_suffix('')
+            if distributed_target_dir.exists() and distributed_target_dir.is_dir():
+                trace.log(f'remove distributed target dir action {distributed_target_dir}')
+                delete_distributed_target_action = RemovePathAction(distributed_target_dir)
+                plan.add_action(delete_distributed_target_action)
 
         return plan

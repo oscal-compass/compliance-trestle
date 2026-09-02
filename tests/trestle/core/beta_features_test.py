@@ -76,6 +76,27 @@ def test_enable_disable_feature_persists_to_workspace_config(
     assert not beta_features.disable_feature('sample', tmp_trestle_dir)
 
 
+def test_enable_disable_all_features_preserves_unknown_config(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test bulk beta updates preserve unregistered config entries."""
+    patch_beta_features(monkeypatch, sample_feature('one'), sample_feature('two'))
+    config_path = beta_features.get_beta_config_path(tmp_trestle_dir)
+    config_path.write_text('[beta]\nenabled_features = legacy\n', encoding='utf-8')
+
+    assert beta_features.enable_all_features(tmp_trestle_dir) == 2
+    assert beta_features.get_enabled_features(tmp_trestle_dir) == {'one', 'two'}
+    assert beta_features.enable_all_features(tmp_trestle_dir) == 0
+
+    assert beta_features.disable_all_features(tmp_trestle_dir) == 2
+    assert not beta_features.get_enabled_features(tmp_trestle_dir)
+    assert beta_features.disable_all_features(tmp_trestle_dir) == 0
+
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    assert config.get(beta_features.BETA_SECTION, beta_features.ENABLED_FEATURES_KEY) == 'legacy'
+
+
 def test_enable_feature_preserves_existing_config_sections(
     tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:

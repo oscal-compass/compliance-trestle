@@ -61,11 +61,11 @@ BETA_FEATURES: Dict[str, BetaFeature] = {
     ),
     'json-manifest-signing': BetaFeature(
         name='json-manifest-signing',
-        description='Sign and verify JSON package manifests for JSON artifacts with detached DSSE envelopes.',
-        commands=['trestle sign-manifest', 'trestle verify-manifest'],
+        description='Generate, sign, and verify JSON package manifests for JSON artifacts.',
+        commands=['trestle generate-manifest', 'trestle sign-manifest', 'trestle verify-manifest'],
         since_version='4.0.3',
         stability='beta',
-        documentation_url='https://oscal-compass.github.io/compliance-trestle/tutorials/cli/#trestle-sign-manifest',
+        documentation_url='https://oscal-compass.github.io/compliance-trestle/tutorials/cli/#trestle-generate-manifest',
         enabled_by_default=False,
         deprecation_version=None,
     ),
@@ -161,6 +161,26 @@ def disable_feature(feature_name: str, trestle_root: pathlib.Path) -> bool:
     enabled_features.remove(feature_name)
     _write_config_enabled_features(config_path, enabled_features)
     return True
+
+
+def enable_all_features(trestle_root: pathlib.Path) -> int:
+    """Enable every registered beta feature and return the number changed."""
+    config_path = get_beta_config_path(trestle_root)
+    enabled_features = _read_config_enabled_features(config_path)
+    newly_enabled = set(BETA_FEATURES).difference(enabled_features)
+    if newly_enabled:
+        _write_config_enabled_features(config_path, enabled_features.union(newly_enabled))
+    return len(newly_enabled)
+
+
+def disable_all_features(trestle_root: pathlib.Path) -> int:
+    """Disable every config-enabled beta feature and return the number changed."""
+    config_path = get_beta_config_path(trestle_root)
+    enabled_features = _read_config_enabled_features(config_path)
+    configured_features = set(BETA_FEATURES).intersection(enabled_features)
+    if configured_features:
+        _write_config_enabled_features(config_path, enabled_features.difference(configured_features))
+    return len(configured_features)
 
 
 def beta_feature(feature_name: str) -> Callable[[BetaCallable], BetaCallable]:

@@ -72,6 +72,11 @@ See [Install trestle in a python virtual environment](https://oscal-compass.gith
 
 Complete documentation, tutorials, and background on compliance can be found [here](https://oscal-compass.github.io/compliance-trestle/latest).
 
+## Agentic Agile Authoring
+
+Compliance authoring for OSCAL artifacts based on the OSCAL Compass MCP Server and a GenAI agentic solution with Human-in-the-Loop (HITL) by design, as authoring skills run inside your IDE (Claude Code, OpenCode).
+More information can be found [here](https://github.com/oscal-compass/agentic-agile-authoring).
+
 ## Agile Authoring
 
 A trestle-based agile authoring repository setup tool, documentation and tutorial can be found [here](https://github.com/oscal-compass/compliance-trestle-agile-authoring).
@@ -158,6 +163,8 @@ We are a Cloud Native Computing Foundation sandbox project.
   <img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
 </picture>
 
-The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage).
 
-*Trestle was originally created by IBM.*
+*OSCAL Compass is an independent open source project. It is not affiliated with, endorsed by, or sponsored by the National Institute of Standards and Technology (NIST) or any other government agency.*
+
+*OSCAL Compass was originally contributed by IBM.*

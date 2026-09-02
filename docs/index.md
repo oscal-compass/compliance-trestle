@@ -56,10 +56,10 @@ Visit [pypi](https://pypi.org/project/compliance-trestle/#history) for trestle r
 
 #### Install of trestle 5.x
 
-Use python 3.12.
+Use python 3.14.
 
 ```
-python3.12 -m venv venv.trestle
+python3.14 -m venv venv.trestle
 source venv.trestle/bin/activate
 pip install compliance-trestle
 trestle version
@@ -150,6 +150,8 @@ We are a Cloud Native Computing Foundation sandbox project.
   <img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
 </picture>
 
-The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage).
 
-*Trestle was originally created by IBM.*
+*OSCAL Compass is an independent open source project. It is not affiliated with, endorsed by, or sponsored by the National Institute of Standards and Technology (NIST) or any other government agency.*
+
+*OSCAL Compass was originally contributed by IBM.*

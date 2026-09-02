@@ -102,6 +102,8 @@ jobs:
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
       if: steps.core-version.outputs.core == 'true'
+      env:
+        NO_MKDOCS_2_WARNING: '1'
       run: |
         make docs-validate
     - name: Recreate hatch test environment
@@ -265,7 +267,7 @@ jobs:
 
     - name: Python Semantic Release
       id: release
-      uses: python-semantic-release/python-semantic-release@39dd2052f2ce8282a5d932c31d58a2ca06d2550e # v10.6.1
+      uses: python-semantic-release/python-semantic-release@9a026e9303981c866c3425723009becb2437c757 # v10.6.2
       with:
         github_token: ${{ steps.app-token.outputs.token }}
 
@@ -280,8 +282,9 @@ jobs:
     # --- Generate provenance for the ACTUAL RELEASE ARTIFACTS ---
 
     - name: Generate SLSA build provenance
+      id: attest
       if: steps.release.outputs.released == 'true'
-      uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+      uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
       with:
         subject-path: "dist/*"
 
@@ -296,6 +299,13 @@ jobs:
       if: steps.release.outputs.released == 'true'
       with:
         inputs: "dist/*"
+
+    # Copy the SLSA provenance bundle into dist/ AFTER PyPI publish (PyPI must not
+    # receive it) so that upload-to-gh-release attaches it to the GitHub Release.
+    # Scorecard's releasesHaveProvenance probe requires a *.intoto.jsonl asset.
+    - name: Stage provenance bundle for GitHub Release
+      if: steps.release.outputs.released == 'true'
+      run: cp "${{ steps.attest.outputs.bundle-path }}" dist/attestation.intoto.jsonl
 
     - name: Publish package distributions to GitHub Releases
       uses: python-semantic-release/upload-to-gh-release@0a92b5d7ebfc15a84f9801ebd1bf706343d43711 # v9.8.9

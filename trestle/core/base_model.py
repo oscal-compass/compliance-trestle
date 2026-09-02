@@ -115,7 +115,7 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
         raise err.TrestleError('Missing utcoffset in datetime')
 
     # Normalise to UTC so the offset is always +00:00 (not e.g. -05:00)
-    dt_utc = input_dt.astimezone(datetime.timezone.utc)
+    dt_utc = input_dt.astimezone(datetime.UTC)
 
     # Omit sub-second precision when microseconds are zero to keep output compact.
     # Include milliseconds when microseconds are set so no precision is lost.
