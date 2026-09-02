@@ -1,0 +1,7 @@
+$$Component_Title,$$Component_Description,$$Component_Type,$$Rule_Id,$$Rule_Description,Check_Id,Check_Description,$$Namespace,Target_Component,$$Control_Id_List,$$Profile_Source,$$Profile_Description
+OSCO,OSCO,validation,RULE-1.1,RULE1.1,Check.1,Check.1,http://oscal-compass/compliance-trestle/schemas/oscal/cd,Target-A,,,
+OSCO,OSCO,validation,RULE-1.1,RULE1.1,Check.2,Check.2,http://oscal-compass/compliance-trestle/schemas/oscal/cd,Target-A,,,
+OSCO,OSCO,validation,RULE-1.1,RULE1.1,Check.3,Check.3,http://oscal-compass/compliance-trestle/schemas/oscal/cd,Target-A,,,
+OSCO,OSCO,validation,RULE-1.1,RULE1.1,Check.1,Check.1,http://oscal-compass/compliance-trestle/schemas/oscal/cd,Target-B,,,
+OSCO,OSCO,validation,RULE-1.1,RULE1.1,Check.2,Check.2,http://oscal-compass/compliance-trestle/schemas/oscal/cd,Target-B,,,
+OSCO,OSCO,validation,RULE-1.1,RULE1.1,Check.3,Check.3,http://oscal-compass/compliance-trestle/schemas/oscal/cd,Target-B,,,
