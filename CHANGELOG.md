@@ -2,6 +2,107 @@
 
 <!-- version list -->
 
+## v5.1.0 (2026-09-02)
+
+### Bug Fixes
+
+- Add disclaimer ([#2323](https://github.com/oscal-compass/compliance-trestle/pull/2323),
+  [`6fbcd3b`](https://github.com/oscal-compass/compliance-trestle/commit/6fbcd3b277d9020089c2f9283b4295131f62469a))
+
+- Agentic-agile-authoring to Learn About The Projects
+  ([#2337](https://github.com/oscal-compass/compliance-trestle/pull/2337),
+  [`8bfe8cb`](https://github.com/oscal-compass/compliance-trestle/commit/8bfe8cb3910f2117e9fce96d5776fccf4e8e7a9a))
+
+- Correct type() misuse, unused imports, exit(), and timezone-naive datetime
+  ([#2139](https://github.com/oscal-compass/compliance-trestle/pull/2139),
+  [`f1aa9de`](https://github.com/oscal-compass/compliance-trestle/commit/f1aa9dedce47f7fca4c8f41a1871703ccef6534c))
+
+- Dependabot group for codeql-action
+  ([#2330](https://github.com/oscal-compass/compliance-trestle/pull/2330),
+  [`008f35c`](https://github.com/oscal-compass/compliance-trestle/commit/008f35cc4c1f3dca80ac4ac133ad0970fed92baf))
+
+- Improve tests ([#2344](https://github.com/oscal-compass/compliance-trestle/pull/2344),
+  [`fa2e442`](https://github.com/oscal-compass/compliance-trestle/commit/fa2e4428a846984ca071c32e618892b17b78a6cc))
+
+- Move emeritus to separate file
+  ([#2332](https://github.com/oscal-compass/compliance-trestle/pull/2332),
+  [`ff35838`](https://github.com/oscal-compass/compliance-trestle/commit/ff35838d1cffce30d2cb65078dc2f037ebe4cc02))
+
+- Openssf signed release score improvement
+  ([#2335](https://github.com/oscal-compass/compliance-trestle/pull/2335),
+  [`0cf1895`](https://github.com/oscal-compass/compliance-trestle/commit/0cf1895aee61751ce2fdeaf46b404da00fca3012))
+
+- Pin mkdocs<2.0 and mkdocs-material<10, add NO_MKDOCS_2_WARNING to all CI doc steps
+  ([#2132](https://github.com/oscal-compass/compliance-trestle/pull/2132),
+  [`ce6ec2c`](https://github.com/oscal-compass/compliance-trestle/commit/ce6ec2c8829321ef345ebe508a0afcb530188eb7))
+
+- Revised text ([#2337](https://github.com/oscal-compass/compliance-trestle/pull/2337),
+  [`8bfe8cb`](https://github.com/oscal-compass/compliance-trestle/commit/8bfe8cb3910f2117e9fce96d5776fccf4e8e7a9a))
+
+- Snyk fails with pip-tools 7.6.0
+  ([#2329](https://github.com/oscal-compass/compliance-trestle/pull/2329),
+  [`ccd695e`](https://github.com/oscal-compass/compliance-trestle/commit/ccd695ec47495c64878aaf81731944c0000972a5))
+
+- Sonar duplication complaint
+  ([#2325](https://github.com/oscal-compass/compliance-trestle/pull/2325),
+  [`9b4dd8c`](https://github.com/oscal-compass/compliance-trestle/commit/9b4dd8c049a73ae21ce5303667d7229bd7811cee))
+
+- Validation error ([#2195](https://github.com/oscal-compass/compliance-trestle/pull/2195),
+  [`4529999`](https://github.com/oscal-compass/compliance-trestle/commit/45299998babaa86d5cefa709a9d31ebd3c752bf8))
+
+- **deps**: Bump actions/attest-build-provenance from 4.1.1 to 4.2.2
+  ([#2326](https://github.com/oscal-compass/compliance-trestle/pull/2326),
+  [`84e5ad5`](https://github.com/oscal-compass/compliance-trestle/commit/84e5ad515df6acb779ba2eb2c88c63e3eb7a17cf))
+
+- **deps**: Bump python-semantic-release/python-semantic-release
+  ([#2343](https://github.com/oscal-compass/compliance-trestle/pull/2343),
+  [`4c3c0be`](https://github.com/oscal-compass/compliance-trestle/commit/4c3c0be344b9ba4a81af8f04900be453eb349cd1))
+
+- **deps**: Bump the codeql-action group with 2 updates
+  ([#2342](https://github.com/oscal-compass/compliance-trestle/pull/2342),
+  [`76d46ba`](https://github.com/oscal-compass/compliance-trestle/commit/76d46ba84ef1581f48dab3bf8e929ded26d88a71))
+
+- **deps**: Bump the codeql-action group with 2 updates
+  ([#2336](https://github.com/oscal-compass/compliance-trestle/pull/2336),
+  [`f3171a7`](https://github.com/oscal-compass/compliance-trestle/commit/f3171a7b2211b5938f1c86501632a0c93c3d63e1))
+
+- **deps**: Bump the codeql-action group with 2 updates
+  ([#2333](https://github.com/oscal-compass/compliance-trestle/pull/2333),
+  [`05dabc5`](https://github.com/oscal-compass/compliance-trestle/commit/05dabc5e02f8e66818014c866ef38ebbf4e2c005))
+
+- **deps**: Bump the codeql-action group with 2 updates
+  ([#2331](https://github.com/oscal-compass/compliance-trestle/pull/2331),
+  [`602590d`](https://github.com/oscal-compass/compliance-trestle/commit/602590d061345cab97ccbe14b5074c0a5aa77cd1))
+
+- **merge**: Clean up distributed subdir after merge
+  ([#2193](https://github.com/oscal-compass/compliance-trestle/pull/2193),
+  [`4c31a39`](https://github.com/oscal-compass/compliance-trestle/commit/4c31a390c161846dffcb2dbfbddd222436058fb1))
+
+### Chores
+
+- Raise minimum pydantic to 2.11.0
+  ([#2340](https://github.com/oscal-compass/compliance-trestle/pull/2340),
+  [`31cc604`](https://github.com/oscal-compass/compliance-trestle/commit/31cc604c579d7198eeea60bf7e9b2197dfa13d8b))
+
+### Features
+
+- Add automatic OSCAL manifest generation
+  ([#2302](https://github.com/oscal-compass/compliance-trestle/pull/2302),
+  [`1c27b10`](https://github.com/oscal-compass/compliance-trestle/commit/1c27b10f70b9b0f2b0f48716caca38809a5ff346))
+
+- Add python 3.13, 3.14 ([#2325](https://github.com/oscal-compass/compliance-trestle/pull/2325),
+  [`9b4dd8c`](https://github.com/oscal-compass/compliance-trestle/commit/9b4dd8c049a73ae21ce5303667d7229bd7811cee))
+
+- Manage all beta features ([#2322](https://github.com/oscal-compass/compliance-trestle/pull/2322),
+  [`d6f4fbd`](https://github.com/oscal-compass/compliance-trestle/commit/d6f4fbd86f3572b50a5b5482e6652ee2f88527c2))
+
+### Testing
+
+- **validate**: Enable component-definition port validation coverage
+  ([#2195](https://github.com/oscal-compass/compliance-trestle/pull/2195),
+  [`4529999`](https://github.com/oscal-compass/compliance-trestle/commit/45299998babaa86d5cefa709a9d31ebd3c752bf8))
+
+
 ## v5.0.0 (2026-08-07)
 
 ### Bug Fixes
