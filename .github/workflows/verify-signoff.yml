@@ -1,0 +1,79 @@
+name: Verify Sign-off
+
+on:
+  pull_request:
+    branches: [develop, main, 'v[0-9]*']
+    types: [opened, edited, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-signoff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR commits
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Verify every commit is signed off with the correct GitHub noreply email
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          FAIL=0
+
+          # Walk every non-merge commit introduced by this PR
+          while IFS= read -r COMMIT; do
+            AUTHOR_NAME=$(git log -1 --format='%an' "$COMMIT")
+            AUTHOR_EMAIL=$(git log -1 --format='%ae' "$COMMIT")
+            SIGNOFF=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly)' "$COMMIT" | head -n1)
+
+            echo "----------------------------------------"
+            echo "Commit:      $COMMIT"
+            echo "Author:      $AUTHOR_NAME <$AUTHOR_EMAIL>"
+            echo "Signed-off:  ${SIGNOFF:-<none>}"
+
+            # 1. Reject missing signoff outright
+            if [ -z "$SIGNOFF" ]; then
+              echo "::error::Commit $COMMIT is missing a Signed-off-by trailer."
+              FAIL=1
+              continue
+            fi
+
+            # 2. Resolve the committer's actual GitHub login via the Commits API
+            #    (trusting the git author email alone would allow spoofing)
+            LOGIN=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}" --jq '.author.login // empty')
+
+            if [ -z "$LOGIN" ]; then
+              echo "::error::Commit $COMMIT — cannot resolve a GitHub account (unlinked email). Signoff cannot be verified."
+              FAIL=1
+              continue
+            fi
+
+            USER_ID=$(gh api "users/${LOGIN}" --jq '.id')
+            EXPECTED_EMAIL="${USER_ID}+${LOGIN}@users.noreply.github.com"
+
+            # 3. Exact match: does the signoff contain the expected address?
+            if echo "$SIGNOFF" | grep -qF "$EXPECTED_EMAIL"; then
+              echo "✅ PASS: signoff matches ${EXPECTED_EMAIL}"
+            else
+              echo "::error::Commit $COMMIT — signoff does not match expected address."
+              echo "::error::  Got:      $SIGNOFF"
+              echo "::error::  Expected: Name <${EXPECTED_EMAIL}>"
+              FAIL=1
+            fi
+          done < <(git log --no-merges --format='%H' "${BASE_SHA}..${HEAD_SHA}")
+
+          echo "----------------------------------------"
+          if [ "$FAIL" -ne 0 ]; then
+            echo "::error::One or more commits failed strict DCO verification."
+            echo "::error::Fix: git config user.email \"<id>+<username>@users.noreply.github.com\" && git commit --amend --signoff"
+            exit 1
+          fi
+          echo "All commits passed strict DCO verification."
