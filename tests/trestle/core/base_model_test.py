@@ -35,7 +35,7 @@ import trestle.oscal.common as common
 import trestle.oscal.component as component
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
-from trestle.core.base_model import OscalBaseModel, _format_validation_error
+from trestle.core.base_model import OscalBaseModel, OscalRootModel, _format_validation_error
 
 
 def test_echo_tmp_path(tmp_path) -> None:
@@ -539,6 +539,37 @@ def test_is_collection_container() -> None:
     # Test error when calling get_collection_type on non-collection
     with pytest.raises(err.TrestleError, match='not wrapping a collection type'):
         oscatalog.Catalog.get_collection_type()
+
+
+def test_oscal_root_model_is_collection_container() -> None:
+    """Test OscalRootModel.is_collection_container covers all branches.
+
+    New methods added to fix issue #2346: trestle merge fails on collection
+    elements because DynamicRootModel(OscalRootModel) lacked these methods.
+
+    Note: is_collection_field_type only recognises list types (not dict) — that
+    reflects OSCAL's data model, which uses lists for all collections.
+    """
+    from typing import List
+
+    # --- is_collection_container: True for List root ---
+    class ListRootModel(OscalRootModel):
+        root: List[str]
+
+    assert ListRootModel.is_collection_container()
+
+    # --- is_collection_container: False when root holds a scalar (not a list) ---
+    class ScalarRootModel(OscalRootModel):
+        root: str  # type: ignore[assignment]
+
+    assert not ScalarRootModel.is_collection_container()
+
+    # --- get_collection_type: returns list ---
+    assert ListRootModel.get_collection_type() is list
+
+    # --- get_collection_type: raises when not a collection ---
+    with pytest.raises(err.TrestleError, match='not wrapping a collection type'):
+        ScalarRootModel.get_collection_type()
 
 
 def test_eq_same_name_same_content() -> None:
