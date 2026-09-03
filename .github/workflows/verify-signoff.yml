@@ -2,7 +2,7 @@ name: Verify Sign-off
 
 on:
   pull_request:
-    branches: [develop, main, 'v[0-9]*']
+    branches: [develop]
     types: [opened, edited, synchronize]
 
 permissions:
