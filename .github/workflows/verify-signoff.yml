@@ -32,37 +32,24 @@ jobs:
           while IFS= read -r COMMIT; do
             AUTHOR_NAME=$(git log -1 --format='%an' "$COMMIT")
             AUTHOR_EMAIL=$(git log -1 --format='%ae' "$COMMIT")
-            SIGNOFF=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly)' "$COMMIT" | head -n1)
+            SIGNOFFS=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly)' "$COMMIT")
 
             echo "----------------------------------------"
             echo "Commit:      $COMMIT"
             echo "Author:      $AUTHOR_NAME <$AUTHOR_EMAIL>"
-            echo "Signed-off:  ${SIGNOFF:-<none>}"
+            echo "Signed-off:  ${SIGNOFFS:-<none>}"
 
             # 1. Reject missing signoff outright
-            if [ -z "$SIGNOFF" ]; then
+            if [ -z "$SIGNOFFS" ]; then
               echo "::error::Commit $COMMIT is missing a Signed-off-by trailer."
               FAIL=1
               continue
             fi
 
-            SIGNOFF_EMAIL=$(echo "$SIGNOFF" | sed 's/.*<\(.*\)>/\1/')
-
-            # 2. The Signed-off-by email must match the commit author email (DCO
-            #    requires the signer to be the author — not a third party signing
-            #    on someone else's behalf).
-            if [ "$SIGNOFF_EMAIL" != "$AUTHOR_EMAIL" ]; then
-              echo "::error::Commit $COMMIT — Signed-off-by email does not match the commit author email."
-              echo "::error::  Author email:  $AUTHOR_EMAIL"
-              echo "::error::  Signoff email: $SIGNOFF_EMAIL"
-              FAIL=1
-              continue
-            fi
-
-            # 3. Resolve the committer's actual GitHub login and numeric ID via the
-            #    Commits API. This is the authoritative source — the git author email
-            #    is set locally and cannot be trusted on its own.
-            LOGIN=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}" --jq '.author.login // empty')
+            # Resolve this commit's GitHub login and email once — reused for
+            # every Signed-off-by trailer on this commit.
+            COMMIT_DATA=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}")
+            LOGIN=$(echo "$COMMIT_DATA" | jq -r '.author.login // empty')
 
             if [ -z "$LOGIN" ]; then
               echo "::error::Commit $COMMIT — cannot resolve a GitHub account (unlinked email). Signoff cannot be verified."
@@ -72,26 +59,41 @@ jobs:
 
             USER_ID=$(gh api "users/${LOGIN}" --jq '.id')
             NOREPLY_EMAIL="${USER_ID}+${LOGIN}@users.noreply.github.com"
+            GITHUB_AUTHOR_EMAIL=$(echo "$COMMIT_DATA" | jq -r '.commit.author.email // empty')
 
-            # 4. The Signed-off-by email must match either:
-            #    a) the GitHub-issued no-reply address for this account, or
-            #    b) the email GitHub itself recorded for this push (the author email
-            #       GitHub resolved when it accepted the push — confirmed as linked
-            #       to the account that authenticated the push).
-            #    This allows contributors who use a personal email that is linked to
-            #    their GitHub account, while rejecting any email that has no
-            #    verifiable association with the account that pushed.
-            GITHUB_AUTHOR_EMAIL=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}" --jq '.commit.author.email // empty')
+            # Check every Signed-off-by trailer on this commit
+            while IFS= read -r SIGNOFF; do
+              [ -z "$SIGNOFF" ] && continue
 
-            if [ "$SIGNOFF_EMAIL" = "$NOREPLY_EMAIL" ] || [ "$SIGNOFF_EMAIL" = "$GITHUB_AUTHOR_EMAIL" ]; then
-              echo "✅ PASS: signoff email is linked to GitHub account ${LOGIN}"
-            else
-              echo "::error::Commit $COMMIT — Signed-off-by email is not linked to the GitHub account that pushed this commit."
-              echo "::error::  Got:           $SIGNOFF"
-              echo "::error::  No-reply addr: $NOREPLY_EMAIL"
-              echo "::error::  Linked email:  $GITHUB_AUTHOR_EMAIL"
-              FAIL=1
-            fi
+              SIGNOFF_EMAIL=$(echo "$SIGNOFF" | sed 's/.*<\(.*\)>/\1/')
+
+              # 2. The Signed-off-by email must match the commit author email (DCO
+              #    requires the signer to be the author — not a third party signing
+              #    on someone else's behalf).
+              if [ "$SIGNOFF_EMAIL" != "$AUTHOR_EMAIL" ]; then
+                echo "::error::Commit $COMMIT — Signed-off-by email does not match the commit author email."
+                echo "::error::  Author email:  $AUTHOR_EMAIL"
+                echo "::error::  Signoff email: $SIGNOFF_EMAIL"
+                FAIL=1
+                continue
+              fi
+
+              # 3. The Signed-off-by email must match either:
+              #    a) the GitHub-issued no-reply address for this account, or
+              #    b) the email GitHub itself recorded for this push (confirmed as
+              #       linked to the account that authenticated the push).
+              #    This allows personal emails that are linked to the GitHub account
+              #    while rejecting emails with no verifiable association.
+              if [ "$SIGNOFF_EMAIL" = "$NOREPLY_EMAIL" ] || [ "$SIGNOFF_EMAIL" = "$GITHUB_AUTHOR_EMAIL" ]; then
+                echo "✅ PASS: signoff email is linked to GitHub account ${LOGIN}"
+              else
+                echo "::error::Commit $COMMIT — Signed-off-by email is not linked to the GitHub account that pushed this commit."
+                echo "::error::  Got:           $SIGNOFF"
+                echo "::error::  No-reply addr: $NOREPLY_EMAIL"
+                echo "::error::  Linked email:  $GITHUB_AUTHOR_EMAIL"
+                FAIL=1
+              fi
+            done <<< "$SIGNOFFS"
           done < <(git log --no-merges --format='%H' "${BASE_SHA}..${HEAD_SHA}")
 
           echo "----------------------------------------"
