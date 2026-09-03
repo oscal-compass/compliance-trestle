@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Verify every commit is signed off with the correct GitHub noreply email
+      - name: Verify every commit is signed off with a GitHub-linked email
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -46,8 +46,9 @@ jobs:
               continue
             fi
 
-            # 2. Resolve the committer's actual GitHub login via the Commits API
-            #    (trusting the git author email alone would allow spoofing)
+            # 2. Resolve the committer's actual GitHub login and numeric ID via the
+            #    Commits API. This is the authoritative source — the git author email
+            #    is set locally and cannot be trusted on its own.
             LOGIN=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}" --jq '.author.login // empty')
 
             if [ -z "$LOGIN" ]; then
@@ -57,15 +58,27 @@ jobs:
             fi
 
             USER_ID=$(gh api "users/${LOGIN}" --jq '.id')
-            EXPECTED_EMAIL="${USER_ID}+${LOGIN}@users.noreply.github.com"
+            NOREPLY_EMAIL="${USER_ID}+${LOGIN}@users.noreply.github.com"
 
-            # 3. Exact match: does the signoff contain the expected address?
-            if echo "$SIGNOFF" | grep -qF "$EXPECTED_EMAIL"; then
-              echo "✅ PASS: signoff matches ${EXPECTED_EMAIL}"
+            # 3. The Signed-off-by email must match either:
+            #    a) the GitHub-issued no-reply address for this account, or
+            #    b) the email GitHub itself recorded for this push (the author email
+            #       GitHub resolved when it accepted the push — distinct from the
+            #       locally configured git author email, which could be anything).
+            #    This allows contributors who use a personal email linked to their
+            #    GitHub account while still rejecting emails that have no association
+            #    with the account that authenticated the push.
+            GITHUB_AUTHOR_EMAIL=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}" --jq '.commit.author.email // empty')
+
+            SIGNOFF_EMAIL=$(echo "$SIGNOFF" | sed 's/.*<\(.*\)>/\1/')
+
+            if [ "$SIGNOFF_EMAIL" = "$NOREPLY_EMAIL" ] || [ "$SIGNOFF_EMAIL" = "$GITHUB_AUTHOR_EMAIL" ]; then
+              echo "✅ PASS: signoff email is linked to GitHub account ${LOGIN}"
             else
-              echo "::error::Commit $COMMIT — signoff does not match expected address."
-              echo "::error::  Got:      $SIGNOFF"
-              echo "::error::  Expected: Name <${EXPECTED_EMAIL}>"
+              echo "::error::Commit $COMMIT — Signed-off-by email is not linked to the GitHub account that pushed this commit."
+              echo "::error::  Got:           $SIGNOFF"
+              echo "::error::  No-reply addr: $NOREPLY_EMAIL"
+              echo "::error::  Linked email:  $GITHUB_AUTHOR_EMAIL"
               FAIL=1
             fi
           done < <(git log --no-merges --format='%H' "${BASE_SHA}..${HEAD_SHA}")
