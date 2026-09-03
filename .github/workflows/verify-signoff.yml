@@ -46,8 +46,28 @@ jobs:
               continue
             fi
 
-            # Resolve this commit's GitHub login and email once — reused for
-            # every Signed-off-by trailer on this commit.
+            # 2. At least one Signed-off-by trailer must match the commit author
+            #    email. DCO requires the author to have signed off their own work.
+            #    Additional co-signers (e.g. a maintainer) are permitted alongside.
+            AUTHOR_SIGNED=0
+            while IFS= read -r SIGNOFF; do
+              [ -z "$SIGNOFF" ] && continue
+              SIGNOFF_EMAIL=$(echo "$SIGNOFF" | sed 's/.*<\(.*\)>/\1/')
+              if [ "$SIGNOFF_EMAIL" = "$AUTHOR_EMAIL" ]; then
+                AUTHOR_SIGNED=1
+                break
+              fi
+            done <<< "$SIGNOFFS"
+
+            if [ "$AUTHOR_SIGNED" -eq 0 ]; then
+              echo "::error::Commit $COMMIT — no Signed-off-by trailer matches the commit author email."
+              echo "::error::  Author email: $AUTHOR_EMAIL"
+              FAIL=1
+              continue
+            fi
+
+            # 3. Resolve the commit author's GitHub login via the Commits API —
+            #    the authoritative source for which account authenticated the push.
             COMMIT_DATA=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}")
             LOGIN=$(echo "$COMMIT_DATA" | jq -r '.author.login // empty')
 
@@ -61,39 +81,19 @@ jobs:
             NOREPLY_EMAIL="${USER_ID}+${LOGIN}@users.noreply.github.com"
             GITHUB_AUTHOR_EMAIL=$(echo "$COMMIT_DATA" | jq -r '.commit.author.email // empty')
 
-            # Check every Signed-off-by trailer on this commit
-            while IFS= read -r SIGNOFF; do
-              [ -z "$SIGNOFF" ] && continue
-
-              SIGNOFF_EMAIL=$(echo "$SIGNOFF" | sed 's/.*<\(.*\)>/\1/')
-
-              # 2. The Signed-off-by email must match the commit author email (DCO
-              #    requires the signer to be the author — not a third party signing
-              #    on someone else's behalf).
-              if [ "$SIGNOFF_EMAIL" != "$AUTHOR_EMAIL" ]; then
-                echo "::error::Commit $COMMIT — Signed-off-by email does not match the commit author email."
-                echo "::error::  Author email:  $AUTHOR_EMAIL"
-                echo "::error::  Signoff email: $SIGNOFF_EMAIL"
-                FAIL=1
-                continue
-              fi
-
-              # 3. The Signed-off-by email must match either:
-              #    a) the GitHub-issued no-reply address for this account, or
-              #    b) the email GitHub itself recorded for this push (confirmed as
-              #       linked to the account that authenticated the push).
-              #    This allows personal emails that are linked to the GitHub account
-              #    while rejecting emails with no verifiable association.
-              if [ "$SIGNOFF_EMAIL" = "$NOREPLY_EMAIL" ] || [ "$SIGNOFF_EMAIL" = "$GITHUB_AUTHOR_EMAIL" ]; then
-                echo "✅ PASS: signoff email is linked to GitHub account ${LOGIN}"
-              else
-                echo "::error::Commit $COMMIT — Signed-off-by email is not linked to the GitHub account that pushed this commit."
-                echo "::error::  Got:           $SIGNOFF"
-                echo "::error::  No-reply addr: $NOREPLY_EMAIL"
-                echo "::error::  Linked email:  $GITHUB_AUTHOR_EMAIL"
-                FAIL=1
-              fi
-            done <<< "$SIGNOFFS"
+            # 4. The author's Signed-off-by email must be linked to their GitHub
+            #    account — matching either the no-reply address or the email GitHub
+            #    recorded when it accepted the push. This rejects emails that are
+            #    not verifiably associated with the account that pushed the commit.
+            if [ "$AUTHOR_EMAIL" = "$NOREPLY_EMAIL" ] || [ "$AUTHOR_EMAIL" = "$GITHUB_AUTHOR_EMAIL" ]; then
+              echo "✅ PASS: $AUTHOR_EMAIL is linked to GitHub account ${LOGIN}"
+            else
+              echo "::error::Commit $COMMIT — author email is not linked to the GitHub account that pushed this commit."
+              echo "::error::  Author email:  $AUTHOR_EMAIL"
+              echo "::error::  No-reply addr: $NOREPLY_EMAIL"
+              echo "::error::  Linked email:  $GITHUB_AUTHOR_EMAIL"
+              FAIL=1
+            fi
           done < <(git log --no-merges --format='%H' "${BASE_SHA}..${HEAD_SHA}")
 
           echo "----------------------------------------"
