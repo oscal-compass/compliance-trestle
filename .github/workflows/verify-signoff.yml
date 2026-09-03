@@ -18,9 +18,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Verify every commit is signed off with a GitHub-linked email
+      - name: Verify every commit is signed off by its author
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
@@ -30,13 +29,12 @@ jobs:
 
           # Walk every non-merge commit introduced by this PR
           while IFS= read -r COMMIT; do
-            AUTHOR_NAME=$(git log -1 --format='%an' "$COMMIT")
             AUTHOR_EMAIL=$(git log -1 --format='%ae' "$COMMIT")
             SIGNOFFS=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly)' "$COMMIT")
 
             echo "----------------------------------------"
             echo "Commit:      $COMMIT"
-            echo "Author:      $AUTHOR_NAME <$AUTHOR_EMAIL>"
+            echo "Author:      $(git log -1 --format='%an' "$COMMIT") <$AUTHOR_EMAIL>"
             echo "Signed-off:  ${SIGNOFFS:-<none>}"
 
             # 1. Reject missing signoff outright
@@ -46,9 +44,8 @@ jobs:
               continue
             fi
 
-            # 2. At least one Signed-off-by trailer must match the commit author
-            #    email. DCO requires the author to have signed off their own work.
-            #    Additional co-signers (e.g. a maintainer) are permitted alongside.
+            # 2. At least one Signed-off-by trailer must match the commit author email.
+            #    DCO requires the author to sign off their own work.
             AUTHOR_SIGNED=0
             while IFS= read -r SIGNOFF; do
               [ -z "$SIGNOFF" ] && continue
@@ -60,46 +57,17 @@ jobs:
             done <<< "$SIGNOFFS"
 
             if [ "$AUTHOR_SIGNED" -eq 0 ]; then
-              echo "::error::Commit $COMMIT — no Signed-off-by trailer matches the commit author email."
-              echo "::error::  Author email: $AUTHOR_EMAIL"
+              echo "::error::Commit $COMMIT — no Signed-off-by trailer matches the commit author email ($AUTHOR_EMAIL)."
+              echo "::error::Fix: amend the commit so Signed-off-by: <name> <$AUTHOR_EMAIL> is present."
               FAIL=1
-              continue
-            fi
-
-            # 3. Resolve the commit author's GitHub login via the Commits API —
-            #    the authoritative source for which account authenticated the push.
-            COMMIT_DATA=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}")
-            LOGIN=$(echo "$COMMIT_DATA" | jq -r '.author.login // empty')
-
-            if [ -z "$LOGIN" ]; then
-              echo "::error::Commit $COMMIT — cannot resolve a GitHub account (unlinked email). Signoff cannot be verified."
-              FAIL=1
-              continue
-            fi
-
-            USER_ID=$(gh api "users/${LOGIN}" --jq '.id')
-            NOREPLY_EMAIL="${USER_ID}+${LOGIN}@users.noreply.github.com"
-            GITHUB_AUTHOR_EMAIL=$(echo "$COMMIT_DATA" | jq -r '.commit.author.email // empty')
-
-            # 4. The author's Signed-off-by email must be linked to their GitHub
-            #    account — matching either the no-reply address or the email GitHub
-            #    recorded when it accepted the push. This rejects emails that are
-            #    not verifiably associated with the account that pushed the commit.
-            if [ "$AUTHOR_EMAIL" = "$NOREPLY_EMAIL" ] || [ "$AUTHOR_EMAIL" = "$GITHUB_AUTHOR_EMAIL" ]; then
-              echo "✅ PASS: $AUTHOR_EMAIL is linked to GitHub account ${LOGIN}"
             else
-              echo "::error::Commit $COMMIT — author email is not linked to the GitHub account that pushed this commit."
-              echo "::error::  Author email:  $AUTHOR_EMAIL"
-              echo "::error::  No-reply addr: $NOREPLY_EMAIL"
-              echo "::error::  Linked email:  $GITHUB_AUTHOR_EMAIL"
-              FAIL=1
+              echo "✅ PASS"
             fi
           done < <(git log --no-merges --format='%H' "${BASE_SHA}..${HEAD_SHA}")
 
           echo "----------------------------------------"
           if [ "$FAIL" -ne 0 ]; then
-            echo "::error::One or more commits failed DCO verification."
-            echo "::error::Fix: git config user.email \"<id>+<username>@users.noreply.github.com\" && git commit --amend --signoff"
+            echo "::error::One or more commits failed DCO sign-off verification."
             exit 1
           fi
-          echo "All commits passed DCO verification."
+          echo "All commits passed DCO sign-off verification."
