@@ -46,7 +46,20 @@ jobs:
               continue
             fi
 
-            # 2. Resolve the committer's actual GitHub login and numeric ID via the
+            SIGNOFF_EMAIL=$(echo "$SIGNOFF" | sed 's/.*<\(.*\)>/\1/')
+
+            # 2. The Signed-off-by email must match the commit author email (DCO
+            #    requires the signer to be the author — not a third party signing
+            #    on someone else's behalf).
+            if [ "$SIGNOFF_EMAIL" != "$AUTHOR_EMAIL" ]; then
+              echo "::error::Commit $COMMIT — Signed-off-by email does not match the commit author email."
+              echo "::error::  Author email:  $AUTHOR_EMAIL"
+              echo "::error::  Signoff email: $SIGNOFF_EMAIL"
+              FAIL=1
+              continue
+            fi
+
+            # 3. Resolve the committer's actual GitHub login and numeric ID via the
             #    Commits API. This is the authoritative source — the git author email
             #    is set locally and cannot be trusted on its own.
             LOGIN=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}" --jq '.author.login // empty')
@@ -60,17 +73,15 @@ jobs:
             USER_ID=$(gh api "users/${LOGIN}" --jq '.id')
             NOREPLY_EMAIL="${USER_ID}+${LOGIN}@users.noreply.github.com"
 
-            # 3. The Signed-off-by email must match either:
+            # 4. The Signed-off-by email must match either:
             #    a) the GitHub-issued no-reply address for this account, or
             #    b) the email GitHub itself recorded for this push (the author email
-            #       GitHub resolved when it accepted the push — distinct from the
-            #       locally configured git author email, which could be anything).
-            #    This allows contributors who use a personal email linked to their
-            #    GitHub account while still rejecting emails that have no association
-            #    with the account that authenticated the push.
+            #       GitHub resolved when it accepted the push — confirmed as linked
+            #       to the account that authenticated the push).
+            #    This allows contributors who use a personal email that is linked to
+            #    their GitHub account, while rejecting any email that has no
+            #    verifiable association with the account that pushed.
             GITHUB_AUTHOR_EMAIL=$(gh api "repos/${{ github.repository }}/commits/${COMMIT}" --jq '.commit.author.email // empty')
-
-            SIGNOFF_EMAIL=$(echo "$SIGNOFF" | sed 's/.*<\(.*\)>/\1/')
 
             if [ "$SIGNOFF_EMAIL" = "$NOREPLY_EMAIL" ] || [ "$SIGNOFF_EMAIL" = "$GITHUB_AUTHOR_EMAIL" ]; then
               echo "✅ PASS: signoff email is linked to GitHub account ${LOGIN}"
@@ -85,8 +96,8 @@ jobs:
 
           echo "----------------------------------------"
           if [ "$FAIL" -ne 0 ]; then
-            echo "::error::One or more commits failed strict DCO verification."
+            echo "::error::One or more commits failed DCO verification."
             echo "::error::Fix: git config user.email \"<id>+<username>@users.noreply.github.com\" && git commit --amend --signoff"
             exit 1
           fi
-          echo "All commits passed strict DCO verification."
+          echo "All commits passed DCO verification."
