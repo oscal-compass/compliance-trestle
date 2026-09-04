@@ -4,11 +4,13 @@
 import sys
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 2
+    if len(sys.argv) != 2:
+        raise ValueError('Expected exactly one argument')
     revision = sys.argv[1]
 
     components = revision.split('/')
-    assert len(components) == 3
+    if len(components) != 3:
+        raise ValueError('Expected revision string with 3 components')
     if components[1] == 'heads' and components[2] == 'develop':
         print('latest')  # noqa: T201
         sys.exit(0)
