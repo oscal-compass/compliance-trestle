@@ -15,7 +15,7 @@
 # limitations under the License.
 """Transformer helper functions."""
 
-# mypy: ignore-errors  # noqa E800
+# mypy: ignore-errors
 from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl

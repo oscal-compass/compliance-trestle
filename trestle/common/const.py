@@ -268,7 +268,7 @@ ASSESMENT_OBJECTIVE_PART = 'assessment-objective'
 TABLE_OF_PARAMS_PART = 'table_of_parameters'
 
 # extracts standalone uuid's from anywhere in string
-UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12})(?:$|[^0-9A-Za-z])'  # noqa FS003 E501
+UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12})(?:$|[^0-9A-Za-z])'
 
 SSP_MAIN_COMP_NAME = 'This System'
 
@@ -279,7 +279,7 @@ SSP_MD_HRULE_LINE = '___________________________________________________________
 SSP_MD_IMPLEMENTATION_QUESTION = 'What is the solution and how is it implemented?'
 
 SSP_MD_LEAVE_BLANK_TEXT = (
-    '<!-- Please leave this section blank and enter implementation details in the parts below. -->'  # noqa E501
+    '<!-- Please leave this section blank and enter implementation details in the parts below. -->'
 )
 
 SSP_ADD_IMPLEMENTATION_PREFIX = '<!-- Add control implementation description here for '
@@ -295,7 +295,7 @@ SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + ITEM
 SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'control'
 
 SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT = (
-    f'<!-- Add implementation prose for the main {SSP_MAIN_COMP_NAME} component for control'  # noqa E501
+    f'<!-- Add implementation prose for the main {SSP_MAIN_COMP_NAME} component for control'
 )
 
 SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for the system.'
@@ -314,7 +314,7 @@ NAME = 'name'
 
 HREF = 'href'
 
-NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa FS003 E501
+NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
 
 NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
 
@@ -448,9 +448,9 @@ STATUS_ALL = [
     STATUS_UNDER_MAJOR_MODIFICATION,
 ]
 
-STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENTED}, {STATUS_PARTIAL}, {STATUS_PLANNED}, {STATUS_ALTERNATIVE}, {STATUS_NOT_APPLICABLE} -->'  # noqa E501
+STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENTED}, {STATUS_PARTIAL}, {STATUS_PLANNED}, {STATUS_ALTERNATIVE}, {STATUS_NOT_APPLICABLE} -->'
 
-RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
+RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'
 
 SATISFIED_STATEMENT_COMMENT = (
     '<!-- Use this section to explain how the inherited responsibility is being satisfied. -->'

@@ -14,14 +14,14 @@
 # limitations under the License.
 """Facilitate OSCAL-OSCO transformation."""
 
-# mypy: ignore-errors  # noqa E800
+# mypy: ignore-errors
 import base64
 import bz2
 import json
 import logging
 import uuid
 from typing import Any, Dict, Iterator, List, Tuple, ValuesView
-from xml.etree.ElementTree import Element  # noqa: S405 - used for typing only
+from xml.etree.ElementTree import Element
 
 from defusedxml import ElementTree
 

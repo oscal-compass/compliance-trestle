@@ -215,6 +215,7 @@ select = [
     "T20",    # flake8-print
     "SIM",    # flake8-simplify
     "S",      # flake8-bandit (security)
+    "RUF",    # ruff-specific rules (incl. RUF100: unused/invalid noqa directives)
 ]
 ignore = [
     "E501",   # line too long (handled by formatter)
@@ -261,18 +262,36 @@ ignore = [
     "F401",   # FIXME: Unused import (7 errors)
     # FIXME: C4 - flake8-comprehensions rules to fix
     "C408",   # FIXME: Unnecessary dict/list/tuple call (1 error)
+    # FIXME: RUF - ruff-specific rules to fix incrementally
+    "RUF003", # FIXME: Comment contains ambiguous unicode character (4 errors)
+    "RUF005", # FIXME: Consider iterable unpacking instead of concatenation (5 errors)
+    "RUF010", # FIXME: Use explicit conversion flag (10 errors)
+    "RUF012", # FIXME: Mutable class attribute should use ClassVar (22 errors)
+    "RUF013", # FIXME: PEP 484 prohibits implicit Optional (16 errors)
+    "RUF015", # FIXME: Prefer next() over single element slice (4 errors)
+    "RUF019", # FIXME: Unnecessary key check before dictionary access (1 error)
+    "RUF021", # FIXME: Parenthesize chained and/or expressions (2 errors)
+    "RUF059", # FIXME: Unpacked variable is never used (5 errors)
+    "RUF002", # FIXME: Docstring contains ambiguous en-dash character (7 errors)
+    "RUF043", # FIXME: Pattern passed to match= contains unescaped metacharacters (39 errors)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
     "S101",   # asserts allowed in tests
+    "S104",   # binding to all interfaces — acceptable in test mocks simulating network addresses
     "S105",   # possible hardcoded password
     "S106",   # possible hardcoded password
     "S108",   # probable insecure usage of temp file
+    "T201",   # print statements allowed in tests
 ]
 "scripts/**/*.py" = [
     "T20",    # print statements allowed in scripts
 ]
+# RUF100 false-positive: ruff reports noqa as unused when the rule fires at a different
+# column offset than the noqa token — the suppressions are functionally required.
+"trestle/core/commands/author/jinja.py" = ["RUF100"]
+"trestle/core/remote/cache.py" = ["RUF100"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["trestle"]
