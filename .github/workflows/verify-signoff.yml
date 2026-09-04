@@ -1,0 +1,80 @@
+name: Verify Sign-off
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, edited, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-signoff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR commits
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Verify every commit is signed off by its author
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          FAIL=0
+
+          # Walk every non-merge commit introduced by this PR
+          while IFS= read -r COMMIT; do
+            AUTHOR_EMAIL=$(git log -1 --format='%ae' "$COMMIT")
+            AUTHOR_NAME=$(git log -1 --format='%an' "$COMMIT")
+            SIGNOFFS=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly)' "$COMMIT")
+
+            echo "----------------------------------------"
+            echo "Commit:      $COMMIT"
+            echo "Author:      $AUTHOR_NAME <$AUTHOR_EMAIL>"
+            echo "Signed-off:  ${SIGNOFFS:-<none>}"
+
+            # Skip bot authors (dependabot, semantic-release, etc.)
+            if echo "$AUTHOR_NAME" | grep -qiE '\[bot\]|semantic-release'; then
+              echo "⏭  SKIP: bot author"
+              continue
+            fi
+
+            # 1. Reject missing signoff outright
+            if [ -z "$SIGNOFFS" ]; then
+              echo "::error::Commit $COMMIT is missing a Signed-off-by trailer."
+              FAIL=1
+              continue
+            fi
+
+            # 2. At least one Signed-off-by trailer must match the commit author email.
+            #    DCO requires the author to sign off their own work.
+            AUTHOR_SIGNED=0
+            while IFS= read -r SIGNOFF; do
+              [ -z "$SIGNOFF" ] && continue
+              SIGNOFF_EMAIL=$(echo "$SIGNOFF" | sed 's/.*<\(.*\)>/\1/')
+              if [ "$SIGNOFF_EMAIL" = "$AUTHOR_EMAIL" ]; then
+                AUTHOR_SIGNED=1
+                break
+              fi
+            done <<< "$SIGNOFFS"
+
+            if [ "$AUTHOR_SIGNED" -eq 0 ]; then
+              echo "::error::Commit $COMMIT — no Signed-off-by trailer matches the commit author email ($AUTHOR_EMAIL)."
+              echo "::error::Fix: amend the commit so Signed-off-by: <name> <$AUTHOR_EMAIL> is present."
+              FAIL=1
+            else
+              echo "✅ PASS"
+            fi
+          done < <(git log --no-merges --format='%H' "${BASE_SHA}..${HEAD_SHA}")
+
+          echo "----------------------------------------"
+          if [ "$FAIL" -ne 0 ]; then
+            echo "::error::One or more commits failed DCO sign-off verification."
+            exit 1
+          fi
+          echo "All commits passed DCO sign-off verification."
