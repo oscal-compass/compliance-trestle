@@ -38,17 +38,17 @@ The core model layer (`OscalBaseModel` and all generated OSCAL classes) now runs
 in **full Pydantic v2 mode**. The v1 compatibility shim that was active in v4 has
 been removed. The table below lists every pattern that changed.
 
-| v4 (Pydantic v1 compat) | v5 (Pydantic v2) |
-|---|---|
-| `model.dict(by_alias=True, exclude_none=True)` | `model.model_dump(by_alias=True, exclude_none=True)` |
-| `model.dict(by_alias=True, exclude_none=True, mode='json')` | `model.model_dump(by_alias=True, exclude_none=True, mode='json')` |
-| `MyModel.parse_obj(data)` | `MyModel.model_validate(data)` (`parse_obj` still works but is deprecated and will be removed in a future release) |
-| `MyModel.parse_raw(json_str)` | `MyModel.model_validate_json(json_str)` |
-| `model.json()` | `model.model_dump_json()` |
-| `model.schema()` | `MyModel.model_json_schema()` |
-| `class MyModel(OscalBaseModel):\n    class Config:\n        ...` | `class MyModel(OscalBaseModel):\n    model_config = ConfigDict(...)` |
-| `__root__` field on a model | Inherit from `RootModel` instead; access the value via `.root` |
-| `ModelField` (from `pydantic.fields`) | `FieldInfo` (from `pydantic.fields`); field names are accessible via `model_fields` dict |
+| v4 (Pydantic v1 compat)                                          | v5 (Pydantic v2)                                                                                                   |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `model.dict(by_alias=True, exclude_none=True)`                   | `model.model_dump(by_alias=True, exclude_none=True)`                                                               |
+| `model.dict(by_alias=True, exclude_none=True, mode='json')`      | `model.model_dump(by_alias=True, exclude_none=True, mode='json')`                                                  |
+| `MyModel.parse_obj(data)`                                        | `MyModel.model_validate(data)` (`parse_obj` still works but is deprecated and will be removed in a future release) |
+| `MyModel.parse_raw(json_str)`                                    | `MyModel.model_validate_json(json_str)`                                                                            |
+| `model.json()`                                                   | `model.model_dump_json()`                                                                                          |
+| `model.schema()`                                                 | `MyModel.model_json_schema()`                                                                                      |
+| `class MyModel(OscalBaseModel):\n    class Config:\n        ...` | `class MyModel(OscalBaseModel):\n    model_config = ConfigDict(...)`                                               |
+| `__root__` field on a model                                      | Inherit from `RootModel` instead; access the value via `.root`                                                     |
+| `ModelField` (from `pydantic.fields`)                            | `FieldInfo` (from `pydantic.fields`); field names are accessible via `model_fields` dict                           |
 
 #### `AnyUrl` is no longer a `str` subclass
 

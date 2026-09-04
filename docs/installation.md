@@ -122,6 +122,6 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 
 Congratulations! You now have a working trestle workspace for safe manipulation of OSCAL documents!
 
----
+______________________________________________________________________
 
 Already running a previous version? See the [Upgrade guide](upgrading.md).
