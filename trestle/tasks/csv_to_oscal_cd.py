@@ -14,7 +14,7 @@
 # limitations under the License.
 """OSCAL transformation tasks."""
 
-# mypy: ignore-errors  # noqa E800
+# mypy: ignore-errors
 import configparser
 import csv
 import logging

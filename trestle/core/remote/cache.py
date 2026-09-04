@@ -109,7 +109,7 @@ class FetcherBase(ABC):
             except Exception as e:
                 raise TrestleError(
                     f'Cache update failure for {self._uri}.  Please confirm the file is json and not html: {e}.'
-                ) from e  # noqa E501
+                ) from e
         return False
 
     def get_raw(self, force_update: bool = False) -> Dict[str, Any]:
@@ -287,8 +287,8 @@ class HTTPSFetcher(FetcherBase):
                     f'Cache request for invalid input URI: username not found in the environment {self._uri}'
                 )
             self._username = os.environ[username_var]
-        if u.password != '' and u.password is not None:  # noqa S105
-            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.password) or u.password == '{{_}}':  # noqa S105
+        if u.password != '' and u.password is not None:
+            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.password) or u.password == '{{_}}':  # noqa: S105 - sentinel value {{_}}, not a real password
                 raise TrestleError(
                     'Cache request for invalid input URI: '
                     f'password must refer to an environment variable using moustache {self._uri}'
@@ -299,7 +299,7 @@ class HTTPSFetcher(FetcherBase):
                     f'Cache request for invalid input URI: password not found in the environment {self._uri}'
                 )
             self._password = os.environ[password_var]
-        if self._username and (self._password == '' or self._password is None):  # noqa S105
+        if self._username and (self._password == '' or self._password is None):
             raise TrestleError(
                 f'Cache request for invalid input URI: username found '
                 f'but password not found via environment variable {self._uri}'

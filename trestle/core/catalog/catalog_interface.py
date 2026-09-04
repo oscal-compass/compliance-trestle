@@ -34,7 +34,7 @@ from trestle.common.list_utils import (
     get_item_from_list,
     none_if_empty,
     set_or_pop,
-)  # noqa E501
+)
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
@@ -724,7 +724,7 @@ class CatalogInterface:
             if control_file.stem not in written_controls:
                 logger.debug(
                     f'Existing control markdown {control_file} deleted since it was not written out during generate'
-                )  # noqa E501
+                )
                 control_file.unlink()
                 deleted_controls.append(control_file.stem)
         return sorted(deleted_controls)
@@ -850,7 +850,7 @@ class CatalogInterface:
         """Add component info to the impreqs of the control implementation based on applied rules."""
         control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = (
             ControlInterface.get_rules_and_params_dict_from_item(context.control_implementation)
-        )  # noqa E501
+        )
         context.rules_dict[context.comp_name].update(control_imp_rules_dict)
         comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
         comp_rules_params_dict.update(control_imp_rules_params_dict)
@@ -883,9 +883,7 @@ class CatalogInterface:
                 status = ControlInterface.get_status_from_props(statement)
                 if statement.statement_id not in control_part_id_map:
                     label = statement.statement_id
-                    logger.warning(
-                        f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
-                    )
+                    logger.warning(f'No statement label found for statement id {label}.  Defaulting to {label}.')
                 else:
                     label = control_part_id_map[statement.statement_id]
                 all_props = rule_props[:]
@@ -920,7 +918,7 @@ class CatalogInterface:
                 # get top level rule info applying to all controls from the component props
                 comp_rules_dict, comp_rules_params_dict, comp_rules_props = (
                     ControlInterface.get_rules_and_params_dict_from_item(component)
-                )  # noqa E501
+                )
                 context.rules_dict[context.comp_name] = comp_rules_dict
                 deep_update(context.rules_params_dict, [context.comp_name], comp_rules_params_dict)
                 for control_imp in as_list(component.control_implementations):

@@ -111,7 +111,7 @@ def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], O
         # Check if this is a BaseModel with model_fields
         if isinstance(field_type, type) and issubclass(field_type, BaseModel):
             return _extract_root_model_info(field_type)
-    except Exception:  # noqa S110
+    except Exception:
         pass
     return None, None, None
 

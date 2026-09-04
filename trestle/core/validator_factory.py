@@ -25,7 +25,7 @@ from trestle.core import (
     links_validator,
     refs_validator,
     rule_parameters_validator,
-)  # noqa E501
+)
 from trestle.core.object_factory import ObjectFactory
 
 # Create the singleton validator factory

@@ -39,7 +39,7 @@ class SpecificLevelFilter(logging.Filter):
         """Initialize providing maximum level to be pushed through the filter."""
         self._level = level
 
-    def filter(self, log_record: logging.LogRecord) -> bool:  # noqa: A003
+    def filter(self, log_record: logging.LogRecord) -> bool:
         """Filter log messages."""
         return log_record.levelno == self._level
 
