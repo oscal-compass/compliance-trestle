@@ -164,3 +164,38 @@ ______________________________________________________________________
 **Separation of concerns between CLI and API** — commands delegate business logic to core service classes (`CatalogInterface`, `ProfileResolver`, etc.) rather than implementing it inline. `repository.py` exposes the same services to Python callers without going through the CLI argument layer.
 
 **Extensibility via plugins** — the `trestle_*` package convention means the core project does not need to depend on or bundle every possible third-party integration.
+
+______________________________________________________________________
+
+## Security Requirements & Guarantees
+
+This section documents what users can and cannot expect regarding security from the software produced by the project (its security requirements and boundaries).
+
+### What Users CAN Expect (Security Guarantees & Capabilities)
+
+- **Input Validation & Schema Enforcement:**
+  - All OSCAL models are parsed, validated, and serialized using strict Pydantic models derived from official NIST OSCAL schemas.
+  - Malformed documents, invalid types, or unexpected data structures are rejected at parse time.
+- **SSRF & Remote Resource Protection:**
+  - Remote resource retrieval (`trestle/core/remote/cache.py` and `trestle/core/remote/security.py`) enforces HTTPS/SFTP and includes Server-Side Request Forgery (SSRF) protections.
+  - Cloud metadata service endpoints (e.g., `169.254.169.254`, `metadata.google.internal`) and loopback addresses are blocked unconditionally during remote fetches.
+  - Optional blocking of RFC 1918 private IP address ranges can be configured via the `TRESTLE_BLOCK_PRIVATE_IPS` environment variable.
+- **Template Sandbox Execution:**
+  - Jinja2 authoring templates (`trestle/core/commands/author/jinja.py`) execute within a `SandboxedEnvironment` to restrict access to dangerous Python attributes (`__class__`, `__globals__`, `__subclasses__`) and mitigate server-side template injection (SSTI) risks.
+- **Cryptographic Provenance & Integrity:**
+  - Built-in signing and verification commands (`sign`, `verify`, `sign-manifest`, `verify-manifest`) use RFC 8785 JSON canonicalization and standard in-toto / DSSE signatures via `securesystemslib` and standard cryptography libraries to establish tamper-evident document provenance.
+- **Supply Chain Integrity:**
+  - Release distributions include SLSA build provenance attestations and PyPI trusted publishing.
+
+### What Users CANNOT Expect (Security Boundaries & User Responsibilities)
+
+- **Execution Isolation for Third-Party Plugins:**
+  - Trestle discovers and loads installed `trestle_*` command plugins from `sys.path`. Trestle does not sandbox or isolate third-party Python plugin code; users are responsible for ensuring installed plugins are trusted.
+- **Protection Against Malicious Local Files / Filesystem Attacks:**
+  - Trestle runs with the permissions of the invoking user and assumes the host environment and local workspace directory are secure.
+- **Automatic Data Encryption at Rest:**
+  - Trestle does not encrypt stored OSCAL models or workspace files at rest; encryption must be provided by the underlying operating system or filesystem.
+- **Verification of Semantic Content Accuracy:**
+  - While Trestle validates schema structure and cross-reference integrity, it cannot verify the accuracy, adequacy, or legal validity of the compliance content, policies, or controls written within documents.
+- **Network-Level Access Controls:**
+  - Outside of URL validation during remote fetches, Trestle does not manage network transport security or proxy configurations, relying instead on host environment settings.
