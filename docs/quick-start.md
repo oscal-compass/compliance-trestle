@@ -5,7 +5,7 @@ description: Get up and running with compliance-trestle in under five minutes â€
 
 # Quick Start
 
-Get up and running with `trestle` in a few minutes.  
+Get up and running with `trestle` in a few minutes.\
 By the end of this page you will have trestle installed, a workspace initialised, and a real NIST OSCAL catalog imported and validated.
 
 ## Prerequisites
@@ -114,14 +114,14 @@ Model file .../catalog.json is of type catalog.Catalog and contains:
 
 ## What's next?
 
-| Goal | Resource |
-|------|----------|
-| Learn to split large OSCAL files into editable pieces | [Introduction to trestle workflows](tutorials/introduction_to_trestle.md) |
-| Author SSPs, profiles, and component definitions | [Trestle authoring tutorials](tutorials/Trestle_authoring/ssp_profile_catalog_authoring.md) |
-| Transform spreadsheets and other formats into OSCAL | [Transformer tasks](tutorials/Transformers_and_Tasks/OCP4_CIS_profile_to_oscal_catalog.md) |
-| Full CLI reference | [CLI documentation](tutorials/cli.md) |
-| Full installation guide | [Installation](installation.md) |
+| Goal                                                  | Resource                                                                                    |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Learn to split large OSCAL files into editable pieces | [Introduction to trestle workflows](tutorials/introduction_to_trestle.md)                   |
+| Author SSPs, profiles, and component definitions      | [Trestle authoring tutorials](tutorials/Trestle_authoring/ssp_profile_catalog_authoring.md) |
+| Transform spreadsheets and other formats into OSCAL   | [Transformer tasks](tutorials/Transformers_and_Tasks/OCP4_CIS_profile_to_oscal_catalog.md)  |
+| Full CLI reference                                    | [CLI documentation](tutorials/cli.md)                                                       |
+| Full installation guide                               | [Installation](installation.md)                                                             |
 
----
+______________________________________________________________________
 
 *Having trouble? Open an issue on [GitHub](https://github.com/oscal-compass/compliance-trestle/issues) or join the community â€” details in the [community README](https://github.com/oscal-compass/community/blob/main/README.md).*
