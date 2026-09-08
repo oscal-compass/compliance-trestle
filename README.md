@@ -68,6 +68,10 @@ Trestle runs on almost all Python platforms (e.g. Linux, Mac, Windows), is avail
 To install run: `pip install compliance-trestle`\
 See [Install trestle in a python virtual environment](https://oscal-compass.github.io/compliance-trestle/latest/installation/) for the full installation guide.
 
+## Quick Start
+
+New to trestle? The [Quick Start guide](https://oscal-compass.github.io/compliance-trestle/latest/quick-start/) walks you through installing trestle, initialising a workspace, and importing your first OSCAL catalog in a few minutes.
+
 ## Complete documentation and tutorials
 
 Complete documentation, tutorials, and background on compliance can be found [here](https://oscal-compass.github.io/compliance-trestle/latest).
