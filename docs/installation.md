@@ -102,7 +102,7 @@ positional arguments:
     validate            Validate contents of a trestle model in different modes.
     version             Output version info for trestle and OSCAL.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
 
 ```
