@@ -12,12 +12,12 @@ This page describes the high-level architecture of compliance-trestle: its major
 Trestle is a Python application and library built around three concerns:
 
 1. **OSCAL document management** — create, split, merge, validate, and assemble OSCAL artifacts stored in a structured workspace on disk.
-2. **Format transformation** — convert third-party compliance data (XCCDF, Tanium, CIS XLSX, CSV, …) into OSCAL.
-3. **Compliance content authoring** — generate and govern human-editable Markdown and DrawIO representations of OSCAL objects, and re-assemble them back into OSCAL.
+1. **Format transformation** — convert third-party compliance data (XCCDF, Tanium, CIS XLSX, CSV, …) into OSCAL.
+1. **Compliance content authoring** — generate and govern human-editable Markdown and DrawIO representations of OSCAL objects, and re-assemble them back into OSCAL.
 
 All three concerns are exposed both as a **CLI** (`trestle <command>`) and as a **Python API** (via `trestle.core.repository` and the OSCAL object model in `trestle.oscal`).
 
----
+______________________________________________________________________
 
 ## Component Map
 
@@ -88,28 +88,28 @@ All three concerns are exposed both as a **CLI** (`trestle <command>`) and as a 
 └──────────────────────────────────────────────────────────────────┘
 ```
 
----
+______________________________________________________________________
 
 ## Components
 
 ### Entry Points
 
-| Component | Location | Role |
-|---|---|---|
-| CLI | [`trestle/cli.py`](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/cli.py) | `trestle` console script entry point. Instantiates the `Trestle` root command, which registers all sub-commands and dispatches argument parsing via the [ilcli](https://github.com/cloudant/ilcli) library. |
-| Python API | [`trestle/core/repository.py`](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/core/repository.py) | `ManagedOSCAL`, `Repository`, and `AgileAuthoring` (authoring-specific extension of `Repository`) provide programmatic access to the same operations as the CLI for use by downstream tools and scripts. |
+| Component  | Location                                                                                                                    | Role                                                                                                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CLI        | [`trestle/cli.py`](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/cli.py)                         | `trestle` console script entry point. Instantiates the `Trestle` root command, which registers all sub-commands and dispatches argument parsing via the [ilcli](https://github.com/cloudant/ilcli) library. |
+| Python API | [`trestle/core/repository.py`](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/core/repository.py) | `ManagedOSCAL`, `Repository`, and `AgileAuthoring` (authoring-specific extension of `Repository`) provide programmatic access to the same operations as the CLI for use by downstream tools and scripts.    |
 
 ### Command Layer (`trestle/core/commands/`)
 
 Each sub-command is a class extending `CommandBase` (or `CommandPlusDocs` for commands needing a trestle workspace root). Commands are grouped into:
 
-| Group | Commands | Purpose |
-|---|---|---|
-| **Workspace management** | `init`, `create`, `import`, `split`, `merge`, `replicate`, `remove`, `href` | Create and maintain a trestle workspace; manipulate OSCAL document trees on disk. |
-| **Validation & assembly** | `validate`, `assemble`, `partial-object-validate`, `describe`, `canonicalize` | Validate OSCAL schemas and cross-references; assemble split files back into single documents. |
-| **Authoring** | `author catalog`, `author profile`, `author ssp`, `author component`, `author jinja`, `author docs`, `author folders`, `author headers` | Generate Markdown/DrawIO representations of OSCAL objects, govern their structure, and re-assemble them back to OSCAL. |
-| **Task execution** | `task` | Invoke a named `TaskBase` implementation (from `trestle/tasks/`) to transform third-party data into OSCAL. |
-| **Signing** | `sign`, `sign-manifest`, `verify`, `verify-manifest` | Produce and verify detached DSSE/in-toto provenance signatures over OSCAL artifacts and manifest files. |
+| Group                     | Commands                                                                                                                                | Purpose                                                                                                                |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Workspace management**  | `init`, `create`, `import`, `split`, `merge`, `replicate`, `remove`, `href`                                                             | Create and maintain a trestle workspace; manipulate OSCAL document trees on disk.                                      |
+| **Validation & assembly** | `validate`, `assemble`, `partial-object-validate`, `describe`, `canonicalize`                                                           | Validate OSCAL schemas and cross-references; assemble split files back into single documents.                          |
+| **Authoring**             | `author catalog`, `author profile`, `author ssp`, `author component`, `author jinja`, `author docs`, `author folders`, `author headers` | Generate Markdown/DrawIO representations of OSCAL objects, govern their structure, and re-assemble them back to OSCAL. |
+| **Task execution**        | `task`                                                                                                                                  | Invoke a named `TaskBase` implementation (from `trestle/tasks/`) to transform third-party data into OSCAL.             |
+| **Signing**               | `sign`, `sign-manifest`, `verify`, `verify-manifest`                                                                                    | Produce and verify detached DSSE/in-toto provenance signatures over OSCAL artifacts and manifest files.                |
 
 ### Core Services
 
@@ -151,7 +151,7 @@ When `trestle/cli.py` is first imported, its `Trestle` class body calls `discove
 
 Note that this mechanism injects **commands only**. Plugin tasks are not currently auto-discovered by `TaskCmd._build_task_index()`, which scans only the built-in `trestle/tasks/` package.
 
----
+______________________________________________________________________
 
 ## Key Design Properties
 
