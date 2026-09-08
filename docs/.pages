@@ -1,0 +1,12 @@
+nav:
+  - index.md
+  - installation.md
+  - upgrading.md
+  - demos.md
+  - tutorials
+  - plugins
+  - predicates
+  - reference
+  - contributing
+  - known_limitations.md
+  - license.md
