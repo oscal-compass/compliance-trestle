@@ -259,7 +259,7 @@
 <span class=w>        </span><span class=sd>"""Write the control into markdown file with specified sections."""</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span> <span class=o>=</span> <span class=n>MDWriter</span><span class=p>(</span><span class=kc>None</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_sections_dict</span> <span class=o>=</span> <span class=n>sections_dict</span> <span class=k>if</span> <span class=n>sections_dict</span> <span class=k>else</span> <span class=p>{}</span>
-        <span class=n>tag_pattern</span> <span class=o>=</span> <span class=s1>'{: #[.]}'</span>  <span class=c1># noqa: FS003 - not f string but tag</span>
+        <span class=n>tag_pattern</span> <span class=o>=</span> <span class=s1>'{: #[.]}'</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>group_title</span><span class=p>,</span> <span class=nb>str</span><span class=p>):</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Group title must be provided and be a string, instead received: </span><span class=si>{</span><span class=n>group_title</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
@@ -342,7 +342,7 @@
                 <span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>set_indent_level</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>tag_pattern</span><span class=p>:</span>
-                <span class=n>bottom_tag_pattern</span> <span class=o>=</span> <span class=s1>'{: #"Parameters for [.]" caption-side="top"}'</span>  <span class=c1># noqa: F541 - not f string</span>
+                <span class=n>bottom_tag_pattern</span> <span class=o>=</span> <span class=s1>'{: #"Parameters for [.]" caption-side="top"}'</span>
                 <span class=n>control_id</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_pretty_control_id_if_exists</span><span class=p>(</span><span class=n>control</span><span class=p>)</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span><span class=n>bottom_tag_pattern</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>'[.]'</span><span class=p>,</span> <span class=n>control_id</span><span class=p>))</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_paragraph</span><span class=p>()</span>
@@ -597,7 +597,7 @@
             <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>set_indent_level</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>tag_pattern</span><span class=p>:</span>
-            <span class=n>bottom_tag_pattern</span> <span class=o>=</span> <span class=s1>'{: #"Parameters for [.]" caption-side="top"}'</span>  <span class=c1># noqa: F541 - not f string</span>
+            <span class=n>bottom_tag_pattern</span> <span class=o>=</span> <span class=s1>'{: #"Parameters for [.]" caption-side="top"}'</span>
             <span class=n>control_id</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_pretty_control_id_if_exists</span><span class=p>(</span><span class=n>control</span><span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span><span class=n>bottom_tag_pattern</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>'[.]'</span><span class=p>,</span> <span class=n>control_id</span><span class=p>))</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_paragraph</span><span class=p>()</span>
@@ -648,7 +648,7 @@
 <span class=w>    </span><span class=sd>"""Write the control into markdown file with specified sections."""</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span> <span class=o>=</span> <span class=n>MDWriter</span><span class=p>(</span><span class=kc>None</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_sections_dict</span> <span class=o>=</span> <span class=n>sections_dict</span> <span class=k>if</span> <span class=n>sections_dict</span> <span class=k>else</span> <span class=p>{}</span>
-    <span class=n>tag_pattern</span> <span class=o>=</span> <span class=s1>'{: #[.]}'</span>  <span class=c1># noqa: FS003 - not f string but tag</span>
+    <span class=n>tag_pattern</span> <span class=o>=</span> <span class=s1>'{: #[.]}'</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>group_title</span><span class=p>,</span> <span class=nb>str</span><span class=p>):</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Group title must be provided and be a string, instead received: </span><span class=si>{</span><span class=n>group_title</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 

@@ -732,13 +732,13 @@
         <span class=c1># get top level rule info applying to all controls</span>
         <span class=n>comp_rules_dict</span><span class=p>,</span> <span class=n>comp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span>
             <span class=n>context</span><span class=o>.</span><span class=n>component</span>
-        <span class=p>)</span>  <span class=c1># noqa E501</span>
+        <span class=p>)</span>
         <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_dict</span>
         <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_params_dict</span>
         <span class=k>for</span> <span class=n>control_imp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>component</span><span class=o>.</span><span class=n>control_implementations</span><span class=p>):</span>
             <span class=n>control_imp_rules_dict</span><span class=p>,</span> <span class=n>control_imp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=p>(</span>
                 <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>
-            <span class=p>)</span>  <span class=c1># noqa E501</span>
+            <span class=p>)</span>
             <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_dict</span><span class=p>)</span>
             <span class=n>comp_rules_params_dict</span> <span class=o>=</span> <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>,</span> <span class=p>{})</span>
             <span class=n>comp_rules_params_dict</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_params_dict</span><span class=p>)</span>
@@ -1042,13 +1042,13 @@
     <span class=c1># get top level rule info applying to all controls</span>
     <span class=n>comp_rules_dict</span><span class=p>,</span> <span class=n>comp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span>
         <span class=n>context</span><span class=o>.</span><span class=n>component</span>
-    <span class=p>)</span>  <span class=c1># noqa E501</span>
+    <span class=p>)</span>
     <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_dict</span>
     <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_params_dict</span>
     <span class=k>for</span> <span class=n>control_imp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>component</span><span class=o>.</span><span class=n>control_implementations</span><span class=p>):</span>
         <span class=n>control_imp_rules_dict</span><span class=p>,</span> <span class=n>control_imp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=p>(</span>
             <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>
-        <span class=p>)</span>  <span class=c1># noqa E501</span>
+        <span class=p>)</span>
         <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_dict</span><span class=p>)</span>
         <span class=n>comp_rules_params_dict</span> <span class=o>=</span> <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>,</span> <span class=p>{})</span>
         <span class=n>comp_rules_params_dict</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_params_dict</span><span class=p>)</span>

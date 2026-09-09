@@ -297,7 +297,7 @@
         <span class=k>if</span> <span class=n>assem_comp_path</span><span class=o>.</span><span class=n>parent</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
                 <span class=s1>'Creating component definition from markdown and destination component definition exists, so updating.'</span>
-            <span class=p>)</span>  <span class=c1># noqa E501</span>
+            <span class=p>)</span>
             <span class=n>shutil</span><span class=o>.</span><span class=n>rmtree</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>assem_comp_path</span><span class=o>.</span><span class=n>parent</span><span class=p>))</span>
 
         <span class=n>assem_comp_path</span><span class=o>.</span><span class=n>parent</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>parents</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
@@ -572,7 +572,7 @@
     <span class=k>if</span> <span class=n>assem_comp_path</span><span class=o>.</span><span class=n>parent</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span>
             <span class=s1>'Creating component definition from markdown and destination component definition exists, so updating.'</span>
-        <span class=p>)</span>  <span class=c1># noqa E501</span>
+        <span class=p>)</span>
         <span class=n>shutil</span><span class=o>.</span><span class=n>rmtree</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>assem_comp_path</span><span class=o>.</span><span class=n>parent</span><span class=p>))</span>
 
     <span class=n>assem_comp_path</span><span class=o>.</span><span class=n>parent</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>parents</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
@@ -717,7 +717,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span><span class=s1>'-n'</span><span class=p>,</span> <span class=s1>'--name'</span><span class=p>,</span> <span class=n>help</span><span class=o>=</span><span class=n>name_help_str</span><span class=p>,</span> <span class=n>required</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=nb>str</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
             <span class=s1>'-o'</span><span class=p>,</span> <span class=s1>'--output'</span><span class=p>,</span> <span class=n>help</span><span class=o>=</span><span class=s1>'Name of the output generated component markdown folder'</span><span class=p>,</span> <span class=n>required</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=nb>str</span>
-        <span class=p>)</span>  <span class=c1># noqa E501</span>
+        <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span><span class=s1>'-fo'</span><span class=p>,</span> <span class=s1>'--force-overwrite'</span><span class=p>,</span> <span class=n>help</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>HELP_FO_OUTPUT</span><span class=p>,</span> <span class=n>required</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>action</span><span class=o>=</span><span class=s1>'store_true'</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_run</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>

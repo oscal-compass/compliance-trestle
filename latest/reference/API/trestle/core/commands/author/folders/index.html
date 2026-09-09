@@ -425,7 +425,9 @@
 <span class=normal>432</span>
 <span class=normal>433</span>
 <span class=normal>434</span>
-<span class=normal>435</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Folders</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
+<span class=normal>435</span>
+<span class=normal>436</span>
+<span class=normal>437</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Folders</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>"""Markdown governed folders - enforcing consistent files and templates across directories."""</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>'folders'</span>
@@ -758,9 +760,11 @@
 <span class=w>        </span><span class=sd>"""Get templates for the given version."""</span>
         <span class=n>templates</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span>
             <span class=nb>filter</span><span class=p>(</span>
-                <span class=k>lambda</span> <span class=n>p</span><span class=p>:</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_local_and_visible</span><span class=p>(</span><span class=n>p</span><span class=p>)</span>
-                <span class=ow>and</span> <span class=n>p</span><span class=o>.</span><span class=n>is_file</span><span class=p>()</span>  <span class=c1># noqa: W504 - conflicting lint and formatting</span>
-                <span class=ow>and</span> <span class=p>(</span><span class=n>p</span><span class=o>.</span><span class=n>suffix</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>MARKDOWN_FILE_EXT</span> <span class=ow>or</span> <span class=n>p</span><span class=o>.</span><span class=n>suffix</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>DRAWIO_FILE_EXT</span><span class=p>),</span>
+                <span class=k>lambda</span> <span class=n>p</span><span class=p>:</span> <span class=p>(</span>
+                    <span class=n>file_utils</span><span class=o>.</span><span class=n>is_local_and_visible</span><span class=p>(</span><span class=n>p</span><span class=p>)</span>
+                    <span class=ow>and</span> <span class=n>p</span><span class=o>.</span><span class=n>is_file</span><span class=p>()</span>
+                    <span class=ow>and</span> <span class=p>(</span><span class=n>p</span><span class=o>.</span><span class=n>suffix</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>MARKDOWN_FILE_EXT</span> <span class=ow>or</span> <span class=n>p</span><span class=o>.</span><span class=n>suffix</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>DRAWIO_FILE_EXT</span><span class=p>)</span>
+                <span class=p>),</span>
                 <span class=n>versioned_template_dir</span><span class=o>.</span><span class=n>iterdir</span><span class=p>(),</span>
             <span class=p>)</span>
         <span class=p>)</span>
@@ -824,9 +828,7 @@
                     <span class=o>+</span> <span class=s1>' directory, ignoring.'</span>
                 <span class=p>)</span>
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.folders.Folders-attributes>Attributes<a href=#trestle.core.commands.author.folders.Folders-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.folders.Folders.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'folders'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.folders.Folders.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.folders.Folders-functions>Methods:<a href=#trestle.core.commands.author.folders.Folders-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.folders.Folders.create_sample class="doc doc-heading"> <code class="highlight language-python"><span class=n>create_sample</span><span class=p>()</span></code> <a href=#trestle.core.commands.author.folders.Folders.create_sample class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create a sample folder within the task and populate with template content.</p> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>Unix return code for running sample as a command.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/folders.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>381</span>
-<span class=normal>382</span>
-<span class=normal>383</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.folders.Folders-attributes>Attributes<a href=#trestle.core.commands.author.folders.Folders-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.folders.Folders.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'folders'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.folders.Folders.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.folders.Folders-functions>Methods:<a href=#trestle.core.commands.author.folders.Folders-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.folders.Folders.create_sample class="doc doc-heading"> <code class="highlight language-python"><span class=n>create_sample</span><span class=p>()</span></code> <a href=#trestle.core.commands.author.folders.Folders.create_sample class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create a sample folder within the task and populate with template content.</p> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>Unix return code for running sample as a command.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/folders.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>383</span>
 <span class=normal>384</span>
 <span class=normal>385</span>
 <span class=normal>386</span>
@@ -838,7 +840,9 @@
 <span class=normal>392</span>
 <span class=normal>393</span>
 <span class=normal>394</span>
-<span class=normal>395</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>create_sample</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+<span class=normal>395</span>
+<span class=normal>396</span>
+<span class=normal>397</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>create_sample</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Create a sample folder within the task and populate with template content.</span>
 
@@ -975,9 +979,7 @@
             <span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'TEMPLATES VALID: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>task_name</span><span class=si>}</span><span class=s1>.'</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.folders.Folders.validate class="doc doc-heading"> <code class="highlight language-python"><span class=n>validate</span><span class=p>(</span><span class=n>validate_header</span><span class=p>,</span> <span class=n>validate_only_header</span><span class=p>,</span> <span class=n>governed_heading</span><span class=p>,</span> <span class=n>readme_validate</span><span class=p>,</span> <span class=n>template_version</span><span class=p>,</span> <span class=n>ignore</span><span class=p>,</span> <span class=n>validate_by_type_field</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.folders.Folders.validate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Validate task.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/folders.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>397</span>
-<span class=normal>398</span>
-<span class=normal>399</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.folders.Folders.validate class="doc doc-heading"> <code class="highlight language-python"><span class=n>validate</span><span class=p>(</span><span class=n>validate_header</span><span class=p>,</span> <span class=n>validate_only_header</span><span class=p>,</span> <span class=n>governed_heading</span><span class=p>,</span> <span class=n>readme_validate</span><span class=p>,</span> <span class=n>template_version</span><span class=p>,</span> <span class=n>ignore</span><span class=p>,</span> <span class=n>validate_by_type_field</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.folders.Folders.validate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Validate task.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/folders.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>399</span>
 <span class=normal>400</span>
 <span class=normal>401</span>
 <span class=normal>402</span>
@@ -1013,7 +1015,9 @@
 <span class=normal>432</span>
 <span class=normal>433</span>
 <span class=normal>434</span>
-<span class=normal>435</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span>
+<span class=normal>435</span>
+<span class=normal>436</span>
+<span class=normal>437</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>validate_header</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span>
     <span class=n>validate_only_header</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span>

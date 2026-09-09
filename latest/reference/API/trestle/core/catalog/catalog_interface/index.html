@@ -889,9 +889,7 @@
 <span class=normal>936</span>
 <span class=normal>937</span>
 <span class=normal>938</span>
-<span class=normal>939</span>
-<span class=normal>940</span>
-<span class=normal>941</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogInterface</span><span class=p>:</span>
+<span class=normal>939</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogInterface</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Interface to query and modify catalog contents.</span>
 
@@ -1570,7 +1568,7 @@
             <span class=k>if</span> <span class=n>control_file</span><span class=o>.</span><span class=n>stem</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>written_controls</span><span class=p>:</span>
                 <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span>
                     <span class=sa>f</span><span class=s1>'Existing control markdown </span><span class=si>{</span><span class=n>control_file</span><span class=si>}</span><span class=s1> deleted since it was not written out during generate'</span>
-                <span class=p>)</span>  <span class=c1># noqa E501</span>
+                <span class=p>)</span>
                 <span class=n>control_file</span><span class=o>.</span><span class=n>unlink</span><span class=p>()</span>
                 <span class=n>deleted_controls</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>control_file</span><span class=o>.</span><span class=n>stem</span><span class=p>)</span>
         <span class=k>return</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>deleted_controls</span><span class=p>)</span>
@@ -1696,7 +1694,7 @@
 <span class=w>        </span><span class=sd>"""Add component info to the impreqs of the control implementation based on applied rules."""</span>
         <span class=n>control_imp_rules_dict</span><span class=p>,</span> <span class=n>control_imp_rules_params_dict</span><span class=p>,</span> <span class=n>ci_rules_props</span> <span class=o>=</span> <span class=p>(</span>
             <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>control_implementation</span><span class=p>)</span>
-        <span class=p>)</span>  <span class=c1># noqa E501</span>
+        <span class=p>)</span>
         <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_dict</span><span class=p>)</span>
         <span class=n>comp_rules_params_dict</span> <span class=o>=</span> <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>,</span> <span class=p>{})</span>
         <span class=n>comp_rules_params_dict</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_params_dict</span><span class=p>)</span>
@@ -1729,9 +1727,7 @@
                 <span class=n>status</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_status_from_props</span><span class=p>(</span><span class=n>statement</span><span class=p>)</span>
                 <span class=k>if</span> <span class=n>statement</span><span class=o>.</span><span class=n>statement_id</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>control_part_id_map</span><span class=p>:</span>
                     <span class=n>label</span> <span class=o>=</span> <span class=n>statement</span><span class=o>.</span><span class=n>statement_id</span>
-                    <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
-                        <span class=sa>f</span><span class=s1>'No statement label found for statement id </span><span class=si>{</span><span class=n>label</span><span class=si>}</span><span class=s1>.  Defaulting to </span><span class=si>{</span><span class=n>label</span><span class=si>}</span><span class=s1>.'</span>  <span class=c1># noqa E501</span>
-                    <span class=p>)</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'No statement label found for statement id </span><span class=si>{</span><span class=n>label</span><span class=si>}</span><span class=s1>.  Defaulting to </span><span class=si>{</span><span class=n>label</span><span class=si>}</span><span class=s1>.'</span><span class=p>)</span>
                 <span class=k>else</span><span class=p>:</span>
                     <span class=n>label</span> <span class=o>=</span> <span class=n>control_part_id_map</span><span class=p>[</span><span class=n>statement</span><span class=o>.</span><span class=n>statement_id</span><span class=p>]</span>
                 <span class=n>all_props</span> <span class=o>=</span> <span class=n>rule_props</span><span class=p>[:]</span>
@@ -1766,7 +1762,7 @@
                 <span class=c1># get top level rule info applying to all controls from the component props</span>
                 <span class=n>comp_rules_dict</span><span class=p>,</span> <span class=n>comp_rules_params_dict</span><span class=p>,</span> <span class=n>comp_rules_props</span> <span class=o>=</span> <span class=p>(</span>
                     <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>component</span><span class=p>)</span>
-                <span class=p>)</span>  <span class=c1># noqa E501</span>
+                <span class=p>)</span>
                 <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_dict</span>
                 <span class=n>deep_update</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=p>,</span> <span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>],</span> <span class=n>comp_rules_params_dict</span><span class=p>)</span>
                 <span class=k>for</span> <span class=n>control_imp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>component</span><span class=o>.</span><span class=n>control_implementations</span><span class=p>):</span>
@@ -1944,7 +1940,9 @@
 
   
       dataclass
-   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>Control context for the current operation</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>None</code> </td> <td> <div class=doc-md-description> <p>Returns nothing but places the rules_dict and rules_params_dict in the context for each component</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>897</span>
+   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>Control context for the current operation</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>None</code> </td> <td> <div class=doc-md-description> <p>Returns nothing but places the rules_dict and rules_params_dict in the context for each component</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>895</span>
+<span class=normal>896</span>
+<span class=normal>897</span>
 <span class=normal>898</span>
 <span class=normal>899</span>
 <span class=normal>900</span>
@@ -1986,9 +1984,7 @@
 <span class=normal>936</span>
 <span class=normal>937</span>
 <span class=normal>938</span>
-<span class=normal>939</span>
-<span class=normal>940</span>
-<span class=normal>941</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_control_rule_info</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>939</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_control_rule_info</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""</span>
 <span class=sd>    Generate rule info for controls directly from the components.</span>
 
@@ -2014,7 +2010,7 @@
             <span class=c1># get top level rule info applying to all controls from the component props</span>
             <span class=n>comp_rules_dict</span><span class=p>,</span> <span class=n>comp_rules_params_dict</span><span class=p>,</span> <span class=n>comp_rules_props</span> <span class=o>=</span> <span class=p>(</span>
                 <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>component</span><span class=p>)</span>
-            <span class=p>)</span>  <span class=c1># noqa E501</span>
+            <span class=p>)</span>
             <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_dict</span>
             <span class=n>deep_update</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=p>,</span> <span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>],</span> <span class=n>comp_rules_params_dict</span><span class=p>)</span>
             <span class=k>for</span> <span class=n>control_imp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>component</span><span class=o>.</span><span class=n>control_implementations</span><span class=p>):</span>

@@ -554,9 +554,7 @@
 <span class=normal>587</span>
 <span class=normal>588</span>
 <span class=normal>589</span>
-<span class=normal>590</span>
-<span class=normal>591</span>
-<span class=normal>592</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ControlWriter</span><span class=p>:</span>
+<span class=normal>590</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ControlWriter</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""Class to write controls as markdown."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
@@ -878,23 +876,21 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_header</span><span class=p>(</span><span class=n>level</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>EDITABLE_CONTENT</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span><span class=s1>'&lt;!-- Make additions and edits below --&gt;'</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
-            <span class=s1>'&lt;!-- The above represents the contents of the control as received by the profile, prior to additions. --&gt;'</span>  <span class=c1># noqa E501</span>
+            <span class=s1>'&lt;!-- The above represents the contents of the control as received by the profile, prior to additions. --&gt;'</span>
+        <span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span><span class=s1>'&lt;!-- If the profile makes additions to the control, they will appear below. --&gt;'</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
+            <span class=s1>'&lt;!-- The above markdown may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. --&gt;'</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
-            <span class=s1>'&lt;!-- If the profile makes additions to the control, they will appear below. --&gt;'</span>  <span class=c1># noqa E501</span>
+            <span class=s1>'&lt;!-- If there is a yaml header at the top, parameter values may be edited. Use --set-parameters to incorporate the changes during assembly. --&gt;'</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
-            <span class=s1>'&lt;!-- The above markdown may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. --&gt;'</span>  <span class=c1># noqa E501</span>
-        <span class=p>)</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
-            <span class=s1>'&lt;!-- If there is a yaml header at the top, parameter values may be edited. Use --set-parameters to incorporate the changes during assembly. --&gt;'</span>  <span class=c1># noqa E501</span>
-        <span class=p>)</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
-            <span class=s1>'&lt;!-- The content here will then replace what is in the profile for this control, after running profile-assemble. --&gt;'</span>  <span class=c1># noqa E501</span>
+            <span class=s1>'&lt;!-- The content here will then replace what is in the profile for this control, after running profile-assemble. --&gt;'</span>
         <span class=p>)</span>
         <span class=k>if</span> <span class=n>has_content</span><span class=p>:</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
-                <span class=s1>'&lt;!-- The added parts in the profile for this control are below.  You may edit them and/or add new ones. --&gt;'</span>  <span class=c1># noqa E501</span>
+                <span class=s1>'&lt;!-- The added parts in the profile for this control are below.  You may edit them and/or add new ones. --&gt;'</span>
             <span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
@@ -911,7 +907,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span><span class=s1>'&lt;!-- Subparts may be added with nested hash levels of the form ### My Subpart Name --&gt;'</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span><span class=s1>'&lt;!-- underneath the parent ## Control or ## Part being added --&gt;'</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>new_line</span><span class=p>(</span>
-            <span class=s1>'&lt;!-- See https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. --&gt;'</span>  <span class=c1># noqa E501</span>
+            <span class=s1>'&lt;!-- See https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. --&gt;'</span>
         <span class=p>)</span>
         <span class=c1># next is to make mdformat happy</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_md_file</span><span class=o>.</span><span class=n>_add_line_raw</span><span class=p>(</span><span class=s1>''</span><span class=p>)</span>
@@ -1125,7 +1121,9 @@
 
   
       dataclass
-   (trestle.core.control_context.ControlContext)" href=../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>The context of the control usage</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>control</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Control (trestle.oscal.catalog.Control)" href=../../oscal/catalog/#trestle.oscal.catalog.Control>Control</a></code> </td> <td> <div class=doc-md-description> <p>The control to write as markdown</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>dest_path</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Path to the directory where the control will be written</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>group_title</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Title of the group containing the control</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>part_id_map</code> </td> <td> <code><span title=typing.Dict>Dict</span>[<span title=str>str</span>, <span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Mapping of part_id to label</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>found_alters</code> </td> <td> <code><span title=typing.List>List</span>[<a class="autorefs autorefs-internal" title="Alter (trestle.oscal.profile.Alter)" href=../../oscal/profile/#trestle.oscal.profile.Alter>Alter</a>]</code> </td> <td> <div class=doc-md-description> <p>List of alters read from the markdown file - if it exists</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>None</code> </td> <td> <div class=doc-md-description> <p>None</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The filename is constructed from the control's id and created in the dest_path. If a yaml header is present in the file, new values in provided header will not replace those in the markdown header unless overwrite_header_values is true. If it is true then overwrite any existing values, but in all cases new items from the provided header will be added to the markdown header. If the markdown file already exists, its current header and prose are read. Controls are checked if they are marked withdrawn, and if so they are not written out.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_writer.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>483</span>
+   (trestle.core.control_context.ControlContext)" href=../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>The context of the control usage</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>control</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Control (trestle.oscal.catalog.Control)" href=../../oscal/catalog/#trestle.oscal.catalog.Control>Control</a></code> </td> <td> <div class=doc-md-description> <p>The control to write as markdown</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>dest_path</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Path to the directory where the control will be written</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>group_title</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Title of the group containing the control</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>part_id_map</code> </td> <td> <code><span title=typing.Dict>Dict</span>[<span title=str>str</span>, <span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Mapping of part_id to label</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>found_alters</code> </td> <td> <code><span title=typing.List>List</span>[<a class="autorefs autorefs-internal" title="Alter (trestle.oscal.profile.Alter)" href=../../oscal/profile/#trestle.oscal.profile.Alter>Alter</a>]</code> </td> <td> <div class=doc-md-description> <p>List of alters read from the markdown file - if it exists</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>None</code> </td> <td> <div class=doc-md-description> <p>None</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The filename is constructed from the control's id and created in the dest_path. If a yaml header is present in the file, new values in provided header will not replace those in the markdown header unless overwrite_header_values is true. If it is true then overwrite any existing values, but in all cases new items from the provided header will be added to the markdown header. If the markdown file already exists, its current header and prose are read. Controls are checked if they are marked withdrawn, and if so they are not written out.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_writer.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>481</span>
+<span class=normal>482</span>
+<span class=normal>483</span>
 <span class=normal>484</span>
 <span class=normal>485</span>
 <span class=normal>486</span>
@@ -1232,9 +1230,7 @@
 <span class=normal>587</span>
 <span class=normal>588</span>
 <span class=normal>589</span>
-<span class=normal>590</span>
-<span class=normal>591</span>
-<span class=normal>592</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_control_for_editing</span><span class=p>(</span>
+<span class=normal>590</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_control_for_editing</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span>
     <span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span>
