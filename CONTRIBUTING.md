@@ -5,6 +5,21 @@ free to scratch it.
 
 To contribute code or documentation, please submit a [pull request](https://github.com/oscal-compass/compliance-trestle/pulls).
 
+### Accessibility
+
+Compliance Trestle follows [WCAG 2.0](https://www.w3.org/TR/WCAG20/) Level AA
+for its documentation website and strives to keep the CLI accessible to
+screen-reader users.  See [ACCESSIBILITY.md](ACCESSIBILITY.md) for the full
+statement.
+
+When contributing, please:
+
+- Add descriptive `alt` text to every image added to the documentation (WCAG 1.1.1).
+- Do not rely on colour alone to convey information in diagrams or code examples (WCAG 1.4.1).
+- If a contribution adds a new web page or significant UI element, verify it is
+  keyboard-navigable and has sufficient colour contrast (WCAG 1.4.3, 2.1.1).
+- Report accessibility issues by opening an issue with the label `accessibility`.
+
 A good way to familiarize yourself with the codebase and contribution process is
 to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/oscal-compass/compliance-trestle/issues).
 Before embarking on a more ambitious contribution, please quickly [get in touch](https://oscal-compass.github.io/compliance-trestle/latest/contributing/maintainers/) with us.

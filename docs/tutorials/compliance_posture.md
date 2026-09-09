@@ -26,7 +26,7 @@ The compliance-[trestle](../index.md) open source github project is an effort to
 
 #### Simple Continuous Compliance Architecture
 
-![Continuous Compliance Reporting](./compliance_posture/ContinuousCompliance.jpg)
+![Architecture diagram: Cloud Services feed compliance raw data into OSCAL transformers which produce standardised OSCAL Assessment Results; trestle assembles these into a Continuous Compliance Report for stakeholders](./compliance_posture/ContinuousCompliance.jpg)
 
 Cloud Services can often be configured to monitor (and sometimes enforce) policies. Examples include OpenShift Compliance Operator and Tanium. However, the compliance reporting “raw” data produced is unique to each.
 

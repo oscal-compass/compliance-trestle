@@ -905,4 +905,4 @@ Congratulations! You have bridged Tanium data into an OSCAL Assessment Results u
 
 <small>Newtown, Victoria</small>
 
-![Australia Scarsdale  Nimons Bridge](Tanium_result_to_oscal_ar/800px-Australia_scarsdale_nimons_bridge.jpg)
+![Photograph of Nimons Bridge over a creek in Scarsdale, Victoria, Australia — used as a decorative section break](Tanium_result_to_oscal_ar/800px-Australia_scarsdale_nimons_bridge.jpg)
