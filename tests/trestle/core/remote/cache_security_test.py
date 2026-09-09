@@ -768,7 +768,7 @@ class TestSSRFBypassVulnerabilities:
 
         # Mock DNS resolution to return 0.0.0.0
         def mock_getaddrinfo(hostname, port):
-            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 443))]  # noqa: S104 - intentional test for blocked address
+            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 443))]
 
         monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
 
@@ -870,7 +870,7 @@ class TestSSRFBypassVulnerabilities:
 
         # Mock DNS resolution to return 0.0.0.0
         def mock_getaddrinfo(hostname, port):
-            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 22))]  # noqa: S104 - intentional test for blocked address
+            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 22))]
 
         monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
 

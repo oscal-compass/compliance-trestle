@@ -382,7 +382,7 @@ class ControlReader:
         md_api = MarkdownAPI()
         yaml_header, control_tree = md_api.processor.process_control_markdown(
             control_path, cli_section_dict, part_label_to_id_map
-        )  # noqa: E501
+        )
         # extract the sort_id if present in header
         sort_id = yaml_header.get(const.SORT_ID, control_id)
 

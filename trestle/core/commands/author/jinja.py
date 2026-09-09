@@ -163,7 +163,7 @@ class JinjaCmd(CommandPlusDocs):
             )
 
     @staticmethod
-    def load_LUT(path: pathlib.Path, prefix: Optional[str]) -> Dict[str, Any]:  # noqa: N802
+    def load_LUT(path: pathlib.Path, prefix: Optional[str]) -> Dict[str, Any]:  # noqa: N802 - LUT is an established acronym; renaming is a breaking API change
         """Load a Yaml lookup table from file."""
         yaml = YAML()
         lut = yaml.load(path.open('r', encoding=const.FILE_ENCODING))

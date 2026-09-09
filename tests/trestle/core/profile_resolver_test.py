@@ -264,7 +264,7 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
     assert (
         ac_44.parts[0].prose
         == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information;  [IBM Assignment: my procedure] ].'
-    )  # noqa E501
+    )
     value = 'blocking the flow of the encrypted information'
     # Replace Parameter2 (with select) with Parameter1 (with values)
     old_param = param_dict['ac-4.4_prm_2']
@@ -290,14 +290,14 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
     assert (
         ac_44.parts[0].prose
         == f'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [IBM Assignment: {value}].'
-    )  # noqa E501
+    )
 
     ac_44 = copy.deepcopy(cat_interface.get_control('ac-4.4'))
     ControlInterface.replace_control_prose(ac_44, param_dict, '[.]', ParameterRep.LABEL_FORM, False, None, 'Label:')
     assert (
         ac_44.parts[0].prose
         != 'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by  [Label: organization-defined procedure or method] ].'
-    )  # noqa E501
+    )
 
 
 def test_profile_resolver_param_sub() -> None:
@@ -538,6 +538,6 @@ def test_profile_resolver_no_params(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_remote_profile_relative_cat(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile resolver with remote profile and import of relative catalog path."""
-    profile_path = 'https://raw.githubusercontent.com/usnistgov/oscal-content/690f517daaf3a6cbb4056d3cde6eae2756765620/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_LOW-baseline_profile.json'  # noqa E501
+    profile_path = 'https://raw.githubusercontent.com/usnistgov/oscal-content/690f517daaf3a6cbb4056d3cde6eae2756765620/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_LOW-baseline_profile.json'
     resolved_cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     assert len(resolved_cat.groups) > 10

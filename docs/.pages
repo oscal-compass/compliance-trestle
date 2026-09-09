@@ -1,6 +1,7 @@
 nav:
   - index.md
   - quick-start.md
+  - architecture.md
   - installation.md
   - upgrading.md
   - demos.md

@@ -233,8 +233,7 @@ def test_profile_generate_assemble(
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
     if use_cli:
-        test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
-        )
+        test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
         if add_header:
             test_args.extend(['-y', str(yaml_header_path)])
         test_args.extend(['-s', all_sections_str])
@@ -864,7 +863,7 @@ def test_profile_resolve(
         expected_value = 'officer'
         if bracket_format:
             expected_value = f'[({expected_value}])'
-    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'
     assert ac_1.parts[0].parts[1].prose == expected_prose
 
 
@@ -1016,54 +1015,54 @@ def test_profile_resolve_assignment(tmp_trestle_dir: pathlib.Path, monkeypatch: 
     """Test profile resolve to create resolved profile catalog in assignment mode."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
     cat_name = 'resolved_catalog'
-    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sv -vap "IBM Assignment:" -vnap "Assignment:"'  # noqa E501
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sv -vap "IBM Assignment:" -vnap "Assignment:"'
     test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
     res_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
     ac_1 = res_cat.groups[0].controls[0]
     expected_value = '(IBM Assignment: officer)'
-    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'
     assert ac_1.parts[0].parts[1].prose == expected_prose
     ac_21 = res_cat.groups[0].controls[-1].controls[0]
     assert (
         ac_21.parts[0].prose
         == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'
-    )  # noqa E501
+    )
 
 
 def test_profile_resolve_label_mode(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test profile resolve to create resolved profile catalog in label mode."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
     cat_name = 'resolved_catalog'
-    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sl -lp Label:'  # noqa E501
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sl -lp Label:'
     test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
     res_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
     ac_1 = res_cat.groups[0].controls[0]
     expected_value = '(Label: organization-defined official)'
-    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'
     assert ac_1.parts[0].parts[1].prose == expected_prose
     ac_21 = res_cat.groups[0].controls[-1].controls[0]
     assert (
         ac_21.parts[0].prose
         == 'Support the management of system accounts using (Label: organization-defined automated mechanisms).'
-    )  # noqa E501
+    )
 
 
 def test_profile_resolve_assignment_simple(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test profile resolve with simple profile."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, True, False)
     cat_name = 'resolved_catalog'
-    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sv -vap "IBM Assignment:" -vnap "Assignment:"'  # noqa E501
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sv -vap "IBM Assignment:" -vnap "Assignment:"'
     test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
     res_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
     ac_1 = res_cat.groups[0].controls[0]
     expected_value = '(Assignment: organization-defined official)'
-    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'
     assert ac_1.parts[0].parts[1].prose == expected_prose
     ac_21 = res_cat.groups[0].controls[1].controls[0]
     assert (
         ac_21.parts[0].prose
         == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'
-    )  # noqa E501
+    )
 
 
 def test_profile_resolve_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -1206,8 +1205,7 @@ def test_profile_generate_assemble_parameter_aggregation(
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
-    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
-    )
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
     test_args.extend(['-y', str(yaml_header_path)])
     test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
@@ -1235,8 +1233,7 @@ def test_profile_generate_assemble_rev_5(tmp_trestle_dir: pathlib.Path, monkeypa
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
-    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split(  # noqa E501
-    )
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
     test_args.extend(['-y', str(yaml_header_path)])
     monkeypatch.setattr(sys, 'argv', test_args)
 
@@ -1302,8 +1299,7 @@ def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, mo
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
-    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
-    )
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
     test_args.extend(['-y', str(yaml_header_path)])
     test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
@@ -1318,8 +1314,7 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
-    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
-    )
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
     test_args.extend(['-y', str(yaml_header_path)])
     test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
@@ -1357,8 +1352,7 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
-    test_args = f'trestle author profile-generate -n {assembled_prof_name} -o {md_name} -rs NeededExtra --force-overwrite'.split(  # noqa E501
-    )
+    test_args = f'trestle author profile-generate -n {assembled_prof_name} -o {md_name} -rs NeededExtra --force-overwrite'.split()
     test_args.extend(['-y', str(yaml_header_path)])
     test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
@@ -1389,8 +1383,7 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
-    test_args = f'trestle author profile-generate -n test_profile_a -o {md_name} -rs NeededExtra'.split(  # noqa E501
-    )
+    test_args = f'trestle author profile-generate -n test_profile_a -o {md_name} -rs NeededExtra'.split()
     test_args.extend(['-y', str(yaml_header_path)])
     test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
@@ -1447,8 +1440,7 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
-    test_args = f'trestle author profile-generate -n {assembled_prof_name} -o {md_name} -rs NeededExtra --force-overwrite'.split(  # noqa E501
-    )
+    test_args = f'trestle author profile-generate -n {assembled_prof_name} -o {md_name} -rs NeededExtra --force-overwrite'.split()
     test_args.extend(['-y', str(yaml_header_path)])
     test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
@@ -1471,8 +1463,7 @@ def test_profile_values_included_if_replaced(tmp_trestle_dir: pathlib.Path, monk
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
-    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
-    )
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
     test_args.extend(['-y', str(yaml_header_path)])
     test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
