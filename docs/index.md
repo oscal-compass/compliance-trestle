@@ -5,14 +5,14 @@ description: Trestle is an ensemble of tools that enable the creation, validatio
 
 # Compliance-trestle (also known as `trestle`)
 
-![OS Compatibility: macOS, Linux, Windows](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
-![Supported Python versions from PyPI](https://img.shields.io/pypi/pyversions/compliance-trestle)
-[![pre-commit enabled](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![Code coverage via SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)](https://sonarcloud.io/dashboard?id=compliance-trestle)
-[![SonarCloud quality gate status](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)](https://sonarcloud.io/dashboard?id=compliance-trestle)
-[![Monthly downloads from PyPI](https://img.shields.io/pypi/dm/compliance-trestle)](https://pypi.org/project/compliance-trestle/)
-![GitHub Actions CI status for the develop branch](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
-![OpenSSF Best Practices badge](https://www.bestpractices.dev/projects/9408/badge)
+![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/compliance-trestle)
+![[Pre-commit](https://github.com/pre-commit/pre-commit)](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
+![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
+![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
+[![Monthly downloads](https://img.shields.io/pypi/dm/compliance-trestle)](https://pypi.org/project/compliance-trestle/)
+![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)](https://www.bestpractices.dev/projects/9408)
 
 Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
