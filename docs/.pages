@@ -1,5 +1,6 @@
 nav:
   - index.md
+  - architecture.md
   - installation.md
   - upgrading.md
   - demos.md
