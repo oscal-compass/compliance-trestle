@@ -66,7 +66,7 @@ class DocsControlWriter(ControlWriter):
         """Write the control into markdown file with specified sections."""
         self._md_file = MDWriter(None)
         self._sections_dict = sections_dict if sections_dict else {}
-        tag_pattern = '{: #[.]}'  # noqa: FS003 - not f string but tag
+        tag_pattern = '{: #[.]}'
         if not isinstance(group_title, str):
             raise TrestleError(f'Group title must be provided and be a string, instead received: {group_title}')
 
@@ -149,7 +149,7 @@ class DocsControlWriter(ControlWriter):
                 )
             self._md_file.set_indent_level(-1)
             if tag_pattern:
-                bottom_tag_pattern = '{: #"Parameters for [.]" caption-side="top"}'  # noqa: F541 - not f string
+                bottom_tag_pattern = '{: #"Parameters for [.]" caption-side="top"}'
                 control_id = self._get_pretty_control_id_if_exists(control)
                 self._md_file.new_line(bottom_tag_pattern.replace('[.]', control_id))
                 self._md_file.new_paragraph()

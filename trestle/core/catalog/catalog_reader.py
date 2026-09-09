@@ -129,7 +129,7 @@ class CatalogReader:
             if group_id:
                 if not group_title:
                     logger.warning(
-                        f'No group title found in controls for group {group_id}.  The title will be recovered if assembling into an existing catalog with the group title defined.'  # noqa E501
+                        f'No group title found in controls for group {group_id}.  The title will be recovered if assembling into an existing catalog with the group title defined.'
                     )
                     # Use a placeholder title if none is provided, as Group2 requires a non-empty title
                     group_title = f'Group {group_id}'
@@ -455,7 +455,7 @@ class CatalogReader:
 
                 for comp_name, comp_info_dict in control_comp_dict.items():
                     if comp_name not in comp_dict:
-                        err_msg = f'Control {control_id} references component {comp_name} not defined in a component-definition.'  # noqa E501
+                        err_msg = f'Control {control_id} references component {comp_name} not defined in a component-definition.'
                         # give added guidance if no comp defs were specified at command line
                         if not context.comp_def_name_list:
                             err_msg += '  Please specify the names of any component-definitions needed for assembly.'

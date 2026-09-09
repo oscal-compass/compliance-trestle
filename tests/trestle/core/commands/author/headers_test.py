@@ -298,8 +298,8 @@ def test_exclude_global(
     shutil.copytree(str(template_path_original), str(template_path_target))
 
     monkeypatch.setattr(sys, 'argv', command_string.split())
-    rc = Trestle().run()  # noqa: E800
-    assert (rc == 0) == acceptable  # noqa: E800
+    rc = Trestle().run()
+    assert (rc == 0) == acceptable
 
 
 @pytest.mark.parametrize(
