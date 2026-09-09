@@ -112,6 +112,10 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's OS
 
 Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is available on PyPi so it is easily installed via pip.  It is under active development and new releases are made available regularly.
 
+## Quick Start
+
+New to trestle? The [Quick Start guide](quick-start.md) walks you through installing trestle, initialising a workspace, and importing your first OSCAL catalog in a few minutes.
+
 ## Development status
 
 Compliance trestle is currently stable and is based on NIST OSCAL version 1.2.1, with active development continuing.
