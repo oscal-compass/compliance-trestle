@@ -40,7 +40,7 @@ from trestle.core.base_model import OscalBaseModel, OscalRootModel, _format_vali
 
 def test_echo_tmp_path(tmp_path) -> None:
     """Testing pytest."""
-    print(tmp_path)  # noqa T001
+    print(tmp_path)
     assert 1
 
 

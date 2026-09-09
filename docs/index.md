@@ -31,7 +31,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Help manage OSCAL documents in a more human-friendly manner by expanding the large OSCAL data structures into smaller and easier to edit sub-structures while making sure the schemas are enforced.
 - Transform documents from other formats to OSCAL
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
-- Tooling manage authoring and governance of markdown and drawio files withn a repository.
+- Tooling manage authoring and governance of markdown and drawio files within a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artefacts.
 - Detached signing and verification for JSON artifacts and JSON package manifests. See the [`trestle sign`](tutorials/cli.md#trestle-sign) and [`trestle sign-manifest`](tutorials/cli.md#trestle-sign-manifest) CLI documentation.
@@ -56,7 +56,7 @@ Visit [pypi](https://pypi.org/project/compliance-trestle/#history) for trestle r
 
 #### Install of trestle 5.x
 
-Use python 3.14.
+Use python 3.11 or later (3.11, 3.12, 3.13, or 3.14 are all supported).
 
 ```
 python3.14 -m venv venv.trestle
@@ -73,7 +73,7 @@ Use python 3.11.
 ```
 python3.11 -m venv venv.trestle
 source venv.trestle/bin/activate
-pip install compliance-trestle=4.2.0
+pip install compliance-trestle==4.2.0
 trestle version
 Trestle version v4.2.0 based on OSCAL version 1.2.1
 ```

@@ -53,7 +53,7 @@ class ComponentGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument(
             '-o', '--output', help='Name of the output generated component markdown folder', required=True, type=str
-        )  # noqa E501
+        )
         self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -247,7 +247,7 @@ class ComponentAssemble(AuthorCommonCommand):
         if assem_comp_path.parent.exists():
             logger.info(
                 'Creating component definition from markdown and destination component definition exists, so updating.'
-            )  # noqa E501
+            )
             shutil.rmtree(str(assem_comp_path.parent))
 
         assem_comp_path.parent.mkdir(parents=True, exist_ok=True)
