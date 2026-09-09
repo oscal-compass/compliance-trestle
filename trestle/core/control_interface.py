@@ -1280,5 +1280,5 @@ class ControlInterface:
                 imp_req.statements = none_if_empty(new_statements)
                 return
         logger.warning(
-            f'Unable to add imp req for component {component.title} control {new_imp_req.control_id} and source: {profile_title}'  # noqa E501
+            f'Unable to add imp req for component {component.title} control {new_imp_req.control_id} and source: {profile_title}'
         )

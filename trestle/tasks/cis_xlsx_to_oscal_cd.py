@@ -557,16 +557,16 @@ class CsvHelper:
     def columns() -> Dict:
         """Columns."""
         return {
-            'Component_Title': 'A human readable name for the component.',  # noqa
-            'Component_Description': 'A description of the component including information about its function.',  # noqa
-            'Component_Type': 'A category describing the purpose of the component. ALLOWED VALUES interconnection:software:hardware:service:physical:process-procedure:plan:guidance:standard:validation:',  # noqa
-            'Profile': 'List of CIS profiles',  # noqa
-            'Rule_Id': 'A textual label that uniquely identifies a policy (desired state) that can be used to reference it elsewhere in this or other documents.',  # noqa
-            'Rule_Description': 'A description of the policy (desired state) including information about its purpose and scope.',  # noqa
-            'Profile_Source': 'A URL reference to the source catalog or profile for which this component is implementing controls for. A profile designates a selection and configuration of controls from one or more catalogs.',  # noqa
-            'Profile_Description': 'A description of the profile.',  # noqa
-            'Control_Id_List': 'A list of textual labels that uniquely identify the controls or statements that the component implements.',  # noqa
-            'Namespace': 'A namespace qualifying the property\'s name. This allows different organizations to associate distinct semantics with the same name. Used in conjunction with "class" as the ontology concept.',  # noqa
+            'Component_Title': 'A human readable name for the component.',
+            'Component_Description': 'A description of the component including information about its function.',
+            'Component_Type': 'A category describing the purpose of the component. ALLOWED VALUES interconnection:software:hardware:service:physical:process-procedure:plan:guidance:standard:validation:',
+            'Profile': 'List of CIS profiles',
+            'Rule_Id': 'A textual label that uniquely identifies a policy (desired state) that can be used to reference it elsewhere in this or other documents.',
+            'Rule_Description': 'A description of the policy (desired state) including information about its purpose and scope.',
+            'Profile_Source': 'A URL reference to the source catalog or profile for which this component is implementing controls for. A profile designates a selection and configuration of controls from one or more catalogs.',
+            'Profile_Description': 'A description of the profile.',
+            'Control_Id_List': 'A list of textual labels that uniquely identify the controls or statements that the component implements.',
+            'Namespace': 'A namespace qualifying the property\'s name. This allows different organizations to associate distinct semantics with the same name. Used in conjunction with "class" as the ontology concept.',
         }
 
 

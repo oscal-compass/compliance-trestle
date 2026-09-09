@@ -161,7 +161,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
                 )
             tree_context.control_id, tree_context.control_group, tree_context.control_title = (
                 ControlMarkdownNode._parse_control_title_line(root_key)
-            )  # noqa: E501
+            )
             content.control_id = tree_context.control_id
             content.control_group = tree_context.control_group
             content.control_title = tree_context.control_title

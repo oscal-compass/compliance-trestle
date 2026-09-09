@@ -45,7 +45,7 @@ class IntegrityCmd(Command):
                     json_schema_raw = json.load(fp)
                 # get list of ID's
                 # Cannot use this technique using latest OSCAL code drop
-                # ids = list(set(self.recursive_ref('$id', json_schema_raw))) # noqa: E800
+                # ids = list(set(self.recursive_ref('$id', json_schema_raw)))
                 # get list of ID's only from the top level elements in the definition structure.
                 definitions = json_schema_raw['definitions']
 
