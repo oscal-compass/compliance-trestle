@@ -10,7 +10,7 @@ description: Trestle is an ensemble of tools that enable the creation, validatio
 ![[Pre-commit](https://github.com/pre-commit/pre-commit)](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
-![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
+[![Monthly downloads](https://img.shields.io/pypi/dm/compliance-trestle)](https://pypi.org/project/compliance-trestle/)
 ![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)](https://www.bestpractices.dev/projects/9408)
 
