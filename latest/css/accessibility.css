@@ -1,0 +1,83 @@
+/*
+ * accessibility.css
+ *
+ * WCAG 2.0 accessibility enhancements for the Compliance Trestle documentation site.
+ *
+ * Covers:
+ *   - Skip-navigation link (WCAG 2.4.1 — Bypass Blocks)
+ *   - Visible focus indicators (WCAG 2.4.7 — Focus Visible)
+ *   - Reduced-motion support (WCAG 2.3.3 / prefers-reduced-motion)
+ *   - Sufficient colour contrast on inline code in both light and dark modes
+ *     (WCAG 1.4.3 — Contrast Minimum, 4.5:1)
+ */
+
+/* -----------------------------------------------------------------------
+ * 1. Skip-navigation link (injected by skip-nav.js, hidden until focused)
+ * --------------------------------------------------------------------- */
+.skip-nav {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: 10000;
+  padding: 0.75em 1.25em;
+  background: #005eb8;   /* high-contrast blue, >4.5:1 against white text */
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  white-space: nowrap;
+}
+
+.skip-nav:focus {
+  top: 0;
+  left: 0;
+  outline: 3px solid #ffdd00;   /* WCAG AA-compliant yellow focus ring */
+  outline-offset: 2px;
+}
+
+/* -----------------------------------------------------------------------
+ * 2. Visible keyboard-focus ring (WCAG 2.4.7)
+ *    Material for MkDocs resets outline; restore it for all interactive
+ *    elements so keyboard-only users and screen-reader users can track
+ *    their position.
+ * --------------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #005eb8;
+  outline-offset: 2px;
+}
+
+/* -----------------------------------------------------------------------
+ * 3. Reduced-motion (WCAG 2.3.3 / "prefers-reduced-motion")
+ *    Disable decorative animations for users who have requested it via OS.
+ * --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -----------------------------------------------------------------------
+ * 4. Inline code contrast
+ *    The default Material theme slate palette can render inline <code>
+ *    with insufficient contrast.  Explicitly set colours that meet 4.5:1.
+ * --------------------------------------------------------------------- */
+[data-md-color-scheme="slate"] code:not([class]) {
+  color: #f8f8f2;        /* ~8:1 against the slate background */
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-md-color-scheme="default"] code:not([class]) {
+  color: #24292e;        /* ~16:1 against white */
+  background-color: rgba(27, 31, 35, 0.07);
+}
