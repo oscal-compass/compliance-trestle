@@ -206,12 +206,11 @@ Additional code scrutiny is applied in the trestle CI pipeline by [SonarCloud](h
 
 All contributions **must** comply with the following coding style guides:
 
-| Scope                     | Style guide                                    | URL                                                                                  |
-| ------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Python — general style    | PEP 8 – Style Guide for Python Code            | <https://peps.python.org/pep-0008/>                                                  |
-| Python — type annotations | PEP 484 – Type Hints                           | <https://peps.python.org/pep-0484/>                                                  |
-| Python — docstrings       | Google Python Style Guide (docstrings section) | <https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings>        |
-| Python — security         | SEI CERT Python Coding Standard                | <https://wiki.sei.cmu.edu/confluence/display/python/SEI+CERT+Python+Coding+Standard> |
+| Scope                     | Style guide                                    | URL                                                                           |
+| ------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------- |
+| Python — general style    | PEP 8 – Style Guide for Python Code            | <https://peps.python.org/pep-0008/>                                           |
+| Python — type annotations | PEP 484 – Type Hints                           | <https://peps.python.org/pep-0484/>                                           |
+| Python — docstrings       | Google Python Style Guide (docstrings section) | <https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings> |
 
 `trestle` uses [ruff](https://docs.astral.sh/ruff/) for code formatting and linting, [mypy](https://mypy.readthedocs.io/) for static type checking, and [mdformat](https://mdformat.readthedocs.io/) for Markdown formatting. It also uses [pre-commit](https://pre-commit.com/) hooks that are integrated into the development process and the CI. When you run `make develop` you are ensuring that the pre-commit hooks are installed and updated to their latest versions for this repository. This ensures that all delivered code has been properly formatted and passes the linter rules. See the [pre-commit configuration file](https://github.com/oscal-compass/compliance-trestle/blob/develop/.pre-commit-config.yaml) and the `[tool.ruff]` sections of [`pyproject.toml`](https://github.com/oscal-compass/compliance-trestle/blob/develop/pyproject.toml) for the full configuration.
 
