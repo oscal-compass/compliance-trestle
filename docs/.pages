@@ -2,6 +2,7 @@ nav:
   - index.md
   - quick-start.md
   - architecture.md
+  - assurance-case.md
   - installation.md
   - upgrading.md
   - demos.md
