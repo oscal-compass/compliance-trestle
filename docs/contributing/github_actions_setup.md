@@ -24,9 +24,9 @@ Every version tag created by the release pipeline is signed with an SSH key so t
 
 ### Secrets
 
-| Secret | Content |
-| --- | --- |
-| `RELEASE_TAG_SIGNING_KEY` | PEM-encoded Ed25519 **private** key (no passphrase) |
+| Secret                        | Content                                                  |
+| ----------------------------- | -------------------------------------------------------- |
+| `RELEASE_TAG_SIGNING_KEY`     | PEM-encoded Ed25519 **private** key (no passphrase)      |
 | `RELEASE_TAG_SIGNING_KEY_PUB` | Corresponding **public** key in `authorized_keys` format |
 
 ### Generating the key pair

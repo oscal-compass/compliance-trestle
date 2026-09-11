@@ -115,8 +115,8 @@ Every version tag produced by the release pipeline — on `main` and on maintena
 The `python-semantic-release` action receives the key pair via the `RELEASE_TAG_SIGNING_KEY` and `RELEASE_TAG_SIGNING_KEY_PUB` environment secrets. Before calling `semantic-release version`, the action:
 
 1. Writes the keys to `~/.ssh/`
-2. Starts `ssh-agent` and loads the private key
-3. Sets `git config tag.gpgsign true` and `git config gpg.format ssh`
+1. Starts `ssh-agent` and loads the private key
+1. Sets `git config tag.gpgsign true` and `git config gpg.format ssh`
 
 The tag is then created signed as part of the normal semantic-release flow.
 
