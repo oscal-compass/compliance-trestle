@@ -27,10 +27,9 @@ from cryptography.hazmat.primitives.asymmetric import ed25519
 
 import trestle.common.const as const
 from trestle.common.err import TrestleError
-from trestle.core.canonicalization import sha256_digest_hex
+from trestle.core.canonicalization import digest_algorithm_name, digest_hex, sha256_digest_hex
 from trestle.core.signing import (
     CANONICALIZATION_ALGORITHM,
-    DIGEST_ALGORITHM,
     DSSE_PAYLOAD_TYPE,
     IN_TOTO_STATEMENT_TYPE,
     MAX_SIGNATURES,
@@ -46,6 +45,7 @@ from trestle.core.signing import (
     verify_oscal_provenance_envelope,
     write_dsse_envelope,
 )
+from trestle.oscal.common import Algorithm
 
 
 def write_ed25519_key_pair(tmp_path: pathlib.Path, password: bytes = b'') -> Tuple[pathlib.Path, pathlib.Path]:
@@ -113,12 +113,91 @@ def test_create_oscal_provenance_envelope_contains_in_toto_statement(tmp_path: p
     assert statement['_type'] == IN_TOTO_STATEMENT_TYPE
     assert statement['predicateType'] == OSCAL_PREDICATE_TYPE
     assert statement['predicate']['canonicalization'] == CANONICALIZATION_ALGORITHM
-    assert statement['predicate']['digestAlgorithm'] == DIGEST_ALGORITHM
+    assert statement['predicate']['digestAlgorithm'] == 'sha256'
     assert statement['subject'][0]['name'] == 'catalog.json'
     assert statement['subject'][0]['digest']['sha256'] == sha256_digest_hex(b'{"a":1,"b":2}')
 
     public_key = load_pem_public_key(public_key_path)
     verify_oscal_provenance_envelope(input_path, envelope, public_key)
+
+
+@pytest.mark.parametrize('algorithm', list(Algorithm))
+@pytest.mark.parametrize('require_algorithm', [False, True])
+def test_sign_and_verify_digest_algorithms(
+    tmp_path: pathlib.Path, algorithm: Algorithm, require_algorithm: bool
+) -> None:
+    """Every supported digest should round-trip and reject a mismatch or changed artifact."""
+    input_path, signer, public_key, _, _ = signing_context(tmp_path)
+    envelope = create_oscal_provenance_envelope(input_path, signer, digest_algorithm=algorithm)
+    required_algorithm = algorithm if require_algorithm else None
+    statement = verify_oscal_provenance_envelope(input_path, envelope, public_key, digest_algorithm=required_algorithm)
+    algorithm_name = digest_algorithm_name(algorithm)
+    assert statement['predicate']['digestAlgorithm'] == algorithm_name
+    assert statement['subject'][0]['digest'] == {algorithm_name: digest_hex(b'{"a":1}', algorithm)}
+
+    other_algorithm = Algorithm.SHA_512 if algorithm == Algorithm.SHA_256 else Algorithm.SHA_256
+    with pytest.raises(TrestleError, match='does not describe a .* digest'):
+        verify_oscal_provenance_envelope(input_path, envelope, public_key, digest_algorithm=other_algorithm)
+
+    input_path.write_text('{"a":2}', encoding=const.FILE_ENCODING)
+    with pytest.raises(TrestleError, match='digest does not match'):
+        verify_oscal_provenance_envelope(input_path, envelope, public_key, digest_algorithm=required_algorithm)
+
+
+def test_explicit_sha256_preserves_default_envelope(tmp_path: pathlib.Path) -> None:
+    """Explicit SHA-256 should produce the same Statement and signature as the existing default."""
+    input_path, signer, public_key, envelope, _ = signing_context(tmp_path)
+    assert create_oscal_provenance_envelope(input_path, signer, digest_algorithm=Algorithm.SHA_256) == envelope
+    verify_oscal_provenance_envelope(input_path, envelope, public_key, digest_algorithm=Algorithm.SHA_256)
+
+
+@pytest.mark.parametrize(
+    'digest', [{}, {'sha256': None}, {'sha256': 123}, {'sha256': True}, {'sha256': []}, {'sha256': {}}]
+)
+@pytest.mark.parametrize('require_algorithm', [False, True])
+def test_verify_rejects_missing_or_non_string_digest(
+    tmp_path: pathlib.Path, digest: Dict[str, Any], require_algorithm: bool
+) -> None:
+    """Reject malformed signed digests before reading the artifact in either verification mode."""
+    input_path, signer, public_key, _, statement = signing_context(tmp_path)
+    statement['subject'][0]['digest'] = digest
+    envelope = sign_in_toto_statement(statement, signer)
+    input_path.unlink()
+    with pytest.raises(TrestleError, match='subject does not contain a SHA-256 digest: catalog.json'):
+        verify_oscal_provenance_envelope(
+            input_path, envelope, public_key, digest_algorithm=Algorithm.SHA_256 if require_algorithm else None
+        )
+
+
+@pytest.mark.parametrize('require_algorithm', [False, True])
+def test_verify_rejects_inconsistent_digest_algorithm(tmp_path: pathlib.Path, require_algorithm: bool) -> None:
+    """A valid signature must not allow the predicate and subject algorithm to disagree."""
+    input_path, signer, public_key, _, statement = signing_context(tmp_path)
+    statement['predicate']['digestAlgorithm'] = 'sha3_256'
+    envelope = sign_in_toto_statement(statement, signer)
+    with pytest.raises(TrestleError, match='subject does not contain a SHA3-256 digest: catalog.json'):
+        verify_oscal_provenance_envelope(
+            input_path, envelope, public_key, digest_algorithm=Algorithm.SHA3_256 if require_algorithm else None
+        )
+
+
+@pytest.mark.parametrize('name', ['md5', 'sha1', 'SHA-256', '', None, [], {}])
+def test_verify_rejects_unsupported_signed_digest_algorithm(tmp_path: pathlib.Path, name: Any) -> None:
+    """A valid signature does not make unsupported algorithm metadata acceptable."""
+    input_path, signer, public_key, _, statement = signing_context(tmp_path)
+    statement['predicate']['digestAlgorithm'] = name
+    with pytest.raises(TrestleError, match='Unsupported digest algorithm'):
+        verify_oscal_provenance_envelope(input_path, sign_in_toto_statement(statement, signer), public_key)
+
+
+def test_verify_authenticates_before_detecting_digest_algorithm(tmp_path: pathlib.Path) -> None:
+    """Tampered metadata must fail signature verification before detection or artifact reads."""
+    input_path, _, public_key, envelope, statement = signing_context(tmp_path)
+    statement['predicate']['digestAlgorithm'] = 'md5'
+    envelope['payload'] = base64.b64encode(json.dumps(statement).encode(const.FILE_ENCODING)).decode('ascii')
+    input_path.unlink()
+    with pytest.raises(TrestleError, match='signature could not be verified'):
+        verify_oscal_provenance_envelope(input_path, envelope, public_key)
 
 
 def test_key_loaders_reject_invalid_pem(tmp_path: pathlib.Path) -> None:

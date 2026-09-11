@@ -18,6 +18,7 @@
 import argparse
 import logging
 import pathlib
+from typing import Optional
 
 from trestle.common import log
 from trestle.common.err import handle_generic_command_exception
@@ -26,6 +27,7 @@ from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.signing import load_dsse_envelope, load_pem_public_key
 from trestle.core.signing_manifest import load_signing_manifest, verify_manifest_envelope
+from trestle.oscal.common import Algorithm
 
 logger = logging.getLogger(__name__)
 
@@ -50,23 +52,37 @@ class VerifyManifestCmd(CommandBase):
         self.add_argument(
             '--public-key', help='Path to the PEM public key for verification.', required=True, type=pathlib.Path
         )
+        self.add_argument(
+            '--digest-algorithm',
+            choices=[algorithm.value for algorithm in Algorithm],
+            help='Require this artifact digest algorithm. By default, detect it from the signed Statement.',
+        )
 
     @beta_feature('json-manifest-signing')
     def _run(self, args: argparse.Namespace) -> int:
         """Verify a JSON package manifest."""
         try:
             log.set_log_level_from_args(args)
-            self.verify_manifest(args.manifest, args.signature, args.public_key)
+            self.verify_manifest(
+                args.manifest,
+                args.signature,
+                args.public_key,
+                digest_algorithm=Algorithm(args.digest_algorithm) if args.digest_algorithm else None,
+            )
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while verifying package manifest signature')
 
     @classmethod
     def verify_manifest(
-        cls, manifest_path: pathlib.Path, signature_path: pathlib.Path, public_key_path: pathlib.Path
+        cls,
+        manifest_path: pathlib.Path,
+        signature_path: pathlib.Path,
+        public_key_path: pathlib.Path,
+        digest_algorithm: Optional[Algorithm] = None,
     ) -> None:
         """Verify a detached DSSE envelope for a JSON package manifest."""
         manifest = load_signing_manifest(manifest_path.resolve())
         public_key = load_pem_public_key(public_key_path.resolve())
         envelope = load_dsse_envelope(signature_path.resolve())
-        verify_manifest_envelope(manifest, envelope, public_key)
+        verify_manifest_envelope(manifest, envelope, public_key, digest_algorithm)
