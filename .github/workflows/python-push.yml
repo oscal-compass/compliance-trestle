@@ -270,6 +270,9 @@ jobs:
       uses: python-semantic-release/python-semantic-release@9a026e9303981c866c3425723009becb2437c757 # v10.6.2
       with:
         github_token: ${{ steps.app-token.outputs.token }}
+        git_committer_email: "semantic-release@users.noreply.github.com"
+        ssh_public_signing_key: ${{ secrets.RELEASE_TAG_SIGNING_KEY_PUB }}
+        ssh_private_signing_key: ${{ secrets.RELEASE_TAG_SIGNING_KEY }}
 
     - name: Ensure non-main releases are not marked latest
       if: github.ref != 'refs/heads/main' && steps.release.outputs.released == 'true'

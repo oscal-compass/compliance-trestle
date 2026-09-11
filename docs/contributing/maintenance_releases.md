@@ -42,7 +42,8 @@ Trestle supports releasing security and bug fixes for older major versions throu
 
    - Validates the branch name and version consistency
    - Runs semantic-release to bump the patch version (e.g., `3.12.0` -> `3.12.1`)
-   - Publishes to PyPI, signs with sigstore, creates a GitHub Release
+   - Creates a **cryptographically signed** Git tag (SSH/Ed25519) — see [Signed release tags](#signed-release-tags)
+   - Publishes to PyPI, signs distribution artifacts with sigstore, creates a GitHub Release
    - Updates versioned documentation
 
 ## Security fix propagation
@@ -104,6 +105,34 @@ When a new major version is released (e.g., v5.0.0), create a maintenance branch
 | `conventional-pr.yml`   | Validates PR titles; blocks `feat:` commits on maintenance branches                                                                                   |
 | `docs-update.yml`       | Automatically triggered by version tags (e.g., `v3.12.1`)                                                                                             |
 | `merge-main-to-develop` | Does **not** run -- maintenance releases are isolated                                                                                                 |
+
+## Signed release tags
+
+Every version tag produced by the release pipeline — on `main` and on maintenance branches — is signed with an SSH Ed25519 key. This satisfies the `[version_tags_signed]` supply-chain requirement: each major, minor, and security-fix tag is cryptographically bound to the release identity and independently verifiable.
+
+### How signing works
+
+The `python-semantic-release` action receives the key pair via the `RELEASE_TAG_SIGNING_KEY` and `RELEASE_TAG_SIGNING_KEY_PUB` environment secrets. Before calling `semantic-release version`, the action:
+
+1. Writes the keys to `~/.ssh/`
+2. Starts `ssh-agent` and loads the private key
+3. Sets `git config tag.gpgsign true` and `git config gpg.format ssh`
+
+The tag is then created signed as part of the normal semantic-release flow.
+
+### Verifying a tag locally
+
+```bash
+# One-time setup: point git at the repository's allowed-signers file
+git config gpg.ssh.allowedSignersFile .github/allowed_signers
+
+# Verify any release tag
+git fetch --tags
+git tag -v v3.12.1
+# Good "git" signature for semantic-release@users.noreply.github.com with ED25519 key ...
+```
+
+The `.github/allowed_signers` file in the repository contains the public key for `semantic-release@users.noreply.github.com`. For setup and key-rotation instructions, see [GitHub actions setup → Release tag signing](github_actions_setup.md#release-tag-signing).
 
 ## Restrictions on maintenance branches
 
