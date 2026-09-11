@@ -16,6 +16,58 @@ Project maintainers, after an initial review, will allow github actions workflow
 
 - `SONAR_TOKEN`: Token to sonarcloud with rights to the appropriate project.
 
+- `RELEASE_TAG_SIGNING_KEY` and `RELEASE_TAG_SIGNING_KEY_PUB`: SSH key pair used to cryptographically sign release tags. See [Release tag signing](#release-tag-signing) below.
+
+## Release tag signing
+
+Every version tag created by the release pipeline is signed with an SSH key so that consumers can verify the tag's authenticity with `git tag -v <tag>`. The `python-semantic-release` action reads the key pair from the two secrets below and configures git to sign the tag automatically during `semantic-release version`.
+
+### Secrets
+
+| Secret                        | Content                                                  |
+| ----------------------------- | -------------------------------------------------------- |
+| `RELEASE_TAG_SIGNING_KEY`     | PEM-encoded Ed25519 **private** key (no passphrase)      |
+| `RELEASE_TAG_SIGNING_KEY_PUB` | Corresponding **public** key in `authorized_keys` format |
+
+### Generating the key pair
+
+Run once, outside of CI, and store the outputs in the repository's **release** environment secrets:
+
+```bash
+ssh-keygen -t ed25519 -C "compliance-trestle release tag signing" -f release_tag_signing_key -N ""
+# Private key → RELEASE_TAG_SIGNING_KEY  (contents of release_tag_signing_key)
+# Public key  → RELEASE_TAG_SIGNING_KEY_PUB  (contents of release_tag_signing_key.pub)
+rm release_tag_signing_key release_tag_signing_key.pub  # remove local copies after upload
+```
+
+Add both secrets to **Settings → Environments → release** (not as repository-level secrets) so they are only accessible to the deploy job.
+
+### Adding the public key to the repository's allowed signers
+
+GitHub uses the repository's `/.github/allowed_signers` file (or a `CODEOWNERS`-adjacent convention) to let `git tag -v` resolve the signer identity. Create or append to `.github/allowed_signers`:
+
+```
+semantic-release@users.noreply.github.com namespaces="git" <contents of release_tag_signing_key.pub>
+```
+
+Then configure git locally to use it for verification:
+
+```bash
+git config gpg.ssh.allowedSignersFile .github/allowed_signers
+```
+
+### Verifying a signed tag
+
+```bash
+# One-time setup: point git at the repository's allowed-signers file
+git config gpg.ssh.allowedSignersFile .github/allowed_signers
+
+git fetch --tags
+git tag -v v5.1.0
+# Expected output includes:
+# Good "git" signature for semantic-release@users.noreply.github.com with ED25519 key ...
+```
+
 ## Authorization with pypi
 
 Pypi authorization must be setup following the procedure in the following documents
