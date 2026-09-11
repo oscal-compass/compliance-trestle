@@ -604,7 +604,7 @@ references to links, and corresponding links in the backmatter.
 
 ## `trestle sign`
 
-Trestle sign writes a detached DSSE envelope for a JSON file. It canonicalizes the JSON using RFC 8785, computes a SHA-256 digest, records that digest in an in-toto Statement, and signs the Statement with a PEM private key.
+Trestle sign writes a detached DSSE envelope for a JSON file. It canonicalizes the JSON using RFC 8785, computes an artifact digest (SHA-256 by default), records that digest in an in-toto Statement, and signs the Statement with a PEM private key.
 
 The sign and verify commands are beta features. Enable them before use:
 
@@ -653,9 +653,26 @@ The `--subject-name` option records a subject name other than the input file nam
 
 The signed Statement uses the [OSCAL signing predicate](../predicates/oscal-signing/v1.md).
 
+### Digest algorithms
+
+The `sign`, `verify`, `sign-manifest`, and `verify-manifest` commands accept `--digest-algorithm`. The supported names come from OSCAL's `Algorithm` enum: `SHA-224`, `SHA-256`, `SHA-384`, `SHA-512`, `SHA3-224`, `SHA3-256`, `SHA3-384`, and `SHA3-512`.
+
+Signing defaults to SHA-256. Verification automatically detects the algorithm from the authenticated Statement after verifying its DSSE signature. Existing SHA-256 envelopes and commands without the new option remain compatible. To sign with another algorithm:
+
+```bash
+trestle sign -f catalog.json --private-key private.pem \
+  --digest-algorithm SHA-384 -o catalog.sha384.dsse
+trestle verify -f catalog.json --signature catalog.sha384.dsse \
+  --public-key public.pem
+```
+
+On either verification command, optionally pass `--digest-algorithm SHA-384` to require that specific algorithm instead of automatic detection. Unsupported algorithms, a mismatch with an explicit restriction, or a changed artifact cause failure. Older Trestle versions that only support SHA-256 cannot verify envelopes using other digests.
+
+This option selects the artifact hash, not the private key's signature algorithm. RFC 8785 canonicalization is unchanged. Statements use in-toto digest names such as `sha384` and `sha3_256`.
+
 ## `trestle verify`
 
-Trestle verify checks a JSON file against a detached DSSE envelope and a PEM public key. Verification checks the DSSE signature, the predicate fields, and the SHA-256 digest of the RFC 8785 canonical JSON bytes.
+Trestle verify checks a JSON file against a detached DSSE envelope and a PEM public key. Verification checks the DSSE signature, the predicate fields, and the digest of the RFC 8785 canonical JSON bytes using the algorithm recorded in the authenticated predicate.
 
 ```bash
 trestle verify \
@@ -665,6 +682,8 @@ trestle verify \
 ```
 
 If signing used `--subject-name`, pass the same value during verification.
+
+No digest option is required for verification. Use `--digest-algorithm` only to restrict the accepted algorithm. See [Digest algorithms](#digest-algorithms).
 
 ## `trestle generate-manifest`
 
@@ -697,7 +716,7 @@ Automatic discovery accepts at most 1,000 artifacts, 64 dependency levels, 50 Mi
 
 ## `trestle sign-manifest`
 
-Trestle sign-manifest writes a detached DSSE envelope for a JSON package manifest. The manifest lists related JSON artifacts. Trestle canonicalizes each artifact using RFC 8785, records each SHA-256 digest in an in-toto Statement, and signs the package Statement with a PEM private key.
+Trestle sign-manifest writes a detached DSSE envelope for a JSON package manifest. The manifest lists related JSON artifacts. Trestle canonicalizes each artifact using RFC 8785, records each digest (SHA-256 by default) in an in-toto Statement, and signs the package Statement with a PEM private key.
 
 Enable the package manifest beta feature before use:
 
@@ -749,6 +768,17 @@ For an encrypted private key, use `--key-password-env` as with `trestle sign`.
 
 The signed package Statement uses the [OSCAL package predicate](../predicates/oscal-package/v1.md).
 
+Use `--digest-algorithm` to select the same digest algorithm for every artifact in the package:
+
+```bash
+trestle sign-manifest --manifest package.json --private-key private.pem \
+  --digest-algorithm SHA3-256 -o package.sha3.dsse
+trestle verify-manifest --manifest package.json --signature package.sha3.dsse \
+  --public-key public.pem
+```
+
+The package manifest schema is unchanged. `generate-manifest` discovers files rather than computing their signing digests, so it does not need this option. The URL hash used to name downloaded files is independent of the selected artifact digest.
+
 ## `trestle verify-manifest`
 
 Trestle verify-manifest checks a JSON package manifest against a detached DSSE envelope and a PEM public key. Verification checks the package DSSE signature, requires the manifest metadata and artifact set to match the signed package Statement, and confirms that each current JSON artifact digest matches its signed digest.
@@ -759,6 +789,8 @@ trestle verify-manifest \
   --signature package.dsse \
   --public-key public.pem
 ```
+
+After authenticating the package Statement, verification detects the algorithm from its subjects. Automatic detection requires exactly one digest per subject and the same supported algorithm across all subjects. Use `--digest-algorithm` to require a specific algorithm for every artifact; this also permits selecting one algorithm when subjects contain multiple digests. There is no fallback to another algorithm if the required digest is missing or incorrect. See [Digest algorithms](#digest-algorithms).
 
 This first manifest signing flow verifies package digests only. Per-document signature requirements are expected to be added in a later workflow.
 

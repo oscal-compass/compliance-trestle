@@ -26,13 +26,14 @@ from cryptography.hazmat.primitives.asymmetric import ed25519
 
 import trestle.common.const as const
 from trestle.common.err import TrestleError
+from trestle.core.canonicalization import digest_algorithm_name, digest_hex, load_canonical_json_file
 from trestle.core.signing import (
-    DIGEST_ALGORITHM,
     IN_TOTO_STATEMENT_TYPE,
     load_pem_private_key_signer,
     load_pem_public_key,
     sign_in_toto_statement,
 )
+from trestle.oscal.common import Algorithm
 from trestle.core.signing_manifest import (
     MANIFEST_VERSION,
     PACKAGE_PREDICATE_TYPE,
@@ -111,10 +112,102 @@ def test_create_manifest_envelope_contains_package_statement(tmp_path: pathlib.P
         ],
     }
     assert {subject['name'] for subject in statement['subject']} == {'ssp.json', 'profile.json', 'catalog.json'}
-    assert all(DIGEST_ALGORITHM in subject['digest'] for subject in statement['subject'])
+    assert all('sha256' in subject['digest'] for subject in statement['subject'])
 
     public_key = load_pem_public_key(public_key_path)
     verify_manifest_envelope(manifest, envelope, public_key)
+
+
+@pytest.mark.parametrize('algorithm', list(Algorithm))
+@pytest.mark.parametrize('require_algorithm', [False, True])
+def test_manifest_digest_algorithms(tmp_path: pathlib.Path, algorithm: Algorithm, require_algorithm: bool) -> None:
+    """All package subjects must use the selected digest, including during verification."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    signer = load_pem_private_key_signer(private_key_path)
+    public_key = load_pem_public_key(public_key_path)
+    manifest = load_signing_manifest(write_package_manifest(tmp_path))
+    envelope = create_manifest_envelope(manifest, signer, algorithm)
+    required_algorithm = algorithm if require_algorithm else None
+    statement = verify_manifest_envelope(manifest, envelope, public_key, required_algorithm)
+    for subject, artifact in zip(statement['subject'], manifest.artifacts, strict=True):
+        _, canonical_bytes = load_canonical_json_file(artifact.path)
+        assert subject['digest'] == {digest_algorithm_name(algorithm): digest_hex(canonical_bytes, algorithm)}
+
+    other_algorithm = Algorithm.SHA_512 if algorithm == Algorithm.SHA_256 else Algorithm.SHA_256
+    with pytest.raises(TrestleError, match='does not contain a .* digest'):
+        verify_manifest_envelope(manifest, envelope, public_key, other_algorithm)
+
+    statement['subject'][0]['digest'] = {digest_algorithm_name(other_algorithm): '0' * 64}
+    expected_error = 'does not contain a .* digest' if require_algorithm else 'same digest algorithm'
+    with pytest.raises(TrestleError, match=expected_error):
+        verify_manifest_envelope(manifest, sign_in_toto_statement(statement, signer), public_key, required_algorithm)
+
+    manifest.artifacts[-1].path.write_text('{"changed":true}', encoding=const.FILE_ENCODING)
+    with pytest.raises(TrestleError, match='digest does not match artifact'):
+        verify_manifest_envelope(manifest, envelope, public_key, required_algorithm)
+
+
+@pytest.mark.parametrize(
+    'digest, expected_error',
+    [
+        (None, 'exactly one digest'),
+        ([], 'exactly one digest'),
+        ({}, 'exactly one digest'),
+        ({'md5': 'bad-digest'}, 'Unsupported digest algorithm'),
+        ({'sha1': 'bad-digest'}, 'Unsupported digest algorithm'),
+        ({'sha256': None}, 'does not contain a SHA-256 digest'),
+        ({'sha256': 'bad-digest', 'sha512': 'bad-digest'}, 'exactly one digest'),
+    ],
+)
+@pytest.mark.parametrize('subject_index', [0, 1])
+def test_manifest_rejects_invalid_digest_detection(
+    tmp_path: pathlib.Path, digest: Any, expected_error: str, subject_index: int
+) -> None:
+    """Every subject must provide an unambiguous supported algorithm for automatic detection."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    manifest = load_signing_manifest(write_package_manifest(tmp_path))
+    statement = build_manifest_statement(manifest)
+    statement['subject'][subject_index]['digest'] = digest
+    envelope = sign_in_toto_statement(statement, load_pem_private_key_signer(private_key_path))
+    with pytest.raises(TrestleError, match=expected_error):
+        verify_manifest_envelope(manifest, envelope, load_pem_public_key(public_key_path))
+
+
+def test_manifest_explicit_algorithm_selects_from_multiple_digests(tmp_path: pathlib.Path) -> None:
+    """An explicit restriction can select one algorithm from an authenticated digest set."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    manifest = load_signing_manifest(write_package_manifest(tmp_path))
+    statement = build_manifest_statement(manifest)
+    for subject, artifact in zip(statement['subject'], manifest.artifacts, strict=True):
+        _, canonical_bytes = load_canonical_json_file(artifact.path)
+        subject['digest']['sha512'] = digest_hex(canonical_bytes, Algorithm.SHA_512)
+    envelope = sign_in_toto_statement(statement, load_pem_private_key_signer(private_key_path))
+    public_key = load_pem_public_key(public_key_path)
+    for algorithm in (Algorithm.SHA_256, Algorithm.SHA_512):
+        verify_manifest_envelope(manifest, envelope, public_key, algorithm)
+
+
+def test_manifest_authenticates_before_detecting_digest_algorithm(tmp_path: pathlib.Path) -> None:
+    """Tampered subjects must fail signature verification before detection or artifact reads."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    manifest = load_signing_manifest(write_package_manifest(tmp_path))
+    statement = build_manifest_statement(manifest)
+    envelope = sign_in_toto_statement(statement, load_pem_private_key_signer(private_key_path))
+    statement['subject'][0]['digest'] = {'md5': 'bad-digest'}
+    envelope['payload'] = base64.b64encode(json.dumps(statement).encode(const.FILE_ENCODING)).decode('ascii')
+    manifest.artifacts[0].path.unlink()
+    with pytest.raises(TrestleError, match='signature could not be verified'):
+        verify_manifest_envelope(manifest, envelope, load_pem_public_key(public_key_path))
+
+
+def test_explicit_sha256_preserves_default_manifest_envelope(tmp_path: pathlib.Path) -> None:
+    """Selecting SHA-256 should preserve the existing package payload and signature."""
+    private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
+    signer = load_pem_private_key_signer(private_key_path)
+    manifest = load_signing_manifest(write_package_manifest(tmp_path))
+    envelope = create_manifest_envelope(manifest, signer)
+    assert create_manifest_envelope(manifest, signer, Algorithm.SHA_256) == envelope
+    verify_manifest_envelope(manifest, envelope, load_pem_public_key(public_key_path))
 
 
 def test_build_manifest_statement_matches_create_manifest_payload(tmp_path: pathlib.Path) -> None:
@@ -207,9 +300,10 @@ def test_verify_manifest_rejects_changed_manifest(tmp_path: pathlib.Path) -> Non
         (lambda statement: statement['subject'].append(statement['subject'][0]), 'duplicate subject'),
         (
             lambda statement: statement['subject'][0].update({'digest': {'sha512': 'missing-sha256'}}),
-            'does not contain a SHA-256 digest',
+            'same digest algorithm',
         ),
         (lambda statement: statement['subject'].pop(), 'subjects do not match'),
+        (lambda statement: statement.update({'subject': []}), 'subjects do not match'),
     ],
 )
 def test_verify_manifest_rejects_malformed_package_statements(

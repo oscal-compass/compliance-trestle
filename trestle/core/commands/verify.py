@@ -26,6 +26,7 @@ from trestle.core.beta_features import beta_feature
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.signing import load_dsse_envelope, load_pem_public_key, verify_oscal_provenance_envelope
+from trestle.oscal.common import Algorithm
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class VerifyCmd(CommandBase):
     Verification performs two checks. First, it verifies the DSSE signature
     over the DSSE pre-authentication encoding for the in-toto Statement payload
     using the provided PEM public key. Second, it canonicalizes the input JSON
-    using RFC 8785, computes its SHA-256 digest, and confirms that the
+    using RFC 8785, computes its digest with the signed algorithm, and confirms that the
     digest matches the subject digest recorded in the signed Statement.
 
     Both checks are required: the digest proves the file matches the signed
@@ -54,6 +55,11 @@ class VerifyCmd(CommandBase):
             '--public-key', help='Path to the PEM public key for verification.', required=True, type=pathlib.Path
         )
         self.add_argument(
+            '--digest-algorithm',
+            choices=[algorithm.value for algorithm in Algorithm],
+            help='Require this artifact digest algorithm. By default, detect it from the signed Statement.',
+        )
+        self.add_argument(
             '--subject-name',
             help='Subject name expected in the in-toto Statement. Defaults to the input file name.',
             default=None,
@@ -64,7 +70,13 @@ class VerifyCmd(CommandBase):
         """Verify a JSON file."""
         try:
             log.set_log_level_from_args(args)
-            self.verify(args.file, args.signature, args.public_key, args.subject_name)
+            self.verify(
+                args.file,
+                args.signature,
+                args.public_key,
+                args.subject_name,
+                digest_algorithm=Algorithm(args.digest_algorithm) if args.digest_algorithm else None,
+            )
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while verifying JSON signature')
@@ -76,8 +88,9 @@ class VerifyCmd(CommandBase):
         signature_path: pathlib.Path,
         public_key_path: pathlib.Path,
         subject_name: Optional[str] = None,
+        digest_algorithm: Optional[Algorithm] = None,
     ) -> None:
         """Verify a detached DSSE provenance envelope for a JSON file."""
         public_key = load_pem_public_key(public_key_path.resolve())
         envelope = load_dsse_envelope(signature_path.resolve())
-        verify_oscal_provenance_envelope(input_path.resolve(), envelope, public_key, subject_name)
+        verify_oscal_provenance_envelope(input_path.resolve(), envelope, public_key, subject_name, digest_algorithm)

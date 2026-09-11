@@ -20,12 +20,15 @@ from __future__ import annotations
 import hashlib
 import json
 import pathlib
-from typing import Any, Dict, List, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Tuple
 
 import rfc8785
 
 from trestle.common import const
 from trestle.common.err import TrestleError
+
+if TYPE_CHECKING:
+    from trestle.oscal.common import Algorithm
 
 
 def load_canonical_json_file(path: pathlib.Path) -> Tuple[Any, bytes]:
@@ -56,9 +59,36 @@ def canonicalize_json_object(json_obj: Any) -> bytes:
         raise TrestleError(f'Unable to canonicalize JSON object according to RFC 8785: {error}')
 
 
+def digest_algorithm_name(algorithm: Algorithm) -> str:
+    """Return the hashlib and in-toto name for a supported OSCAL digest algorithm."""
+    # OSCAL's base model imports canonicalization, so defer this import to avoid a cycle.
+    from trestle.oscal.common import Algorithm
+
+    if not isinstance(algorithm, Algorithm):
+        raise TrestleError(f'Unsupported digest algorithm: {algorithm}')
+    return algorithm.value.lower().replace('sha-', 'sha').replace('-', '_')
+
+
+def digest_hex(data: bytes, algorithm: Algorithm) -> str:
+    """Return a hexadecimal digest using the selected OSCAL algorithm."""
+    return hashlib.new(digest_algorithm_name(algorithm), data).hexdigest()
+
+
+def parse_digest_algorithm(name: Any) -> Algorithm:
+    """Resolve an in-toto digest name to a supported OSCAL algorithm."""
+    from trestle.oscal.common import Algorithm
+
+    for algorithm in Algorithm:
+        if digest_algorithm_name(algorithm) == name:
+            return algorithm
+    raise TrestleError(f'Unsupported digest algorithm: {name}')
+
+
 def sha256_digest_hex(data: bytes) -> str:
-    """Return a SHA-256 digest for canonical bytes."""
-    return hashlib.sha256(data).hexdigest()
+    """Return a SHA-256 digest for compatibility with existing callers."""
+    from trestle.oscal.common import Algorithm
+
+    return digest_hex(data, Algorithm.SHA_256)
 
 
 def _object_pairs_without_duplicates(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
