@@ -1,0 +1,67 @@
+{
+  "EvaluationResults": [
+    {
+      "EvaluationResultIdentifier": {
+        "EvaluationResultQualifier": {
+          "ConfigRuleName": "s3-bucket-public-read-prohibited",
+          "ResourceType": "AWS::S3::Bucket",
+          "ResourceId": "acme-prod-uploads",
+          "EvaluationMode": "DETECTIVE"
+        },
+        "OrderingTimestamp": "2026-08-16T09:12:03.000Z"
+      },
+      "ComplianceType": "NON_COMPLIANT",
+      "ResultRecordedTime": "2026-08-16T09:12:05.000Z",
+      "ConfigRuleInvokedTime": "2026-08-16T09:12:04.000Z",
+      "Annotation": "The S3 bucket policy allows public read access.",
+      "ResultToken": "tok-0001"
+    },
+    {
+      "EvaluationResultIdentifier": {
+        "EvaluationResultQualifier": {
+          "ConfigRuleName": "s3-bucket-public-read-prohibited",
+          "ResourceType": "AWS::S3::Bucket",
+          "ResourceId": "acme-prod-assets",
+          "EvaluationMode": "DETECTIVE"
+        },
+        "OrderingTimestamp": "2026-08-16T09:12:07.000Z"
+      },
+      "ComplianceType": "COMPLIANT",
+      "ResultRecordedTime": "2026-08-16T09:12:08.000Z",
+      "ConfigRuleInvokedTime": "2026-08-16T09:12:07.000Z",
+      "ResultToken": "tok-0002"
+    },
+    {
+      "EvaluationResultIdentifier": {
+        "EvaluationResultQualifier": {
+          "ConfigRuleName": "restricted-ssh",
+          "ResourceType": "AWS::EC2::SecurityGroup",
+          "ResourceId": "sg-0a1b2c3d4e5f6g7h8",
+          "EvaluationMode": "DETECTIVE"
+        },
+        "OrderingTimestamp": "2026-08-16T09:13:11.000Z"
+      },
+      "ComplianceType": "NON_COMPLIANT",
+      "ResultRecordedTime": "2026-08-16T09:13:12.000Z",
+      "ConfigRuleInvokedTime": "2026-08-16T09:13:11.000Z",
+      "Annotation": "Security group allows unrestricted SSH access (0.0.0.0/0 on port 22).",
+      "ResultToken": "tok-0003"
+    },
+    {
+      "EvaluationResultIdentifier": {
+        "EvaluationResultQualifier": {
+          "ConfigRuleName": "restricted-ssh",
+          "ResourceType": "AWS::EC2::SecurityGroup",
+          "ResourceId": "sg-0a1b2c3d4e5f6g7h8",
+          "EvaluationMode": "DETECTIVE"
+        },
+        "OrderingTimestamp": "2026-08-15T09:13:11.000Z"
+      },
+      "ComplianceType": "NON_COMPLIANT",
+      "ResultRecordedTime": "2026-08-15T09:13:12.000Z",
+      "ConfigRuleInvokedTime": "2026-08-15T09:13:11.000Z",
+      "Annotation": "Security group allows unrestricted SSH access (0.0.0.0/0 on port 22).",
+      "ResultToken": "tok-0000"
+    }
+  ]
+}
