@@ -107,8 +107,9 @@ def to_origin_dir_path(trash_dir_path: pathlib.Path) -> pathlib.Path:
 
     origin_path_parts: List[str] = []
     for item in relative_path.parts:
-        parts = item.split(TRESTLE_TRASH_DIR_EXT)
-        origin_path_parts.append(parts[0])
+        if item.endswith(TRESTLE_TRASH_DIR_EXT):
+            item = item[:-len(TRESTLE_TRASH_DIR_EXT)]
+        origin_path_parts.append(item)
 
     origin_relative_path = pathlib.Path('/'.join(origin_path_parts))
     origin_path = trestle_root / origin_relative_path
@@ -121,8 +122,10 @@ def to_origin_file_path(trash_file_path: pathlib.Path) -> pathlib.Path:
         raise AssertionError(f'File path "{trash_file_path}" is not a valid trash file path')
 
     origin_dir = to_origin_dir_path(trash_file_path.parent)
-    file_parts = trash_file_path.name.split(TRESTLE_TRASH_FILE_EXT)
-    origin_file_path = origin_dir / file_parts[0]
+    file_name = trash_file_path.name
+    if file_name.endswith(TRESTLE_TRASH_FILE_EXT):
+        file_name = file_name[:-len(TRESTLE_TRASH_FILE_EXT)]
+    origin_file_path = origin_dir / file_name
 
     return origin_file_path
 

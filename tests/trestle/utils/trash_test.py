@@ -162,6 +162,16 @@ def test_to_origin_dir_path(tmp_path: pathlib.Path) -> None:
         trash.to_origin_dir_path(trash_file_path)
 
 
+def test_to_origin_dir_path_with_bk_in_name(tmp_path: pathlib.Path) -> None:
+    """Test to_origin_dir_path handles directory names containing __bk."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    bk_dir = tmp_path / 'alpha__bkbeta'
+    trash_dir_path = trash.to_trash_dir_path(bk_dir)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
+    origin_dir = trash.to_origin_dir_path(trash_dir_path)
+    assert bk_dir.resolve() == origin_dir.resolve()
+
+
 def test_to_origin_file_path(tmp_path: pathlib.Path) -> None:
     """Test to origin file path function."""
     test_utils.ensure_trestle_config_dir(tmp_path)
