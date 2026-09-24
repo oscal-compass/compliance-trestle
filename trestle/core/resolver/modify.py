@@ -147,16 +147,18 @@ class Modify(Pipeline.Filter):
     def _add_props_to_part(part: common.Part, props: List[common.Property]) -> None:
         """Add props to a part, ensuring props list exists."""
         if part.props is None:
-            part.props = []
-        part.props.extend(props)
+            part.props = list(props)
+        else:
+            part.props.extend(props)
 
     @staticmethod
     def _create_by_id_part(trestle_part: common.Part, add: prof.Add) -> common.Part:
         """Create a new by_id part within the trestle part."""
-        if trestle_part.parts is None:
-            trestle_part.parts = []
         new_part = common.Part(name=TRESTLE_INHERITED_PROPS_TRACKER + '_' + add.by_id, title=add.by_id, props=add.props)
-        trestle_part.parts.append(new_part)
+        if trestle_part.parts is None:
+            trestle_part.parts = [new_part]
+        else:
+            trestle_part.parts.append(new_part)
         return trestle_part.parts[-1]
 
     @staticmethod
