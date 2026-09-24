@@ -3,4 +3,4 @@ title: Accessibility
 description: Accessibility statement for compliance-trestle
 ---
 
-{!ACCESSIBILITY.md!}
+--8\<-- "ACCESSIBILITY.md"
