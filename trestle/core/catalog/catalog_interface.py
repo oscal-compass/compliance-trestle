@@ -550,8 +550,8 @@ class CatalogInterface:
             if new_control:
                 # this overrides any sub controls in the control itself
                 # any added sub-controls should add to the skipped list
-                new_control.controls = self._update_all_controls_in_list(as_list(control.controls))
-                new_control.controls = none_if_empty(new_control.controls)
+                updated = self._update_all_controls_in_list(as_list(control.controls))
+                new_control.controls = none_if_empty(updated)
                 new_list.append(new_control)
         return new_list
 
