@@ -31,6 +31,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         submodules: true
+        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       with:
@@ -104,7 +105,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
-        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+        pip install hatch "virtualenv>=21"
     - name: Run binary tests
       run: |
         make test-bdist
@@ -203,7 +204,7 @@ jobs:
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install hatch
       run: |
-        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+        pip install hatch "virtualenv>=21"
     - name: Recreate hatch test environment
       shell: bash
       run: |

@@ -550,16 +550,16 @@ class CatalogInterface:
             if new_control:
                 # this overrides any sub controls in the control itself
                 # any added sub-controls should add to the skipped list
-                new_control.controls = self._update_all_controls_in_list(as_list(control.controls))
-                new_control.controls = none_if_empty(new_control.controls)
+                updated = self._update_all_controls_in_list(as_list(control.controls))
+                new_control.controls = none_if_empty(updated)
                 new_list.append(new_control)
         return new_list
 
     def _update_all_controls_in_group(self, group: cat.Group1 | cat.Group2) -> None:
         """Given a group of controls, create fresh version pulled from the control dict."""
         if hasattr(group, 'controls'):
-            group.controls = self._update_all_controls_in_list(as_list(group.controls))
-            group.controls = none_if_empty(group.controls)
+            updated_controls = self._update_all_controls_in_list(as_list(group.controls))
+            group.controls = none_if_empty(updated_controls)
         # Update sub-groups if it's a Group1 (has groups)
         if hasattr(group, 'groups'):
             new_groups: List[cat.Group1 | cat.Group2] = []
@@ -610,8 +610,8 @@ class CatalogInterface:
         new_list = []
         for control in as_list(self._catalog.controls):
             new_control = self.get_control(control.id)
-            new_control.controls = self._update_all_controls_in_list(as_list(control.controls))
-            new_control.controls = none_if_empty(new_control.controls)
+            updated_controls = self._update_all_controls_in_list(as_list(control.controls))
+            new_control.controls = none_if_empty(updated_controls)
             new_list.append(new_control)
         self._catalog.controls = none_if_empty(new_list)
 
