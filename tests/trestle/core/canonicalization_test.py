@@ -15,7 +15,9 @@
 # limitations under the License.
 """Tests for canonical JSON helpers."""
 
+import hashlib
 import pathlib
+from typing import Any, Callable
 
 import pytest
 
@@ -25,9 +27,55 @@ from trestle.common.err import TrestleError
 from trestle.core.canonicalization import (
     canonicalize_json_object,
     canonicalize_json_text,
+    digest_algorithm_name,
+    digest_hex,
     load_canonical_json_file,
+    parse_digest_algorithm,
     sha256_digest_hex,
 )
+from trestle.oscal.common import Algorithm
+
+
+@pytest.mark.parametrize(
+    'algorithm, constructor',
+    [
+        (Algorithm.SHA_224, hashlib.sha224),
+        (Algorithm.SHA_256, hashlib.sha256),
+        (Algorithm.SHA_384, hashlib.sha384),
+        (Algorithm.SHA_512, hashlib.sha512),
+        (Algorithm.SHA3_224, hashlib.sha3_224),
+        (Algorithm.SHA3_256, hashlib.sha3_256),
+        (Algorithm.SHA3_384, hashlib.sha3_384),
+        (Algorithm.SHA3_512, hashlib.sha3_512),
+    ],
+)
+def test_digest_algorithms(algorithm: Algorithm, constructor: Callable[[bytes], Any]) -> None:
+    """Each OSCAL algorithm should map to the correct hash and in-toto name."""
+    expected = constructor(b'abc')
+    assert digest_algorithm_name(algorithm) == expected.name
+    assert digest_hex(b'abc', algorithm) == expected.hexdigest()
+    assert parse_digest_algorithm(expected.name) == algorithm
+
+
+def test_digest_algorithm_preserves_sha256() -> None:
+    """The generic helper and compatibility wrapper should preserve SHA-256 output."""
+    expected = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'
+    assert digest_hex(b'abc', Algorithm.SHA_256) == expected
+    assert sha256_digest_hex(b'abc') == expected
+
+
+@pytest.mark.parametrize('algorithm', ['md5', 'sha1', 'SHA-256', None, []])
+def test_digest_rejects_unsupported_algorithms(algorithm: Any) -> None:
+    """Programmatic callers must select an approved OSCAL Algorithm enum member."""
+    with pytest.raises(TrestleError, match='Unsupported digest algorithm'):
+        digest_hex(b'abc', algorithm)
+
+
+@pytest.mark.parametrize('name', ['md5', 'sha1', 'SHA-256', '', None, [], {}])
+def test_parse_digest_algorithm_rejects_unsupported_names(name: Any) -> None:
+    """Signed algorithm metadata must identify a supported in-toto digest name."""
+    with pytest.raises(TrestleError, match='Unsupported digest algorithm'):
+        parse_digest_algorithm(name)
 
 
 def test_canonicalization_is_stable_for_equivalent_json() -> None:

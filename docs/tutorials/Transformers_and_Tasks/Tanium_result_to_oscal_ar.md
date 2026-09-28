@@ -33,11 +33,11 @@ Make these changes:
 </ul>
 </details>
 
-- Insure you have a modern [Python](https://www.python.org/downloads/) (3.11, 3.12, 3.13, 3.14).
+- Ensure you have a modern [Python](https://www.python.org/downloads/) (3.11, 3.12, 3.13, 3.14).
 
 ```bash
 $ python -V
-Python 3.8.3
+Python 3.11.0
 ```
 
 - Setup a virtual environment.
@@ -50,7 +50,7 @@ $ source venv.trestle/bin/activate
 
 ```
 
-- Insure you have a modern [pip](https://pip.pypa.io/en/stable/installing/) (19.x or greater).
+- Ensure you have a modern [pip](https://pip.pypa.io/en/stable/installing/) (19.x or greater).
 
 ```bash
 (venv.trestle)$ pip --version
@@ -905,4 +905,4 @@ Congratulations! You have bridged Tanium data into an OSCAL Assessment Results u
 
 <small>Newtown, Victoria</small>
 
-![Australia Scarsdale  Nimons Bridge](Tanium_result_to_oscal_ar/800px-Australia_scarsdale_nimons_bridge.jpg)
+![Photograph of Nimons Bridge over a creek in Scarsdale, Victoria, Australia — used as a decorative section break](Tanium_result_to_oscal_ar/800px-Australia_scarsdale_nimons_bridge.jpg)

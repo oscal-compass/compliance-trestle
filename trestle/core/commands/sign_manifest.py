@@ -26,8 +26,9 @@ from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.core.beta_features import beta_feature
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.signing import load_pem_private_key_signer, write_dsse_envelope
+from trestle.core.signing import DEFAULT_DIGEST_ALGORITHM, load_pem_private_key_signer, write_dsse_envelope
 from trestle.core.signing_manifest import create_manifest_envelope, load_signing_manifest
+from trestle.oscal.common import Algorithm
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ class SignManifestCmd(CommandBase):
 
     The manifest lists local JSON artifacts that belong to a package. This
     command canonicalizes each listed JSON artifact with RFC 8785, records each
-    SHA-256 digest in an in-toto Statement, signs the Statement using the
+    selected digest in an in-toto Statement, signs the Statement using the
     provided PEM private key, and writes the detached package envelope.
     """
 
@@ -61,13 +62,26 @@ class SignManifestCmd(CommandBase):
         )
         self.add_argument('-o', '--output', help='Output DSSE package envelope file.', required=True, type=pathlib.Path)
         self.add_argument('--overwrite', help='Replace an existing DSSE package envelope.', action='store_true')
+        self.add_argument(
+            '--digest-algorithm',
+            choices=[algorithm.value for algorithm in Algorithm],
+            default=DEFAULT_DIGEST_ALGORITHM.value,
+            help='Artifact digest algorithm (default: SHA-256).',
+        )
 
     @beta_feature('json-manifest-signing')
     def _run(self, args: argparse.Namespace) -> int:
         """Sign a JSON package manifest."""
         try:
             log.set_log_level_from_args(args)
-            self.sign_manifest(args.manifest, args.key, args.output, args.key_password_env, args.overwrite)
+            self.sign_manifest(
+                args.manifest,
+                args.key,
+                args.output,
+                args.key_password_env,
+                args.overwrite,
+                digest_algorithm=Algorithm(args.digest_algorithm),
+            )
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while signing package manifest')
@@ -80,6 +94,7 @@ class SignManifestCmd(CommandBase):
         output_path: pathlib.Path,
         key_password_env: Optional[str] = None,
         overwrite: bool = False,
+        digest_algorithm: Algorithm = DEFAULT_DIGEST_ALGORITHM,
     ) -> None:
         """Write a detached DSSE envelope for a JSON package manifest."""
         manifest_path = manifest_path.resolve()
@@ -98,5 +113,5 @@ class SignManifestCmd(CommandBase):
 
         signer = load_pem_private_key_signer(key_path, key_password)
         manifest = load_signing_manifest(manifest_path)
-        envelope = create_manifest_envelope(manifest, signer)
+        envelope = create_manifest_envelope(manifest, signer, digest_algorithm)
         write_dsse_envelope(envelope, output_path, overwrite)

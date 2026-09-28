@@ -26,7 +26,13 @@ from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.core.beta_features import beta_feature
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.signing import create_oscal_provenance_envelope, load_pem_private_key_signer, write_dsse_envelope
+from trestle.core.signing import (
+    DEFAULT_DIGEST_ALGORITHM,
+    create_oscal_provenance_envelope,
+    load_pem_private_key_signer,
+    write_dsse_envelope,
+)
+from trestle.oscal.common import Algorithm
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +41,7 @@ class SignCmd(CommandBase):
     """Sign a JSON file as a detached DSSE provenance envelope.
 
     This command does not modify the input JSON file. It reads the JSON
-    bytes, canonicalizes them using RFC 8785, computes a SHA-256 digest over
+    bytes, canonicalizes them using RFC 8785, computes the selected digest over
     the canonical JSON, and records that digest in an in-toto Statement. The
     Statement is then signed as a DSSE payload using the provided PEM private
     key and written as a detached sidecar envelope.
@@ -64,6 +70,12 @@ class SignCmd(CommandBase):
         self.add_argument('-o', '--output', help='Output DSSE envelope file.', required=True, type=pathlib.Path)
         self.add_argument('--overwrite', help='Replace an existing DSSE envelope.', action='store_true')
         self.add_argument(
+            '--digest-algorithm',
+            choices=[algorithm.value for algorithm in Algorithm],
+            default=DEFAULT_DIGEST_ALGORITHM.value,
+            help='Artifact digest algorithm (default: SHA-256).',
+        )
+        self.add_argument(
             '--subject-name',
             help='Subject name to record in the in-toto Statement. Defaults to the input file name.',
             default=None,
@@ -74,7 +86,15 @@ class SignCmd(CommandBase):
         """Sign a JSON file."""
         try:
             log.set_log_level_from_args(args)
-            self.sign(args.file, args.key, args.output, args.subject_name, args.key_password_env, args.overwrite)
+            self.sign(
+                args.file,
+                args.key,
+                args.output,
+                args.subject_name,
+                args.key_password_env,
+                args.overwrite,
+                digest_algorithm=Algorithm(args.digest_algorithm),
+            )
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while signing JSON')
@@ -88,6 +108,7 @@ class SignCmd(CommandBase):
         subject_name: Optional[str] = None,
         key_password_env: Optional[str] = None,
         overwrite: bool = False,
+        digest_algorithm: Algorithm = DEFAULT_DIGEST_ALGORITHM,
     ) -> None:
         """Write a detached DSSE provenance envelope for a JSON file."""
         input_path = input_path.resolve()
@@ -105,5 +126,5 @@ class SignCmd(CommandBase):
             key_password = os.environ[key_password_env]
 
         signer = load_pem_private_key_signer(key_path, key_password)
-        envelope = create_oscal_provenance_envelope(input_path, signer, subject_name)
+        envelope = create_oscal_provenance_envelope(input_path, signer, subject_name, digest_algorithm)
         write_dsse_envelope(envelope, output_path, overwrite)

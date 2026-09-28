@@ -14,7 +14,7 @@
 # limitations under the License.
 """Facilitate Tanium result to NIST OSCAL transformation."""
 
-# mypy: ignore-errors  # noqa E800
+# mypy: ignore-errors
 import datetime
 import json
 import logging

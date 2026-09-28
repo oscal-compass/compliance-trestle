@@ -65,7 +65,7 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         self.add_argument(
             '-o', '--output', help='Name of the output generated ssp markdown folder', required=True, type=str
-        )  # noqa E501
+        )
         self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=False, type=str)
 
         ls_help_str = 'Leveraged ssp with inheritable controls href or name in the trestle_workspace'

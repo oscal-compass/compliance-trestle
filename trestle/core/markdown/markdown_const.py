@@ -26,6 +26,6 @@ HTML_TAG_REGEX_END = r'<\/.*>'
 INLINE_CODE_CHAR = r'^`'
 JINJA_DATESTAMP_FORMAT = '%Y-%m-%d'
 LIST_CHAR = '-'
-SUBSTITUTION_REGEX = r'{(.*?)}'  # noqa: FS003
+SUBSTITUTION_REGEX = r'{(.*?)}'
 TABLE_REGEX = r'|'
 TABLE_SYMBOL = '|'

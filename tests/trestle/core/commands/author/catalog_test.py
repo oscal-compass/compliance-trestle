@@ -710,7 +710,7 @@ Test 4
     assert (
         control.parts[0].parts[0].prose
         == 'Define and document the types of accounts allowed and specifically prohibited for use within the system;'
-    )  # noqa E501
+    )
 
 
 def test_catalog_duplicate_parts_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:

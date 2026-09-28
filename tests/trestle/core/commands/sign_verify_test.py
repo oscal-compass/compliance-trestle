@@ -18,7 +18,7 @@
 import json
 import pathlib
 import sys
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
@@ -30,6 +30,7 @@ from tests import test_utils
 import trestle.common.const as const
 from trestle.cli import Trestle
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.oscal.common import Algorithm
 
 
 def write_ed25519_key_pair(
@@ -129,8 +130,10 @@ def test_sign_and_verify_accept_one_time_beta_flag(tmp_path: pathlib.Path, monke
     assert not (tmp_path / 'xdg-config').exists()
 
 
-def test_sign_and_verify_round_trip(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Sign should write a DSSE sidecar that verify accepts."""
+@pytest.mark.parametrize('algorithm', [None] + [algorithm.value for algorithm in Algorithm])
+def test_sign_and_verify_round_trip(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch, algorithm: Optional[str]) -> None:
+    """Sign and verify should support the default and every explicit digest algorithm."""
+    algorithm_args = ['--digest-algorithm', algorithm] if algorithm else []
     private_key_path, public_key_path = write_ed25519_key_pair(tmp_path)
     input_path = tmp_path / 'catalog.json'
     envelope_path = tmp_path / 'catalog.json.dsse'
@@ -139,7 +142,8 @@ def test_sign_and_verify_round_trip(tmp_path: pathlib.Path, monkeypatch: MonkeyP
     monkeypatch.setattr(
         sys,
         'argv',
-        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)],
+        ['trestle', 'sign', '-f', str(input_path), '--private-key', str(private_key_path), '-o', str(envelope_path)]
+        + algorithm_args,
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
     assert input_path.read_text(encoding=const.FILE_ENCODING) == '{"b":2,"a":1}'
@@ -162,6 +166,33 @@ def test_sign_and_verify_round_trip(tmp_path: pathlib.Path, monkeypatch: MonkeyP
         ],
     )
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+    monkeypatch.setattr(sys, 'argv', sys.argv + algorithm_args)
+    assert Trestle().run() == CmdReturnCodes.SUCCESS.value
+
+    other_algorithm = 'SHA-512' if algorithm in (None, 'SHA-256') else 'SHA-256'
+    monkeypatch.setattr(sys, 'argv', sys.argv + ['--digest-algorithm', other_algorithm])
+    assert Trestle().run() == CmdReturnCodes.COMMAND_ERROR.value
+
+
+@pytest.mark.parametrize('command', ['sign', 'verify'])
+@pytest.mark.parametrize('algorithm', ['MD5', 'SHA-1', 'unknown'])
+def test_signing_commands_reject_unsupported_digest_algorithms(
+    monkeypatch: MonkeyPatch, capsys: pytest.CaptureFixture[str], command: str, algorithm: str
+) -> None:
+    """Unsupported digest names should fail argument parsing, before accessing files."""
+    command_args = (
+        ['--private-key', 'private.pem', '-o', 'file.dsse']
+        if command == 'sign'
+        else ['--public-key', 'public.pem', '--signature', 'file.dsse']
+    )
+    monkeypatch.setattr(
+        sys, 'argv', ['trestle', command, '-f', 'file.json', '--digest-algorithm', algorithm] + command_args
+    )
+    with pytest.raises(SystemExit) as error:
+        Trestle().run()
+    assert error.value.code == 2
+    assert 'invalid choice' in capsys.readouterr().err
 
 
 def test_sign_and_verify_real_nist_800_53_catalog(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
