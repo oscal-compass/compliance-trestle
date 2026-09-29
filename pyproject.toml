@@ -55,6 +55,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Fuzzing (Linux only — atheris has no macOS/Windows wheels)
+fuzz = [
+    "atheris; sys_platform == 'linux'",
+]
 # Type checking
 typing = [
     "mypy",

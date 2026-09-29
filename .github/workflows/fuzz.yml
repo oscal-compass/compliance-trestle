@@ -1,0 +1,61 @@
+name: Fuzz
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'fuzz/**'
+      - 'trestle/**'
+  schedule:
+    # Weekly on Sundays at 02:00 UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  fuzz:
+    name: Atheris fuzz – OSCAL Catalog loader
+    # atheris only has Linux wheels; never run on macOS or Windows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: true
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.11'
+
+      - name: Install trestle + atheris
+        run: pip install -e ".[fuzz]"
+
+      - name: Run fuzzer
+        # -max_total_time caps the run so CI finishes in a predictable window.
+        # Corpus seeds from fuzz/corpus/oscal_load help the fuzzer reach deep
+        # parsing paths quickly rather than starting from random bytes.
+        run: |
+          python fuzz/fuzz_oscal_load.py \
+            -max_total_time=120 \
+            fuzz/corpus/oscal_load
+
+      - name: Run fuzz harness tests
+        # Exercises TestOneInput through the real atheris FuzzedDataProvider
+        # against hand-crafted and corpus inputs.  atheris is already installed
+        # from the previous step so these tests run for real.
+        run: |
+          pip install pytest
+          pytest tests/trestle/core/fuzz_test.py -v
+
+      - name: Upload crash artifacts
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: fuzz-crashes
+          path: |
+            crash-*
+            timeout-*
+            slow-unit-*
+          retention-days: 30
