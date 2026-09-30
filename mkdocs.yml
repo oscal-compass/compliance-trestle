@@ -37,6 +37,9 @@ plugins:
     # Fail on errors except for 429 (rate limiting) and transient 5xx server errors
     raise_error_after_finish: true
     raise_error_excludes:
+      # 403 Forbidden - W3C (w3.org) blocks automated HTTP clients with 403
+      # even for valid URLs.  Treat as a false positive.
+      403: [ 'https://www.w3.org/*' ]
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
       404: [ '*#trestle.*' ]
