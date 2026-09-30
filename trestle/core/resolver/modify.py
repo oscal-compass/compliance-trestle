@@ -118,7 +118,7 @@ class Modify(Pipeline.Filter):
             attr_list = items
         else:
             attr_list.extend(items)
-        setattr(part, attr, attr_list)
+        setattr(part, attr, none_if_empty(attr_list))
 
     @staticmethod
     def _add_attr_to_control(control: cat.Control, items: List[OBT], attr: str, position: Optional[str]) -> None:
@@ -128,35 +128,60 @@ class Modify(Pipeline.Filter):
             attr_list = items
         else:
             attr_list.extend(items)
-        setattr(control, attr, attr_list)
+        setattr(control, attr, none_if_empty(attr_list))
+
+    @staticmethod
+    def _get_or_create_trestle_part(control: cat.Control, add: prof.Add) -> common.Part:
+        """Get or create the trestle inherited props tracker part."""
+        trestle_part = get_item_from_list(control.parts, TRESTLE_INHERITED_PROPS_TRACKER, lambda p: p.name)
+        if trestle_part is None:
+            trestle_part = common.Part(
+                id=TRESTLE_INHERITED_PROPS_TRACKER, name=TRESTLE_INHERITED_PROPS_TRACKER, props=add.props
+            )
+            existing_parts = as_list(control.parts)
+            existing_parts.append(trestle_part)
+            control.parts = existing_parts
+            trestle_part = control.parts[-1]
+        return trestle_part
+
+    @staticmethod
+    def _add_props_to_part(part: common.Part, props: List[common.Property]) -> None:
+        """Add props to a part, ensuring props list exists."""
+        if part.props is None:
+            part.props = list(props)
+        else:
+            part.props.extend(props)
+
+    @staticmethod
+    def _create_by_id_part(trestle_part: common.Part, add: prof.Add) -> common.Part:
+        """Create a new by_id part within the trestle part."""
+        new_part = common.Part(name=TRESTLE_INHERITED_PROPS_TRACKER + '_' + add.by_id, title=add.by_id, props=add.props)
+        if trestle_part.parts is None:
+            trestle_part.parts = [new_part]
+        else:
+            trestle_part.parts.append(new_part)
+        return trestle_part.parts[-1]
 
     @staticmethod
     def _add_to_trestle_props(control: cat.Control, add: prof.Add) -> None:
         """Add props to special trestle part that keeps track of inherited props."""
-        if add.props:
-            trestle_part = get_item_from_list(control.parts, TRESTLE_INHERITED_PROPS_TRACKER, lambda p: p.name)
-            if trestle_part is None:
-                trestle_part = common.Part(
-                    id=TRESTLE_INHERITED_PROPS_TRACKER, name=TRESTLE_INHERITED_PROPS_TRACKER, props=[], parts=[]
-                )
-                control.parts = as_list(control.parts)
-                control.parts.append(trestle_part)
-                trestle_part = control.parts[-1]
-            if add.by_id is None or add.by_id == control.id:
-                trestle_part.props.extend(add.props)
+        if not add.props:
+            return
+
+        trestle_part = Modify._get_or_create_trestle_part(control, add)
+
+        if add.by_id is None or add.by_id == control.id:
+            Modify._add_props_to_part(trestle_part, add.props)
+        else:
+            by_id_part = get_item_from_list(trestle_part.parts, add.by_id, lambda p: p.title)
+            if by_id_part is None:
+                Modify._create_by_id_part(trestle_part, add)
             else:
-                by_id_part = get_item_from_list(trestle_part.parts, add.by_id, lambda p: p.title)
-                if by_id_part is None:
-                    trestle_part.parts.append(
-                        common.Part(name=TRESTLE_INHERITED_PROPS_TRACKER + '_' + add.by_id, title=add.by_id, props=[])
-                    )
-                    by_id_part = trestle_part.parts[-1]
-                by_id_part.props.extend(add.props)
+                Modify._add_props_to_part(by_id_part, add.props)
 
     @staticmethod
     def _add_to_control(control: cat.Control, add: prof.Add) -> None:
         """First step in applying Add to control."""
-        control.parts = as_list(control.parts)
         if add.by_id is None or add.by_id == control.id:
             # add contents will be added to the control directly and with no recursion
             for attr in ['params', 'props', 'parts', 'links']:
@@ -164,11 +189,12 @@ class Modify(Pipeline.Filter):
                 if add_list:
                     Modify._add_attr_to_control(control, add_list[:], attr, add.position)
         else:
-            # this is only called if by_id is not None
-            if not Modify._add_to_parts(control.parts, add):
+            # this is only called if add.by_id is not None
+            parts = as_list(control.parts)
+            if not Modify._add_to_parts(parts, add):
                 logger.warning(f'Could not find id for add in control {control.id}: {add.by_id}')
+            control.parts = none_if_empty(parts)
         Modify._add_to_trestle_props(control, add)
-        control.parts = none_if_empty(control.parts)
 
     @staticmethod
     def _set_overwrite_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
@@ -192,13 +218,19 @@ class Modify(Pipeline.Filter):
     def _set_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
         # these append
         if set_param.constraints:
-            if not param.constraints:
-                param.constraints = []
-            param.constraints.extend(set_param.constraints)
+            # Pydantic v2: Avoid setting empty list (min_length=1 validation)
+            # Build new list and only assign if non-empty
+            new_constraints = list(param.constraints) if param.constraints else []
+            new_constraints.extend(set_param.constraints)
+            if new_constraints:
+                param.constraints = new_constraints
         if set_param.guidelines:
-            if not param.guidelines:
-                param.guidelines = []
-            param.guidelines.extend(set_param.guidelines)
+            # Pydantic v2: Avoid setting empty list (min_length=1 validation)
+            # Build new list and only assign if non-empty
+            new_guidelines = list(param.guidelines) if param.guidelines else []
+            new_guidelines.extend(set_param.guidelines)
+            if new_guidelines:
+                param.guidelines = new_guidelines
 
     @staticmethod
     def _set_replaced_or_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
@@ -233,8 +265,8 @@ class Modify(Pipeline.Filter):
         control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
         loose_param = False
         if control:
-            control.params = as_list(control.params)
-            param_ids = [param.id for param in control.params]
+            params = as_list(control.params)
+            param_ids = [param.id for param in params]
             if set_param.param_id not in param_ids:
                 raise TrestleNotFoundError(f'Param id {set_param.param_id} not found in control {control.id}')
             index = param_ids.index(set_param.param_id)

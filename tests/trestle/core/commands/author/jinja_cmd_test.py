@@ -74,7 +74,7 @@ def test_jinja_lookup_table(
     command_import = (
         f'trestle author jinja -i {input_template} -o output_file.md '
         f'-lut {luk_table} -ssp ssp_json -p comp_prof -elp lut.prefix'
-    )  # noqa: N400
+    )
     execute_command_and_assert(command_import, 0, monkeypatch)
 
     with open('output_file.md') as test_output:
@@ -105,7 +105,7 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
 
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
-    command_md_gen = f'trestle author jinja -bf *.* -vap "IBM Assignment:" -vnap "Assignment:" -i {input_template} -o output.md -ssp ssp_json -p comp_prof'  # noqa E501
+    command_md_gen = f'trestle author jinja -bf *.* -vap "IBM Assignment:" -vnap "Assignment:" -i {input_template} -o output.md -ssp ssp_json -p comp_prof'
     execute_command_and_assert(command_md_gen, 0, monkeypatch)
 
     with open('output.md') as test_output:
@@ -118,7 +118,7 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
         child2 = parent.get_node_for_key('#### Control Statement')
         assert '*Assignment: organization-defined official*' in child2.content.raw_text
 
-    command_md_gen = f'trestle author jinja -bf Prefix:[.] -vap "IBM Assignment:" -vnap "Assignment:" -i {input_template} -o output.md -ssp ssp_json -p comp_prof'  # noqa E501
+    command_md_gen = f'trestle author jinja -bf Prefix:[.] -vap "IBM Assignment:" -vnap "Assignment:" -i {input_template} -o output.md -ssp ssp_json -p comp_prof'
     execute_command_and_assert(command_md_gen, 0, monkeypatch)
 
     with open('output.md') as test_output:
@@ -193,12 +193,12 @@ def test_jinja_profile_docs_with_group_title(
         assert node1
         node2 = tree.get_node_for_key('# AC-1 - \\[Access Control\\] Policy and Procedures')
         assert node2
-        assert '{: #ac-1}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
+        assert '{: #ac-1}' in node2.content.raw_text
         assert node2.content.text[1] == ''  # assert new line after tag
         node3 = tree.get_node_for_key('## Table of Control Parameters')
         assert node3
-        assert '{: #table-of-control-parameters}' in node3.content.raw_text  # noqa: FS003 - not f string but tag
-        assert '{: #"Parameters for AC-1" caption-side="top"}' in node3.content.raw_text  # noqa: FS003 - not f string
+        assert '{: #table-of-control-parameters}' in node3.content.raw_text
+        assert '{: #"Parameters for AC-1" caption-side="top"}' in node3.content.raw_text
         assert 'AC-1 (a) (1)' in node3.content.tables[2]
         assert 'ac-1_prm_3' in node3.content.tables[4]
 
@@ -223,7 +223,7 @@ def test_jinja_profile_docs_with_selected_sections(
         assert node1
         node2 = tree.get_node_for_key('## Control Statement Header')
         assert node2
-        assert '{: #control-statement-header}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
+        assert '{: #control-statement-header}' in node2.content.raw_text
         assert len(tree.content.subnodes_keys) == 3
 
 
@@ -253,7 +253,7 @@ def test_jinja_profile_docs_with_selected_sections_and_multiple_parts(
         assert node2
         node3 = tree.get_node_for_key('#### Evidence Guidance')
         assert node3
-        tag = '{: #the-above-the-line-guidance-add-to-part-a-evidence-guidance}'  # noqa: FS003
+        tag = '{: #the-above-the-line-guidance-add-to-part-a-evidence-guidance}'
         assert tag in node2.content.raw_text
         assert len(tree.content.subnodes_keys) == 7
 
@@ -405,3 +405,51 @@ def test_render_template_supports_trusted_include(tmp_path: pathlib.Path) -> Non
     output = JinjaCmd.render_template(template, {}, tmp_path)
 
     assert output == 'Hello World'
+
+
+def test_md_clean_include_blocks_dangerous_attribute_access(tmp_path: pathlib.Path) -> None:
+    """Test that SandboxedEnvironment blocks dangerous attribute access in md_clean_include."""
+    # Create a malicious markdown file with SSTI payload
+    malicious_md = tmp_path / 'malicious.md'
+    malicious_md.write_text(
+        '---\ntitle: test\n---\n\n# Malicious Content\n\nAttempting dangerous access: {{ "".__class__.__name__ }}\n',
+        encoding='utf-8',
+    )
+
+    # Create template that includes the malicious file
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('# Main Template\n\n{% md_clean_include "malicious.md" %}\n', encoding='utf-8')
+
+    # Attempt to render - should raise SecurityError
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template('template.j2')
+
+    with pytest.raises(Exception) as exc_info:
+        template.render()
+
+    # Verify it's a SecurityError blocking __class__ access
+    assert 'SecurityError' in str(type(exc_info.value).__name__) or '__class__' in str(exc_info.value)
+    assert 'unsafe' in str(exc_info.value).lower() or 'security' in str(exc_info.value).lower()
+
+
+def test_md_clean_include_allows_safe_variable_substitution(tmp_path: pathlib.Path) -> None:
+    """Test that legitimate variable substitution still works in md_clean_include."""
+    # Create markdown file with safe variable substitution
+    content_md = tmp_path / 'content.md'
+    content_md.write_text(
+        '---\ntitle: test\n---\n\n# Content\n\nProduct name: {{ product_name }}\nVersion: {{ version }}\n',
+        encoding='utf-8',
+    )
+
+    # Create template that includes the file
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('# Main Template\n\n{% md_clean_include "content.md" %}\n', encoding='utf-8')
+
+    # Render with safe variables
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template('template.j2')
+    output = template.render(product_name='Trestle', version='3.0')
+
+    # Verify variables were substituted
+    assert 'Product name: Trestle' in output
+    assert 'Version: 3.0' in output

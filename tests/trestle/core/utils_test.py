@@ -20,7 +20,7 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from pydantic.v1 import ValidationError
+from pydantic import ValidationError
 
 import pytest
 
@@ -64,21 +64,25 @@ def test_is_collection_field_type() -> None:
 
     assert mutils.is_collection_field_type(type(good_catalog)) is False  # Catalog
     catalog_field = catalog.Model.alias_to_field_map()['catalog']
-    assert mutils.is_collection_field_type(catalog_field.outer_type_) is False  # Catalog
+    assert mutils.is_collection_field_type(catalog_field.annotation) is False  # Catalog
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata)) is False  # Metadata
     metadata_field = catalog.Catalog.alias_to_field_map()['metadata']
-    assert mutils.is_collection_field_type(metadata_field.outer_type_) is False  # Metadata
+    assert mutils.is_collection_field_type(metadata_field.annotation) is False  # Metadata
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.roles)) is False  # list
     roles_field = common.Metadata.alias_to_field_map()['roles']
-    assert mutils.is_collection_field_type(roles_field.outer_type_) is True  # List[Role]
-    assert mutils.is_collection_field_type(roles_field.type_) is False  # Role
+    assert mutils.is_collection_field_type(roles_field.annotation) is True  # List[Role]
+    # Get inner type from annotation for comparison
+    inner_type = mutils.get_inner_type(roles_field.annotation)
+    assert mutils.is_collection_field_type(inner_type) is False  # Role
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.responsible_parties)) is False  # list
     responsible_parties_field = common.Metadata.alias_to_field_map()['responsible-parties']
-    assert mutils.is_collection_field_type(responsible_parties_field.outer_type_) is True  # List[ResponsibleParty]
-    assert mutils.is_collection_field_type(responsible_parties_field.type_) is False  # ResponsibleParty
+    assert mutils.is_collection_field_type(responsible_parties_field.annotation) is True  # List[ResponsibleParty]
+    # Get inner type from annotation for comparison
+    inner_type = mutils.get_inner_type(responsible_parties_field.annotation)
+    assert mutils.is_collection_field_type(inner_type) is False  # ResponsibleParty
 
     dct = {'foo': responsible_parties_field}
     assert mutils.is_collection_field_type(dct) is False  # hand-created dict is not collection field type
@@ -87,8 +91,10 @@ def test_is_collection_field_type() -> None:
         mutils.is_collection_field_type(type(good_catalog.metadata.parties[0].addresses[0].addr_lines)) is False
     )  # list
     postal_address_field = common.Address.alias_to_field_map()['addr-lines']
-    assert mutils.is_collection_field_type(postal_address_field.outer_type_) is True  # List[AddrLine]
-    assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
+    assert mutils.is_collection_field_type(postal_address_field.annotation) is True  # List[AddrLine]
+    # Get inner type from annotation for comparison
+    inner_type = mutils.get_inner_type(postal_address_field.annotation)
+    assert mutils.is_collection_field_type(inner_type) is False  # AddrLine
 
 
 def test_get_inner_type() -> None:
@@ -102,7 +108,7 @@ def test_get_inner_type() -> None:
     with pytest.raises(err.TrestleError):
         # Type of field catalog is not a collection field type
         catalog_field = catalog.Model.alias_to_field_map()['catalog']
-        mutils.get_inner_type(catalog_field.outer_type_)
+        mutils.get_inner_type(catalog_field.annotation)
 
     with pytest.raises(err.TrestleError):
         # Type of roles object is not a collection field type
@@ -110,7 +116,7 @@ def test_get_inner_type() -> None:
 
     # Type of field roles is a collection field type
     roles_field = common.Metadata.alias_to_field_map()['roles']
-    role_type = mutils.get_inner_type(roles_field.outer_type_)
+    role_type = mutils.get_inner_type(roles_field.annotation)
     assert role_type == common.Role
 
     with pytest.raises(err.TrestleError):
@@ -119,7 +125,7 @@ def test_get_inner_type() -> None:
 
     # Type of field responsible-parties is a collection field type
     responsible_parties_field = common.Metadata.alias_to_field_map()['responsible-parties']
-    responsible_party_type = mutils.get_inner_type(responsible_parties_field.outer_type_)
+    responsible_party_type = mutils.get_inner_type(responsible_parties_field.annotation)
     assert responsible_party_type == common.ResponsibleParty
 
 
@@ -312,10 +318,10 @@ def test_objects_differ(simplified_nist_catalog: catalog.Catalog) -> None:
 def test_fields_set_non_none() -> None:
     """Confirm that using fields_set can be bad."""
     prop = common.Property(name='foo', value='bar')
-    assert prop.__fields_set__ == {'name', 'value'}
+    assert prop.model_fields_set == {'name', 'value'}
     prop.ns = None
     # fields_set lists value even though it was set as None
-    assert prop.__fields_set__ == {'name', 'value', 'ns'}
+    assert prop.model_fields_set == {'name', 'value', 'ns'}
     assert ModelUtils.fields_set_non_none(prop) == {'name', 'value'}
 
 
@@ -364,3 +370,43 @@ def test_as_bool(tmp_path: pathlib.Path) -> None:
     assert as_bool('true')
     assert not as_bool('false')
     assert not as_bool(None)
+
+
+def test_get_root_type_name_list() -> None:
+    """list[T] and List[T] origins both return 'List'."""
+    from typing import List
+    from trestle.common.type_utils import _get_root_type_name
+    from trestle.oscal.common import Role
+
+    assert _get_root_type_name(list[Role]) == 'List'
+    assert _get_root_type_name(List[Role]) == 'List'
+
+
+def test_get_root_type_name_dict() -> None:
+    """dict[K, V] and Dict[K, V] origins both return 'Dict'."""
+    from typing import Dict
+    from trestle.common.type_utils import _get_root_type_name
+    from trestle.oscal.common import Role
+
+    assert _get_root_type_name(dict[str, Role]) == 'Dict'
+    assert _get_root_type_name(Dict[str, Role]) == 'Dict'
+
+
+def test_get_root_type_name_plain_type() -> None:
+    """Non-generic types return their __name__ string."""
+    from trestle.common.type_utils import _get_root_type_name
+    from trestle.oscal.common import Role
+
+    assert _get_root_type_name(Role) == 'Role'
+    assert _get_root_type_name(str) == 'str'
+    assert _get_root_type_name(int) == 'int'
+
+
+def test_get_root_type_name_other_generic_returns_none() -> None:
+    """Generic types that are neither list nor dict return None."""
+    from typing import Optional
+    from trestle.common.type_utils import _get_root_type_name
+    from trestle.oscal.common import Role
+
+    # Optional[T] has origin Union, not list or dict
+    assert _get_root_type_name(Optional[Role]) is None

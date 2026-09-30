@@ -20,9 +20,7 @@
       }
     ],
     "merge": {
-      "combine": {
-        "method": "use-first"
-      },
+      "combine": {},
       "as-is": true
     },
     "modify": {
@@ -50,29 +48,33 @@
             }
           ],
           "values": [
-                "Organization-level",
-                "System-level"
+            "Organization-level",
+            "System-level"
           ]
         },
-        {  "param_id": "ac-1_prm_3",
-            "values": [
-              "officer"
-            ]
+        {
+          "param_id": "ac-1_prm_3",
+          "values": [
+            "officer"
+          ]
         },
-        {  "param_id": "ac-1_prm_4",
-            "values": [
-              "weekly"
-            ]
+        {
+          "param_id": "ac-1_prm_4",
+          "values": [
+            "weekly"
+          ]
         },
-        {  "param_id": "ac-1_prm_5",
-            "values": [
-              "all meetings"
-            ]
+        {
+          "param_id": "ac-1_prm_5",
+          "values": [
+            "all meetings"
+          ]
         },
-        {  "param_id": "ac-1_prm_6",
-            "values": [
-              "monthly"
-            ]
+        {
+          "param_id": "ac-1_prm_6",
+          "values": [
+            "monthly"
+          ]
         }
       ],
       "alters": [

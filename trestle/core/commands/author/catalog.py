@@ -34,6 +34,7 @@ from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 
@@ -50,7 +51,7 @@ class CatalogGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument(
             '-o', '--output', help='Name of the output generated catalog markdown folder', required=True, type=str
-        )  # noqa E501
+        )
         self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
@@ -88,6 +89,9 @@ class CatalogGenerate(AuthorCommonCommand):
             catalog_path = trestle_root / f'catalogs/{args.name}/catalog.json'
 
             markdown_path = trestle_root / args.output
+
+            # Validate output path to prevent path traversal
+            PathSecurityValidator.validate_local_path(markdown_path, trestle_root)
 
             return self.generate_markdown(
                 trestle_root, catalog_path, markdown_path, yaml_header, args.overwrite_header_values

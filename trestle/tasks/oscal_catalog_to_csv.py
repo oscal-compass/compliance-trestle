@@ -14,7 +14,7 @@
 # limitations under the License.
 """OSCAL transformation tasks."""
 
-# mypy: ignore-errors  # noqa E800
+# mypy: ignore-errors
 import configparser
 import copy
 import csv
@@ -37,7 +37,7 @@ from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
 
-timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
 
 recurse = True
 

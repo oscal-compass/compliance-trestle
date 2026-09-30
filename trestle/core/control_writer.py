@@ -353,23 +353,21 @@ class ControlWriter:
         self._md_file.new_header(level=1, title=const.EDITABLE_CONTENT)
         self._md_file.new_line('<!-- Make additions and edits below -->')
         self._md_file.new_line(
-            '<!-- The above represents the contents of the control as received by the profile, prior to additions. -->'  # noqa E501
+            '<!-- The above represents the contents of the control as received by the profile, prior to additions. -->'
+        )
+        self._md_file.new_line('<!-- If the profile makes additions to the control, they will appear below. -->')
+        self._md_file.new_line(
+            '<!-- The above markdown may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. -->'
         )
         self._md_file.new_line(
-            '<!-- If the profile makes additions to the control, they will appear below. -->'  # noqa E501
+            '<!-- If there is a yaml header at the top, parameter values may be edited. Use --set-parameters to incorporate the changes during assembly. -->'
         )
         self._md_file.new_line(
-            '<!-- The above markdown may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. -->'  # noqa E501
-        )
-        self._md_file.new_line(
-            '<!-- If there is a yaml header at the top, parameter values may be edited. Use --set-parameters to incorporate the changes during assembly. -->'  # noqa E501
-        )
-        self._md_file.new_line(
-            '<!-- The content here will then replace what is in the profile for this control, after running profile-assemble. -->'  # noqa E501
+            '<!-- The content here will then replace what is in the profile for this control, after running profile-assemble. -->'
         )
         if has_content:
             self._md_file.new_line(
-                '<!-- The added parts in the profile for this control are below.  You may edit them and/or add new ones. -->'  # noqa E501
+                '<!-- The added parts in the profile for this control are below.  You may edit them and/or add new ones. -->'
             )
         else:
             self._md_file.new_line(
@@ -386,7 +384,7 @@ class ControlWriter:
         self._md_file.new_line('<!-- Subparts may be added with nested hash levels of the form ### My Subpart Name -->')
         self._md_file.new_line('<!-- underneath the parent ## Control or ## Part being added -->')
         self._md_file.new_line(
-            '<!-- See https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
+            '<!-- See https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'
         )
         # next is to make mdformat happy
         self._md_file._add_line_raw('')

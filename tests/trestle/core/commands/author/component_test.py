@@ -17,6 +17,8 @@ import pathlib
 import shutil
 from typing import Any, Dict
 
+import pytest
+
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
@@ -50,7 +52,7 @@ def check_common_contents(header: Dict[str, Any]) -> None:
         'rule-id': 'top_shared_rule_1',
     }
     assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE]['title'] == 'comp prof aa'
-    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE]['href'] == 'trestle://profiles/comp_prof_aa/profile.json'  # noqa E501
+    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE]['href'] == 'trestle://profiles/comp_prof_aa/profile.json'
 
 
 def check_ac1_contents(ac1_path: pathlib.Path) -> None:
@@ -150,7 +152,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
 
     # edit a rule param value
     new_text = (
-        '      component-values:\n        - inserted value 0\n        - inserted value 1\n        - inserted value 2\n'  # noqa E501
+        '      component-values:\n        - inserted value 0\n        - inserted value 1\n        - inserted value 2\n'
     )
     file_utils.insert_text_in_file(ac1_path, '- shared_param_1_aa_opt_1', new_text)
 
@@ -237,7 +239,7 @@ imp req prose for ac-1 from comp cc
 ### Implementation Status: planned
 
 ______________________________________________________________________
-"""  # noqa E501
+"""
 
     node = tree.get_node_for_key('## What is the solution and how is it implemented?')
     assert node.content.raw_text == imp_req_md
@@ -270,3 +272,28 @@ ______________________________________________________________________"""
     imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-1'), None)
     assert imp_req.description == 'imp req prose for ac-1 from comp cc'
     assert ControlInterface.get_status_from_props(imp_req).state == const.STATUS_IMPLEMENTED  # type: ignore
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/commands/author/component.py
+# ---------------------------------------------------------------------------
+
+
+def test_component_generate_all_disallowed_dir_name(tmp_trestle_dir: pathlib.Path) -> None:
+    """ComponentGenerate.component_generate_all line 78 — disallowed dir name raises TrestleError."""
+    from trestle.common.err import TrestleError
+    from trestle.core.commands.author.component import ComponentGenerate
+
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    generator = ComponentGenerate()
+    with pytest.raises(TrestleError, match='not an allowed directory name'):
+        generator.component_generate_all(tmp_trestle_dir, comp_name, '.hidden_not_allowed')
+
+
+def test_component_get_name_from_non_trestle_uri() -> None:
+    """ComponentGenerate._get_name_from_uri line 100 — non-TRESTLE URI returns empty string."""
+    from trestle.core.commands.author.component import ComponentGenerate
+
+    # An http URI is not a TRESTLE URI, so the else branch (line 100) returns ''
+    result = ComponentGenerate._get_name_from_uri('https://example.com/catalog.json')
+    assert result == ''

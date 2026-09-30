@@ -10,9 +10,9 @@ description: Trestle is an ensemble of tools that enable the creation, validatio
 ![[Pre-commit](https://github.com/pre-commit/pre-commit)](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
-![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
+[![Monthly downloads](https://img.shields.io/pypi/dm/compliance-trestle)](https://pypi.org/project/compliance-trestle/)
 ![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
-![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)](https://www.bestpractices.dev/projects/9408)
 
 Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
@@ -31,16 +31,18 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Help manage OSCAL documents in a more human-friendly manner by expanding the large OSCAL data structures into smaller and easier to edit sub-structures while making sure the schemas are enforced.
 - Transform documents from other formats to OSCAL
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
-- Tooling manage authoring and governance of markdown and drawio files withn a repository.
+- Tooling manage authoring and governance of markdown and drawio files within a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artefacts.
+- Detached signing and verification for JSON artifacts and JSON package manifests. See the [`trestle sign`](tutorials/cli.md#trestle-sign) and [`trestle sign-manifest`](tutorials/cli.md#trestle-sign-manifest) CLI documentation.
 
 ## Important Note:
 
-The current version of trestle 4.x supports NIST OSCAL 1.2.1.
+The current version of trestle 5.x supports NIST OSCAL 1.2.1.
 Below shows trestle versions correspondence with OSCAL versions:
 
 ```
+trestle 5.x => OSCAL 1.2.1
 trestle 4.x => OSCAL 1.2.1
 trestle 3.x => OSCAL 1.1.3
 trestle 2.x => OSCAL 1.0.4
@@ -52,6 +54,18 @@ Visit [pypi](https://pypi.org/project/compliance-trestle/#history) for trestle r
 
 ## Notes for install of current and older versions of trestle
 
+#### Install of trestle 5.x
+
+Use python 3.11 or later (3.11, 3.12, 3.13, or 3.14 are all supported).
+
+```
+python3.14 -m venv venv.trestle
+source venv.trestle/bin/activate
+pip install compliance-trestle
+trestle version
+Trestle version v5.0.0 based on OSCAL version 1.2.1
+```
+
 #### Install of trestle 4.x
 
 Use python 3.11.
@@ -59,21 +73,9 @@ Use python 3.11.
 ```
 python3.11 -m venv venv.trestle
 source venv.trestle/bin/activate
-pip install compliance-trestle
+pip install compliance-trestle==4.2.0
 trestle version
-Trestle version v4.0.0 based on OSCAL version 1.2.1
-```
-
-#### Install of trestle 3.x
-
-Use python 3.11.
-
-```
-python3.11 -m venv venv.trestle
-source venv.trestle/bin/activate
-pip install compliance-trestle==3.6.0
-trestle version
-Trestle version v3.6.0 based on OSCAL version 1.1.3
+Trestle version v4.2.0 based on OSCAL version 1.2.1
 ```
 
 ## Why Trestle
@@ -109,6 +111,10 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's OS
 ## Python codebase, easy installation via pip
 
 Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is available on PyPi so it is easily installed via pip.  It is under active development and new releases are made available regularly.
+
+## Quick Start
+
+New to trestle? The [Quick Start guide](quick-start.md) walks you through installing trestle, initialising a workspace, and importing your first OSCAL catalog in a few minutes.
 
 ## Development status
 
@@ -148,6 +154,8 @@ We are a Cloud Native Computing Foundation sandbox project.
   <img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
 </picture>
 
-The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage).
 
-*Trestle was originally created by IBM.*
+*OSCAL Compass is an independent open source project. It is not affiliated with, endorsed by, or sponsored by the National Institute of Standards and Technology (NIST) or any other government agency.*
+
+*OSCAL Compass was originally contributed by IBM.*

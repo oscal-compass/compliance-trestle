@@ -65,7 +65,7 @@
     "components": [
       {
         "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
+        "type": "service",
         "title": "CLOUDANT",
         "description": "CLOUDANT",
         "control-implementations": [
@@ -494,7 +494,7 @@
       },
       {
         "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
+        "type": "service",
         "title": "CIS",
         "description": "CIS",
         "control-implementations": [
@@ -719,7 +719,7 @@
       },
       {
         "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
+        "type": "service",
         "title": "IKS",
         "description": "IKS",
         "control-implementations": [
@@ -1203,7 +1203,7 @@
       },
       {
         "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
+        "type": "service",
         "title": "VPC",
         "description": "VPC",
         "control-implementations": [
@@ -1386,7 +1386,7 @@
       },
       {
         "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
+        "type": "service",
         "title": "TOOLCHAIN",
         "description": "TOOLCHAIN",
         "control-implementations": [
