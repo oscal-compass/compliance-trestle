@@ -84,6 +84,9 @@ jobs:
       env:
         SLUG: ${{ steps.app-token.outputs.app-slug }}
         ID: ${{ steps.get-user-id.outputs.user-id }}
+    - name: Run documentation automation
+      run: |
+        python ./scripts/website_automation.py
     - name: Create release
       shell: bash
       env:
