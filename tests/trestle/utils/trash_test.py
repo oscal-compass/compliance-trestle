@@ -434,41 +434,28 @@ def test_recover_dir_not_in_trash(tmp_path: pathlib.Path) -> None:
 
 
 def test_recover_dir_with_subdirectory(tmp_path: pathlib.Path) -> None:
-    """Test recover_dir recurses into subdirectory entries found inside the trash dir.
+    """Test recover_dir recurses when the trash dir contains a subdirectory entry.
 
-    recover_dir iterates its trash dir and, for each entry that is itself a
-    directory, resolves it back to an origin path and calls recover_dir
-    recursively.  We construct the minimal trash layout by hand:
-
-        _trash/data/child__bk/
-            grandchild__bk/     <- directory entry triggers the recursive branch
-                notes.md.bk
-
-    recover_dir(child_dir) finds grandchild__bk (a dir), resolves it to
-    data/child/grandchild, and recurses.  That inner call looks for
-    _trash/data/child/grandchild__bk — so we create that too with the file.
+    store_dir never creates the trash dir for the directory passed to it, only
+    for its contents, so there is no store_dir call that produces a layout
+    recover_dir can consume at the top level while also containing a subdir.
+    We build the layout directly using the public path helpers.
     """
     test_utils.ensure_trestle_config_dir(tmp_path)
-    data_dir = tmp_path / 'data'
-    child_dir = data_dir / 'child'
+    child_dir = tmp_path / 'data' / 'child'
     grandchild_dir = child_dir / 'grandchild'
-    grandchild_file = grandchild_dir / 'notes.md'
 
-    # child__bk is the trash dir for child_dir; grandchild__bk inside it
-    # is the subdir that triggers lines 217-218.
+    # Build: _trash/.../child__bk/grandchild__bk/  (subdir entry — triggers recursion)
     child_trash_dir = trash.to_trash_dir_path(child_dir)
-    gc_in_child_trash = child_trash_dir / f'grandchild{trash.TRESTLE_TRASH_DIR_EXT}'
-    gc_in_child_trash.mkdir(parents=True, exist_ok=True)
+    (child_trash_dir / f'grandchild{trash.TRESTLE_TRASH_DIR_EXT}').mkdir(parents=True, exist_ok=True)
 
-    # The recursive recover_dir call resolves grandchild__bk back to
-    # data/child/grandchild and looks for _trash/data/child/grandchild__bk.
-    gc_canonical_trash = trash.to_trash_dir_path(grandchild_dir)
-    gc_canonical_trash.mkdir(parents=True, exist_ok=True)
-    trash_file = gc_canonical_trash / f'notes.md{trash.TRESTLE_TRASH_FILE_EXT}'
-    trash_file.write_text('content')
+    # Build: _trash/.../child/grandchild__bk/notes.md.bk  (what the recursive call needs)
+    gc_trash_dir = trash.to_trash_dir_path(grandchild_dir)
+    gc_trash_dir.mkdir(parents=True, exist_ok=True)
+    (gc_trash_dir / f'notes.md{trash.TRESTLE_TRASH_FILE_EXT}').write_text('content')
 
     trash.recover_dir(child_dir)
-    assert grandchild_file.exists()
+    assert (grandchild_dir / 'notes.md').exists()
 
 
 def test_recover_dir_delete_trash(tmp_path: pathlib.Path) -> None:
