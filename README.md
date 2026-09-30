@@ -2,11 +2,14 @@
 
 ![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/compliance-trestle)
+[![PyPI - Version](https://img.shields.io/pypi/v/compliance-trestle)](https://pypi.org/project/compliance-trestle/)
 ![[Pre-commit](https://github.com/pre-commit/pre-commit)](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
 ![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
+[![GitHub last commit](https://img.shields.io/github/last-commit/oscal-compass/compliance-trestle/develop)](https://github.com/oscal-compass/compliance-trestle/commits/develop)
+[![License](https://img.shields.io/github/license/oscal-compass/compliance-trestle)](https://github.com/oscal-compass/compliance-trestle/blob/develop/LICENSE)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)](https://www.bestpractices.dev/projects/9408)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/oscal-compass/compliance-trestle/badge)](https://scorecard.dev/viewer/?uri=github.com/oscal-compass/compliance-trestle)
 
