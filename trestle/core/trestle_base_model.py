@@ -17,7 +17,7 @@
 
 from typing import Any, Type, TypeVar
 
-from pydantic.v1 import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError, model_validator
 
 from trestle.common.err import TrestleError
 
@@ -28,13 +28,32 @@ class TrestleBaseModel(BaseModel):
     """Trestle Base Model. Serves as wrapper around BaseModel for overriding methods."""
 
     @classmethod
-    def parse_obj(cls: Type['Model'], obj: Any) -> 'Model':
-        """Parse object to the given class."""
+    def model_validate(
+        cls: Type['Model'],
+        obj: Any,
+        *,
+        strict: bool | None = None,
+        from_attributes: bool | None = None,
+        context: dict[str, Any] | None = None,
+        extra: Any = None,
+        by_alias: bool | None = None,
+        by_name: bool | None = None,
+    ) -> 'Model':
+        """Validate object to the given class."""
         try:
-            return super().parse_obj(obj)
+            return super().model_validate(
+                obj,
+                strict=strict,
+                from_attributes=from_attributes,
+                context=context,
+                extra=extra,
+                by_alias=by_alias,
+                by_name=by_name,
+            )
         except ValidationError as e:
             # check if failed due to the wrong OSCAL version:
             oscal_version_error = False
+            message = ''
             for err in e.errors():
                 for field in err['loc']:
                     if field == 'oscal-version':
@@ -46,38 +65,7 @@ class TrestleBaseModel(BaseModel):
             else:
                 raise
 
-    def __str__(self) -> str:
-        """Return string representation, unwrapping __root__ if present."""
-        if hasattr(self, '__root__'):
-            return str(self.__root__)
-        return super().__str__()
-
-    def __eq__(self, other: Any) -> bool:
-        """Compare with unwrapped __root__ value if present."""
-        # Only use custom comparison for __root__ models
-        if hasattr(self, '__root__') and '__root__' in self.__fields__:
-            if isinstance(other, type(self)):
-                return self.__root__ == other.__root__
-            return self.__root__ == other
-        # For non-__root__ models, use default Pydantic comparison
-        return super().__eq__(other)
-
-    def __hash__(self) -> int:
-        """Hash the __root__ value if present."""
-        if hasattr(self, '__root__'):
-            try:
-                return hash(self.__root__)
-            except TypeError:
-                # If __root__ is unhashable, fall back to object hash
-                return super().__hash__()
-        return super().__hash__()
-
-    def __getattr__(self, name: str) -> Any:
-        """Delegate attribute access to __root__ if present and attribute not found."""
-        # Avoid infinite recursion by checking if __root__ exists via __dict__
-        if '__root__' in self.__dict__ and name != '__root__':
-            try:
-                return getattr(self.__root__, name)
-            except AttributeError:
-                pass
-        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+    @classmethod
+    def parse_obj(cls: Type['Model'], obj: Any) -> 'Model':
+        """Parse object to the given class. Deprecated: use model_validate instead."""
+        return cls.model_validate(obj)

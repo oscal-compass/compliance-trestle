@@ -18,7 +18,7 @@ rm -rf test_trestle
 mkdir test_trestle
 cd test_trestle
 trestle init
-trestle import -f path_to/NIST_SP-800-53_rev4_catalog.json -o mycatalog
+trestle import -f path_to/NIST_SP-800-53_rev5_catalog.json -o mycatalog
 
 cd catalogs
 cd mycatalog

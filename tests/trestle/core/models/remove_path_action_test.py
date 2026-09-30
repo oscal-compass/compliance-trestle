@@ -42,8 +42,8 @@ def test_remove_path_file(tmp_path: pathlib.Path) -> None:
     rpa = RemovePathAction(tmp_data_file)
 
     # missing file should error
-    # with pytest.raises(TrestleError): # noqa: E800  remove path is not working properly
-    #    rpa.execute()                  # noqa: E800
+    # with pytest.raises(TrestleError):
+    #    rpa.execute()
 
     # write some content in the file
     file_pos = 0

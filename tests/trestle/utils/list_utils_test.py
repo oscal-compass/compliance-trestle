@@ -24,6 +24,13 @@ def test_is_ordered_sublist() -> None:
     assert list_utils.is_ordered_sublist(['a', 'b', 'c'], ['x', 'a', 'b', 'c', 'y', 'z']) is True
     assert list_utils.is_ordered_sublist(['a', 'b', 'c'], ['x', 'a', 'c', 'b', 'y', 'z']) is False
     assert list_utils.is_ordered_sublist(['a', 'b', 'c'], ['x', 'a', 'b', 'y', 'c', 'z']) is False
+    # a needle item must match a whole haystack item, not a substring of one
+    assert list_utils.is_ordered_sublist(['b'], ['abc']) is False
+    assert list_utils.is_ordered_sublist(['a', 'b'], ['xa', 'by']) is False
+    # a needle longer than the haystack cannot be contained in it
+    assert list_utils.is_ordered_sublist(['a', 'b'], ['a']) is False
+    # exact whole-list match still holds
+    assert list_utils.is_ordered_sublist(['a', 'b'], ['a', 'b']) is True
 
 
 def test_join_key_to_list_dicts() -> None:

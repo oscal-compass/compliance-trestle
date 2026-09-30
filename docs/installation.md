@@ -15,11 +15,11 @@ There are a few things you need to to start using trestle:
 
 ## *Confirm you have python installed*
 
-- Ensure you have a modern [Python](https://www.python.org/downloads/) (3.10, 3.11, 3.12, 3.13).
+- Ensure you have a modern [Python](https://www.python.org/downloads/) (3.11, 3.12, 3.13, 3.14).
 
 ```bash
 $ python -V
-Python 3.10.2
+Python 3.11.0
 ```
 
 ## *Setup a virtual environment*
@@ -102,7 +102,7 @@ positional arguments:
     validate            Validate contents of a trestle model in different modes.
     version             Output version info for trestle and OSCAL.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
 
 ```
@@ -121,3 +121,7 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 ```
 
 Congratulations! You now have a working trestle workspace for safe manipulation of OSCAL documents!
+
+______________________________________________________________________
+
+Already running a previous version? See the [Upgrade guide](upgrading.md).

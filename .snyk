@@ -24,4 +24,13 @@ ignore:
           is temporary to allow pipeline progress.
         expires: 2026-03-28T00:00:00.000Z
         created: 2026-01-28T00:00:00.000Z
+  'SNYK-PYTHON-PARAMIKO-16425764':
+    - '*':
+        reason: >
+          Low severity cryptographic algorithm issue in paramiko@4.0.0.
+          No upgrade or patch available. Paramiko is used for remote
+          SSH operations which are not part of trestle's primary use case.
+          Accepted risk pending upstream fix.
+        expires: 2026-08-07T00:00:00.000Z
+        created: 2026-05-07T00:00:00.000Z
 patch: {}

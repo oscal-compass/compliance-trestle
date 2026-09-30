@@ -1,0 +1,20 @@
+{
+  "profile": {
+    "uuid": "11111111-0000-4000-8000-000000000005",
+    "metadata": {
+      "title": "Clean OSCAL 1.2.0 profile",
+      "last-modified": "2023-01-01T00:00:00+00:00",
+      "version": "1.0",
+      "oscal-version": "1.2.0"
+    },
+    "imports": [
+      {
+        "href": "some-catalog.json",
+        "include-all": {}
+      }
+    ],
+    "merge": {
+      "flat": {}
+    }
+  }
+}

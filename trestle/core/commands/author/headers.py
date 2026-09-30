@@ -315,7 +315,7 @@ class Headers(AuthorCommonCommand):
                 # Files in the root directory must be exclused
                 if path.is_file():
                     continue
-                if not file_utils.is_directory_name_allowed(path):
+                if not file_utils.is_directory_name_allowed(str(relative_path)):
                     continue
                 if str(relative_path).rstrip('/') in const.MODEL_DIR_LIST:
                     continue

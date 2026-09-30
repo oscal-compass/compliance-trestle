@@ -62,10 +62,7 @@ ENV_TEST_DATA_PATH = pathlib.Path(TEST_DIR / 'data/env/').resolve()
 JSON_NIST_DATA_PATH = pathlib.Path(TEST_DIR / '../nist-content/nist.gov/SP800-53/rev5/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
-JSON_NIST_REV_4_DATA_PATH = pathlib.Path(TEST_DIR / '../nist-content/nist.gov/SP800-53/rev4/json/').resolve()
-JSON_NIST_REV_4_CATALOG_NAME = 'NIST_SP-800-53_rev4_catalog.json'
 JSON_NIST_REV_5_CATALOG_NAME = 'nist-rev5-catalog-full.json'
-JSON_NIST_REV_4_PROFILE_NAME = 'NIST_SP-800-53_rev4_MODERATE-baseline_profile.json'
 SIMPLIFIED_NIST_CATALOG_NAME = 'simplified_nist_catalog.json'
 SIMPLIFIED_NIST_PROFILE_NAME = 'simplified_nist_profile.json'
 TASK_XLSX_OUTPUT_PATH = pathlib.Path(TEST_DIR / 'data/tasks/xlsx/output').resolve()
@@ -750,8 +747,6 @@ def generate_test_by_comp() -> ssp.ByComponent:
     """Generate a by-component assembly for testing."""
     by_comp = generators.generate_sample_model(ssp.ByComponent)
     by_comp.export = generators.generate_sample_model(ssp.Export)
-    by_comp.export.provided = []
-    by_comp.export.responsibilities = []
 
     isolated_provided = generators.generate_sample_model(ssp.Provided)
     isolated_responsibility = generators.generate_sample_model(ssp.Responsibility)
@@ -761,10 +756,9 @@ def generate_test_by_comp() -> ssp.ByComponent:
 
     set_responsibility.provided_uuid = set_provided.uuid
 
-    by_comp.export.provided.append(isolated_provided)
-    by_comp.export.provided.append(set_provided)
-    by_comp.export.responsibilities.append(isolated_responsibility)
-    by_comp.export.responsibilities.append(set_responsibility)
+    # Pydantic v2: Can't assign empty list to fields with min_length=1, create lists directly
+    by_comp.export.provided = [isolated_provided, set_provided]
+    by_comp.export.responsibilities = [isolated_responsibility, set_responsibility]
 
     return by_comp
 

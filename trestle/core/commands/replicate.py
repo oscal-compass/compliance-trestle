@@ -24,6 +24,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
@@ -89,6 +90,9 @@ class ReplicateCmd(CommandPlusDocs):
         rep_model_path = (
             trestle_root / plural_path / args.output / (model_alias + FileContentType.to_file_extension(content_type))
         )
+
+        # Validate output path to prevent path traversal
+        PathSecurityValidator.validate_local_path(rep_model_path, trestle_root)
 
         if rep_model_path.exists():
             raise TrestleError(f'OSCAL file to be replicated here: {rep_model_path} exists.')

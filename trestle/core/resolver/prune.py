@@ -188,7 +188,7 @@ class Prune(Pipeline.Filter):
 
         return new_cat
 
-    def process(self, catalog_iter: Iterator[cat.Catalog]) -> Iterator[cat.Catalog]:  # type: ignore
+    def process(self, catalog_iter: Iterator[cat.Catalog]) -> Iterator[cat.Catalog]:
         """
         Prune the catalog based on the include rule in the import_.
 
