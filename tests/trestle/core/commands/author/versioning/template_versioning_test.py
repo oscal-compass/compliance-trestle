@@ -256,6 +256,12 @@ def test_valid_version() -> None:
     assert not TemplateVersioning.is_valid_version('0a0b1')
 
 
+def test_version_sort_key_invalid() -> None:
+    """Test invalid version string raises TrestleError in _version_sort_key."""
+    with pytest.raises(TrestleError, match='Invalid template version format: not_a_version'):
+        TemplateVersioning._version_sort_key('not_a_version')
+
+
 def test_empty_folder_is_not_created(tmp_path: pathlib.Path) -> None:
     """Test that empty folder is not created."""
     task_path = tmp_path.joinpath('trestle/author/sample_task/')
