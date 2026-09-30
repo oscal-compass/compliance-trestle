@@ -627,7 +627,7 @@ Please follow steps in the section `Setting up the Trestle Workspace` if you don
 Trestle provides the capability to version the templates and the documents via `x-trestle-template-version` field in the header.
 
 Consider an example where we have a governed document called `Decision 1` that we now need to update to contain a new header field `approved-status` and a new required heading `Heading n` at the end, as demonstrated in the Figure below:
-![Decision document update](trestle_author/template_versioning.png)
+![Diagram showing a governed Decision 1 document being updated to a new template version: the new version adds an approved-status header field and a required Heading n section at the end](trestle_author/template_versioning.png)
 
 The intended workflow in this scenario is to:
 

@@ -29,6 +29,27 @@ from trestle.core.markdown.md_writer import MDWriter
 logger = logging.getLogger(__name__)
 
 
+def _neutralize_jinja_delimiters(text: str) -> str:
+    """Neutralize Jinja2 template delimiters to prevent SSTI attacks.
+
+    Replaces {{ and }} with [[ and ]] to prevent untrusted OSCAL data
+    from being interpreted as Jinja2 template code when included in
+    markdown files that are later processed by Jinja2 include tags.
+
+    This is a defense-in-depth measure to complement the primary fix
+    of not re-parsing included content as templates.
+
+    Args:
+        text: The text to neutralize
+
+    Returns:
+        Text with Jinja delimiters replaced
+    """
+    if not text:
+        return text
+    return text.replace('{{', '[[').replace('}}', ']]')
+
+
 class DocsControlWriter(ControlWriter):
     """Class to write controls as markdown for docs purposes."""
 
@@ -45,7 +66,7 @@ class DocsControlWriter(ControlWriter):
         """Write the control into markdown file with specified sections."""
         self._md_file = MDWriter(None)
         self._sections_dict = sections_dict if sections_dict else {}
-        tag_pattern = '{: #[.]}'  # noqa: FS003 - not f string but tag
+        tag_pattern = '{: #[.]}'
         if not isinstance(group_title, str):
             raise TrestleError(f'Group title must be provided and be a string, instead received: {group_title}')
 
@@ -128,7 +149,7 @@ class DocsControlWriter(ControlWriter):
                 )
             self._md_file.set_indent_level(-1)
             if tag_pattern:
-                bottom_tag_pattern = '{: #"Parameters for [.]" caption-side="top"}'  # noqa: F541 - not f string
+                bottom_tag_pattern = '{: #"Parameters for [.]" caption-side="top"}'
                 control_id = self._get_pretty_control_id_if_exists(control)
                 self._md_file.new_line(bottom_tag_pattern.replace('[.]', control_id))
                 self._md_file.new_paragraph()
@@ -194,7 +215,8 @@ class DocsControlWriter(ControlWriter):
             if tag_pattern:
                 self._md_file.new_line(tag_pattern.replace('[.]', heading_title.replace(' ', '-').lower()))
                 self._md_file.new_paragraph()
-            self._md_file.new_line(prose)
+            # SECURITY: Neutralize Jinja delimiters in prose to prevent SSTI
+            self._md_file.new_line(_neutralize_jinja_delimiters(prose))
             self._md_file.new_paragraph()
         else:
             # write parts and subparts if exist
@@ -223,7 +245,8 @@ class DocsControlWriter(ControlWriter):
             self._md_file.new_line(tag_pattern.replace('[.]', tag_section_name))
             self._md_file.new_paragraph()
         prose = '' if part_info.prose is None else part_info.prose
-        self._md_file.new_line(prose)
+        # SECURITY: Neutralize Jinja delimiters in prose to prevent SSTI
+        self._md_file.new_line(_neutralize_jinja_delimiters(prose))
         self._md_file.new_paragraph()
 
         for subpart_info in as_list(part_info.parts):

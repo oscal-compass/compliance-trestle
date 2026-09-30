@@ -5,7 +5,7 @@ description: Tutorial on converting ComplianceAsCode profiles to OSCAL component
 
 # Tutorial: Setup for and use of ComplianceAsCode profile to OSCAL Component Definition transformer
 
-Here are step by step instructions for setup and transformation of [ComplianceAsCode](https://github.com/ComplianceAsCode/content) profile data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) [Component Definition](https://pages.nist.gov/OSCAL-Reference/models/v1.1.2/complete/json-reference/#/component-definition) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
+Here are step by step instructions for setup and transformation of [ComplianceAsCode](https://github.com/ComplianceAsCode/content) profile data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://github.com/usnistgov/OSCAL) [Component Definition](https://pages.nist.gov/OSCAL-Reference/models/) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
 
 ## Objective
 

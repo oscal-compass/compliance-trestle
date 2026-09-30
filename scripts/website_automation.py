@@ -39,7 +39,7 @@ def write_module_doc_metafile(dump_location: pathlib.Path, module_name: str) -> 
         fh.write(f'title: {module_name}\n')
         fh.write(f'description: Documentation for {module_name} module\n')
         fh.write('---\n\n')
-        fh.write(f'::: {module_name}\n')  # noqa: E231
+        fh.write(f'::: {module_name}\n')
         fh.write('handler: python\n')
 
 

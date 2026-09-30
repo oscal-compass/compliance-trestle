@@ -25,6 +25,8 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from pydantic import AnyUrl
+
 from tests import test_utils
 from tests.test_utils import set_cwd_unsafe
 
@@ -62,10 +64,14 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     assert len(cd.components) == 1
     component = cd.components[0]
     assert len(component.props) == 429
-    assert component.type == 'Service'
+    # Pydantic v2: component.type is StringDatatype RootModel
+    from trestle.oscal.common import StringDatatype
+
+    assert isinstance(component.type, StringDatatype) and component.type.root == 'service'
     assert component.title == 'OSCO'
     assert component.props[0].name == 'Rule_Id'
-    assert component.props[0].ns == 'http://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert component.props[0].ns == AnyUrl('http://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd')
     assert component.props[0].value == 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
     assert component.props[0].class_ == 'scc_class'
     assert component.props[0].remarks == 'rule_set_000'
@@ -120,7 +126,10 @@ def _validate_bp(tmp_path: pathlib.Path) -> None:
     assert len(cd.components) == 1
     component = cd.components[0]
     assert len(component.props) == 62
-    assert component.type == 'Service'
+    # Pydantic v2: component.type is StringDatatype RootModel
+    from trestle.oscal.common import StringDatatype
+
+    assert isinstance(component.type, StringDatatype) and component.type.root == 'service'
     assert component.title == 'IAM'
     assert len(component.control_implementations) == 1
     assert (
@@ -735,7 +744,8 @@ def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
     component = cd.components[0]
     assert len(component.props) == 57
     assert component.props[0].name == 'Rule_Id'
-    assert component.props[0].ns == 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert component.props[0].ns == AnyUrl('http://abc.github.io/compliance-trestle/schemas/oscal/cd')
     assert component.props[0].value == 'iam_admin_role_users_per_account_maxcount'
     assert component.props[0].class_ == 'scc_class'
     assert component.props[0].remarks == 'rule_set_01'
@@ -839,7 +849,7 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
         'add-fetcher-description',
         'https://abc.com/add-profile-reference-url',
         'add-profile-description',
-        'Service',
+        'service',
         'add-control-id-list',
         'IAM',
         'IAM',
@@ -863,43 +873,43 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     pc = 72
     assert len(component.props) == 72
     assert component.props[pc - 1].name == 'Fetcher_Description'
-    assert component.props[pc - 1].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 1].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 1].value == 'add-fetcher-description'
     assert component.props[pc - 1].remarks == 'rule_set_10'
     assert component.props[pc - 2].name == 'Fetcher'
-    assert component.props[pc - 2].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 2].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 2].value == 'add-fetcher'
     assert component.props[pc - 2].remarks == 'rule_set_10'
     assert component.props[pc - 3].name == 'Reference_Id'
-    assert component.props[pc - 3].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 3].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 3].value == 'add-reference-id'
     assert component.props[pc - 3].remarks == 'rule_set_10'
     assert component.props[pc - 4].name == 'Check_Description'
-    assert component.props[pc - 4].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 4].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 4].value == 'add-check-description'
     assert component.props[pc - 4].remarks == 'rule_set_10'
     assert component.props[pc - 5].name == 'Check_Id'
-    assert component.props[pc - 5].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 5].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 5].value == 'add-check-id'
     assert component.props[pc - 5].remarks == 'rule_set_10'
     assert component.props[pc - 6].name == 'Parameter_Value_Alternatives'
-    assert component.props[pc - 6].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 6].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 6].value == 'add-parameter-value-alternatives'
     assert component.props[pc - 6].remarks == 'rule_set_10'
     assert component.props[pc - 7].name == 'Parameter_Description'
-    assert component.props[pc - 7].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 7].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 7].value == 'add-parameter-description'
     assert component.props[pc - 7].remarks == 'rule_set_10'
     assert component.props[pc - 8].name == 'Parameter_Id'
-    assert component.props[pc - 8].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 8].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 8].value == 'add-parameter-id'
     assert component.props[pc - 8].remarks == 'rule_set_10'
     assert component.props[pc - 9].name == 'Rule_Description'
-    assert component.props[pc - 9].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 9].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 9].value == 'add-rule-description'
     assert component.props[pc - 9].remarks == 'rule_set_10'
     assert component.props[pc - 10].name == 'Rule_Id'
-    assert component.props[pc - 10].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 10].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 10].value == 'add-rule-id'
     assert component.props[pc - 10].remarks == 'rule_set_10'
     assert len(component.control_implementations) == 2
@@ -1036,7 +1046,8 @@ def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
     component = cd.components[0]
     assert len(component.props) == 59
     assert component.props[22].name == 'Parameter_Id'
-    assert component.props[22].ns == 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert component.props[22].ns == AnyUrl('http://abc.github.io/compliance-trestle/schemas/oscal/cd')
     assert component.props[22].value == 'api_keys_rotated_days'
     assert component.props[22].class_ == 'scc_class'
     assert component.props[22].remarks == 'rule_set_04'
@@ -1387,8 +1398,8 @@ def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
         row.append('')
     # set validation component type
     assert rows[0][9] == 'Component_Type'
-    assert rows[2][9] == 'Service'
-    rows[2][9] = 'Validation'
+    assert rows[2][9] == 'service'
+    rows[2][9] = 'validation'
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
@@ -1399,7 +1410,10 @@ def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     component = cd.components[0]
-    assert component.type == 'Validation'
+    # Pydantic v2: component.type is StringDatatype RootModel
+    from trestle.oscal.common import StringDatatype
+
+    assert isinstance(component.type, StringDatatype) and component.type.root == 'validation'
     # there are 4 component validation props: Rule_Id, Check_Id, Check_Description, Reference_Id
     assert len(component.props) == 4
     for prop in component.props:
@@ -1423,7 +1437,8 @@ def test_execute_rule_name_overlap(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     component = cd.components[0]
-    assert component.type.lower() == 'validation'
+    # In Pydantic v2, component.type is a StringDatatype RootModel, need .root to get string
+    assert component.type.root.lower() == 'validation'
     assert len(component.props) == 20
     assert component.props[0].name == 'Rule_Id'
     assert component.props[0].value == 'RULE-1.1'
@@ -1478,7 +1493,7 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
         'validation-fetcher-description',
         'https://abc.com/validation-profile-reference-url',
         'validation-profile-description',
-        'Validation',
+        'validation',
         'validation-control-id-list',
         'IAM',
         'IAM',
@@ -1499,7 +1514,10 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     component = cd.components[1]
-    assert component.type == 'Validation'
+    # Pydantic v2: component.type is StringDatatype RootModel
+    from trestle.oscal.common import StringDatatype
+
+    assert isinstance(component.type, StringDatatype) and component.type.root == 'validation'
     assert component.title == 'IAM'
     assert component.description == 'IAM'
     assert len(component.props) == 6
@@ -1510,7 +1528,7 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     assert component.props[1].value == 'validation-check-id'
     assert component.props[2].name == 'Check_Description'
     assert component.props[2].value == 'validation-check-description'
-    assert len(component.control_implementations) == 0
+    assert component.control_implementations is None
 
 
 @set_cwd_unsafe(root_dir)

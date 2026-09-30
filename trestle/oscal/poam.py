@@ -30,7 +30,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Field, RootModel, conint, constr, field_validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
@@ -47,11 +47,11 @@ class LocalDefinitions(OscalBaseModel):
     Allows components, and inventory-items to be defined within the POA&M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&M.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    components: list[common.SystemComponent] | None = Field(None)
-    inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items')
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    components: list[common.SystemComponent] | None = Field(None, min_length=1)
+    inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items', min_length=1)
     assessment_assets: common.AssessmentAssets | None = Field(None, alias='assessment-assets')
     remarks: str | None = None
 
@@ -61,10 +61,10 @@ class Origination(OscalBaseModel):
     Identifies the source of the finding, such as a tool or person.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    actors: list[common.OriginActor] = Field(...)
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    actors: list[common.OriginActor] = Field(..., min_length=1)
 
 
 class RelatedFinding(OscalBaseModel):
@@ -72,10 +72,10 @@ class RelatedFinding(OscalBaseModel):
     Relates the finding to referenced finding(s).
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    finding_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='finding-uuid', description='A machine-oriented identifier reference to a finding defined in the list of findings.', title='Finding Universally Unique Identifier Reference')
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    finding_uuid: constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='finding-uuid', description='A machine-oriented identifier reference to a finding defined in the list of findings.', title='Finding Universally Unique Identifier Reference')
     remarks: str | None = None
 
 
@@ -84,19 +84,19 @@ class PoamItem(OscalBaseModel):
     Describes an individual POA&M item.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') | None = Field(None, description='A machine-oriented, globally unique identifier with instance scope that can be used to reference this POA&M item entry in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.', title='POA&M Item Universally Unique Identifier')
-    title: constr(regex=r'^[^\n]+$') = Field(..., description='The title or name for this POA&M item .', title='POA&M Item Title')
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    uuid: constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') | None = Field(None, description='A machine-oriented, globally unique identifier with instance scope that can be used to reference this POA&M item entry in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.', title='POA&M Item Universally Unique Identifier')
+    title: constr(pattern=r'^[^\n]+$') = Field(..., description='The title or name for this POA&M item .', title='POA&M Item Title')
     description: str = Field(..., description='A human-readable description of POA&M item.', title='POA&M Item Description')
-    props: list[common.Property] | None = Field(None)
-    links: list[common.Link] | None = Field(None)
-    related_findings: list[RelatedFinding] | None = Field(None, alias='related-findings')
-    related_observations: list[common.RelatedObservation] | None = Field(None, alias='related-observations')
-    related_risks: list[common.AssociatedRisk] | None = Field(None, alias='related-risks')
+    props: list[common.Property] | None = Field(None, min_length=1)
+    links: list[common.Link] | None = Field(None, min_length=1)
+    related_findings: list[RelatedFinding] | None = Field(None, alias='related-findings', min_length=1)
+    related_observations: list[common.RelatedObservation] | None = Field(None, alias='related-observations', min_length=1)
+    related_risks: list[common.AssociatedRisk] | None = Field(None, alias='related-risks', min_length=1)
     remarks: str | None = None
-    origins: list[Origination] | None = Field(None)
+    origins: list[Origination] | None = Field(None, min_length=1)
 
 
 class PlanOfActionAndMilestones(OscalBaseModel):
@@ -104,18 +104,18 @@ class PlanOfActionAndMilestones(OscalBaseModel):
     A plan of action and milestones which identifies initial and residual risks, deviations, and disposition, such as those required by FedRAMP.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='A machine-oriented, globally unique identifier with instancescope that can be used to reference this POA&M instance in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.', title='POA&M Universally Unique Identifier')
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    uuid: constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='A machine-oriented, globally unique identifier with instancescope that can be used to reference this POA&M instance in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.', title='POA&M Universally Unique Identifier')
     metadata: common.Metadata
     import_ssp: common.ImportSsp | None = Field(None, alias='import-ssp')
     system_id: common.SystemId | None = Field(None, alias='system-id')
     local_definitions: LocalDefinitions | None = Field(None, alias='local-definitions')
-    observations: list[common.Observation] | None = Field(None)
-    risks: list[common.Risk] | None = Field(None)
-    findings: list[common.Finding] | None = Field(None)
-    poam_items: list[PoamItem] = Field(..., alias='poam-items')
+    observations: list[common.Observation] | None = Field(None, min_length=1)
+    risks: list[common.Risk] | None = Field(None, min_length=1)
+    findings: list[common.Finding] | None = Field(None, min_length=1)
+    poam_items: list[PoamItem] = Field(..., alias='poam-items', min_length=1)
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')
 
 

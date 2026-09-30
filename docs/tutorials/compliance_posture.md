@@ -26,7 +26,7 @@ The compliance-[trestle](../index.md) open source github project is an effort to
 
 #### Simple Continuous Compliance Architecture
 
-![Continuous Compliance Reporting](./compliance_posture/ContinuousCompliance.jpg)
+![Architecture diagram: Cloud Services feed compliance raw data into OSCAL transformers which produce standardised OSCAL Assessment Results; trestle assembles these into a Continuous Compliance Report for stakeholders](./compliance_posture/ContinuousCompliance.jpg)
 
 Cloud Services can often be configured to monitor (and sometimes enforce) policies. Examples include OpenShift Compliance Operator and Tanium. However, the compliance reporting “raw” data produced is unique to each.
 
@@ -38,7 +38,7 @@ The bad news is that a transformer to [OSCAL](https://pages.nist.gov/OSCAL) is n
 
 However, there is plenty of good news:
 
-- a transformer for your Cloud Service type may already exist, such as: [Tanium to OSCAL](https://github.com/oscal-compass/compliance-trestle/blob/main/trestle/tasks/tanium_result_to_oscal_ar.py), [OpenShift Compliance Operator to OSCAL](https://github.com/oscal-compass/compliance-trestle/blob/main/trestle/tasks/xccdf_result_to_oscal_ar.py)
+- a transformer for your Cloud Service type may already exist, such as: [Tanium to OSCAL](../reference/API/trestle/tasks/tanium_result_to_oscal_ar.md), [OpenShift Compliance Operator to OSCAL](../reference/API/trestle/tasks/xccdf_result_to_oscal_ar.md), [AWS Config to OSCAL](../reference/API/trestle/tasks/aws_config_result_to_oscal_ar.md)
 - once a transformer for a Cloud Service type has been written, it can be open-sourced/re-used
 - writing a transformer is fairly easy: just a few lines of Python code using [trestle](../index.md) as a foundation
 

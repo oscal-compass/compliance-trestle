@@ -10,7 +10,7 @@
     "components": [
       {
         "uuid": "e2d38401-9536-4481-91d5-6331f2b88c86",
-        "type": "Service",
+        "type": "service",
         "title": "IAM",
         "description": "",
         "props": [

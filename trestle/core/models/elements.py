@@ -19,13 +19,13 @@ from typing import Any, List, Optional, Type, Union, cast
 
 import typing_extensions
 
-from pydantic.v1 import Field, create_model
-from pydantic.v1.error_wrappers import ValidationError
+from pydantic import ConfigDict, Field, RootModel, ValidationError, create_model
 
 from ruamel.yaml import YAML
 
 import trestle.common.const as const
 from trestle.common import common_types, str_utils, type_utils as utils
+from trestle.common.type_utils import is_union_type
 import trestle.common.err as err
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.model_utils import _get_model_type_from_union
@@ -116,49 +116,57 @@ class ElementPath:
         # variables
         # for current_element_str in effective_path[1:]:
         for current_element_str in effective_path[1:]:
-            # Determine if the parent model is a collection.
+            # Determine if the current model is a collection first so Optional[List[T]] paths
+            # like catalog.controls.control and catalog.controls.* resolve to the item type.
             if utils.is_collection_field_type(prev_model):
                 inner_model = utils.get_inner_type(prev_model)
-                # Handle Union types (e.g., Group1|Group2 from catalog or profile)
-                # Both variants in a Union typically map to the same JSON alias
-                if hasattr(inner_model, '__name__'):
-                    inner_class_name = classname_to_alias(inner_model.__name__, AliasMode.JSON)
-                else:
-                    # For Union types, use the first variant's name
-                    # e.g., for Group1|Group2, both map to JSON alias "group"
-                    union_args = typing_extensions.get_args(inner_model)
-                    if union_args:
-                        inner_class_name = classname_to_alias(union_args[0].__name__, AliasMode.JSON)
-                    else:
-                        raise err.TrestleError(f'Unable to determine class name for type {inner_model}')
-                # Assert that the current name fits an expected form.
-                # Valid choices here are *, integer (for arrays) and the inner model alias
-                if (
-                    inner_class_name == current_element_str
-                    or current_element_str == self.WILDCARD
-                    or current_element_str.isnumeric()
-                ):
-                    prev_model = inner_model
 
-                else:
-                    raise TrestleError('Unexpected key in element path when finding type.')
+                if current_element_str == self.WILDCARD or current_element_str.isnumeric():
+                    prev_model = _get_model_type_from_union(inner_model)
+                    continue
 
-            else:
-                # Indices, * are not allowed on non-collection types
-                if current_element_str == self.WILDCARD:
-                    raise TrestleError(
-                        'Wild card in unexpected position when trying to find class type.'
-                        + ' Element path type lookup can only occur where a single type can be identified.'
-                    )
-                # Resolve Union types before accessing alias_to_field_map
+                resolved_inner_model = _get_model_type_from_union(inner_model, field_name=current_element_str)
+                if isinstance(resolved_inner_model, type) and issubclass(resolved_inner_model, OscalBaseModel):
+                    inner_class_name = classname_to_alias(resolved_inner_model.__name__, AliasMode.JSON)
+                    if inner_class_name == current_element_str:
+                        prev_model = resolved_inner_model
+                        continue
+
+                raise TrestleError('Unexpected key in element path when finding type.')
+
+            # Prefer field traversal on the current model before treating the segment as a direct union alias.
+            if isinstance(prev_model, type) and issubclass(prev_model, OscalBaseModel):
+                field_map = prev_model.alias_to_field_map()
+                if current_element_str in field_map:
+                    prev_model = field_map[current_element_str].annotation
+                    continue
+
                 resolved_model = _get_model_type_from_union(prev_model, field_name=current_element_str)
-                prev_model = resolved_model.alias_to_field_map()[current_element_str].outer_type_
+                if isinstance(resolved_model, type) and issubclass(resolved_model, OscalBaseModel):
+                    resolved_model_alias = classname_to_alias(resolved_model.__name__, AliasMode.JSON)
+                    if current_element_str == resolved_model_alias:
+                        prev_model = resolved_model
+                        continue
+
+            if current_element_str == self.WILDCARD or current_element_str.isnumeric():
+                raise TrestleError(
+                    'Wild card in unexpected position when trying to find class type.'
+                    + ' Element path type lookup can only occur where a single type can be identified.'
+                )
+
+            raise TrestleError(f'Unable to resolve model type for element path segment "{current_element_str}"')
+        if utils.is_collection_field_type(prev_model):
+            origin = utils.get_origin(prev_model)
+            if is_union_type(origin):
+                non_none_args = [arg for arg in typing_extensions.get_args(prev_model) if arg is not type(None)]
+                if len(non_none_args) == 1:
+                    return non_none_args[0]
         return prev_model
 
     def get_obm_wrapped_type(
         self, root_model: Optional[Type[Any]] = None, use_parent: bool = False
     ) -> Type[OscalBaseModel]:
-        """Get the type of the element. Wraps the collection type in an OscalBaseModel as a __root__ element.
+        """Get the type of the element. Wraps the collection type in an OscalBaseModel as a root element (Pydantic v2 RootModel).
 
         This should principally be used for validating content.
 
@@ -170,10 +178,7 @@ class ElementPath:
             The type of the model whether wrapped or not as an OscalBaseModel.
         """
         base_type = self.get_type(root_model, use_parent)
-        # Get an outer model type.
-        origin_type = utils.get_origin(base_type)
-
-        if origin_type in [list, dict]:
+        if utils.is_collection_field_type(base_type):
             # OSCAL does not support collections of collections directly. We should not hit this scenario
             collection_name = self.get_last()
             if collection_name == self.WILDCARD:
@@ -182,12 +187,32 @@ class ElementPath:
                 raise TrestleError('Unknown error inferring type from element path.')
             # Final path must be the alias
 
-            new_base_type = create_model(
-                str_utils.alias_to_classname(collection_name, AliasMode.JSON),
-                __base__=OscalBaseModel,
-                __root__=(base_type, ...),
-            )
-            return new_base_type
+            # In Pydantic v2, must use RootModel instead of v1's __root__ field
+            class_name = str_utils.alias_to_classname(collection_name, AliasMode.JSON)
+
+            class DynamicRootModel(RootModel):  # type: ignore
+                root: base_type  # type: ignore
+
+                # RootModel doesn't support extra='forbid', so we create a custom config
+                model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+                @classmethod
+                def oscal_read(cls, path: pathlib.Path):
+                    """Read from OSCAL JSON/YAML file."""
+                    return OscalBaseModel.oscal_read.__func__(cls, path)
+
+                def oscal_write(self, path: pathlib.Path):
+                    """Write to OSCAL JSON/YAML file."""
+                    return OscalBaseModel.oscal_write(self, path)
+
+                @classmethod
+                def alias_to_field_map(cls):
+                    """Get alias to field mapping."""
+                    return OscalBaseModel.alias_to_field_map.__func__(cls)
+
+            DynamicRootModel.__name__ = class_name
+            DynamicRootModel.__qualname__ = class_name
+            return DynamicRootModel
         # Resolve Union types before returning
         # This handles cases like Group1|Group2 or Parameter1|Parameter2
         resolved_type = _get_model_type_from_union(base_type)
@@ -423,16 +448,16 @@ class Element:
         self._wrapper_alias: str = wrapper_alias
 
     def _get_singular_classname(self) -> str:
-        """Get the inner class name for list or dict objects."""
+        """Get the inner class name for list or dict objects (Pydantic v2 RootModel)."""
         # this assumes all items in list and all values in dict are same type
         class_name = None
-        root = getattr(self._elem, '__root__', None)
+        root = getattr(self._elem, 'root', None)
         if root is not None:
             type_str = root.__class__.__name__
             if type_str == 'list':
-                class_name = self._elem.__root__[0].__class__.__name__
+                class_name = self._elem.root[0].__class__.__name__
             elif type_str == 'dict':
-                class_name = list(self._elem.__root__.values())[0].__class__.__name__
+                class_name = next(iter(self._elem.root.values())).__class__.__name__
         return class_name
 
     def get(self) -> OscalBaseModel:
@@ -463,10 +488,10 @@ class Element:
 
         # TODO validate that self._elem is of same type as root_model
 
-        # initialize the starting element for search
+        # initialize the starting element for search (Pydantic v2 RootModel)
         elm = self._elem
-        if hasattr(elm, '__root__') and (isinstance(elm.__root__, dict) or isinstance(elm.__root__, list)):
-            elm = elm.__root__
+        if hasattr(elm, 'root') and (isinstance(elm.root, dict) or isinstance(elm.root, list)):
+            elm = elm.root
 
         # if parent exists and does not end with wildcard, use the parent as the starting element for search
         if (
@@ -603,14 +628,15 @@ class Element:
                 dynamic_passer = {}
                 dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
                 wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)
-                wrapped_model = wrapper_model.construct(**{self._wrapper_alias: self._elem})
+                # Pydantic v2: construct() → model_construct()
+                wrapped_model = wrapper_model.model_construct(**{self._wrapper_alias: self._elem})
                 json_data = wrapped_model.oscal_serialize_json(pretty=pretty, wrapped=False)
         return json_data
 
     @classmethod
     def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
         """Get the class of the sub-element."""
-        sub_element_class = parent_elm.__fields__[sub_element_name].outer_type_
+        sub_element_class = parent_elm.__class__.model_fields[sub_element_name].annotation
         return sub_element_class
 
     @classmethod

@@ -161,7 +161,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
                 )
             tree_context.control_id, tree_context.control_group, tree_context.control_title = (
                 ControlMarkdownNode._parse_control_title_line(root_key)
-            )  # noqa: E501
+            )
             content.control_id = tree_context.control_id
             content.control_group = tree_context.control_group
             content.control_title = tree_context.control_title
@@ -197,8 +197,9 @@ class ControlMarkdownNode(BaseMarkdownNode):
                     ):
                         # Control statement, objective and guidance have special treatment
                         # in those sections any subsections go to the prose rather than subparts.
-                        content.part.parts = as_list(content.part.parts)
-                        content.part.parts.append(subtree.content.part)
+                        existing = as_list(content.part.parts)
+                        existing.append(subtree.content.part)
+                        content.part.parts = existing
                     # Control parts can have general markdown in the prose, if we are in the control part
                     # add its contents under the prose of a parent
                     _add_child_prose_if_need(

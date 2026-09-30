@@ -158,3 +158,51 @@ def test_init_govdocs_n_full(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, mon
         assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
     assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
     assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
+
+
+# ---------------------------------------------------------------------------
+# Coverage-improvement tests for trestle/core/commands/init.py
+# ---------------------------------------------------------------------------
+
+
+def test_init_nonexistent_directory(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """InitCmd._run line 56 — error when trestle_root does not exist."""
+    nonexistent = tmp_path / 'does_not_exist'
+    command = f'trestle init --trestle-root {nonexistent}'
+    # Returns COMMAND_ERROR (5) when the path doesn't exist
+    execute_command_and_assert(command, 5, monkeypatch)
+
+
+def test_init_unexpected_dir_creation_error(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
+    """InitCmd._create_directories line 99-100 — unexpected Exception is re-raised as TrestleError."""
+    import trestle.common.file_utils as file_utils_mod
+
+    os.chdir(tmp_path)
+
+    original = file_utils_mod.make_hidden_file
+
+    def _raise_unexpected(*args, **kwargs):
+        raise RuntimeError('unexpected error')
+
+    monkeypatch.setattr(file_utils_mod, 'make_hidden_file', _raise_unexpected)
+    command = 'trestle init'
+    execute_command_and_assert(command, 1, monkeypatch)
+    monkeypatch.setattr(file_utils_mod, 'make_hidden_file', original)
+
+
+def test_init_unexpected_config_copy_error(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
+    """InitCmd._copy_config_file line 112-113 — unexpected Exception is re-raised as TrestleError."""
+    import importlib.resources as importlib_resources
+    import trestle.core.commands.init as init_mod
+
+    os.chdir(tmp_path)
+
+    original = init_mod.InitCmd._copy_config_file
+
+    def _raise_unexpected(self, root):
+        raise RuntimeError('unexpected config copy error')
+
+    monkeypatch.setattr(init_mod.InitCmd, '_copy_config_file', _raise_unexpected)
+    command = 'trestle init'
+    execute_command_and_assert(command, 1, monkeypatch)
+    monkeypatch.setattr(init_mod.InitCmd, '_copy_config_file', original)
