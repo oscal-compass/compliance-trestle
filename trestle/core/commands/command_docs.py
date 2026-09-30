@@ -25,6 +25,7 @@ from typing import Optional, TextIO
 from ilcli import Command
 
 from trestle.common import file_utils
+from trestle.core import beta_features
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 
 logger = logging.getLogger(__name__)
@@ -48,6 +49,21 @@ class CommandBase(Command):
         """Override default ILCLI behaviour to include class documentation in command help description."""
         super().__init__(parser, parent, name, out, err)
         self.parser.description = self.__doc__
+        if beta_features.get_beta_feature_name(self._run) is not None:
+            self.add_argument('--beta', help=beta_features.BETA_FLAG_HELP, action='store_true')
+
+    def _validate_arguments(self, args: argparse.Namespace) -> Optional[int]:
+        """Validate common trestle command arguments."""
+        return self._validate_beta_argument(args)
+
+    def _validate_beta_argument(self, args: argparse.Namespace) -> Optional[int]:
+        """Warn if the one-time beta flag is passed to a command that is not beta-gated."""
+        if self.subcommands or not getattr(args, 'beta', False):
+            return None
+        if beta_features.get_beta_feature_name(self._run) is not None:
+            return None
+        self.err('Warning: --beta flag is only effective for beta level commands.')
+        return None
 
 
 class CommandPlusDocs(CommandBase):
@@ -59,6 +75,9 @@ class CommandPlusDocs(CommandBase):
 
     def _validate_arguments(self, args: argparse.ArgumentParser) -> int:
         """Check trestle-root argument is a valid trestle root directory."""
+        beta_validation_result = self._validate_beta_argument(args)
+        if beta_validation_result is not None:
+            return beta_validation_result
         root = file_utils.extract_trestle_project_root(args.trestle_root)
         if root is None:
             logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')

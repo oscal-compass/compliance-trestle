@@ -233,7 +233,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
 
     assert creation_time < assembled_cat_path.stat().st_mtime
 
-    control_text = """# control_q - \[The xy controls\] this is control q
+    control_text = r"""# control_q - \[The xy controls\] this is control q
 
 ## Control Statement
 """
@@ -251,7 +251,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     assert interface.get_count_of_controls_in_catalog(True) == 7
 
     # make additions to a sub control and confirm they end up in the assembled catalog
-    control_d1_text = """---
+    control_d1_text = r"""---
 x-trestle-set-params:
   param_new:
     values: new param value
@@ -415,9 +415,13 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
     # In OSCAL 1.2.0, the path includes both parent Group1 and child Group2
     parent_group_id = sample_catalog_rich_controls.groups[0].id  # Group1 'xy'
     group_id = sample_catalog_rich_controls.groups[0].groups[0].id  # Group2 'xy-controls'
+    # In Pydantic v2, props field has min_length=1, so cannot set to empty list
+    # Create list with the property directly
+    withdrawn_prop = Property(name='status', value='Withdrawn')
     if not control_b.props:
-        control_b.props = []
-    control_b.props.append(Property(name='status', value='Withdrawn'))
+        control_b.props = [withdrawn_prop]
+    else:
+        control_b.props.append(withdrawn_prop)
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     catalog_api = CatalogAPI(catalog=sample_catalog_rich_controls, context=context)
     catalog_api.write_catalog_as_markdown()
@@ -706,7 +710,7 @@ Test 4
     assert (
         control.parts[0].parts[0].prose
         == 'Define and document the types of accounts allowed and specifically prohibited for use within the system;'
-    )  # noqa E501
+    )
 
 
 def test_catalog_duplicate_parts_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:
@@ -719,7 +723,7 @@ def test_catalog_duplicate_parts_statement(tmp_trestle_dir: pathlib.Path, monkey
     md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
     assert md_path.exists()
 
-    control_statement_prose_with_parts = """The organization:
+    control_statement_prose_with_parts = r"""The organization:
 
 - \[a\] Part A
 - \[a\] Part A Duplicate.
@@ -750,18 +754,18 @@ def test_catalog_tab_in_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
     md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
     assert md_path.exists()
-
+    # Cannot use r-string here: \t must remain as tab charcters for markdown parsing
     control_statement_prose_with_parts = """The organization:
 \t
 \t
 \t
-- \[m\] Part M
-- \[n\] Part N
-\t- \[n.1\] Documents 1
-\t- \[n.2\] Documents 2
-\t\t- \[n.2.1\] SubDocuments 1
-\t\t- \[n.2.2\] SubDocuments 2
-- \[o\] Part O.
+- \\[m\\] Part M
+- \\[n\\] Part N
+\t- \\[n.1\\] Documents 1
+\t- \\[n.2\\] Documents 2
+\t\t- \\[n.2.1\\] SubDocuments 1
+\t\t- \\[n.2.2\\] SubDocuments 2
+- \\[o\\] Part O.
 \t
 \t
 \t

@@ -23,9 +23,7 @@
       }
     ],
     "merge": {
-      "combine": {
-        "method": "use-first"
-      },
+      "combine": {},
       "as-is": true
     },
     "back_matter": {

@@ -183,7 +183,7 @@ class CatalogWriter:
                     if new_dict[const.GUIDELINES] is None:
                         new_dict.pop(const.GUIDELINES)
                     if const.AGGREGATES in [prop.name for prop in as_list(orig_param.props)]:
-                        new_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)
+                        new_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN, None)
             else:
                 # if the profile doesnt change this param at all, show it in the header with values
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
@@ -340,13 +340,13 @@ class CatalogWriter:
         # get top level rule info applying to all controls
         comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(
             context.component
-        )  # noqa E501
+        )
         context.rules_dict[context.comp_name] = comp_rules_dict
         context.rules_params_dict[context.comp_name] = comp_rules_params_dict
         for control_imp in as_list(context.component.control_implementations):
             control_imp_rules_dict, control_imp_rules_params_dict, _ = (
                 ControlInterface.get_rules_and_params_dict_from_item(control_imp)
-            )  # noqa E501
+            )
             context.rules_dict[context.comp_name].update(control_imp_rules_dict)
             comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
             comp_rules_params_dict.update(control_imp_rules_params_dict)

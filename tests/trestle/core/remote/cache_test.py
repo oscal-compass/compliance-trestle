@@ -15,13 +15,15 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
+import datetime
 import getpass
 import pathlib
 import random
 import secrets
 import string
 import time
-from typing import Tuple
+from types import SimpleNamespace
+from typing import Dict, List, Tuple
 from urllib import parse
 
 from _pytest.monkeypatch import MonkeyPatch
@@ -38,6 +40,24 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core import generators
 from trestle.core.remote import cache
 from trestle.oscal.catalog import Catalog
+
+
+class _HTTPSResponse:
+    """Minimal streaming response used by HTTPS fetcher tests."""
+
+    def __init__(self, status_code: int, chunks: List[bytes], headers: Dict[str, str] | None = None) -> None:
+        self.status_code = status_code
+        self._chunks = chunks
+        self.headers = headers or {}
+        self.text = b''.join(chunks).decode(const.FILE_ENCODING)
+        self.closed = False
+
+    def iter_content(self, chunk_size: int) -> List[bytes]:
+        assert chunk_size == 64 * 1024
+        return self._chunks
+
+    def close(self) -> None:
+        self.closed = True
 
 
 def as_file_uri(path: str) -> str:
@@ -68,14 +88,54 @@ def get_catalog_fetcher(
     return fetcher, catalog_data
 
 
+def test_time_since_modification_uses_utc(monkeypatch: MonkeyPatch) -> None:
+    """Test cache age calculation uses UTC-aware datetimes."""
+
+    class _StatResult:
+        st_mtime = 1234.5
+
+    class _FakePath:
+        def stat(self) -> _StatResult:
+            return _StatResult()
+
+    expected_last_mod = datetime.datetime(2026, 3, 15, 11, 0, 0, tzinfo=datetime.UTC)
+    expected_now = datetime.datetime(2026, 3, 15, 12, 30, 0, tzinfo=datetime.UTC)
+
+    class _FakeDateTime:
+        @classmethod
+        def fromtimestamp(cls, ts: float, tz: datetime.tzinfo | None = None) -> datetime.datetime:
+            assert ts == _StatResult.st_mtime
+            assert tz == datetime.UTC
+            return expected_last_mod
+
+        @classmethod
+        def now(cls, tz: datetime.tzinfo | None = None) -> datetime.datetime:
+            assert tz == datetime.UTC
+            return expected_now
+
+    monkeypatch.setattr(cache.datetime, 'datetime', _FakeDateTime)
+    assert cache.FetcherBase._time_since_modification(_FakePath()) == datetime.timedelta(hours=1, minutes=30)
+
+
 def test_fetcher_oscal(tmp_trestle_dir: pathlib.Path) -> None:
     """Test whether fetcher can get an object from the cache as an oscal model."""
     fetcher, catalog_data = get_catalog_fetcher(tmp_trestle_dir)
     fetcher._update_cache()
+    assert fetcher.get_cached_path().is_file()
     fetched_data = fetcher.get_oscal_with_model_type(Catalog)
     assert ModelUtils.models_are_equivalent(fetched_data, catalog_data)
     fetched_data, _ = fetcher.get_oscal()
     assert ModelUtils.models_are_equivalent(fetched_data, catalog_data)
+
+
+def test_fetcher_cached_path_requires_file(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """The public cache path accessor should reject a missing cached object."""
+    fetcher, _ = get_catalog_fetcher(tmp_trestle_dir)
+    monkeypatch.setattr(fetcher, '_update_cache', lambda force_update=False: False)
+    fetcher._cached_object_path = tmp_trestle_dir / 'missing.json'
+
+    with pytest.raises(TrestleError, match='cached object is not a file'):
+        fetcher.get_cached_path()
 
 
 def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -92,6 +152,24 @@ def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
         fetcher.get_oscal_with_model_type(Catalog)
 
 
+def test_fetcher_get_raw_fails_single_read_attempt(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Ensure get_raw does not attempt duplicate reads when file loading fails."""
+    fetcher, _ = get_catalog_fetcher(tmp_trestle_dir)
+    call_count = 0
+
+    def load_file_mock(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        raise RuntimeError('simulated load failure')
+
+    monkeypatch.setattr(file_utils, 'load_file', load_file_mock)
+
+    with pytest.raises(err.TrestleError, match='Cache get failure'):
+        fetcher.get_raw()
+
+    assert call_count == 1
+
+
 def test_local_fetcher_relative(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the local fetcher for an object with an aboslute path."""
     fetcher, catalog_data = get_catalog_fetcher(tmp_trestle_dir, False, True)
@@ -103,11 +181,11 @@ def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     """Test the HTTPS fetcher failing."""
     monkeypatch.setenv('myusername', 'user123')
     monkeypatch.setenv('mypassword', 'somep4ss')
-    # This syntactically valid uri points to nothing and should ConnectTimeout.
+    # This syntactically valid uri points to localhost which is now blocked for security
+    # The security validator should reject this before any connection attempt
     uri = 'https://{{myusername}}:{{mypassword}}@127.0.0.1/path/to/file.json'
-    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
-    with pytest.raises(TrestleError, match='retries exceeded'):
-        fetcher._update_cache()
+    with pytest.raises(TrestleError, match='127.0.0.0/8'):
+        cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
 
 
 def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -134,6 +212,95 @@ def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) 
     monkeypatch.setenv('REQUESTS_CA_BUNDLE', dummy_existing_file)
     with pytest.raises(TrestleError, match='retries exceeded'):
         fetcher._update_cache()
+
+
+def test_https_fetcher_rejects_redirects(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """HTTPS fetching should not follow an unvalidated redirect destination."""
+    response = _HTTPSResponse(302, [])
+    request_options = {}
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+
+    def _get(url: str, **kwargs) -> _HTTPSResponse:
+        request_options.update(kwargs)
+        return response
+
+    monkeypatch.setattr(cache.requests, 'get', _get)
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/catalog.json', max_size_bytes=1024)
+
+    with pytest.raises(TrestleError, match='GET returned code 302'):
+        fetcher._update_cache()
+
+    assert request_options['allow_redirects'] is False
+    assert response.closed
+
+
+@pytest.mark.parametrize('headers, chunks', [({'Content-Length': '6'}, []), ({}, [b'123', b'', b'456'])])
+def test_https_fetcher_rejects_oversized_response(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, headers: Dict[str, str], chunks: List[bytes]
+) -> None:
+    """HTTPS size limits should cover declared and streamed response sizes."""
+    response = _HTTPSResponse(200, chunks, headers)
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+    monkeypatch.setattr(cache.requests, 'get', lambda *args, **kwargs: response)
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/catalog.json', max_size_bytes=5)
+
+    with pytest.raises(TrestleError, match='exceeds maximum size of 5 bytes'):
+        fetcher._update_cache()
+
+    assert response.closed
+    assert not fetcher._cached_object_path.exists()
+
+
+def test_https_fetcher_streams_limited_response(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """A bounded HTTPS response should be atomically stored in the cache."""
+    response = _HTTPSResponse(200, [b'{}'])
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+    monkeypatch.setattr(cache.requests, 'get', lambda *args, **kwargs: response)
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/catalog.json', max_size_bytes=2)
+
+    cached_path = fetcher.get_cached_path()
+
+    assert cached_path.read_bytes() == b'{}'
+    assert response.closed
+
+
+def test_https_fetcher_wraps_response_read_failure(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Unexpected HTTPS response-read failures should retain fetch context."""
+
+    class _UnreadableResponse:
+        status_code = 200
+
+        @property
+        def text(self) -> str:
+            raise RuntimeError('simulated read failure')
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+    monkeypatch.setattr(cache.requests, 'get', lambda *args, **kwargs: _UnreadableResponse())
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/catalog.json')
+
+    with pytest.raises(TrestleError, match='Cache update failure reading response via HTTPS'):
+        fetcher._do_fetch()
+
+
+def test_fetcher_rejects_invalid_maximum_size(tmp_trestle_dir: pathlib.Path) -> None:
+    """A configured fetch limit must be positive."""
+    with pytest.raises(TrestleError, match='must be greater than zero'):
+        cache.FetcherFactory.get_fetcher(tmp_trestle_dir, '../catalog.json', max_size_bytes=0)
+
+
+@pytest.mark.parametrize('block_private_ips', [True, False])
+def test_https_fetcher_private_network_override(tmp_trestle_dir: pathlib.Path, block_private_ips: bool) -> None:
+    """Callers should be able to override the shared private-network policy."""
+    uri = 'https://10.0.0.1/catalog.json'
+    if block_private_ips:
+        with pytest.raises(TrestleError, match='10.0.0.0/8'):
+            cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri, block_private_ips=True)
+    else:
+        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri, block_private_ips=False)
+        assert not fetcher._url_validator.block_private_ips
 
 
 def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -183,6 +350,54 @@ def test_sftp_fetcher_open_fail(tmp_trestle_dir: pathlib.Path, monkeypatch: Monk
         fetcher._do_fetch()
 
 
+@pytest.mark.parametrize('reported_size, content', [(6, b''), (3, b'123456')])
+def test_sftp_fetcher_rejects_oversized_response(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, reported_size: int, content: bytes
+) -> None:
+    """SFTP limits should reject an oversized stat or growing transfer."""
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+    monkeypatch.setattr(SSHClient, 'load_system_host_keys', lambda self: None)
+    monkeypatch.setattr(SSHClient, 'connect', lambda self, *args, **kwargs: None)
+
+    class _SFTPClient:
+        def stat(self, remotepath: str) -> SimpleNamespace:
+            return SimpleNamespace(st_size=reported_size)
+
+        def get(self, remotepath: str, localpath: str, callback=None) -> None:
+            pathlib.Path(localpath).write_bytes(content)
+            if callback:
+                callback(len(content), len(content))
+
+    monkeypatch.setattr(SSHClient, 'open_sftp', lambda self: _SFTPClient())
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'sftp://example.com/catalog.json', max_size_bytes=5)
+
+    with pytest.raises(TrestleError, match='exceeds maximum size of 5 bytes'):
+        fetcher._update_cache()
+
+    assert not fetcher._cached_object_path.exists()
+
+
+def test_sftp_fetcher_stores_limited_response(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """A bounded SFTP response should be atomically stored in the cache."""
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+    monkeypatch.setattr(SSHClient, 'load_system_host_keys', lambda self: None)
+    monkeypatch.setattr(SSHClient, 'connect', lambda self, *args, **kwargs: None)
+
+    class _SFTPClient:
+        def stat(self, remotepath: str) -> SimpleNamespace:
+            return SimpleNamespace(st_size=2)
+
+        def get(self, remotepath: str, localpath: str, callback=None) -> None:
+            pathlib.Path(localpath).write_bytes(b'{}')
+            if callback:
+                callback(2, 2)
+
+    monkeypatch.setattr(SSHClient, 'open_sftp', lambda self: _SFTPClient())
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'sftp://example.com/catalog.json', max_size_bytes=2)
+
+    assert fetcher.get_cached_path().read_bytes() == b'{}'
+
+
 def test_sftp_fetcher_connect_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test sftp during SSHClient connect failure."""
 
@@ -204,10 +419,10 @@ def test_sftp_fetcher_connect_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: 
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     with pytest.raises(err.TrestleError, match='connect via SSH'):
         fetcher._update_cache()
-    # malformed uri
+    # malformed uri - security validator now catches urlparse errors first
     monkeypatch.setattr(SSHClient, 'connect', ssh_connect_mock)
     monkeypatch.setattr(parse, 'urlparse', ssh_urlparse_mock)
-    with pytest.raises(err.TrestleError, match='malformed'):
+    with pytest.raises(err.TrestleError, match='Invalid URL format'):
         _ = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
 
 
@@ -295,6 +510,15 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
     monkeypatch.setenv('mypassword', 'somep4ss')
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, https_uri)
     assert isinstance(fetcher, cache.HTTPSFetcher)
+
+    # Mock DNS resolution for SFTP tests to avoid "Unable to resolve hostname" errors
+    import socket
+
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        # Return a fake IP address for any hostname
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('192.0.2.1', 22))]
+
+    monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
 
     sftp_uri = 'sftp://user@hostname:/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, sftp_uri)

@@ -1,0 +1,42 @@
+{
+  "catalog": {
+    "uuid": "7a1c9d2e-3f4b-4c5a-8e6d-0b1f2a3c4d5e",
+    "metadata": {
+      "title": "Minimal Catalog With Groups And Controls",
+      "last-modified": "2021-06-09T00:00:00.000+00:00",
+      "version": "1.0",
+      "oscal-version": "1.0.0"
+    },
+    "groups": [
+      {
+        "id": "ac",
+        "class": "family",
+        "title": "Access Control",
+        "controls": [
+          {
+            "id": "ac-1",
+            "class": "SP800-53",
+            "title": "Access Control Policy and Procedures"
+          },
+          {
+            "id": "ac-2",
+            "class": "SP800-53",
+            "title": "Account Management"
+          }
+        ]
+      },
+      {
+        "id": "au",
+        "class": "family",
+        "title": "Audit and Accountability",
+        "controls": [
+          {
+            "id": "au-1",
+            "class": "SP800-53",
+            "title": "Audit and Accountability Policy and Procedures"
+          }
+        ]
+      }
+    ]
+  }
+}

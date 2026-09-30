@@ -7,7 +7,7 @@ name = "compliance-trestle"
 dynamic = ["version"]
 description = "Tools to manage & autogenerate python objects representing the OSCAL layers/models"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 keywords = [
@@ -27,19 +27,19 @@ classifiers = [
     "Operating System :: POSIX",
     "Operating System :: Microsoft",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==46.0.5",
-    "paramiko==4.0.0",
+    "cryptography>=46.0.7",
+    "paramiko==5.0.0",
     "ruamel.yaml",
     "furl",
-    "pydantic[email]>=2.0.0",
+    "pydantic[email]>=2.11.0",
     "python-dotenv>=0.10.4",
     "python-frontmatter",
     "pywin32 >= 1.0;platform_system=='Windows'",
@@ -48,11 +48,17 @@ dependencies = [
     "Jinja2 == 3.1.6",
     "cmarkgfm>=2024.1,<2025.11",
     "orjson",
+    "rfc8785>=0.1.4",
+    "securesystemslib[crypto]>=1.3.1,<2.0",
     "requests>=2.32.2",
     "importlib_resources",
 ]
 
 [project.optional-dependencies]
+# Fuzzing (Linux only — atheris has no macOS/Windows wheels)
+fuzz = [
+    "atheris; sys_platform == 'linux'",
+]
 # Type checking
 typing = [
     "mypy",
@@ -64,12 +70,11 @@ typing = [
 # Documentation website
 docs = [
     "mike",
-    "mkdocs>=1.6.0",
+    "mkdocs>=1.6.0,<2.0.0",
     "mkdocs-awesome-pages-plugin",
     "mkdocstrings[python]>=0.25.2",
     "mkdocs-htmlproofer-plugin",
-    "mkdocs-material",
-    "markdown-include",
+    "mkdocs-material>=9.0.0,<10.0.0",
     "mkdocs-minify-plugin",
     "mkdocs-git-revision-date-localized-plugin",
     "pymdown-extensions",
@@ -84,7 +89,7 @@ dev = [
     "pre-commit>=2.4.0",
     "python-semantic-release>=10.4.0",
     "pylint",
-    "datamodel-code-generator[http]<0.55.0",
+    "datamodel-code-generator[http]",
     "gitpython",
 ]
 
@@ -115,6 +120,9 @@ dependencies = [
   "coverage[toml]~=7.4",
 ]
 
+[tool.hatch.envs.default.scripts]
+cov-combine = "coverage combine"
+
 [tool.hatch.envs.hatch-test]
 default-args = ["tests"]
 parallel = true
@@ -127,8 +135,20 @@ dependencies = [
     "mypy",
 ]
 
+[tool.hatch.envs.hatch-test.scripts]
+run = [
+    "rm -f .coverage .coverage.*",
+    "coverage run -m pytest{env:HATCH_TEST_ARGS:} --dist loadfile {args}",
+]
+run-cov = [
+    "rm -f .coverage .coverage.*",
+    "coverage run -m pytest{env:HATCH_TEST_ARGS:} --dist loadfile {args}",
+]
+cov-combine = "coverage combine"
+cov-report = "coverage report"
+
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.11", "3.12", "3.13", "3.14"]
 
 [tool.hatch.envs.docs]
 features = ["docs"]
@@ -151,7 +171,7 @@ testpaths = [
 [tool.ruff]
 line-length = 120
 indent-width = 4
-target-version = "py310"
+target-version = "py311"
 exclude = [
     ".bzr",
     ".direnv",
@@ -198,6 +218,7 @@ select = [
     "T20",    # flake8-print
     "SIM",    # flake8-simplify
     "S",      # flake8-bandit (security)
+    "RUF",    # ruff-specific rules (incl. RUF100: unused/invalid noqa directives)
 ]
 ignore = [
     "E501",   # line too long (handled by formatter)
@@ -244,18 +265,36 @@ ignore = [
     "F401",   # FIXME: Unused import (7 errors)
     # FIXME: C4 - flake8-comprehensions rules to fix
     "C408",   # FIXME: Unnecessary dict/list/tuple call (1 error)
+    # FIXME: RUF - ruff-specific rules to fix incrementally
+    "RUF003", # FIXME: Comment contains ambiguous unicode character (4 errors)
+    "RUF005", # FIXME: Consider iterable unpacking instead of concatenation (5 errors)
+    "RUF010", # FIXME: Use explicit conversion flag (10 errors)
+    "RUF012", # FIXME: Mutable class attribute should use ClassVar (22 errors)
+    "RUF013", # FIXME: PEP 484 prohibits implicit Optional (16 errors)
+    "RUF015", # FIXME: Prefer next() over single element slice (4 errors)
+    "RUF019", # FIXME: Unnecessary key check before dictionary access (1 error)
+    "RUF021", # FIXME: Parenthesize chained and/or expressions (2 errors)
+    "RUF059", # FIXME: Unpacked variable is never used (5 errors)
+    "RUF002", # FIXME: Docstring contains ambiguous en-dash character (7 errors)
+    "RUF043", # FIXME: Pattern passed to match= contains unescaped metacharacters (39 errors)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
     "S101",   # asserts allowed in tests
+    "S104",   # binding to all interfaces — acceptable in test mocks simulating network addresses
     "S105",   # possible hardcoded password
     "S106",   # possible hardcoded password
     "S108",   # probable insecure usage of temp file
+    "T201",   # print statements allowed in tests
 ]
 "scripts/**/*.py" = [
     "T20",    # print statements allowed in scripts
 ]
+# RUF100 false-positive: ruff reports noqa as unused when the rule fires at a different
+# column offset than the noqa token — the suppressions are functionally required.
+"trestle/core/commands/author/jinja.py" = ["RUF100"]
+"trestle/core/remote/cache.py" = ["RUF100"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["trestle"]
@@ -281,7 +320,8 @@ no_implicit_reexport = true
 show_error_codes = true
 show_error_context = true
 disallow_untyped_defs = true
-disable_error_code = ["union-attr", "attr-defined", "no-redef", "assignment", "arg-type", "list-item"]
+# Disable only the specific error codes needed for dynamic Python patterns
+disable_error_code = ["assignment", "attr-defined"]
 
 [[tool.mypy.overrides]]
 module = "trestle.oscal.*"
@@ -291,10 +331,16 @@ ignore_errors = true
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
-warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true
+parallel = true
+concurrency = ["thread", "multiprocessing"]
+sigterm = true
+omit = [
+    "*/tmp*/*.j2",
+    "*/tmp*/*.md.j2",
+]
 
 [tool.semantic_release]
 build_command = """
@@ -318,6 +364,10 @@ default_bump_level = 0
 [tool.semantic_release.branches.main]
 match = "(main)"
 prerelease_token = "rc"
+prerelease = false
+
+[tool.semantic_release.branches.maintenance]
+match = "^v\\d+$"
 prerelease = false
 
 [tool.semantic_release.remote]

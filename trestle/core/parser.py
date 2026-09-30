@@ -60,7 +60,8 @@ def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
     if mclass is None:
         raise TrestleError(f'class "{class_name}" could not be found in "{module_name}"')
 
-    instance = mclass.parse_obj(data)
+    # Pydantic v2: parse_obj() → model_validate()
+    instance = mclass.model_validate(data)
     return instance
 
 

@@ -18,6 +18,7 @@
 import argparse
 import os
 import pathlib
+import re
 import shutil
 import sys
 
@@ -166,6 +167,19 @@ def test_assemble_missing_top_model(
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()
     assert rc == 1
+
+
+def test_assemble_missing_root_model_file_raises(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that TrestleError is raised with correct message when root model file does not exist."""
+    model_name = 'nonexistent_catalog'
+    catalogs_dir = tmp_trestle_dir / 'catalogs' / model_name
+    catalogs_dir.mkdir(parents=True, exist_ok=True)
+
+    expected_path = str(tmp_trestle_dir / 'catalogs' / model_name / 'catalog')
+    with pytest.raises(err.TrestleError, match=f'No top level model file at {re.escape(expected_path)}'):
+        AssembleCmd.assemble_model(
+            'catalog', argparse.Namespace(trestle_root=tmp_trestle_dir, name=model_name, extension='json', verbose=0)
+        )
 
 
 def test_assemble_catalog_all(

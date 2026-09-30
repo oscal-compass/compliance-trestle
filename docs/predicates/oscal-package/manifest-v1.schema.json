@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oscal-compass.github.io/compliance-trestle/predicates/oscal-package/manifest-v1.schema.json",
+  "title": "OSCAL Package Manifest v1",
+  "description": "A package manifest listing related local JSON artifacts for detached DSSE signing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "primaryArtifact",
+    "artifacts"
+  ],
+  "properties": {
+    "primaryArtifact": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The name of the primary artifact in the artifacts array."
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "uri",
+        "mediaType"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "description": "A relative local path resolved from the manifest directory."
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

@@ -53,7 +53,7 @@ class ComponentGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument(
             '-o', '--output', help='Name of the output generated component markdown folder', required=True, type=str
-        )  # noqa E501
+        )
         self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -103,7 +103,7 @@ class ComponentGenerate(AuthorCommonCommand):
         self, context: ControlContext, component: comp.DefinedComponent, markdown_dir_path: pathlib.Path
     ) -> int:
         """Create markdown for the component using its source profiles."""
-        logger.info(f'Generating markdown for component {component.title}')
+        logger.debug(f'Generating markdown for component {component.title}')
         context.comp_name = component.title
         context.component = component
         context.uri_name_map = {}
@@ -247,7 +247,7 @@ class ComponentAssemble(AuthorCommonCommand):
         if assem_comp_path.parent.exists():
             logger.info(
                 'Creating component definition from markdown and destination component definition exists, so updating.'
-            )  # noqa E501
+            )
             shutil.rmtree(str(assem_comp_path.parent))
 
         assem_comp_path.parent.mkdir(parents=True, exist_ok=True)
@@ -264,10 +264,11 @@ class ComponentAssemble(AuthorCommonCommand):
         comp_names = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
 
         # make sure parent has list of comps to work with - possibly empty
-        if not parent_comp.components:
+        # Build new components list to avoid Pydantic v2 validation on empty list
+        if parent_comp.components:
+            parent_comp.components[:] = [comp for comp in parent_comp.components if comp.title in comp_names]
+        else:
             parent_comp.components = []
-
-        parent_comp.components[:] = [comp for comp in parent_comp.components if comp.title in comp_names]
 
         # create new comps if needed
         existing_comp_names = [component.title for component in parent_comp.components]

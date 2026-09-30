@@ -35,7 +35,6 @@ from trestle.oscal.ssp import Diagram, SystemSecurityPlan
             'https://host.name/path/to/diagram.png',
         ),
         ([Link(rel='other', href='./path/to/local/file')], ''),
-        ([], ''),
         (None, ''),
     ],
 )

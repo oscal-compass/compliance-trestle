@@ -7,7 +7,7 @@
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
 ![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
-![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)](https://www.bestpractices.dev/projects/9408)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/oscal-compass/compliance-trestle/badge)](https://scorecard.dev/viewer/?uri=github.com/oscal-compass/compliance-trestle)
 
 Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
@@ -30,6 +30,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Tooling manage authoring and governance of markdown and drawio files within a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artifacts.
+- Detached signing and verification for JSON artifacts.
 
 ## Why Trestle
 
@@ -67,9 +68,18 @@ Trestle runs on almost all Python platforms (e.g. Linux, Mac, Windows), is avail
 To install run: `pip install compliance-trestle`\
 See [Install trestle in a python virtual environment](https://oscal-compass.github.io/compliance-trestle/latest/installation/) for the full installation guide.
 
+## Quick Start
+
+New to trestle? The [Quick Start guide](https://oscal-compass.github.io/compliance-trestle/latest/quick-start/) walks you through installing trestle, initialising a workspace, and importing your first OSCAL catalog in a few minutes.
+
 ## Complete documentation and tutorials
 
 Complete documentation, tutorials, and background on compliance can be found [here](https://oscal-compass.github.io/compliance-trestle/latest).
+
+## Agentic Agile Authoring
+
+Compliance authoring for OSCAL artifacts based on the OSCAL Compass MCP Server and a GenAI agentic solution with Human-in-the-Loop (HITL) by design, as authoring skills run inside your IDE (Claude Code, OpenCode).
+More information can be found [here](https://github.com/oscal-compass/agentic-agile-authoring).
 
 ## Agile Authoring
 
@@ -90,17 +100,26 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-### v4: stable (actively developed)
+### v5: stable (actively developed)
 
 - supports NIST OSCAL 1.2.1 as well as previous versions
+- uses pydantic in v2 mode
 
-### v3: stable (maintenance mode)
+### v4: stable (maintenance mode)
+
+- supports NIST OSCAL 1.2.1 as well as previous versions
+- supports newly released Mapping Model
+- limited support until December 31, 2026
+
+### v3: stable (deprecated)
 
 - supports NIST OSCAL 1.1.3 as well as previous versions
+- no longer supported
 
 ### v2: stable (deprecated)
 
 - supports NIST OSCAL 1.0.4 as well as previous versions
+- no longer supported
 
 ## Community meetings and communications
 
@@ -109,6 +128,10 @@ Please refer to the community [README](https://github.com/oscal-compass/communit
 ## Contributing to Trestle
 
 Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/latest/contributing/mkdocs_contributing/) to get started.
+
+## Security
+
+For information about security features, best practices, and how to report security vulnerabilities, please see our [Security Policy](SECURITY.md).
 
 ## Code of Conduct
 
@@ -120,7 +143,7 @@ If you would like to see the detailed LICENSE click [here](LICENSE).
 Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
-# Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
+# Copyright (c) 2026 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -144,6 +167,8 @@ We are a Cloud Native Computing Foundation sandbox project.
   <img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
 </picture>
 
-The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage).
 
-*Trestle was originally created by IBM.*
+*OSCAL Compass is an independent open source project. It is not affiliated with, endorsed by, or sponsored by the National Institute of Standards and Technology (NIST) or any other government agency.*
+
+*OSCAL Compass was originally contributed by IBM.*

@@ -21,7 +21,7 @@ import pathlib
 import zlib
 from typing import Any, Dict, List
 from urllib.parse import unquote
-from xml.etree.ElementTree import Element  # noqa: S405 - For typing purposes only
+from xml.etree.ElementTree import Element
 
 import defusedxml.ElementTree
 
