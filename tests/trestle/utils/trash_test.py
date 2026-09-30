@@ -162,6 +162,37 @@ def test_to_origin_dir_path(tmp_path: pathlib.Path) -> None:
         trash.to_origin_dir_path(trash_file_path)
 
 
+def test_to_origin_dir_path_with_bk_in_name(tmp_path: pathlib.Path) -> None:
+    """Test to_origin_dir_path handles directory names containing __bk."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    bk_dir = tmp_path / f'alpha{trash.TRESTLE_TRASH_DIR_EXT}beta'
+    trash_dir_path = trash.to_trash_dir_path(bk_dir)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
+    origin_dir = trash.to_origin_dir_path(trash_dir_path)
+    assert bk_dir.resolve() == origin_dir.resolve()
+
+
+def test_to_origin_dir_path_trailing_marker(tmp_path: pathlib.Path) -> None:
+    """Test to_origin_dir_path round-trip for a directory whose name ends with the trash marker."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    # Directory is literally named 'alpha__bk'; its trash path appends another '__bk'.
+    bk_dir = tmp_path / f'alpha{trash.TRESTLE_TRASH_DIR_EXT}'
+    trash_dir_path = trash.to_trash_dir_path(bk_dir)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
+    origin_dir = trash.to_origin_dir_path(trash_dir_path)
+    assert bk_dir.resolve() == origin_dir.resolve()
+
+
+def test_to_origin_file_path_with_bk_in_name(tmp_path: pathlib.Path) -> None:
+    """Test to_origin_file_path handles file names containing .bk."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
+    bk_file = tmp_path / f'report{trash.TRESTLE_TRASH_FILE_EXT}final.md'
+    trash_file_path = trash.to_trash_file_path(bk_file)
+    origin_file_path = trash.to_origin_file_path(trash_file_path)
+    assert bk_file.resolve() == origin_file_path.resolve()
+
+
 def test_to_origin_file_path(tmp_path: pathlib.Path) -> None:
     """Test to origin file path function."""
     test_utils.ensure_trestle_config_dir(tmp_path)
@@ -328,3 +359,132 @@ def test_trash_recover(tmp_path) -> None:
     trash.recover(data_dir)
     assert data_dir.exists()
     assert readme_file.exists()
+
+
+def test_to_trash_path_nonexistent_with_existing_trash_dir(tmp_path: pathlib.Path) -> None:
+    """Test to_trash_path returns existing trash dir path for a non-existent source path (line 65)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    data_dir = tmp_path / 'data'
+    # Pre-create the trash directory without creating the source dir.
+    trash_dir_path = trash.to_trash_dir_path(data_dir)
+    trash_dir_path.mkdir(exist_ok=True, parents=True)
+    assert not data_dir.exists()
+    assert trash.to_trash_path(data_dir) == trash_dir_path
+
+
+def test_store_file_not_a_file(tmp_path: pathlib.Path) -> None:
+    """Test store_file raises when path is not a file (line 146)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(AssertionError):
+        trash.store_file(tmp_path / 'nonexistent.md')
+
+
+def test_store_dir_not_a_dir(tmp_path: pathlib.Path) -> None:
+    """Test store_dir raises when path is not a directory (line 162)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(AssertionError):
+        trash.store_dir(tmp_path / 'nonexistent_dir')
+
+
+def test_store_dir_with_subdirectory(tmp_path: pathlib.Path) -> None:
+    """Test store_dir recurses into subdirectories (lines 168-169)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    parent_dir = tmp_path / 'parent'
+    child_dir = parent_dir / 'child'
+    child_dir.mkdir(exist_ok=True, parents=True)
+    child_file = child_dir / 'notes.md'
+    child_file.touch()
+
+    trash.store_dir(parent_dir, delete_source=True)
+
+    assert parent_dir.exists() is False
+    assert trash.to_trash_file_path(child_file).exists()
+
+
+def test_recover_file_not_in_trash(tmp_path: pathlib.Path) -> None:
+    """Test recover_file raises when the trash file does not exist (line 193)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(AssertionError):
+        trash.recover_file(tmp_path / 'missing.md')
+
+
+def test_recover_file_delete_trash(tmp_path: pathlib.Path) -> None:
+    """Test recover_file removes the trash copy when delete_trash=True (line 199)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    data_dir = tmp_path / 'data'
+    data_dir.mkdir(exist_ok=True, parents=True)
+    readme_file = data_dir / 'readme.md'
+    readme_file.touch()
+
+    trash.store_file(readme_file, delete_source=True)
+    assert not readme_file.exists()
+    trash_path = trash.to_trash_file_path(readme_file)
+    assert trash_path.exists()
+
+    trash.recover_file(readme_file, delete_trash=True)
+    assert readme_file.exists()
+    assert not trash_path.exists()
+
+
+def test_recover_dir_not_in_trash(tmp_path: pathlib.Path) -> None:
+    """Test recover_dir raises when the trash directory does not exist (line 211)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(AssertionError):
+        trash.recover_dir(tmp_path / 'missing_dir')
+
+
+def test_recover_dir_with_subdirectory(tmp_path: pathlib.Path) -> None:
+    """Test recover_dir recurses into subdirectories (lines 217-218).
+
+    recover_dir iterates its trash dir and dispatches to recover_dir for any
+    subdirectories it finds (the elif branch on lines 217-218).  We construct
+    the minimal trash layout by hand:
+
+        _trash/data/child__bk/
+            grandchild__bk/          <- subdir triggers elif
+                notes.md.bk
+
+    recover_dir(child_dir) iterates child__bk, finds grandchild__bk (a dir),
+    calls recover_dir(to_origin_dir_path(grandchild__bk)) which resolves to
+    recover_dir(data/child/grandchild).  That inner call looks for
+    _trash/data/child/grandchild__bk — so we create that too with the file.
+    """
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    data_dir = tmp_path / 'data'
+    child_dir = data_dir / 'child'
+    grandchild_dir = child_dir / 'grandchild'
+    grandchild_file = grandchild_dir / 'notes.md'
+
+    # child__bk is the trash dir for child_dir; grandchild__bk inside it
+    # is the subdir that triggers lines 217-218.
+    child_trash_dir = trash.to_trash_dir_path(child_dir)
+    gc_in_child_trash = child_trash_dir / f'grandchild{trash.TRESTLE_TRASH_DIR_EXT}'
+    gc_in_child_trash.mkdir(parents=True, exist_ok=True)
+
+    # The recursive recover_dir call resolves grandchild__bk back to
+    # data/child/grandchild and looks for _trash/data/child/grandchild__bk.
+    gc_canonical_trash = trash.to_trash_dir_path(grandchild_dir)
+    gc_canonical_trash.mkdir(parents=True, exist_ok=True)
+    trash_file = gc_canonical_trash / f'notes.md{trash.TRESTLE_TRASH_FILE_EXT}'
+    trash_file.write_text('content')
+
+    trash.recover_dir(child_dir)
+    assert grandchild_file.exists()
+
+
+def test_recover_dir_delete_trash(tmp_path: pathlib.Path) -> None:
+    """Test recover_dir removes the trash directory when delete_trash=True (line 221)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    data_dir = tmp_path / 'data'
+    data_dir.mkdir(exist_ok=True, parents=True)
+    readme_file = data_dir / 'readme.md'
+    readme_file.touch()
+
+    trash.store_dir(data_dir, delete_source=True)
+    trash_dir_path = trash.to_trash_dir_path(data_dir)
+    assert trash_dir_path.exists()
+
+    trash.recover_dir(data_dir, delete_trash=True)
+    assert data_dir.exists()
+    assert readme_file.exists()
+    assert not trash_dir_path.exists()
