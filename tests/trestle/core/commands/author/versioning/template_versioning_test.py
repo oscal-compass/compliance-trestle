@@ -107,6 +107,36 @@ def test_get_latest_version(tmp_path: pathlib.Path) -> None:
         TemplateVersioning.get_latest_version_for_task(template_v1)
 
 
+def test_get_latest_version_numeric_ordering(tmp_path: pathlib.Path) -> None:
+    """Test latest version selection uses numeric semver ordering, not lexicographic ordering."""
+    task_path = tmp_path.joinpath('trestle/author/sample_task/')
+    task_path.mkdir(parents=True)
+
+    task_path.joinpath('2.0.0').mkdir(parents=True)
+    task_path.joinpath('10.0.0').mkdir(parents=True)
+    task_path.joinpath('1.12.9').mkdir(parents=True)
+
+    latest_path, version = TemplateVersioning.get_latest_version_for_task(task_path)
+    assert latest_path == task_path.joinpath('10.0.0')
+    assert version == '10.0.0'
+
+
+def test_get_all_versions_for_task_strict_semver_dirs_only(tmp_path: pathlib.Path) -> None:
+    """Test only strict semantic version directories are considered template versions."""
+    task_path = tmp_path.joinpath('trestle/author/sample_task/')
+    task_path.mkdir(parents=True)
+
+    task_path.joinpath('1.2.3').mkdir(parents=True)
+    task_path.joinpath('10.0.0').mkdir(parents=True)
+    task_path.joinpath('v1.2.3').mkdir(parents=True)
+    task_path.joinpath('1.2.3-backup').mkdir(parents=True)
+    task_path.joinpath('1x2x3').mkdir(parents=True)
+
+    versions = TemplateVersioning.get_all_versions_for_task(task_path)
+
+    assert set(versions) == {'1.2.3', '10.0.0'}
+
+
 def test_get_versioned_template(tmp_path: pathlib.Path) -> None:
     """Test get template of the specified version."""
     task_path = tmp_path.joinpath('trestle/author/sample_task/')
@@ -224,6 +254,12 @@ def test_valid_version() -> None:
     assert not TemplateVersioning.is_valid_version('1')
     assert not TemplateVersioning.is_valid_version('0.0.0.1')
     assert not TemplateVersioning.is_valid_version('0a0b1')
+
+
+def test_version_sort_key_invalid() -> None:
+    """Test invalid version string raises TrestleError in _version_sort_key."""
+    with pytest.raises(TrestleError, match='Invalid template version format: not_a_version'):
+        TemplateVersioning._version_sort_key('not_a_version')
 
 
 def test_empty_folder_is_not_created(tmp_path: pathlib.Path) -> None:
