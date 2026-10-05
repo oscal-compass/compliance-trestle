@@ -1,0 +1,15 @@
+# Allowed signers for Git tag verification.
+# Format: <email> namespaces="git" <public-key>
+#
+# To verify a release tag locally:
+#   git config gpg.ssh.allowedSignersFile .github/allowed_signers
+#   git tag -v <tag>
+#
+# The public key below must match the RELEASE_TAG_SIGNING_KEY_PUB secret
+# stored in the repository's "release" environment. Rotate both together
+# and update this file via a normal PR when the key is rotated.
+#
+# See docs/contributing/github_actions_setup.md#release-tag-signing for
+# key-generation and rotation instructions.
+#
+semantic-release@users.noreply.github.com namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfT/8bR6icV+Kbdbj/8N4NebKbH9daOhVDhTiF+nX4u compliance-trestle release tag signing

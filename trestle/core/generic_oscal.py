@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Reusable constrained string type aliases — replaces deprecated constr()
 # ---------------------------------------------------------------------------
-_UUID_PATTERN = r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'  # noqa FS003
+_UUID_PATTERN = r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
 _NCNAME_PATTERN = (
     r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF'
     r'\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]'
@@ -64,14 +64,12 @@ class GenericByComponent(TrestleBaseModel):
     )
     uuid: UuidStr = Field(
         ...,
-        # noqa E251
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this by-component entry elsewhere in this or other OSCAL instances. The locally defined UUID of the by-component entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
+        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this by-component entry elsewhere in this or other OSCAL instances. The locally defined UUID of the by-component entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='By-Component Universally Unique Identifier',
     )
     description: str = Field(
         ...,
-        # noqa E251
-        description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',  # noqa E501
+        description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
         title='Control Implementation Description',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -131,8 +129,7 @@ class GenericStatement(TrestleBaseModel):
     )
     uuid: UuidStr = Field(
         ...,
-        # noqa E251
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',  # noqa E501
+        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
         title='Control Statement Reference Universally Unique Identifier',
     )
     # this is not in ssp statement
@@ -176,8 +173,7 @@ class GenericComponent(TrestleBaseModel):
 
     uuid: UuidStr = Field(
         ...,
-        # noqa E251
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
+        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Component Identifier',
     )
     type: NonWhitespaceStr = Field(
@@ -278,8 +274,7 @@ class GenericSetParameter(TrestleBaseModel):
     param_id: NcNameStr = Field(
         ...,
         alias='param-id',
-        # noqa E251
-        description="A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",  # noqa E501
+        description="A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
     values: List[str] = Field(...)
@@ -301,22 +296,19 @@ class GenericImplementedRequirement(TrestleBaseModel):
 
     uuid: UuidStr = Field(
         ...,
-        # noqa E251
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a specific control implementation elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
+        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a specific control implementation elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Control Implementation Identifier',
     )
     control_id: NcNameStr = Field(
         ...,
         alias='control-id',
-        # noqa E251
-        description='A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',  # noqa E501
+        description='A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
     # only compdef has description
     description: str = Field(
         ...,
-        # noqa E251
-        description='A description of how the specified control is implemented for the containing component or capability.',  # noqa E501
+        description='A description of how the specified control is implemented for the containing component or capability.',
         title='Control Implementation Description',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -373,21 +365,18 @@ class GenericControlImplementation(TrestleBaseModel):
     # not in ssp
     uuid: UuidStr = Field(
         ...,
-        # noqa E251
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a set of implemented controls elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation set can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
+        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a set of implemented controls elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation set can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Control Implementation Set Identifier',
     )
     # not in ssp
     source: str = Field(
         ...,
-        # noqa E251
-        description='A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.',  # noqa E501
+        description='A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.',
         title='Source Resource Reference',
     )
     description: str = Field(
         ...,
-        # noqa E251
-        description='A description of how the specified set of controls are implemented for the containing component or capability.',  # noqa E501
+        description='A description of how the specified set of controls are implemented for the containing component or capability.',
         title='Control Implementation Description',
     )
     # not in ssp

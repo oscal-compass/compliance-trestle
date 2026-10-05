@@ -14,7 +14,7 @@
 # limitations under the License.
 """OSCAL transformation tasks."""
 
-# mypy: ignore-errors  # noqa E800
+# mypy: ignore-errors
 import configparser
 import datetime
 import json
@@ -119,7 +119,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         logger.info(text1 + text2)
         text1 = '  profile-file.<suffix>  = '
         text2 = 'path of the profile file to ingest'
-        text3 = ', e.g. ${folder-cac}/products/ocp4/profiles/cis-node.profile.'  # noqa
+        text3 = ', e.g. ${folder-cac}/products/ocp4/profiles/cis-node.profile.'
         logger.info(text1 + text2 + text3)
         text1 = '  profile-title.<suffix> = '
         text2 = 'title of the profile'

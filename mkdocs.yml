@@ -11,7 +11,6 @@ extra:
       We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.
 markdown_extensions:
 - admonition
-- markdown_include.include
 - md_in_html
 - pymdownx.emoji
 - pymdownx.magiclink
@@ -20,7 +19,8 @@ markdown_extensions:
 - pymdownx.tasklist
 - pymdownx.highlight
 - pymdownx.inlinehilite
-- pymdownx.snippets
+- pymdownx.snippets:
+    base_path: ['.']
 - toc:
     permalink: ¤
 plugins:
@@ -37,6 +37,9 @@ plugins:
     # Fail on errors except for 429 (rate limiting) and transient 5xx server errors
     raise_error_after_finish: true
     raise_error_excludes:
+      # 403 Forbidden - W3C (w3.org) blocks automated HTTP clients with 403
+      # even for valid URLs.  Treat as a false positive.
+      403: [ 'https://www.w3.org/*' ]
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
       404: [ '*#trestle.*' ]
@@ -93,15 +96,33 @@ repo_url: https://github.com/oscal-compass/compliance-trestle
 site_description: Documentation for compliance-trestle package.
 site_name: Compliance Trestle
 site_url: https://oscal-compass.github.io/compliance-trestle
+extra_css:
+  - css/accessibility.css
+extra_javascript:
+  - js/skip-nav.js
 theme:
   features:
   - content.code.annotate
   - navigation.tabs
   name: material
+  language: en
   palette:
-    accent: purple
-    primary: black
-    scheme: slate
+    # Light mode — satisfies WCAG 1.4.3 (4.5:1 contrast) for users who prefer it
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   time_format: "%Y-%m-%d %H:%M:%S" # The format used to display the time
   meta_time_format: "%Y-%m-%d %H:%M:%S"
   #logo: "../images/compliance-trestle-800x800-transparent.png" # Update when have a single color svg

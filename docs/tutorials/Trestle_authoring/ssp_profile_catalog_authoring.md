@@ -61,19 +61,19 @@ First, a *Catalog* is a collection of *Controls*, and a *Profile* imports contro
 
 For clarity, here is a simple depicton of a catalog as a collection of controls:
 
-![Simple catalog](ssp_profile_catalog_authoring/simple_catalog.png)
+![Diagram of a simple OSCAL catalog as a box containing several numbered control boxes (e.g. AC-1, AC-2, SC-1)](ssp_profile_catalog_authoring/simple_catalog.png)
 
 Here is a profile pulling controls from a catalog to make a resolved profile catalog:
 
-![Resolved profile catalog](ssp_profile_catalog_authoring/resolved_profile_catalog.png)
+![Diagram of a profile importing selected controls from a catalog to produce a resolved profile catalog](ssp_profile_catalog_authoring/resolved_profile_catalog.png)
 
 And here is a more complex situation where a single profile pulls controls from catalogs and profiles:
 
-![Complex resolved profile catalog](ssp_profile_catalog_authoring/complex_resolved_profile_catalog.png)
+![Diagram of a profile importing controls from multiple catalogs and other profiles to produce a complex resolved profile catalog](ssp_profile_catalog_authoring/complex_resolved_profile_catalog.png)
 
 From the diagram it's clear that the profile is performing many tasks under the covers.  This is shown in an expanded view of a profile:
 
-![What a profile does](ssp_profile_catalog_authoring/profile_does.png)
+![Diagram expanding a profile to show its internal steps: Import, Merge, and Modify — each with sub-operations that select, combine, and patch controls before emitting the resolved catalog](ssp_profile_catalog_authoring/profile_does.png)
 
 It's important to note that each profile is importing a selection of controls from each source, then making its own *suggested* modifications to parameters and other content in those controls.  They are suggested in the sense that downstream profiles may override those settings - with priority given to the later profiles in the pipeline.  The changes made by upstream profiles may be accepted, or overridden by better choices for a given need.  This way the catalogs themselves can remain relatively static, and individual use cases can effectively create a custom catalog based on the original controls plus modifications by  other static profiles, and/or the user's custom profile.  The authoring tools here provide ways to make those modifications, both to the catalog controls and to the profiles, and to enter the implementation responses that are needed in a System Security Plan.
 
@@ -1228,6 +1228,6 @@ The options shown are fairly consistent across the `-generate` and `-assemble` f
 
 `ssp-generate` is special because it starts with a profile rather than an ssp, whereas `catalog-generate` and `profile-generate` both start with a parent model of the same type.  Nonetheless, you still have an option during `ssp-assemble` to use a given json file as the template into which new content is inserted, and once again you may overwrite that original json file or direct it to a new one using `--output`.
 
-![Table of authoring tool options](ssp_profile_catalog_authoring/trestle_ssp_author_options.png)
+![Table summarising required (checkbox) and optional (open circle) command-line arguments for catalog-generate, catalog-assemble, profile-generate, profile-assemble, ssp-generate, and ssp-assemble commands](ssp_profile_catalog_authoring/trestle_ssp_author_options.png)
 
 </details>

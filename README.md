@@ -2,12 +2,15 @@
 
 ![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/compliance-trestle)
+[![PyPI - Version](https://img.shields.io/pypi/v/compliance-trestle)](https://pypi.org/project/compliance-trestle/)
 ![[Pre-commit](https://github.com/pre-commit/pre-commit)](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
 ![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
-![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)
+[![GitHub last commit](https://img.shields.io/github/last-commit/oscal-compass/compliance-trestle/develop)](https://github.com/oscal-compass/compliance-trestle/commits/develop)
+[![License](https://img.shields.io/github/license/oscal-compass/compliance-trestle)](https://github.com/oscal-compass/compliance-trestle/blob/develop/LICENSE)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)](https://www.bestpractices.dev/projects/9408)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/oscal-compass/compliance-trestle/badge)](https://scorecard.dev/viewer/?uri=github.com/oscal-compass/compliance-trestle)
 
 Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
@@ -67,6 +70,10 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's XM
 Trestle runs on almost all Python platforms (e.g. Linux, Mac, Windows), is available on PyPi and can be easily installed via pip. It is under active development and new releases are made available regularly.\
 To install run: `pip install compliance-trestle`\
 See [Install trestle in a python virtual environment](https://oscal-compass.github.io/compliance-trestle/latest/installation/) for the full installation guide.
+
+## Quick Start
+
+New to trestle? The [Quick Start guide](https://oscal-compass.github.io/compliance-trestle/latest/quick-start/) walks you through installing trestle, initialising a workspace, and importing your first OSCAL catalog in a few minutes.
 
 ## Complete documentation and tutorials
 

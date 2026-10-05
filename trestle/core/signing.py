@@ -30,13 +30,20 @@ from securesystemslib.signer import CryptoSigner, Key, SSlibKey, Signature, Sign
 
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.core.canonicalization import canonicalize_json_text, load_canonical_json_file, sha256_digest_hex
+from trestle.core.canonicalization import (
+    canonicalize_json_text,
+    digest_algorithm_name,
+    digest_hex,
+    load_canonical_json_file,
+    parse_digest_algorithm,
+)
+from trestle.oscal.common import Algorithm
 
 DSSE_PAYLOAD_TYPE = 'application/vnd.in-toto+json'
 IN_TOTO_STATEMENT_TYPE = 'https://in-toto.io/Statement/v1'
 OSCAL_PREDICATE_TYPE = 'https://oscal-compass.github.io/compliance-trestle/predicates/oscal-signing/v1'
 CANONICALIZATION_ALGORITHM = 'RFC8785'
-DIGEST_ALGORITHM = 'sha256'
+DEFAULT_DIGEST_ALGORITHM = Algorithm.SHA_256
 DIGEST_SOURCE = 'canonical-json'
 MAX_SIGNATURES = 16
 
@@ -65,15 +72,18 @@ def load_pem_public_key(path: pathlib.Path) -> Key:
         raise TrestleError(f'Unable to load public key for verification: {path}') from error
 
 
-def build_in_toto_statement(subject_name: str, digest: str) -> Dict[str, Any]:
+def build_in_toto_statement(
+    subject_name: str, digest: str, digest_algorithm: Algorithm = DEFAULT_DIGEST_ALGORITHM
+) -> Dict[str, Any]:
     """Build the in-toto Statement payload for a JSON artifact digest."""
+    algorithm_name = digest_algorithm_name(digest_algorithm)
     return {
         '_type': IN_TOTO_STATEMENT_TYPE,
-        'subject': [{'name': subject_name, 'digest': {DIGEST_ALGORITHM: digest}}],
+        'subject': [{'name': subject_name, 'digest': {algorithm_name: digest}}],
         'predicateType': OSCAL_PREDICATE_TYPE,
         'predicate': {
             'canonicalization': CANONICALIZATION_ALGORITHM,
-            'digestAlgorithm': DIGEST_ALGORITHM,
+            'digestAlgorithm': algorithm_name,
             'digestSource': DIGEST_SOURCE,
             'tool': 'compliance-trestle',
         },
@@ -95,13 +105,16 @@ def dsse_pae(payload_type: str, payload: bytes) -> bytes:
 
 
 def create_oscal_provenance_envelope(
-    input_path: pathlib.Path, signer: Signer, subject_name: Optional[str] = None
+    input_path: pathlib.Path,
+    signer: Signer,
+    subject_name: Optional[str] = None,
+    digest_algorithm: Algorithm = DEFAULT_DIGEST_ALGORITHM,
 ) -> Dict[str, Any]:
     """Create a DSSE envelope whose payload is an in-toto Statement for a JSON file."""
     _validate_json_path(input_path)
     _, canonical_bytes = load_canonical_json_file(input_path)
-    digest = sha256_digest_hex(canonical_bytes)
-    statement = build_in_toto_statement(subject_name or input_path.name, digest)
+    digest = digest_hex(canonical_bytes, digest_algorithm)
+    statement = build_in_toto_statement(subject_name or input_path.name, digest, digest_algorithm)
     return sign_in_toto_statement(statement, signer)
 
 
@@ -157,15 +170,17 @@ def load_dsse_envelope(envelope_path: pathlib.Path) -> Dict[str, Any]:
 
 
 def verify_oscal_provenance_envelope(
-    input_path: pathlib.Path, envelope: Dict[str, Any], public_key: Key, subject_name: Optional[str] = None
+    input_path: pathlib.Path,
+    envelope: Dict[str, Any],
+    public_key: Key,
+    subject_name: Optional[str] = None,
+    digest_algorithm: Optional[Algorithm] = None,
 ) -> Dict[str, Any]:
-    """Verify a DSSE in-toto Statement envelope against a JSON file."""
+    """Verify a JSON file, detecting the signed digest algorithm unless one is required."""
     _validate_json_path(input_path)
-    _, canonical_bytes = load_canonical_json_file(input_path)
-    expected_digest = sha256_digest_hex(canonical_bytes)
     payload = _verified_payload(envelope, public_key)
     statement = _load_statement(payload)
-    _validate_statement(statement, subject_name or input_path.name, expected_digest)
+    _validate_statement(statement, subject_name or input_path.name, input_path, digest_algorithm)
     return statement
 
 
@@ -215,7 +230,9 @@ def _load_statement(payload: bytes) -> Dict[str, Any]:
     return statement
 
 
-def _validate_statement(statement: Dict[str, Any], subject_name: str, expected_digest: str) -> None:
+def _validate_statement(
+    statement: Dict[str, Any], subject_name: str, input_path: pathlib.Path, digest_algorithm: Optional[Algorithm]
+) -> None:
     if statement.get('_type') != IN_TOTO_STATEMENT_TYPE:
         raise TrestleError('DSSE payload is not an in-toto Statement v1.')
     if statement.get('predicateType') != OSCAL_PREDICATE_TYPE:
@@ -226,8 +243,10 @@ def _validate_statement(statement: Dict[str, Any], subject_name: str, expected_d
         raise TrestleError('in-toto Statement predicate must be a JSON object.')
     if predicate.get('canonicalization') != CANONICALIZATION_ALGORITHM:
         raise TrestleError('in-toto Statement does not describe RFC 8785 canonicalization.')
-    if predicate.get('digestAlgorithm') != DIGEST_ALGORITHM:
-        raise TrestleError('in-toto Statement does not describe a SHA-256 digest.')
+    signed_algorithm = parse_digest_algorithm(predicate.get('digestAlgorithm'))
+    algorithm_name = digest_algorithm_name(signed_algorithm)
+    if digest_algorithm is not None and digest_algorithm_name(digest_algorithm) != algorithm_name:
+        raise TrestleError(f'in-toto Statement does not describe a {digest_algorithm.value} digest.')
     if predicate.get('digestSource') != DIGEST_SOURCE:
         raise TrestleError('in-toto Statement does not describe a canonical JSON digest source.')
 
@@ -254,7 +273,14 @@ def _validate_statement(statement: Dict[str, Any], subject_name: str, expected_d
     digest = subject.get('digest')
     if not isinstance(digest, dict):
         raise TrestleError(f'in-toto Statement subject does not contain a digest for: {subject_name}')
-    if hmac.compare_digest(str(digest.get(DIGEST_ALGORITHM)), expected_digest):
+    actual_digest = digest.get(algorithm_name)
+    if not isinstance(actual_digest, str):
+        raise TrestleError(
+            f'in-toto Statement subject does not contain a {signed_algorithm.value} digest: {subject_name}'
+        )
+    _, canonical_bytes = load_canonical_json_file(input_path)
+    expected_digest = digest_hex(canonical_bytes, signed_algorithm)
+    if hmac.compare_digest(actual_digest, expected_digest):
         return
 
     raise TrestleError(f'in-toto Statement digest does not match JSON file: {subject_name}')

@@ -20,20 +20,26 @@ from __future__ import annotations
 import hmac
 import pathlib
 from dataclasses import dataclass
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Optional, Set
 from urllib.parse import urlparse
 
 from securesystemslib.signer import Key, Signer
 
 from trestle.common.err import TrestleError
-from trestle.core.canonicalization import load_canonical_json_file, sha256_digest_hex
+from trestle.core.canonicalization import (
+    digest_algorithm_name,
+    digest_hex,
+    load_canonical_json_file,
+    parse_digest_algorithm,
+)
 from trestle.core.signing import (
-    DIGEST_ALGORITHM,
+    DEFAULT_DIGEST_ALGORITHM,
     IN_TOTO_STATEMENT_TYPE,
     load_in_toto_statement,
     sign_in_toto_statement,
     verify_dsse_payload,
 )
+from trestle.oscal.common import Algorithm
 
 PACKAGE_PREDICATE_TYPE = 'https://oscal-compass.github.io/compliance-trestle/predicates/oscal-package/v1'
 MANIFEST_VERSION = 'v1'
@@ -113,16 +119,20 @@ def load_signing_manifest(manifest_path: pathlib.Path) -> SigningManifest:
     return SigningManifest(manifest_path, primary_artifact, artifacts)
 
 
-def create_manifest_envelope(manifest: SigningManifest, signer: Signer) -> Dict[str, Any]:
+def create_manifest_envelope(
+    manifest: SigningManifest, signer: Signer, digest_algorithm: Algorithm = DEFAULT_DIGEST_ALGORITHM
+) -> Dict[str, Any]:
     """Create a DSSE envelope for a validated signing manifest."""
-    return sign_in_toto_statement(build_manifest_statement(manifest), signer)
+    return sign_in_toto_statement(build_manifest_statement(manifest, digest_algorithm), signer)
 
 
-def build_manifest_statement(manifest: SigningManifest) -> Dict[str, Any]:
+def build_manifest_statement(
+    manifest: SigningManifest, digest_algorithm: Algorithm = DEFAULT_DIGEST_ALGORITHM
+) -> Dict[str, Any]:
     """Build the in-toto Statement payload for a signing manifest."""
     return {
         '_type': IN_TOTO_STATEMENT_TYPE,
-        'subject': _manifest_subjects(manifest),
+        'subject': _manifest_subjects(manifest, digest_algorithm),
         'predicateType': PACKAGE_PREDICATE_TYPE,
         'predicate': {
             'tool': PACKAGE_TOOL,
@@ -133,15 +143,19 @@ def build_manifest_statement(manifest: SigningManifest) -> Dict[str, Any]:
     }
 
 
-def verify_manifest_envelope(manifest: SigningManifest, envelope: Dict[str, Any], public_key: Key) -> Dict[str, Any]:
-    """Verify a DSSE package Statement envelope against a signing manifest."""
+def verify_manifest_envelope(
+    manifest: SigningManifest, envelope: Dict[str, Any], public_key: Key, digest_algorithm: Optional[Algorithm] = None
+) -> Dict[str, Any]:
+    """Verify a package, detecting its signed digest algorithm unless one is required."""
     payload = verify_dsse_payload(envelope, public_key)
     statement = load_in_toto_statement(payload)
-    _validate_manifest_statement(statement, manifest)
+    _validate_manifest_statement(statement, manifest, digest_algorithm)
     return statement
 
 
-def _validate_manifest_statement(statement: Dict[str, Any], manifest: SigningManifest) -> None:
+def _validate_manifest_statement(
+    statement: Dict[str, Any], manifest: SigningManifest, digest_algorithm: Optional[Algorithm]
+) -> None:
     if statement.get('_type') != IN_TOTO_STATEMENT_TYPE:
         raise TrestleError('DSSE payload is not an in-toto Statement v1.')
     if statement.get('predicateType') != PACKAGE_PREDICATE_TYPE:
@@ -159,16 +173,16 @@ def _validate_manifest_statement(statement: Dict[str, Any], manifest: SigningMan
     if predicate != expected_predicate:
         raise TrestleError('in-toto package Statement predicate does not match the signing manifest.')
 
-    _validate_manifest_subjects(statement.get('subject'), manifest)
+    _validate_manifest_subjects(statement.get('subject'), manifest, digest_algorithm)
 
 
-def _validate_manifest_subjects(subjects: Any, manifest: SigningManifest) -> None:
+def _validate_manifest_subjects(
+    subjects: Any, manifest: SigningManifest, digest_algorithm: Optional[Algorithm]
+) -> None:
     if not isinstance(subjects, list):
         raise TrestleError('in-toto package Statement subject must be an array.')
 
-    expected_subjects = {
-        subject['name']: subject['digest'][DIGEST_ALGORITHM] for subject in _manifest_subjects(manifest)
-    }
+    selected_algorithm = digest_algorithm
     actual_subjects: Dict[str, str] = {}
     for subject in subjects:
         if not isinstance(subject, dict):
@@ -179,28 +193,49 @@ def _validate_manifest_subjects(subjects: Any, manifest: SigningManifest) -> Non
         if name in actual_subjects:
             raise TrestleError(f'in-toto package Statement contains a duplicate subject: {name}')
         digest = subject.get('digest')
-        if not isinstance(digest, dict) or not isinstance(digest.get(DIGEST_ALGORITHM), str):
-            raise TrestleError(f'in-toto package Statement subject does not contain a SHA-256 digest: {name}')
-        actual_subjects[name] = digest[DIGEST_ALGORITHM]
+        if digest_algorithm is None:
+            if not isinstance(digest, dict) or len(digest) != 1:
+                raise TrestleError(
+                    f'in-toto package Statement subject must contain exactly one digest for automatic detection: {name}'
+                )
+            subject_algorithm = parse_digest_algorithm(next(iter(digest)))
+        else:
+            subject_algorithm = digest_algorithm
+        if selected_algorithm is None:
+            selected_algorithm = subject_algorithm
+        elif selected_algorithm != subject_algorithm:
+            raise TrestleError('in-toto package Statement subjects must use the same digest algorithm.')
+        algorithm_name = digest_algorithm_name(subject_algorithm)
+        if not isinstance(digest, dict) or not isinstance(digest.get(algorithm_name), str):
+            raise TrestleError(
+                f'in-toto package Statement subject does not contain a {subject_algorithm.value} digest: {name}'
+            )
+        actual_subjects[name] = digest[algorithm_name]
 
-    if set(actual_subjects) != set(expected_subjects):
+    if selected_algorithm is None or set(actual_subjects) != {artifact.name for artifact in manifest.artifacts}:
         raise TrestleError('in-toto package Statement subjects do not match the signing manifest artifacts.')
 
+    algorithm_name = digest_algorithm_name(selected_algorithm)
+    expected_subjects = {
+        subject['name']: subject['digest'][algorithm_name]
+        for subject in _manifest_subjects(manifest, selected_algorithm)
+    }
     for name, expected_digest in expected_subjects.items():
         if not hmac.compare_digest(actual_subjects[name], expected_digest):
             raise TrestleError(f'in-toto package Statement digest does not match artifact: {name}')
 
 
-def _manifest_subjects(manifest: SigningManifest) -> List[Dict[str, Any]]:
+def _manifest_subjects(manifest: SigningManifest, digest_algorithm: Algorithm) -> List[Dict[str, Any]]:
+    algorithm_name = digest_algorithm_name(digest_algorithm)
     return [
-        {'name': artifact.name, 'digest': {DIGEST_ALGORITHM: _artifact_digest(artifact.path)}}
+        {'name': artifact.name, 'digest': {algorithm_name: _artifact_digest(artifact.path, digest_algorithm)}}
         for artifact in manifest.artifacts
     ]
 
 
-def _artifact_digest(path: pathlib.Path) -> str:
+def _artifact_digest(path: pathlib.Path, digest_algorithm: Algorithm) -> str:
     _, canonical_bytes = load_canonical_json_file(path)
-    return sha256_digest_hex(canonical_bytes)
+    return digest_hex(canonical_bytes, digest_algorithm)
 
 
 def _required_string(data: Dict[str, Any], key: str, context: str) -> str:

@@ -39,7 +39,7 @@ from trestle.common.list_utils import (
     comma_colon_sep_to_dict,
     deep_set,
     none_if_empty,
-)  # noqa E501
+)
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI

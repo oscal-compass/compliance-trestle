@@ -1,0 +1,15 @@
+nav:
+  - index.md
+  - quick-start.md
+  - architecture.md
+  - assurance-case.md
+  - installation.md
+  - upgrading.md
+  - demos.md
+  - tutorials
+  - plugins
+  - predicates
+  - reference
+  - contributing
+  - known_limitations.md
+  - license.md
