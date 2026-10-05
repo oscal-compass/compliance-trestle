@@ -1,0 +1,5 @@
+[
+  "file_permissions_kube_apiserver",
+  "file_owner_kube_apiserver",
+  "file_groupowner_kube_apiserver"
+]
