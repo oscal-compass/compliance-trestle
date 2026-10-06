@@ -105,7 +105,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
-        pip install hatch "virtualenv>=21"
+        pip install --require-hashes -r .github/workflows/constraints/ci-requirements.txt
     - name: Run binary tests
       run: |
         make test-bdist
@@ -204,7 +204,7 @@ jobs:
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install hatch
       run: |
-        pip install hatch "virtualenv>=21"
+        pip install --require-hashes -r .github/workflows/constraints/ci-requirements.txt
     - name: Recreate hatch test environment
       shell: bash
       run: |
@@ -221,7 +221,6 @@ jobs:
     - name: Generate coverage report
       if: steps.core-version.outputs.core == 'true'
       run: |
-        pip install coverage
         coverage xml
 
     - name: Upload artifact
