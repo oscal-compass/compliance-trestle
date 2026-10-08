@@ -61,6 +61,9 @@ class ComponentGenerate(AuthorCommonCommand):
             log.set_log_level_from_args(args)
 
             if args.force_overwrite:
+                if not file_utils.is_directory_name_allowed(args.output):
+                    raise TrestleError(f'{args.output} is not an allowed directory name')
+
                 try:
                     logger.info(f'Overwriting the content in {args.output} folder.')
                     clear_folder(pathlib.Path(args.output))
