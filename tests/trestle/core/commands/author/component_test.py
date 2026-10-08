@@ -297,3 +297,17 @@ def test_component_get_name_from_non_trestle_uri() -> None:
     # An http URI is not a TRESTLE URI, so the else branch (line 100) returns ''
     result = ComponentGenerate._get_name_from_uri('https://example.com/catalog.json')
     assert result == ''
+
+def test_component_force_overwrite_validates_before_clearing(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Force-overwrite must not delete an output path that is not allowed."""
+    outside_dir = tmp_trestle_dir.parent / 'outside_component_md'
+    outside_dir.mkdir()
+    keep_file = outside_dir / 'keep.txt'
+    keep_file.write_text('keep')
+
+    command = f'trestle author component-generate -n my_comp -o {outside_dir} --force-overwrite'
+    test_utils.execute_command_and_assert(command, 1, monkeypatch)
+
+    assert keep_file.exists()
