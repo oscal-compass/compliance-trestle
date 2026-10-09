@@ -1,0 +1,54 @@
+{
+  "component-definition": {
+    "uuid": "febe5f13-a5ad-4a73-be49-fe198ea5e2e8",
+    "metadata": {
+      "title": "PoC Bug Report",
+      "last-modified": "2026-01-01T00:00:00+00:00",
+      "version": "1.0.0",
+      "oscal-version": "1.1.3"
+    },
+    "components": [
+      {
+        "uuid": "79a5599f-29b2-4d7f-9db2-4ee7d8984322",
+        "type": "software",
+        "title": "My Component",
+        "description": "A long prose description that differs from the title.",
+        "props": [
+          {
+            "name": "Rule_Id",
+            "value": "rule_one",
+            "ns": "https://example.com/ns",
+            "remarks": "rule_set_0"
+          },
+          {
+            "name": "Rule_Description",
+            "value": "First rule",
+            "ns": "https://example.com/ns",
+            "remarks": "rule_set_0"
+          }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "04c071df-e207-49f0-9026-88e36bd26398",
+            "source": "trestle://profiles/example/profile.json",
+            "description": "Example profile controls",
+            "implemented-requirements": [
+              {
+                "uuid": "11fc1f67-0127-4bb6-8147-9ad18482e0e5",
+                "control-id": "ac-1",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "rule_one",
+                    "ns": "https://example.com/ns"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
