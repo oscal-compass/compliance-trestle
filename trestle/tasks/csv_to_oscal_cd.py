@@ -1706,7 +1706,6 @@ class _CsvMgr:
             self._check_row_minimum_requirements(row_num, row)
             component_title = self.get_row_value(row, f'{COMPONENT_TITLE}')
             component_type = self.get_row_value(row, f'{COMPONENT_TYPE}')
-            component_description = self.get_row_value(row, f'{COMPONENT_DESCRIPTION}')
             rule_id = self.get_row_value(row, f'{RULE_ID}')
             # rule sets
             check_id = self.get_row_value(row, f'{CHECK_ID}', default=None)
