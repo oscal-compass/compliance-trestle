@@ -1,0 +1,152 @@
+
+================================================================================
+Namespace: http://csrc.nist.gov/ns/oscal
+================================================================================
+
+
+[1/20] .//part[@name] (oscal-catalog)
+    Values: 2, allow_other=False
+      - objective
+      - assessment-objective
+
+[2/20] ./type[@value] (oscal-metadata)
+    Values: 2, allow_other=False
+      - approval
+      - request-changes
+
+[3/20] .[@name] (oscal-metadata)
+    Values: 1, allow_other=False
+      - marking
+
+[4/20] back-matter/prop[@name] (oscal-metadata)
+    Values: 3, allow_other=False
+      - type
+      - version
+      - published
+
+[5/20] back-matter/prop[@value] where name=type (oscal-metadata)
+    Values: 24, allow_other=False
+      - logo
+      - image
+      - screen-shot
+      - law
+      - regulation
+      - standard
+      - external-guidance
+      - acronyms
+      - citation
+      - policy
+      - procedure
+      - system-guide
+      - users-guide
+      - administrators-guide
+      - rules-of-behavior
+      - plan
+      - artifact
+      - evidence
+      - tool-output
+      - raw-data
+      - interview-notes
+      - questionnaire
+      - report
+      - agreement
+
+[6/20] control/part[@name] (oscal-catalog)
+    Values: 6, allow_other=False
+      - overview
+      - statement
+      - guidance
+      - example
+      - assessment
+      - assessment-method
+
+[7/20] control/prop[@name] (oscal-catalog)
+    Values: 4, allow_other=False
+      - label
+      - sort-id
+      - alt-identifier
+      - status
+
+[8/20] control/prop[@value] where name=status (oscal-catalog)
+    Values: 2, allow_other=False
+      - withdrawn
+      - Withdrawn
+
+[9/20] group/part[@name] (oscal-catalog)
+    Values: 2, allow_other=False
+      - overview
+      - instruction
+
+[10/20] group/prop[@name] (oscal-catalog)
+    Values: 3, allow_other=False
+      - label
+      - sort-id
+      - alt-identifier
+
+[11/20] has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='statement']//part[@name] (oscal-catalog)
+    Values: 1, allow_other=False
+      - item
+
+[12/20] has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/part[@name] (oscal-catalog)
+    Values: 2, allow_other=False
+      - objects
+      - assessment-objects
+
+[13/20] has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/prop[@name] (oscal-catalog)
+    Values: 1, allow_other=False
+      - method
+
+[14/20] has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/prop[@value] where name=method (oscal-catalog)
+    Values: 3, allow_other=False
+      - INTERVIEW
+      - EXAMINE
+      - TEST
+
+[15/20] metadata/prop[@class] where name=type, value=data-center (oscal-metadata)
+    Values: 2, allow_other=True
+      - primary
+      - alternate
+
+[16/20] metadata/prop[@name] (oscal-catalog)
+    Values: 2, allow_other=False
+      - resolution-tool
+      - source-profile-uuid
+      - type
+      - mail-stop
+      - office
+      - job-title
+      - keywords
+
+[17/20] metadata/prop[@name] (oscal-metadata)
+    Values: 5, allow_other=False
+      - type
+      - mail-stop
+      - office
+      - job-title
+      - keywords
+
+[18/20] metadata/prop[@value] where name=type (oscal-metadata)
+    Values: 1, allow_other=True
+      - data-center
+
+[19/20] parameter/prop[@name] (oscal-control-common)
+    Values: 4, allow_other=False
+      - label
+      - sort-id
+      - alt-identifier
+      - alt-label
+
+[20/20] part/prop[@name] (oscal-control-common)
+    Values: 3, allow_other=False
+      - label
+      - sort-id
+      - alt-identifier
+
+================================================================================
+Namespace: http://csrc.nist.gov/ns/rmf
+================================================================================
+
+
+[1/1] parameter/prop[@name] (oscal-control-common)
+    Values: 1, allow_other=False
+      - aggregates
