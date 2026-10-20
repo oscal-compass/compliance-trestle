@@ -91,8 +91,8 @@ class ReplicateCmd(CommandPlusDocs):
             trestle_root / plural_path / args.output / (model_alias + FileContentType.to_file_extension(content_type))
         )
 
-        # Validate output path to prevent path traversal
-        PathSecurityValidator.validate_local_path(rep_model_path, trestle_root)
+        # Validate output path to prevent path traversal outside the model type directory
+        PathSecurityValidator.validate_local_path(rep_model_path, trestle_root / plural_path)
 
         if rep_model_path.exists():
             raise TrestleError(f'OSCAL file to be replicated here: {rep_model_path} exists.')
