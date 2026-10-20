@@ -229,7 +229,9 @@ def test_import_output_path_traversal(tmp_trestle_dir: pathlib.Path, output: str
     catalog_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json')
     sample_data.oscal_write(catalog_file)
     expected_path = (tmp_trestle_dir / 'catalogs' / output / 'catalog.json').resolve()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=str(catalog_file), output=output, verbose=1)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(catalog_file), output=output, verbose=1, regenerate=False
+    )
     rc = importcmd.ImportCmd()._run(args)
     assert rc == 1
     assert not expected_path.exists()
