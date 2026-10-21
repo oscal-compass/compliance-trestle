@@ -107,7 +107,8 @@
 <span class=normal>123</span>
 <span class=normal>124</span>
 <span class=normal>125</span>
-<span class=normal>126</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CreateCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>126</span>
+<span class=normal>127</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CreateCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>"""Create a sample OSCAL model in trestle workspace or create new elements within a given model."""</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>'create'</span>
@@ -161,10 +162,11 @@
 
         <span class=n>plural_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>model_type_to_model_dir</span><span class=p>(</span><span class=n>model_alias</span><span class=p>)</span>
 
-        <span class=n>desired_model_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span>
+        <span class=n>model_type_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span>
+        <span class=n>desired_model_dir</span> <span class=o>=</span> <span class=n>model_type_dir</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span>
 
-        <span class=c1># Validate output path to prevent path traversal</span>
-        <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>desired_model_dir</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
+        <span class=c1># Validate output path to prevent path traversal outside the model type directory</span>
+        <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>desired_model_dir</span><span class=p>,</span> <span class=n>model_type_dir</span><span class=p>)</span>
 
         <span class=n>desired_model_path</span> <span class=o>=</span> <span class=n>desired_model_dir</span> <span class=o>/</span> <span class=p>(</span><span class=n>model_alias</span> <span class=o>+</span> <span class=s1>'.'</span> <span class=o>+</span> <span class=n>args</span><span class=o>.</span><span class=n>extension</span><span class=p>)</span>
 
@@ -232,7 +234,8 @@
 <span class=normal>123</span>
 <span class=normal>124</span>
 <span class=normal>125</span>
-<span class=normal>126</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>126</span>
+<span class=normal>127</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>create_object</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>model_alias</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>object_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>TopLevelOscalModel</span><span class=p>],</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""Create a top level OSCAL object within the trestle directory, leveraging functionality in add."""</span>
     <span class=n>log</span><span class=o>.</span><span class=n>set_log_level_from_args</span><span class=p>(</span><span class=n>args</span><span class=p>)</span>
@@ -242,10 +245,11 @@
 
     <span class=n>plural_path</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>model_type_to_model_dir</span><span class=p>(</span><span class=n>model_alias</span><span class=p>)</span>
 
-    <span class=n>desired_model_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span>
+    <span class=n>model_type_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span>
+    <span class=n>desired_model_dir</span> <span class=o>=</span> <span class=n>model_type_dir</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span>
 
-    <span class=c1># Validate output path to prevent path traversal</span>
-    <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>desired_model_dir</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
+    <span class=c1># Validate output path to prevent path traversal outside the model type directory</span>
+    <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>desired_model_dir</span><span class=p>,</span> <span class=n>model_type_dir</span><span class=p>)</span>
 
     <span class=n>desired_model_path</span> <span class=o>=</span> <span class=n>desired_model_dir</span> <span class=o>/</span> <span class=p>(</span><span class=n>model_alias</span> <span class=o>+</span> <span class=s1>'.'</span> <span class=o>+</span> <span class=n>args</span><span class=o>.</span><span class=n>extension</span><span class=p>)</span>
 

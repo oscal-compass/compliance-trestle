@@ -23,8 +23,7 @@
                   return '';
                 }
               });
-            </script> <p>Import an existing full OSCAL model into the trestle workspace.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/import_.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 38</span>
-<span class=normal> 39</span>
+            </script> <p>Import an existing full OSCAL model into the trestle workspace.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/import_.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 39</span>
 <span class=normal> 40</span>
 <span class=normal> 41</span>
 <span class=normal> 42</span>
@@ -105,7 +104,11 @@
 <span class=normal>117</span>
 <span class=normal>118</span>
 <span class=normal>119</span>
-<span class=normal>120</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ImportCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>120</span>
+<span class=normal>121</span>
+<span class=normal>122</span>
+<span class=normal>123</span>
+<span class=normal>124</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ImportCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>"""Import an existing full OSCAL model into the trestle workspace."""</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>'import'</span>
@@ -155,6 +158,9 @@
             <span class=n>desired_model_path</span> <span class=o>=</span> <span class=n>desired_model_path</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span>
                 <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
             <span class=p>)</span><span class=o>.</span><span class=n>resolve</span><span class=p>()</span>
+
+            <span class=c1># Validate output path to prevent path traversal out of the model type directory</span>
+            <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>desired_model_path</span><span class=p>,</span> <span class=n>desired_model_dir</span><span class=p>)</span>
 
             <span class=k>if</span> <span class=n>desired_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
                 <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Cannot import because file to be imported here: </span><span class=si>{</span><span class=n>desired_model_path</span><span class=si>}</span><span class=s1> already exists.'</span><span class=p>)</span>

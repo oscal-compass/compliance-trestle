@@ -164,8 +164,8 @@
             <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span> <span class=o>/</span> <span class=p>(</span><span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>))</span>
         <span class=p>)</span>
 
-        <span class=c1># Validate output path to prevent path traversal</span>
-        <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>rep_model_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
+        <span class=c1># Validate output path to prevent path traversal outside the model type directory</span>
+        <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>rep_model_path</span><span class=p>,</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=n>rep_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'OSCAL file to be replicated here: </span><span class=si>{</span><span class=n>rep_model_path</span><span class=si>}</span><span class=s1> exists.'</span><span class=p>)</span>
@@ -287,8 +287,8 @@
         <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span> <span class=o>/</span> <span class=p>(</span><span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>))</span>
     <span class=p>)</span>
 
-    <span class=c1># Validate output path to prevent path traversal</span>
-    <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>rep_model_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
+    <span class=c1># Validate output path to prevent path traversal outside the model type directory</span>
+    <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>rep_model_path</span><span class=p>,</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=n>rep_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'OSCAL file to be replicated here: </span><span class=si>{</span><span class=n>rep_model_path</span><span class=si>}</span><span class=s1> exists.'</span><span class=p>)</span>
