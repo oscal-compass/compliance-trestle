@@ -28,6 +28,7 @@ import trestle.common.err as err
 from trestle.cli import Trestle
 from trestle.common import const
 from trestle.common.model_utils import ModelUtils
+from trestle.core.commands import create
 from trestle.core.commands.replicate import ReplicateCmd
 from trestle.oscal.catalog import Catalog
 
@@ -180,6 +181,22 @@ def test_replicate_load_file_failure(tmp_trestle_dir: Path, monkeypatch: MonkeyP
     monkeypatch.setattr(sys, 'argv', args)
     rc = Trestle().run()
     assert rc == 1
+
+
+@pytest.mark.parametrize(
+    'output', ['../dist/catalogs/evil', '../.trestle/inject', '../profiles/existing', '../../evil']
+)
+def test_replicate_output_path_traversal(tmp_trestle_dir: Path, output: str) -> None:
+    """Test that path traversal in the output argument is rejected and nothing is written."""
+    create_args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, extension='json', output='src', verbose=0, include_optional_fields=False
+    )
+    assert create.CreateCmd.create_object('catalog', Catalog, create_args) == 0
+    expected_path = (tmp_trestle_dir / 'catalogs' / output / 'catalog.json').resolve()
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='src', output=output, verbose=0, regenerate=False)
+    with pytest.raises(err.TrestleError):
+        ReplicateCmd.replicate_object('catalog', args)
+    assert not expected_path.exists()
 
 
 def test_replicate_file_system(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) -> None:

@@ -93,10 +93,11 @@ class CreateCmd(CommandPlusDocs):
 
         plural_path = ModelUtils.model_type_to_model_dir(model_alias)
 
-        desired_model_dir = trestle_root / plural_path / args.output
+        model_type_dir = trestle_root / plural_path
+        desired_model_dir = model_type_dir / args.output
 
-        # Validate output path to prevent path traversal
-        PathSecurityValidator.validate_local_path(desired_model_dir, trestle_root)
+        # Validate output path to prevent path traversal outside the model type directory
+        PathSecurityValidator.validate_local_path(desired_model_dir, model_type_dir)
 
         desired_model_path = desired_model_dir / (model_alias + '.' + args.extension)
 

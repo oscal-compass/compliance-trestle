@@ -219,6 +219,24 @@ def test_import_clash_on_output(tmp_trestle_dir: pathlib.Path) -> None:
     assert rc == 1
 
 
+@pytest.mark.parametrize(
+    'output', ['../dist/catalogs/evil', '../.trestle/inject', '../profiles/existing', '../../evil']
+)
+def test_import_output_path_traversal(tmp_trestle_dir: pathlib.Path, output: str) -> None:
+    """Test that path traversal in the output argument is rejected and nothing is written."""
+    sample_data = generators.generate_sample_model(Catalog)
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json')
+    sample_data.oscal_write(catalog_file)
+    expected_path = (tmp_trestle_dir / 'catalogs' / output / 'catalog.json').resolve()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(catalog_file), output=output, verbose=1, regenerate=False
+    )
+    rc = importcmd.ImportCmd()._run(args)
+    assert rc == 1
+    assert not expected_path.exists()
+
+
 def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for expected fail to import non-top level element, e.g., groups."""
     # Input file, catalog:
