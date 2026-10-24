@@ -109,7 +109,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             logger.info(f'key {e.args[0]} missing')
             return TaskOutcome('failure')
         # verbosity
-        quiet = self._config.get('quiet', False)
+        quiet = self._config.getboolean('quiet', False)
         verbose = not quiet
         # output
         overwrite = self._config.getboolean('output-overwrite', True)
