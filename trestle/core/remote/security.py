@@ -58,7 +58,7 @@ ALWAYS_BLOCKED_NETWORKS = [
     ipaddress.ip_network('::/128'),  # IPv6 unspecified address
     # Alibaba Cloud metadata endpoint. It lies in 100.64.0.0/10 (CGNAT, RFC 6598), which is not otherwise
     # blocked, so it must be blocked by resolved IP to prevent bypass via DNS pointing at it.
-    ipaddress.ip_network('100.100.100.200/32'),
+    ipaddress.ip_network('100.100.100.200/32'),  # NOSONAR - IP is deliberately hardcoded to block access to it
 ]
 
 # RFC 1918 private ranges - optionally blocked based on configuration
