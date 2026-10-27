@@ -712,6 +712,33 @@ def test_url_validator_invalid_ip_address(monkeypatch) -> None:
         validator.validate_url('https://example.com/path')
 
 
+@pytest.mark.parametrize('block_private_ips', [False, True])
+@pytest.mark.parametrize('resolved_ip', ['100.100.100.200', '::ffff:100.100.100.200'])
+def test_url_validator_blocks_dns_to_alibaba_metadata(monkeypatch, block_private_ips: bool, resolved_ip: str) -> None:
+    """Test that a hostname resolving to the Alibaba metadata IP (in CGNAT range) is blocked."""
+
+    def mock_getaddrinfo(hostname, port):
+        family = socket.AF_INET6 if ':' in resolved_ip else socket.AF_INET
+        return [(family, socket.SOCK_STREAM, 6, '', (resolved_ip, 443))]
+
+    monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+    validator = URLSecurityValidator(block_private_ips=block_private_ips)
+    with pytest.raises(TrestleError, match=r'100\.100\.100\.200/32'):
+        validator.validate_url('https://attacker.example/p.json')
+
+
+def test_url_validator_allows_other_cgnat_addresses(monkeypatch) -> None:
+    """Test that only the metadata IP is blocked, not the whole CGNAT range."""
+
+    def mock_getaddrinfo(hostname, port):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('100.64.0.1', 443))]
+
+    monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+    URLSecurityValidator().validate_url('https://example.com/p.json')
+
+
 class TestSSRFBypassVulnerabilities:
     """Test fixes for SSRF bypass vulnerabilities (GHSA-h47f-gmjp-m7rr)."""
 
