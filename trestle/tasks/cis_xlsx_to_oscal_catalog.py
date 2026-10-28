@@ -382,7 +382,7 @@ class CisXlsxToOscalCatalog(TaskBase):
             logger.info(f'key {e.args[0]} missing')
             return TaskOutcome('failure')
         # verbosity
-        _quiet = self._config.get('quiet', False)
+        _quiet = self._config.getboolean('quiet', False)
         _verbose = not _quiet
         # output
         overwrite = self._config.getboolean('output-overwrite', True)

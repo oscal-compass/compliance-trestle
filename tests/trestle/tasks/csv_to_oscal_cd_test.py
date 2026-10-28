@@ -402,6 +402,19 @@ def test_execute_verbose(tmp_path: pathlib.Path) -> None:
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
+    assert tgt._verbose is True
+    _validate_ocp(tmp_path)
+
+
+@set_cwd_unsafe(root_dir)
+def test_execute_quiet(tmp_path: pathlib.Path) -> None:
+    """Test execute quiet."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    section['quiet'] = 'True'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert tgt._verbose is False
     _validate_ocp(tmp_path)
 
 

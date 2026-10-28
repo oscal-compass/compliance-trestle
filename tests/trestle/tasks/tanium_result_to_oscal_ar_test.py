@@ -20,6 +20,8 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
+import pytest
+
 from tests.test_utils import TEST_DIR, set_cwd_unsafe
 
 import trestle.common.const as const
@@ -383,3 +385,17 @@ def test_tanium_execute_override_timestamp(tmp_path, monkeypatch: MonkeyPatch):
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.2020.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
+
+
+@pytest.mark.parametrize('quiet, verbose', [('false', True), ('true', False)])
+@set_cwd_unsafe(root_dir)
+def test_tanium_execute_quiet(tmp_path, quiet, verbose):
+    """Test execute call honors quiet as a boolean."""
+    config = setup_config(cf01)
+    section = config['task.tanium-result-to-oscal-ar']
+    section['output-dir'] = str(tmp_path)
+    section['quiet'] = quiet
+    tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert tgt._verbose is verbose

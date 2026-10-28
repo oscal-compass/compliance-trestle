@@ -20,6 +20,8 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
+import pytest
+
 from tests.test_utils import TEST_DIR, set_cwd_unsafe, text_files_similar
 
 import trestle.tasks.xlsx_to_oscal_cd as xlsx_to_oscal_cd
@@ -276,3 +278,19 @@ def test_xlsx_execute_work_sheet_name_missing(tmp_path):
     tgt = xlsx_to_oscal_cd.XlsxToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
+
+
+@pytest.mark.parametrize('quiet, verbose', [('false', True), ('true', False)])
+@set_cwd_unsafe(root_dir)
+def test_xlsx_execute_quiet(tmp_path, quiet, verbose):
+    """Test execute call honors quiet as a boolean."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path(CONFIG_PATH)
+    config.read(config_path)
+    section = config['task.xlsx-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['quiet'] = quiet
+    tgt = xlsx_to_oscal_cd.XlsxToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert tgt._verbose is verbose
