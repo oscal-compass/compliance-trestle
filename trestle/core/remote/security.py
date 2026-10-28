@@ -123,17 +123,17 @@ class URLSecurityValidator:
         ip_addresses = self._resolve_hostname(hostname)
 
         for ip_str in ip_addresses:
-            ip_addr = self._parse_ip_address(ip_str, hostname)
-            # Canonicalize IPv4-mapped IPv6 addresses before validation
-            ip_addr = self._canonicalize_ip(ip_addr)
-            self._check_blocked_networks(ip_addr, hostname)
-            self._check_private_networks(ip_addr, hostname)
+            parsed_ip = self._parse_ip_address(ip_str, hostname)
+            # Canonicalize IPv6 transition addresses before validation
+            for ip_addr in self._canonicalize_ips(parsed_ip):
+                self._check_blocked_networks(ip_addr, hostname)
+                self._check_private_networks(ip_addr, hostname)
 
         self._check_suspicious_ports(parsed, url)
 
-    def _canonicalize_ip(
+    def _canonicalize_ips(
         self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address
-    ) -> ipaddress.IPv4Address | ipaddress.IPv6Address:
+    ) -> list[ipaddress.IPv4Address | ipaddress.IPv6Address]:
         """Unwrap IPv6 transition addresses that embed an IPv4 address.
 
         Handles all IPv6 forms that carry an embedded IPv4 address so that the
@@ -143,23 +143,24 @@ class URLSecurityValidator:
         Forms handled:
         - IPv4-mapped  ``::ffff:0:0/96``  (already handled pre-fix)
         - IPv4-compatible  ``::/96``       (low 32 bits are the IPv4 address)
-        - NAT64  ``64:ff9b::/96`` and ``64:ff9b:1::/48``  (RFC 6052; low 32 bits)
+        - NAT64 Well-Known Prefix  ``64:ff9b::/96``  (RFC 6052; low 32 bits)
+        - NAT64 Local-Use Prefix  ``64:ff9b:1::/48``  (RFC 8215, RFC 6052; /48, /56, /64, /96)
         - 6to4   ``2002::/16``  (RFC 3056; bits 16-47 are the IPv4 address)
-        - Teredo ``2001::/32``  (RFC 4380; client IPv4 is stored bit-inverted in low 32 bits)
+        - Teredo ``2001::/32``  (RFC 4380; client and server IPv4 addresses)
 
         Args:
             ip_addr: The IP address to canonicalize.
 
         Returns:
-            The unwrapped IPv4Address when a transition form is detected, otherwise
-            the original address unchanged.
+            A list of unwrapped candidate IPv4Address objects (or the original address
+            in a single-element list if no transition form is detected).
         """
         if not isinstance(ip_addr, ipaddress.IPv6Address):
-            return ip_addr
+            return [ip_addr]
 
         # IPv4-mapped ::ffff:a.b.c.d
         if ip_addr.ipv4_mapped is not None:
-            return ip_addr.ipv4_mapped
+            return [ip_addr.ipv4_mapped]
 
         packed = ip_addr.packed  # 16 bytes, big-endian
 
@@ -167,25 +168,54 @@ class URLSecurityValidator:
         # Exclude :: (unspecified, ::/128) and ::1 (IPv6 loopback, ::1/128) — both are
         # already in ALWAYS_BLOCKED_NETWORKS and should not be re-classified as IPv4.
         if packed[:12] == b'\x00' * 12 and packed[12:] not in (b'\x00' * 4, b'\x00\x00\x00\x01'):
-            return ipaddress.IPv4Address(packed[12:])
+            return [ipaddress.IPv4Address(packed[12:])]
 
-        # NAT64 64:ff9b::/96 and local-use 64:ff9b:1::/48 (RFC 6052).
-        # The embedded IPv4 occupies the low 32 bits.
-        if ip_addr in ipaddress.ip_network('64:ff9b::/96') or ip_addr in ipaddress.ip_network('64:ff9b:1::/48'):
-            return ipaddress.IPv4Address(packed[12:])
+        # NAT64 Well-Known Prefix 64:ff9b::/96 (RFC 6052).
+        # Prefix length is strictly /96; the embedded IPv4 occupies the low 32 bits.
+        if ip_addr in ipaddress.ip_network('64:ff9b::/96'):
+            return [ipaddress.IPv4Address(packed[12:])]
+
+        # NAT64 Local-Use Prefix 64:ff9b:1::/48 (RFC 8215, RFC 6052).
+        # Depending on deployment configuration, prefix length may be /48, /56, /64, or /96.
+        # Suffix and the 'u' octet (byte 8) must be zero for /48, /56, /64 per RFC 6052 sec 2.2.
+        if ip_addr in ipaddress.ip_network('64:ff9b:1::/48'):
+            candidates: list[ipaddress.IPv4Address] = []
+            if packed[8] == 0:
+                # /48: IPv4 in bytes 6..7 and 9..10; suffix in bytes 11..15 must be zero
+                if packed[11:16] == b'\x00' * 5:
+                    candidates.append(ipaddress.IPv4Address(packed[6:8] + packed[9:11]))
+                # /56: IPv4 in bytes 7 and 9..11; suffix in bytes 12..15 must be zero
+                if packed[12:16] == b'\x00' * 4:
+                    candidates.append(ipaddress.IPv4Address(packed[7:8] + packed[9:12]))
+                # /64: IPv4 in bytes 9..12; suffix in bytes 13..15 must be zero
+                if packed[13:16] == b'\x00' * 3:
+                    candidates.append(ipaddress.IPv4Address(packed[9:13]))
+            # /96: IPv4 in bytes 12..15 (no suffix)
+            candidates.append(ipaddress.IPv4Address(packed[12:16]))
+            return list(dict.fromkeys(candidates))
 
         # 6to4 2002::/16 (RFC 3056) — Python exposes this via .sixtofour
         if ip_addr.sixtofour is not None:
-            return ip_addr.sixtofour
+            return [ip_addr.sixtofour]
 
         # Teredo 2001::/32 (RFC 4380) — Python exposes server and client via .teredo.
-        # The client IPv4 is the actual connection target; return it so the blocklist
-        # checks apply to the address that will actually be reached.
+        # Validate both client and server addresses so blocklist checks cover both.
         if ip_addr.teredo is not None:
-            _teredo_server, teredo_client = ip_addr.teredo
-            return teredo_client
+            teredo_server, teredo_client = ip_addr.teredo
+            return list(dict.fromkeys([teredo_client, teredo_server]))
 
-        return ip_addr
+        return [ip_addr]
+
+    def _canonicalize_ip(
+        self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address
+    ) -> ipaddress.IPv4Address | ipaddress.IPv6Address:
+        """Unwrap IPv6 transition address to its primary embedded IPv4 address.
+
+        For single-interpretation addresses, returns the embedded IPv4Address or original address.
+        For multi-prefix addresses (such as local-use NAT64), returns the first candidate.
+        Use _canonicalize_ips() to inspect all candidates.
+        """
+        return self._canonicalize_ips(ip_addr)[0]
 
     def _parse_and_validate_url(self, url: str) -> parse.ParseResult:
         """Parse and validate basic URL structure."""
@@ -206,30 +236,31 @@ class URLSecurityValidator:
         """Check if hostname is a blocked metadata endpoint.
 
         Canonicalizes bracketed IPv6 literal hostnames using the shared
-        _canonicalize_ip helper so that all transition forms (IPv4-mapped,
+        _canonicalize_ips helper so that all transition forms (IPv4-mapped,
         IPv4-compatible, NAT64, 6to4, Teredo) are unwrapped before the
         comparison against METADATA_HOSTNAMES.  Previously only IPv4-mapped was
         handled here; the gap was identified in GHSA-jj4m-34f2-rwc9.
 
         Note: This method is for URL-literal hostnames only (i.e., when the hostname
         in the URL itself is an IPv6 literal). DNS-resolved IPs are canonicalized
-        upstream in validate_url via _canonicalize_ip before hostname-level checks.
+        upstream in validate_url via _canonicalize_ips before hostname-level checks.
         """
         # Strip brackets from IPv6 literals, e.g. [::ffff:169.254.169.254]
         canonical = hostname.strip('[]')
         try:
             canonical_ip = ipaddress.ip_address(canonical)
-            # Use the shared helper — covers all transition forms, not only IPv4-mapped.
-            canonical = str(self._canonicalize_ip(canonical_ip))
+            # Use the shared helper — covers all transition forms and candidate unwraps.
+            canonical_ips = [str(ip) for ip in self._canonicalize_ips(canonical_ip)]
         except ValueError:
             # Not an IP literal, use original hostname
-            canonical = hostname
+            canonical_ips = [canonical]
 
-        if canonical in METADATA_HOSTNAMES:
-            raise TrestleError(
-                f'Access to cloud metadata endpoints is not allowed: {hostname}. '
-                'This is a security restriction to prevent SSRF attacks.'
-            )
+        for cand in canonical_ips:
+            if cand in METADATA_HOSTNAMES:
+                raise TrestleError(
+                    f'Access to cloud metadata endpoints is not allowed: {hostname}. '
+                    'This is a security restriction to prevent SSRF attacks.'
+                )
 
     def _check_domain_allowlist(self, hostname: str) -> None:
         """Check if hostname is in the allowed domains list."""

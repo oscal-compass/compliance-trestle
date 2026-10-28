@@ -1115,6 +1115,50 @@ class TestIPv6TransitionFormSSRFBypass:
         assert isinstance(result, _ip.IPv4Address)
         assert str(result) == '10.0.0.1'
 
+    def test_canonicalize_nat64_local_use_prefix_64(self) -> None:
+        """Local-use NAT64 64:ff9b:1:0:a:0:100:0 (/64 prefix) embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:0:a:0:100:0'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+
+    def test_canonicalize_nat64_local_use_prefix_48(self) -> None:
+        """Local-use NAT64 64:ff9b:1:a00:0:100:: (/48 prefix) embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:a00:0:100::'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+
+    def test_canonicalize_nat64_local_use_prefix_56(self) -> None:
+        """Local-use NAT64 64:ff9b:1:a:0:1:: (/56 prefix) embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:a:0:1::'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+
+    def test_canonicalize_nat64_local_use_prefix_96(self) -> None:
+        """Local-use NAT64 64:ff9b:1::a00:1 (/96 prefix) embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1::a00:1'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+
+    def test_canonicalize_nat64_local_use_nonzero_u_octet(self) -> None:
+        """Local-use NAT64 with non-zero u-octet only resolves via /96."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:0:100::a00:1'))
+        assert candidates == [_ip.IPv4Address('10.0.0.1')]
+
     def test_canonicalize_ipv4_compatible_loopback(self) -> None:
         """IPv4-compatible ::7f00:1 embeds 127.0.0.1."""
         import ipaddress as _ip
@@ -1223,6 +1267,14 @@ class TestIPv6TransitionFormSSRFBypass:
         """Teredo address with client 169.254.169.254 must be blocked."""
         self._assert_blocked(monkeypatch, '2001:0:0:0:0:0:5601:5601', r'169\.254\.0\.0/16')
 
+    def test_nat64_local_use_rfc1918_blocked_via_dns(self, monkeypatch) -> None:
+        """Local-use NAT64 /64 address embedding 10.0.0.1 must be blocked when block_private_ips=True."""
+        self._assert_blocked(monkeypatch, '64:ff9b:1:0:a:0:100:0', r'10\.0\.0\.0/8', block_private=True)
+
+    def test_nat64_local_use_loopback_blocked_via_dns(self, monkeypatch) -> None:
+        """Local-use NAT64 /64 address embedding 127.0.0.1 must be blocked."""
+        self._assert_blocked(monkeypatch, '64:ff9b:1:0:7f:0:100:0', r'127\.0\.0\.0/8')
+
     # ------------------------------------------------------------------ URL-literal hostname checks
 
     def test_nat64_metadata_literal_url_blocked(self) -> None:
@@ -1248,6 +1300,18 @@ class TestIPv6TransitionFormSSRFBypass:
         v = URLSecurityValidator()
         with pytest.raises(TrestleError, match='cloud metadata endpoints'):
             v._check_metadata_endpoints('2001:0:0:0:0:0:5601:5601')
+
+    def test_nat64_local_use_metadata_literal_url_blocked(self) -> None:
+        """Local-use NAT64 /64 literal embedding 169.254.169.254 blocked by metadata check."""
+        v = URLSecurityValidator()
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            v._check_metadata_endpoints('64:ff9b:1:0:a9:fea9:fe00:0')
+
+    def test_nat64_local_use_literal_url_blocked_tier2(self) -> None:
+        """https://[64:ff9b:1:0:a:0:100:0]/x blocked when block_private_ips=True."""
+        v = URLSecurityValidator(block_private_ips=True)
+        with pytest.raises(TrestleError, match=r'10\.0\.0\.0/8'):
+            v.validate_url('https://[64:ff9b:1:0:a:0:100:0]/x')
 
 
 # Made with Bob
