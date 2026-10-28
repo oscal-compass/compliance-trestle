@@ -134,19 +134,57 @@ class URLSecurityValidator:
     def _canonicalize_ip(
         self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address
     ) -> ipaddress.IPv4Address | ipaddress.IPv6Address:
-        """Canonicalize IPv4-mapped IPv6 addresses to their IPv4 form.
+        """Unwrap IPv6 transition addresses that embed an IPv4 address.
 
-        IPv4-mapped IPv6 addresses (::ffff:a.b.c.d) are converted to their canonical
-        IPv4 form to ensure consistent validation against IPv4 network ranges.
+        Handles all IPv6 forms that carry an embedded IPv4 address so that the
+        blocklist and private-network checks are applied to the true IPv4 destination
+        rather than the outer IPv6 literal.  Fixes CVE-2026-114511 / GHSA-jj4m-34f2-rwc9.
+
+        Forms handled:
+        - IPv4-mapped  ``::ffff:0:0/96``  (already handled pre-fix)
+        - IPv4-compatible  ``::/96``       (low 32 bits are the IPv4 address)
+        - NAT64  ``64:ff9b::/96`` and ``64:ff9b:1::/48``  (RFC 6052; low 32 bits)
+        - 6to4   ``2002::/16``  (RFC 3056; bits 16-47 are the IPv4 address)
+        - Teredo ``2001::/32``  (RFC 4380; client IPv4 is stored bit-inverted in low 32 bits)
 
         Args:
-            ip_addr: The IP address to canonicalize
+            ip_addr: The IP address to canonicalize.
 
         Returns:
-            The canonical IP address (IPv4 if it was IPv4-mapped IPv6, otherwise unchanged)
+            The unwrapped IPv4Address when a transition form is detected, otherwise
+            the original address unchanged.
         """
-        if isinstance(ip_addr, ipaddress.IPv6Address) and ip_addr.ipv4_mapped is not None:
+        if not isinstance(ip_addr, ipaddress.IPv6Address):
+            return ip_addr
+
+        # IPv4-mapped ::ffff:a.b.c.d
+        if ip_addr.ipv4_mapped is not None:
             return ip_addr.ipv4_mapped
+
+        packed = ip_addr.packed  # 16 bytes, big-endian
+
+        # IPv4-compatible ::/96 — all upper 12 bytes are zero, low 4 bytes are IPv4.
+        # Exclude :: (unspecified, ::/128) and ::1 (IPv6 loopback, ::1/128) — both are
+        # already in ALWAYS_BLOCKED_NETWORKS and should not be re-classified as IPv4.
+        if packed[:12] == b'\x00' * 12 and packed[12:] not in (b'\x00' * 4, b'\x00\x00\x00\x01'):
+            return ipaddress.IPv4Address(packed[12:])
+
+        # NAT64 64:ff9b::/96 and local-use 64:ff9b:1::/48 (RFC 6052).
+        # The embedded IPv4 occupies the low 32 bits.
+        if ip_addr in ipaddress.ip_network('64:ff9b::/96') or ip_addr in ipaddress.ip_network('64:ff9b:1::/48'):
+            return ipaddress.IPv4Address(packed[12:])
+
+        # 6to4 2002::/16 (RFC 3056) — Python exposes this via .sixtofour
+        if ip_addr.sixtofour is not None:
+            return ip_addr.sixtofour
+
+        # Teredo 2001::/32 (RFC 4380) — Python exposes server and client via .teredo.
+        # The client IPv4 is the actual connection target; return it so the blocklist
+        # checks apply to the address that will actually be reached.
+        if ip_addr.teredo is not None:
+            _teredo_server, teredo_client = ip_addr.teredo
+            return teredo_client
+
         return ip_addr
 
     def _parse_and_validate_url(self, url: str) -> parse.ParseResult:
@@ -167,19 +205,22 @@ class URLSecurityValidator:
     def _check_metadata_endpoints(self, hostname: str) -> None:
         """Check if hostname is a blocked metadata endpoint.
 
-        Canonicalizes bracketed IPv6 literal hostnames to handle IPv4-mapped
-        IPv6 addresses (e.g., [::ffff:169.254.169.254]) before checking.
+        Canonicalizes bracketed IPv6 literal hostnames using the shared
+        _canonicalize_ip helper so that all transition forms (IPv4-mapped,
+        IPv4-compatible, NAT64, 6to4, Teredo) are unwrapped before the
+        comparison against METADATA_HOSTNAMES.  Previously only IPv4-mapped was
+        handled here; the gap was identified in GHSA-jj4m-34f2-rwc9.
 
         Note: This method is for URL-literal hostnames only (i.e., when the hostname
         in the URL itself is an IPv6 literal). DNS-resolved IPs are canonicalized
         upstream in validate_url via _canonicalize_ip before hostname-level checks.
         """
-        # Canonicalize bracketed IPv6 literal hostnames
+        # Strip brackets from IPv6 literals, e.g. [::ffff:169.254.169.254]
         canonical = hostname.strip('[]')
         try:
             canonical_ip = ipaddress.ip_address(canonical)
-            if isinstance(canonical_ip, ipaddress.IPv6Address) and canonical_ip.ipv4_mapped:
-                canonical = str(canonical_ip.ipv4_mapped)
+            # Use the shared helper — covers all transition forms, not only IPv4-mapped.
+            canonical = str(self._canonicalize_ip(canonical_ip))
         except ValueError:
             # Not an IP literal, use original hostname
             canonical = hostname
