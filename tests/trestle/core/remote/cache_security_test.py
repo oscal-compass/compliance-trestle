@@ -1151,13 +1151,16 @@ class TestIPv6TransitionFormSSRFBypass:
         candidate_strs = [str(c) for c in candidates]
         assert '10.0.0.1' in candidate_strs
 
-    def test_canonicalize_nat64_local_use_nonzero_u_octet(self) -> None:
-        """Local-use NAT64 with non-zero u-octet only resolves via /96."""
+    def test_canonicalize_nat64_local_use_nonzero_reserved_bits(self) -> None:
+        """Local-use NAT64 extracts /64 (10.0.0.1) even with non-zero u-octet and suffix bytes."""
         import ipaddress as _ip
 
         v = URLSecurityValidator()
-        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:0:100::a00:1'))
-        assert candidates == [_ip.IPv4Address('10.0.0.1')]
+        # 64:ff9b:1:0:10a:0:101:101 has u-octet = 0x01 and suffix = 0x01010101
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:0:10a:0:101:101'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+        assert '1.1.1.1' in candidate_strs
 
     def test_canonicalize_ipv4_compatible_loopback(self) -> None:
         """IPv4-compatible ::7f00:1 embeds 127.0.0.1."""
@@ -1269,11 +1272,17 @@ class TestIPv6TransitionFormSSRFBypass:
 
     def test_nat64_local_use_rfc1918_blocked_via_dns(self, monkeypatch) -> None:
         """Local-use NAT64 /64 address embedding 10.0.0.1 must be blocked when block_private_ips=True."""
-        self._assert_blocked(monkeypatch, '64:ff9b:1:0:a:0:100:0', r'10\.0\.0\.0/8', block_private=True)
+        self._assert_blocked(monkeypatch, '64:ff9b:1:0:a:0:100:0', r'0\.0\.0\.0/8|10\.0\.0\.0/8', block_private=True)
+
+    def test_nat64_local_use_nonzero_reserved_bits_blocked_via_dns(self, monkeypatch) -> None:
+        """Local-use NAT64 with non-zero reserved bits (64:ff9b:1:0:10a:0:101:101) blocked when block_private_ips=True."""
+        self._assert_blocked(
+            monkeypatch, '64:ff9b:1:0:10a:0:101:101', r'0\.0\.0\.0/8|10\.0\.0\.0/8', block_private=True
+        )
 
     def test_nat64_local_use_loopback_blocked_via_dns(self, monkeypatch) -> None:
         """Local-use NAT64 /64 address embedding 127.0.0.1 must be blocked."""
-        self._assert_blocked(monkeypatch, '64:ff9b:1:0:7f:0:100:0', r'127\.0\.0\.0/8')
+        self._assert_blocked(monkeypatch, '64:ff9b:1:0:7f:0:100:0', r'0\.0\.0\.0/8|127\.0\.0\.0/8')
 
     # ------------------------------------------------------------------ URL-literal hostname checks
 
@@ -1310,8 +1319,14 @@ class TestIPv6TransitionFormSSRFBypass:
     def test_nat64_local_use_literal_url_blocked_tier2(self) -> None:
         """https://[64:ff9b:1:0:a:0:100:0]/x blocked when block_private_ips=True."""
         v = URLSecurityValidator(block_private_ips=True)
-        with pytest.raises(TrestleError, match=r'10\.0\.0\.0/8'):
+        with pytest.raises(TrestleError, match=r'10\.0\.0\.0/8|0\.0\.0\.0/8'):
             v.validate_url('https://[64:ff9b:1:0:a:0:100:0]/x')
+
+    def test_nat64_local_use_nonzero_reserved_bits_literal_url_blocked_tier2(self) -> None:
+        """https://[64:ff9b:1:0:10a:0:101:101]/x blocked when block_private_ips=True."""
+        v = URLSecurityValidator(block_private_ips=True)
+        with pytest.raises(TrestleError, match=r'10\.0\.0\.0/8|0\.0\.0\.0/8'):
+            v.validate_url('https://[64:ff9b:1:0:10a:0:101:101]/x')
 
 
 # Made with Bob

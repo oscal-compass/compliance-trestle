@@ -177,22 +177,19 @@ class URLSecurityValidator:
 
         # NAT64 Local-Use Prefix 64:ff9b:1::/48 (RFC 8215, RFC 6052).
         # Depending on deployment configuration, prefix length may be /48, /56, /64, or /96.
-        # Suffix and the 'u' octet (byte 8) must be zero for /48, /56, /64 per RFC 6052 sec 2.2.
+        # Per RFC 6052 § 2.2 and real-world translator behavior (e.g. Jool), translators extract
+        # IPv4 bytes from fixed offsets and ignore the value of the 'u' octet and suffix bits.
         if ip_addr in ipaddress.ip_network('64:ff9b:1::/48'):
-            candidates: list[ipaddress.IPv4Address] = []
-            if packed[8] == 0:
-                # /48: IPv4 in bytes 6..7 and 9..10; suffix in bytes 11..15 must be zero
-                if packed[11:16] == b'\x00' * 5:
-                    candidates.append(ipaddress.IPv4Address(packed[6:8] + packed[9:11]))
-                # /56: IPv4 in bytes 7 and 9..11; suffix in bytes 12..15 must be zero
-                if packed[12:16] == b'\x00' * 4:
-                    candidates.append(ipaddress.IPv4Address(packed[7:8] + packed[9:12]))
-                # /64: IPv4 in bytes 9..12; suffix in bytes 13..15 must be zero
-                if packed[13:16] == b'\x00' * 3:
-                    candidates.append(ipaddress.IPv4Address(packed[9:13]))
-            # /96: IPv4 in bytes 12..15 (no suffix)
-            candidates.append(ipaddress.IPv4Address(packed[12:16]))
-            return list(dict.fromkeys(candidates))
+            return list(
+                dict.fromkeys(
+                    [
+                        ipaddress.IPv4Address(packed[6:8] + packed[9:11]),  # /48
+                        ipaddress.IPv4Address(packed[7:8] + packed[9:12]),  # /56
+                        ipaddress.IPv4Address(packed[9:13]),  # /64
+                        ipaddress.IPv4Address(packed[12:16]),  # /96
+                    ]
+                )
+            )
 
         # 6to4 2002::/16 (RFC 3056) — Python exposes this via .sixtofour
         if ip_addr.sixtofour is not None:
