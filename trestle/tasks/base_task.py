@@ -64,7 +64,7 @@ class TaskBase(ABC):
         """
         self._timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
         # config verbosity
-        self._quiet = self._config.get('quiet', False)
+        self._quiet = self._config.getboolean('quiet', False)
         self._verbose = not self._quiet
         # title
         self._title = self._config.get('title')
