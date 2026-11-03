@@ -204,6 +204,92 @@ Another section.
         assert _neutralize_jinja_delimiters('') == ''
         assert _neutralize_jinja_delimiters(None) is None
 
+    @pytest.mark.parametrize(
+        'payload, expected',
+        [
+            ('{% for i in range(3) %}A{% endfor %}', '[% for i in range(3) %}A[% endfor %}'),
+            ('{# comment #}', '[# comment #}'),
+            ("{% include 'x.md' %}", "[% include 'x.md' %}"),
+            ("{% md_clean_include 'confidential.md' %}", "[% md_clean_include 'confidential.md' %}"),
+            ('{{ evil }}', '[[ evil ]]'),
+        ],
+    )
+    def test_neutralization_of_statement_and_comment_tags(self, payload, expected):
+        """Statement and comment tags must be neutralized, not just expressions."""
+        from trestle.core import docs_control_writer, ssp_io
+
+        assert ssp_io._neutralize_jinja_delimiters(payload) == expected
+        assert docs_control_writer._neutralize_jinja_delimiters(payload) == expected
+
+    def test_neutralized_statement_tags_do_not_disclose_files(self):
+        """Neutralized statement-tag payloads in an included file must not splice other files."""
+        from jinja2 import FileSystemLoader
+
+        from trestle.core.ssp_io import _neutralize_jinja_delimiters
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir_path = pathlib.Path(tmpdir)
+            (tmpdir_path / 'confidential.md').write_text('TOP_SECRET_DATA')
+            payload = "{% md_clean_include 'confidential.md' %}{% include 'confidential.md' %}"
+            (tmpdir_path / 'generated.md').write_text('# Prose\n\n' + _neutralize_jinja_delimiters(payload) + '\n')
+            (tmpdir_path / 'template.md.j2').write_text('{% md_clean_include "generated.md" %}')
+
+            env = SandboxedEnvironment(
+                loader=FileSystemLoader(tmpdir_path), extensions=extensions(), trim_blocks=True, autoescape=True
+            )
+            result = env.get_template('template.md.j2').render()
+
+            assert 'TOP_SECRET_DATA' not in result
+
+    @pytest.mark.parametrize('include_tag', ['md_clean_include "included.md"', 'mdsection_include "included.md" "# A"'])
+    @pytest.mark.parametrize(
+        'payload',
+        [
+            "{% md_clean_include 'confidential.md' %}",
+            "{% include 'confidential.md' %}",
+            '{% for a in range(1000) %}{% for b in range(1000) %}X{% endfor %}{% endfor %}',
+            '{# comment #}',
+            "{%- include 'confidential.md' -%}",
+        ],
+    )
+    def test_statement_tags_in_included_markdown_are_rejected(self, include_tag, payload):
+        """Statement tags in included markdown fail closed: no file disclosure and no amplification."""
+        from jinja2 import FileSystemLoader
+
+        from trestle.common.err import TrestleError
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir_path = pathlib.Path(tmpdir)
+            (tmpdir_path / 'confidential.md').write_text('TOP_SECRET_DATA')
+            (tmpdir_path / 'included.md').write_text(f'# A\n\n{payload}\n')
+            (tmpdir_path / 'template.md.j2').write_text('{% ' + include_tag + ' %}')
+
+            env = SandboxedEnvironment(
+                loader=FileSystemLoader(tmpdir_path), extensions=extensions(), trim_blocks=True, autoescape=True
+            )
+            if payload.startswith('{#'):
+                # comments are inert text to the template engine and produce no output
+                assert 'TOP_SECRET_DATA' not in env.get_template('template.md.j2').render()
+                return
+            with pytest.raises(TrestleError):
+                env.get_template('template.md.j2').render()
+
+    def test_expressions_in_included_markdown_and_statement_tags_in_top_level_still_work(self):
+        """Top level templates keep full syntax and included files keep {{ }} substitution."""
+        from jinja2 import FileSystemLoader
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir_path = pathlib.Path(tmpdir)
+            (tmpdir_path / 'leaf.md.j2').write_text('LEAF {{ name }}')
+            (tmpdir_path / 'template.md.j2').write_text(
+                '{% for n in ["a", "b"] %}{% md_clean_include "leaf.md.j2" %}{% endfor %}{% include "leaf.md.j2" %}'
+            )
+
+            env = SandboxedEnvironment(
+                loader=FileSystemLoader(tmpdir_path), extensions=extensions(), trim_blocks=True, autoescape=True
+            )
+            assert env.get_template('template.md.j2').render(name='X').count('LEAF X') == 3
+
     def test_no_code_execution_with_malicious_oscal_data(self):
         """Integration test: verify malicious OSCAL-like data doesn't execute."""
         with tempfile.TemporaryDirectory() as tmpdir:

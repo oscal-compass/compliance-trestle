@@ -129,6 +129,8 @@ Trestle provides custom jinja tags for use specifically with markdown: `mdsectio
    1. `{% mdsection_include 'test_markdown.md' '# Header we want' %}`
    1. The heading level argument adjusts to (based on the number of hashes) the most significant heading in the chosen section, if headings exist.
 
+**Security note:** the content pulled in by `md_clean_include` and `mdsection_include` is itself parsed as a jinja template (in a sandbox), so `{{ variable }}` expressions inside included markdown are still substituted. Statement tags (`{% ... %}`, such as `{% include %}`, `{% for %}`, or a nested `{% md_clean_include %}`) are **not permitted** inside included markdown and cause an error. Included files can come from, or be generated from, untrusted data, and statement tags would allow reading arbitrary files in the workspace or producing unbounded output. Use statement tags in the top level template instead. Likewise, when trestle writes OSCAL prose to markdown it replaces `{{`, `{%` and `{#` with `[[`, `[%` and `[#`.
+
 `md_datestamp` inserts a date stamp into the output. By default the date is in the format '%Y-%m-%d', e.g. '2021-12-28' and is followed by a double newline to prevent subsequent headings failing to parse correctly. E.g: `{% md_datestamp %}` results in a date in the format '2021-12-28' being inserted. `md_datestamp` can be used with the following optional keyword arguments:
 
 1. `format` where a python [datetime strftime format string](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes) is provided to format the output. E.g. `{% md_datestamp format='%B %d, %Y' %}` results in `December 28, 2021` being inserted.

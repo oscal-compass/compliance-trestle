@@ -36,12 +36,14 @@ logger = logging.getLogger(__name__)
 def _neutralize_jinja_delimiters(text: str) -> str:
     """Neutralize Jinja2 template delimiters to prevent SSTI attacks.
 
-    Replaces {{ and }} with [[ and ]] to prevent untrusted OSCAL data
-    from being interpreted as Jinja2 template code when included in
-    markdown files that are later processed by Jinja2 include tags.
+    Replaces {{ and }} with [[ and ]], and the statement ({%) and comment ({#)
+    openers with [% and [#, to prevent untrusted OSCAL data from being
+    interpreted as Jinja2 template code when included in markdown files that
+    are later processed by Jinja2 include tags.
 
-    This is a defense-in-depth measure to complement the primary fix
-    of not re-parsing included content as templates.
+    Statement tags must be neutralized as well as expressions because a sandboxed
+    environment still permits tags such as include and for, which allow in-tree
+    file disclosure and output amplification.
 
     Args:
         text: The text to neutralize
@@ -51,7 +53,7 @@ def _neutralize_jinja_delimiters(text: str) -> str:
     """
     if not text:
         return text
-    return text.replace('{{', '[[').replace('}}', ']]')
+    return text.replace('{{', '[[').replace('}}', ']]').replace('{%', '[%').replace('{#', '[#')
 
 
 class SSPMarkdownWriter:
