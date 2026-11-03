@@ -17,6 +17,7 @@
 
 import logging
 from datetime import date
+from typing import List
 
 import frontmatter
 
@@ -43,6 +44,25 @@ def adjust_heading_level(input_md: str, expected: int) -> str:
             mdn.change_header_level_by(delta)
             output_md = mdn.content.raw_text
     return output_md
+
+
+def _parse_included_markdown(parse_env: Environment, content: str, source: str) -> List[nodes.Node]:
+    """Parse included markdown as a template, permitting only literal text and {{ }} expressions.
+
+    Included markdown may originate from untrusted data (e.g. OSCAL prose written to markdown), and a sandboxed
+    environment still permits statement tags such as include, for and nested trestle include tags.  Those allow
+    arbitrary in-tree file disclosure and output amplification, so any statement tag in included content is rejected.
+    This is checked on the raw token stream because a nested include tag would otherwise expand into plain output nodes.
+    Statement tags remain available to the (trusted) top level template.
+    """
+    for lineno, token_type, _ in parse_env.lex(content):
+        if token_type == lexer.TOKEN_BLOCK_BEGIN:
+            raise err.TrestleError(
+                f'Statement tag "{{% ... %}}" found at line {lineno} of included markdown "{source}". '
+                'Statement tags (include, for, nested md_clean_include, etc.) are not permitted in included '
+                'markdown; use them in the top level template instead.'
+            )
+    return Parser(parse_env, content).parse().body
 
 
 class MDSectionInclude(TrestleJinjaExtension):
@@ -116,10 +136,7 @@ class MDSectionInclude(TrestleJinjaExtension):
                 autoescape=self.environment.autoescape,
             )
 
-        local_parser = Parser(parse_env, md_section.content.raw_text)
-        top_level_output = local_parser.parse()
-
-        return top_level_output.body
+        return _parse_included_markdown(parse_env, md_section.content.raw_text, markdown_source.value)
 
 
 class MDCleanInclude(TrestleJinjaExtension):
@@ -181,10 +198,7 @@ class MDCleanInclude(TrestleJinjaExtension):
                 autoescape=self.environment.autoescape,
             )
 
-        local_parser = Parser(parse_env, content)
-        top_level_output = local_parser.parse()
-
-        return top_level_output.body
+        return _parse_included_markdown(parse_env, content, markdown_source.value)
 
 
 class MDDatestamp(TrestleJinjaExtension):
