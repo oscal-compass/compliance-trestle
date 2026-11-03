@@ -144,7 +144,12 @@ run-cov = [
     "rm -f .coverage .coverage.*",
     "coverage run -m pytest{env:HATCH_TEST_ARGS:} --dist loadfile {args}",
 ]
-cov-combine = "coverage combine"
+# Under xdist, workers can leave behind empty (0 byte) .coverage.* data files, which make `coverage combine` fail
+# with "no such table: coverage_schema".  Remove them first.
+cov-combine = [
+    "python -c \"import glob, os; [os.remove(f) for f in glob.glob('.coverage.*') if os.path.getsize(f) == 0]\"",
+    "coverage combine",
+]
 cov-report = "coverage report"
 
 [[tool.hatch.envs.hatch-test.matrix]]
