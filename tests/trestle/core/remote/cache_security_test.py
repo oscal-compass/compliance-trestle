@@ -1062,4 +1062,271 @@ class TestHttpsRedirectSsrfBypass:
         )
 
 
+class TestIPv6TransitionFormSSRFBypass:
+    """Regression tests for CVE-2026-114511 / GHSA-jj4m-34f2-rwc9.
+
+    Verifies that _canonicalize_ip unwraps NAT64, 6to4, Teredo and
+    IPv4-compatible addresses so that the SSRF blocklist is not bypassed.
+    """
+
+    # ------------------------------------------------------------------ helpers
+
+    def _make_validator(self, block_private: bool = True) -> URLSecurityValidator:
+        return URLSecurityValidator(block_private_ips=block_private)
+
+    def _assert_blocked(self, monkeypatch, addr: str, expected_match: str, block_private: bool = True) -> None:
+        """Resolve *addr* from DNS and assert validate_url raises TrestleError."""
+
+        def mock_getaddrinfo(hostname, port):
+            family = socket.AF_INET6 if ':' in addr else socket.AF_INET
+            return [(family, socket.SOCK_STREAM, 6, '', (addr, 443, 0, 0))]
+
+        monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+        validator = self._make_validator(block_private)
+        with pytest.raises(TrestleError, match=expected_match):
+            validator.validate_url('https://example.com/x')
+
+    # ------------------------------------------------------------------ _canonicalize_ip unit tests
+
+    def test_canonicalize_nat64_loopback(self) -> None:
+        """NAT64 64:ff9b::7f00:1 embeds 127.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('64:ff9b::7f00:1'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '127.0.0.1'
+
+    def test_canonicalize_nat64_metadata(self) -> None:
+        """NAT64 64:ff9b::a9fe:a9fe embeds 169.254.169.254."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('64:ff9b::a9fe:a9fe'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '169.254.169.254'
+
+    def test_canonicalize_nat64_rfc1918(self) -> None:
+        """NAT64 64:ff9b::a00:1 embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('64:ff9b::a00:1'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '10.0.0.1'
+
+    def test_canonicalize_nat64_local_use_prefix_64(self) -> None:
+        """Local-use NAT64 64:ff9b:1:0:a:0:100:0 (/64 prefix) embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:0:a:0:100:0'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+
+    def test_canonicalize_nat64_local_use_prefix_48(self) -> None:
+        """Local-use NAT64 64:ff9b:1:a00:0:100:: (/48 prefix) embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:a00:0:100::'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+
+    def test_canonicalize_nat64_local_use_prefix_56(self) -> None:
+        """Local-use NAT64 64:ff9b:1:a:0:1:: (/56 prefix) embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:a:0:1::'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+
+    def test_canonicalize_nat64_local_use_prefix_96(self) -> None:
+        """Local-use NAT64 64:ff9b:1::a00:1 (/96 prefix) embeds 10.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1::a00:1'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+
+    def test_canonicalize_nat64_local_use_nonzero_reserved_bits(self) -> None:
+        """Local-use NAT64 extracts /64 (10.0.0.1) even with non-zero u-octet and suffix bytes."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        # 64:ff9b:1:0:10a:0:101:101 has u-octet = 0x01 and suffix = 0x01010101
+        candidates = v._canonicalize_ips(_ip.ip_address('64:ff9b:1:0:10a:0:101:101'))
+        candidate_strs = [str(c) for c in candidates]
+        assert '10.0.0.1' in candidate_strs
+        assert '1.1.1.1' in candidate_strs
+
+    def test_canonicalize_ipv4_compatible_loopback(self) -> None:
+        """IPv4-compatible ::7f00:1 embeds 127.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('::7f00:1'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '127.0.0.1'
+
+    def test_canonicalize_ipv4_compatible_metadata(self) -> None:
+        """IPv4-compatible ::a9fe:a9fe embeds 169.254.169.254."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('::a9fe:a9fe'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '169.254.169.254'
+
+    def test_canonicalize_6to4_loopback(self) -> None:
+        """6to4 2002:7f00:1::1 embeds 127.0.0.1."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('2002:7f00:1::1'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '127.0.0.1'
+
+    def test_canonicalize_6to4_metadata(self) -> None:
+        """6to4 2002:a9fe:a9fe::1 embeds 169.254.169.254."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('2002:a9fe:a9fe::1'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '169.254.169.254'
+
+    def test_canonicalize_teredo_loopback(self) -> None:
+        """Teredo 2001:0:0:0:0:0:80ff:fffe has client 127.0.0.1 (bit-inverted 0x7f000001)."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('2001:0:0:0:0:0:80ff:fffe'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '127.0.0.1'
+
+    def test_canonicalize_teredo_metadata(self) -> None:
+        """Teredo 2001:0:0:0:0:0:5601:5601 has client 169.254.169.254."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        result = v._canonicalize_ip(_ip.ip_address('2001:0:0:0:0:0:5601:5601'))
+        assert isinstance(result, _ip.IPv4Address)
+        assert str(result) == '169.254.169.254'
+
+    def test_canonicalize_plain_ipv6_unchanged(self) -> None:
+        """A regular IPv6 address that is not a transition form passes through unchanged."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        addr = _ip.ip_address('2001:db8::1')
+        assert v._canonicalize_ip(addr) is addr
+
+    def test_canonicalize_ipv4_unchanged(self) -> None:
+        """An IPv4 address passes through unchanged."""
+        import ipaddress as _ip
+
+        v = URLSecurityValidator()
+        addr = _ip.ip_address('10.0.0.1')
+        assert v._canonicalize_ip(addr) is addr
+
+    # ------------------------------------------------------------------ end-to-end blocklist checks (DNS-level)
+
+    def test_nat64_loopback_blocked_via_dns(self, monkeypatch) -> None:
+        """NAT64 address embedding 127.0.0.1 must be blocked by the SSRF filter."""
+        self._assert_blocked(monkeypatch, '64:ff9b::7f00:1', r'127\.0\.0\.0/8')
+
+    def test_nat64_metadata_blocked_via_dns(self, monkeypatch) -> None:
+        """NAT64 address embedding 169.254.169.254 must be blocked."""
+        self._assert_blocked(monkeypatch, '64:ff9b::a9fe:a9fe', r'169\.254\.0\.0/16')
+
+    def test_nat64_rfc1918_blocked_via_dns(self, monkeypatch) -> None:
+        """NAT64 address embedding 10.0.0.1 must be blocked when block_private_ips=True."""
+        self._assert_blocked(monkeypatch, '64:ff9b::a00:1', r'10\.0\.0\.0/8', block_private=True)
+
+    def test_ipv4_compatible_loopback_blocked_via_dns(self, monkeypatch) -> None:
+        """IPv4-compatible address embedding 127.0.0.1 must be blocked."""
+        self._assert_blocked(monkeypatch, '::7f00:1', r'127\.0\.0\.0/8')
+
+    def test_ipv4_compatible_metadata_blocked_via_dns(self, monkeypatch) -> None:
+        """IPv4-compatible address embedding 169.254.169.254 must be blocked."""
+        self._assert_blocked(monkeypatch, '::a9fe:a9fe', r'169\.254\.0\.0/16')
+
+    def test_6to4_loopback_blocked_via_dns(self, monkeypatch) -> None:
+        """6to4 address embedding 127.0.0.1 must be blocked."""
+        self._assert_blocked(monkeypatch, '2002:7f00:1::1', r'127\.0\.0\.0/8')
+
+    def test_6to4_metadata_blocked_via_dns(self, monkeypatch) -> None:
+        """6to4 address embedding 169.254.169.254 must be blocked."""
+        self._assert_blocked(monkeypatch, '2002:a9fe:a9fe::1', r'169\.254\.0\.0/16')
+
+    def test_teredo_loopback_blocked_via_dns(self, monkeypatch) -> None:
+        """Teredo address with client 127.0.0.1 must be blocked."""
+        self._assert_blocked(monkeypatch, '2001:0:0:0:0:0:80ff:fffe', r'127\.0\.0\.0/8')
+
+    def test_teredo_metadata_blocked_via_dns(self, monkeypatch) -> None:
+        """Teredo address with client 169.254.169.254 must be blocked."""
+        self._assert_blocked(monkeypatch, '2001:0:0:0:0:0:5601:5601', r'169\.254\.0\.0/16')
+
+    def test_nat64_local_use_rfc1918_blocked_via_dns(self, monkeypatch) -> None:
+        """Local-use NAT64 /64 address embedding 10.0.0.1 must be blocked when block_private_ips=True."""
+        self._assert_blocked(monkeypatch, '64:ff9b:1:0:a:0:100:0', r'0\.0\.0\.0/8|10\.0\.0\.0/8', block_private=True)
+
+    def test_nat64_local_use_nonzero_reserved_bits_blocked_via_dns(self, monkeypatch) -> None:
+        """Local-use NAT64 with non-zero reserved bits (64:ff9b:1:0:10a:0:101:101) blocked when block_private_ips=True."""
+        self._assert_blocked(
+            monkeypatch, '64:ff9b:1:0:10a:0:101:101', r'0\.0\.0\.0/8|10\.0\.0\.0/8', block_private=True
+        )
+
+    def test_nat64_local_use_loopback_blocked_via_dns(self, monkeypatch) -> None:
+        """Local-use NAT64 /64 address embedding 127.0.0.1 must be blocked."""
+        self._assert_blocked(monkeypatch, '64:ff9b:1:0:7f:0:100:0', r'0\.0\.0\.0/8|127\.0\.0\.0/8')
+
+    # ------------------------------------------------------------------ URL-literal hostname checks
+
+    def test_nat64_metadata_literal_url_blocked(self) -> None:
+        """https://[64:ff9b::a9fe:a9fe]/x must be caught by _check_metadata_endpoints."""
+        v = URLSecurityValidator()
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            v._check_metadata_endpoints('64:ff9b::a9fe:a9fe')
+
+    def test_ipv4_compatible_metadata_literal_url_blocked(self) -> None:
+        """IPv4-compatible literal embedding 169.254.169.254 blocked by metadata check."""
+        v = URLSecurityValidator()
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            v._check_metadata_endpoints('::a9fe:a9fe')
+
+    def test_6to4_metadata_literal_url_blocked(self) -> None:
+        """6to4 literal embedding 169.254.169.254 blocked by metadata check."""
+        v = URLSecurityValidator()
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            v._check_metadata_endpoints('2002:a9fe:a9fe::1')
+
+    def test_teredo_metadata_literal_url_blocked(self) -> None:
+        """Teredo literal with client 169.254.169.254 blocked by metadata check."""
+        v = URLSecurityValidator()
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            v._check_metadata_endpoints('2001:0:0:0:0:0:5601:5601')
+
+    def test_nat64_local_use_metadata_literal_url_blocked(self) -> None:
+        """Local-use NAT64 /64 literal embedding 169.254.169.254 blocked by metadata check."""
+        v = URLSecurityValidator()
+        with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+            v._check_metadata_endpoints('64:ff9b:1:0:a9:fea9:fe00:0')
+
+    def test_nat64_local_use_literal_url_blocked_tier2(self) -> None:
+        """https://[64:ff9b:1:0:a:0:100:0]/x blocked when block_private_ips=True."""
+        v = URLSecurityValidator(block_private_ips=True)
+        with pytest.raises(TrestleError, match=r'10\.0\.0\.0/8|0\.0\.0\.0/8'):
+            v.validate_url('https://[64:ff9b:1:0:a:0:100:0]/x')
+
+    def test_nat64_local_use_nonzero_reserved_bits_literal_url_blocked_tier2(self) -> None:
+        """https://[64:ff9b:1:0:10a:0:101:101]/x blocked when block_private_ips=True."""
+        v = URLSecurityValidator(block_private_ips=True)
+        with pytest.raises(TrestleError, match=r'10\.0\.0\.0/8|0\.0\.0\.0/8'):
+            v.validate_url('https://[64:ff9b:1:0:10a:0:101:101]/x')
+
+
 # Made with Bob
