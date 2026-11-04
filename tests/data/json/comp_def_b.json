@@ -1,6 +1,6 @@
 {
   "component-definition": {
-    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+    "uuid": "4b05724e-9805-4305-ab4b-9dbffc5329eb",
     "metadata": {
       "title": "comp def b",
       "last-modified": "2021-07-19T14:03:03+00:00",
@@ -22,19 +22,19 @@
       ],
       "parties": [
         {
-          "uuid": "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2",
+          "uuid": "c1b46252-3fa8-4702-8bbe-c3ec45540311",
           "type": "organization",
           "name": "ACME",
           "remarks": "ACME company"
         },
         {
-          "uuid": "481856b6-16e4-4993-a3ed-2fb242ce235b",
+          "uuid": "765d1150-b927-4073-8f71-3622cfcc4cc2",
           "type": "organization",
           "name": "Customer",
           "remarks": "Customer for the Component Definition"
         },
         {
-          "uuid": "2dc8b17f-daca-44a1-8a1d-c290120ea5e2",
+          "uuid": "2393797d-59ce-442a-9735-d46b39edd35a",
           "type": "organization",
           "name": "ISV",
           "remarks": "ISV for the Component Definition"
@@ -44,20 +44,20 @@
         {
           "role-id": "prepared-by",
           "party-uuids": [
-            "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+            "c1b46252-3fa8-4702-8bbe-c3ec45540311"
           ]
         },
         {
           "role-id": "prepared-for",
           "party-uuids": [
-            "481856b6-16e4-4993-a3ed-2fb242ce235b",
-            "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+            "765d1150-b927-4073-8f71-3622cfcc4cc2",
+            "2393797d-59ce-442a-9735-d46b39edd35a"
           ]
         },
         {
           "role-id": "content-approver",
           "party-uuids": [
-            "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+            "c1b46252-3fa8-4702-8bbe-c3ec45540311"
           ]
         }
       ]
@@ -68,7 +68,7 @@
         "type": "service",
         "title": "comp_ba",
         "description": "comp ba",
-        "props":[
+        "props": [
           {
             "name": "Rule_Id",
             "ns": "http://comp_ns",
@@ -85,7 +85,7 @@
         ],
         "control-implementations": [
           {
-            "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
+            "uuid": "307829db-6809-464b-9bec-13c82b17bb9f",
             "source": "trestle://profiles/comp_prof_ba/profile.json",
             "description": "trestle comp prof ba",
             "props": [
@@ -155,7 +155,7 @@
             ],
             "implemented-requirements": [
               {
-                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7600",
+                "uuid": "7f87084a-0dc7-480b-9371-19c06585bbcc",
                 "control-id": "ac-6.7",
                 "description": "imp req prose for ac-6.7 from comp ba",
                 "props": [
@@ -180,27 +180,27 @@
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                      "c1b46252-3fa8-4702-8bbe-c3ec45540311"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "481856b6-16e4-4993-a3ed-2fb242ce235b",
-                      "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+                      "765d1150-b927-4073-8f71-3622cfcc4cc2",
+                      "2393797d-59ce-442a-9735-d46b39edd35a"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                      "c1b46252-3fa8-4702-8bbe-c3ec45540311"
                     ]
                   }
                 ],
                 "statements": [
                   {
                     "statement-id": "ac-6.7_smt.a",
-                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072600",
+                    "uuid": "b591b6d7-efb8-4872-97d5-a0f938c565c8",
                     "description": "statement prose for part a. from comp ba",
                     "props": [
                       {
@@ -216,7 +216,7 @@
                 ]
               }
             ]
-         }
+          }
         ]
       },
       {
@@ -224,7 +224,7 @@
         "type": "service",
         "title": "comp_bb",
         "description": "comp bb",
-        "props":[
+        "props": [
           {
             "name": "Rule_Id",
             "ns": "http://comp_ns",
@@ -241,7 +241,7 @@
         ],
         "control-implementations": [
           {
-            "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
+            "uuid": "4eda6d5e-d74f-4d0a-b928-d24edfab224f",
             "source": "trestle://profiles/comp_prof_ab/profile.json",
             "description": "trestle comp prof bb",
             "props": [
@@ -297,7 +297,7 @@
             ],
             "implemented-requirements": [
               {
-                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7601",
+                "uuid": "2a1872a1-ba76-41a8-9769-7f47acef8e28",
                 "control-id": "at-2",
                 "description": "imp req prose for at-2 from comp bb",
                 "props": [
@@ -318,27 +318,27 @@
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                      "c1b46252-3fa8-4702-8bbe-c3ec45540311"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "481856b6-16e4-4993-a3ed-2fb242ce235b",
-                      "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+                      "765d1150-b927-4073-8f71-3622cfcc4cc2",
+                      "2393797d-59ce-442a-9735-d46b39edd35a"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                      "c1b46252-3fa8-4702-8bbe-c3ec45540311"
                     ]
                   }
                 ],
                 "statements": [
                   {
                     "statement-id": "at-2_smt.b",
-                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072601",
+                    "uuid": "158ab498-8b7a-4fd1-8bda-c174588d5b88",
                     "description": "statement prose for part b. from comp ab",
                     "props": [
                       {
@@ -354,7 +354,7 @@
                 ]
               }
             ]
-         }
+          }
         ]
       }
     ]
