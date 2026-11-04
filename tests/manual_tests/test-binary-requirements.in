@@ -1,0 +1,43 @@
+# Source file for tests/manual_tests/test-binary-requirements.txt
+#
+# To regenerate test-binary-requirements.txt (after pyproject.toml dep changes):
+#
+#   python -m venv /tmp/trestle_resolve
+#   /tmp/trestle_resolve/bin/pip install pip-tools
+#   /tmp/trestle_resolve/bin/pip-compile \
+#       --generate-hashes \
+#       --no-annotate \
+#       --no-header \
+#       --output-file tests/manual_tests/test-binary-requirements.txt \
+#       tests/manual_tests/test-binary-requirements.in
+#
+# This file pins ALL runtime deps (from pyproject.toml [project].dependencies)
+# plus the test-runner tools so that `pip install --require-hashes -r ...` in
+# tests/manual_tests/test_binary.sh can fully provision the isolated venv
+# before the wheel itself is installed with --no-deps.
+
+# Runtime deps (mirror pyproject.toml [project] dependencies exactly)
+attrs
+ilcli
+cryptography>=46.0.7
+paramiko==5.0.0
+ruamel.yaml
+furl
+pydantic[email]>=2.11.0
+python-dotenv>=0.10.4
+python-frontmatter
+defusedxml
+openpyxl~=3.0
+Jinja2==3.1.6
+cmarkgfm>=2024.1,<2025.11
+orjson
+rfc8785>=0.1.4
+securesystemslib[crypto]>=1.3.1,<2.0
+requests>=2.32.2
+importlib_resources
+
+# Test runner deps (mirror pyproject.toml [tool.hatch.envs.hatch-test] dependencies)
+pytest>=8.1
+pytest-xdist[psutil]>=3.5
+pytest-randomly>=3.15
+mypy
