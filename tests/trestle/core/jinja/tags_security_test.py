@@ -174,35 +174,22 @@ Another section.
 
             assert re.match(r'\d{4}-\d{2}-\d{2}', result.strip())
 
-    def test_neutralization_in_ssp_io(self):
-        """Test that Jinja delimiters are neutralized in SSP prose/description."""
-        from trestle.core.ssp_io import _neutralize_jinja_delimiters
+    def test_neutralize_jinja_delimiters(self):
+        """Test that Jinja delimiters are neutralized in untrusted text."""
+        from trestle.core.jinja.sanitize import neutralize_jinja_delimiters
 
         # Test basic neutralization
         input_text = 'This has {{ variable }} and {{ another }}'
         expected = 'This has [[ variable ]] and [[ another ]]'
-        assert _neutralize_jinja_delimiters(input_text) == expected
+        assert neutralize_jinja_delimiters(input_text) == expected
 
         # Test empty/None handling
-        assert _neutralize_jinja_delimiters('') == ''
-        assert _neutralize_jinja_delimiters(None) is None
+        assert neutralize_jinja_delimiters('') == ''
+        assert neutralize_jinja_delimiters(None) is None
 
         # Test text without delimiters
         plain_text = 'This is plain text'
-        assert _neutralize_jinja_delimiters(plain_text) == plain_text
-
-    def test_neutralization_in_docs_control_writer(self):
-        """Test that Jinja delimiters are neutralized in control prose."""
-        from trestle.core.docs_control_writer import _neutralize_jinja_delimiters
-
-        # Test basic neutralization
-        input_text = 'Control prose with {{ param }} reference'
-        expected = 'Control prose with [[ param ]] reference'
-        assert _neutralize_jinja_delimiters(input_text) == expected
-
-        # Test empty/None handling
-        assert _neutralize_jinja_delimiters('') == ''
-        assert _neutralize_jinja_delimiters(None) is None
+        assert neutralize_jinja_delimiters(plain_text) == plain_text
 
     @pytest.mark.parametrize(
         'payload, expected',
@@ -216,22 +203,21 @@ Another section.
     )
     def test_neutralization_of_statement_and_comment_tags(self, payload, expected):
         """Statement and comment tags must be neutralized, not just expressions."""
-        from trestle.core import docs_control_writer, ssp_io
+        from trestle.core.jinja.sanitize import neutralize_jinja_delimiters
 
-        assert ssp_io._neutralize_jinja_delimiters(payload) == expected
-        assert docs_control_writer._neutralize_jinja_delimiters(payload) == expected
+        assert neutralize_jinja_delimiters(payload) == expected
 
     def test_neutralized_statement_tags_do_not_disclose_files(self):
         """Neutralized statement-tag payloads in an included file must not splice other files."""
         from jinja2 import FileSystemLoader
 
-        from trestle.core.ssp_io import _neutralize_jinja_delimiters
+        from trestle.core.jinja.sanitize import neutralize_jinja_delimiters
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir_path = pathlib.Path(tmpdir)
             (tmpdir_path / 'confidential.md').write_text('TOP_SECRET_DATA')
             payload = "{% md_clean_include 'confidential.md' %}{% include 'confidential.md' %}"
-            (tmpdir_path / 'generated.md').write_text('# Prose\n\n' + _neutralize_jinja_delimiters(payload) + '\n')
+            (tmpdir_path / 'generated.md').write_text('# Prose\n\n' + neutralize_jinja_delimiters(payload) + '\n')
             (tmpdir_path / 'template.md.j2').write_text('{% md_clean_include "generated.md" %}')
 
             env = SandboxedEnvironment(
