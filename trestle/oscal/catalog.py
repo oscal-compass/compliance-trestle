@@ -53,7 +53,7 @@ class Control(OscalBaseModel):
     props: list[common.Property] | None = Field(None, min_length=1)
     links: list[common.Link] | None = Field(None, min_length=1)
     parts: list[common.Part] | None = Field(None, min_length=1)
-    controls: list[Control] | None = None
+    controls: list[Control] | None = Field(None, min_length=1)
 
 
 class Group2(OscalBaseModel):

@@ -98,7 +98,7 @@ def generate_oscal_init(src_dir, out_dir):
                 if parts[0] == 'OSCAL_VERSION':
                     line = f"OSCAL_VERSION = '{release}'\n"
                 if parts[0] == 'OSCAL_VERSION_REGEX':
-                    line = f"OSCAL_VERSION_REGEX = r'^{rela}\.{relb}\.[0-{relc}]$'\n"
+                    line = f"OSCAL_VERSION_REGEX = r'^{rela}\\.{relb}\\.[0-{relc}]$'\n"
             lines.append(line)
 
     # write lines
