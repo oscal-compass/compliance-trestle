@@ -802,7 +802,7 @@ class AssessmentPart(OscalBaseModel):
     title: constr(pattern=r'^[^\n]+$') | None = Field(None, description='A name given to the part, which may be used by a tool for display and navigation.', title='Part Title')
     props: list[Property] | None = Field(None, min_length=1)
     prose: str | None = Field(None, description='Permits multiple paragraphs, lists, tables etc.', title='Part Text')
-    parts: list[AssessmentPart] | None = None
+    parts: list[AssessmentPart] | None = Field(None, min_length=1)
     links: list[Link] | None = Field(None, min_length=1)
 
 
@@ -968,7 +968,7 @@ class Part(OscalBaseModel):
     title: constr(pattern=r'^[^\n]+$') | None = Field(None, description='An optional name given to the part, which may be used by a tool for display and navigation.', title='Part Title')
     props: list[Property] | None = Field(None, min_length=1)
     prose: str | None = Field(None, description='Permits multiple paragraphs, lists, tables etc.', title='Part Text')
-    parts: list[Part] | None = None
+    parts: list[Part] | None = Field(None, min_length=1)
     links: list[Link] | None = Field(None, min_length=1)
 
 
@@ -1810,7 +1810,7 @@ class Task(OscalBaseModel):
     links: list[Link] | None = Field(None, min_length=1)
     timing: TimingOnDate | TimingWithinDateRange | TimingAtFrequency | None = None
     dependencies: list[Dependency] | None = Field(None, min_length=1)
-    tasks: list[Task] | None = None
+    tasks: list[Task] | None = Field(None, min_length=1)
     associated_activities: list[AssociatedActivity] | None = Field(None, alias='associated-activities', min_length=1)
     subjects: list[AssessmentSubject] | None = Field(None, min_length=1)
     responsible_roles: list[ResponsibleRole] | None = Field(None, alias='responsible-roles', min_length=1)
