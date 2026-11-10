@@ -1706,7 +1706,6 @@ class _CsvMgr:
             self._check_row_minimum_requirements(row_num, row)
             component_title = self.get_row_value(row, f'{COMPONENT_TITLE}')
             component_type = self.get_row_value(row, f'{COMPONENT_TYPE}')
-            component_description = self.get_row_value(row, f'{COMPONENT_DESCRIPTION}')
             rule_id = self.get_row_value(row, f'{RULE_ID}')
             # rule sets
             check_id = self.get_row_value(row, f'{CHECK_ID}', default=None)
@@ -1728,8 +1727,8 @@ class _CsvMgr:
                     key = (component_title, component_type, rule_id, source, description, param_id)
                     self._csv_set_params_map[key] = [row_num, row]
                     logger.debug(f'csv-set-parameters: {key} {self._csv_set_params_map[key][0]}')
-            # control mappings
-            self._control_mappings(row_num, row, component_description, component_type, rule_id, source, description)
+            # control mappings (key[0] must be title — matches _CdMgr accounting and set-params)
+            self._control_mappings(row_num, row, component_title, component_type, rule_id, source, description)
         logger.debug(f'csv rules: {len(self._csv_rules_map)}')
         logger.debug(f'csv params: {len(self._csv_set_params_map)}')
         logger.debug(f'csv controls: {len(self._csv_controls_map)}')
@@ -1738,7 +1737,7 @@ class _CsvMgr:
         self,
         row_num: int,
         row: Row,
-        component_description: str,
+        component_title: str,
         component_type: str,
         rule_id: str,
         source: str,
@@ -1749,7 +1748,7 @@ class _CsvMgr:
         if control_mappings:
             controls = control_mappings.split()
             for control in controls:
-                key = (component_description, component_type, rule_id, source, description, control)
+                key = (component_title, component_type, rule_id, source, description, control)
                 self._csv_controls_map[key] = [row_num, row]
 
     def get_parameter_id_column_names(self) -> List[str]:

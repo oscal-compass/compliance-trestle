@@ -73,6 +73,20 @@ def test_fail_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
         create.CreateCmd.create_object('catalog', Catalog, args)
 
 
+@pytest.mark.parametrize(
+    'output', ['../dist/catalogs/evil', '../.trestle/inject', '../profiles/existing', '../../evil']
+)
+def test_create_output_path_traversal(tmp_trestle_dir: pathlib.Path, output: str) -> None:
+    """Test that path traversal in the output argument is rejected and nothing is written."""
+    expected_path = (tmp_trestle_dir / 'catalogs' / output / 'catalog.json').resolve()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, extension='json', output=output, verbose=0, include_optional_fields=False
+    )
+    with pytest.raises(TrestleError):
+        create.CreateCmd.create_object('catalog', Catalog, args)
+    assert not expected_path.exists()
+
+
 def test_broken_args(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test behaviour on broken arguments."""
     # must be done using sys patching.

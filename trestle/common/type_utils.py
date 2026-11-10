@@ -43,7 +43,7 @@ def is_union_type(origin: Any) -> bool:
     return origin is getattr(types, 'UnionType', None)
 
 
-def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
+def get_origin(field_type: Any) -> Optional[Type[Any]]:
     """Generalized and robust get_origin function.
 
     This function is derived from work by pydantic, however, avoids complications
@@ -53,7 +53,7 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
 
 
-def _unwrap_optional_type(singular_type: Type[Any]) -> Type[Any]:
+def _unwrap_optional_type(singular_type: Any) -> Any:
     """Unwrap Optional[T] to get T."""
     origin = typing_get_origin(singular_type)
     if is_union_type(origin):
@@ -63,7 +63,7 @@ def _unwrap_optional_type(singular_type: Type[Any]) -> Type[Any]:
     return singular_type
 
 
-def _get_root_type_name(singular_type: Type[Any]) -> Optional[str]:
+def _get_root_type_name(singular_type: Any) -> Optional[str]:
     """Return a sentinel string identifying the collection kind of *singular_type*.
 
     Returns 'List' when the type is a list (e.g. ``list[Role]``), 'Dict' when it
@@ -86,7 +86,7 @@ def _get_root_type_name(singular_type: Type[Any]) -> Optional[str]:
     return getattr(singular_type, '__name__', None)
 
 
-def _extract_root_model_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], Optional[str], Optional[Type[Any]]]:
+def _extract_root_model_info(field_type: Any) -> Tuple[Optional[FieldInfo], Optional[str], Optional[Type[Any]]]:
     """Extract root model information from a BaseModel type."""
     model_fields = field_type.model_fields
     # Check for RootModel (has 'root' field)
@@ -102,7 +102,7 @@ def _extract_root_model_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo]
     return root_field, root_type, singular_type
 
 
-def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], Optional[str], Optional[Type[Any]]]:
+def _get_model_field_info(field_type: Any) -> Tuple[Optional[FieldInfo], Optional[str], Optional[Type[Any]]]:
     """Need special handling for pydantic RootModel objects.
 
     In Pydantic v2, RootModel has a 'root' field instead of the v1 '__root__' field.
@@ -116,7 +116,7 @@ def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], O
     return None, None, None
 
 
-def is_collection_field_type(field_type: Type[Any]) -> bool:
+def is_collection_field_type(field_type: Any) -> bool:
     """Check whether a type hint is a collection type as used by OSCAL.
 
     Specifically this is whether the type is a list or not.

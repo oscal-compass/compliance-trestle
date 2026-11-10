@@ -29,6 +29,7 @@ from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.remote import cache
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.core.validator import Validator
 from trestle.core.validator_factory import validator_factory
 
@@ -85,6 +86,9 @@ class ImportCmd(CommandPlusDocs):
             desired_model_path = desired_model_path.with_suffix(
                 FileContentType.to_file_extension(content_type)
             ).resolve()
+
+            # Validate output path to prevent path traversal out of the model type directory
+            PathSecurityValidator.validate_local_path(desired_model_path, desired_model_dir)
 
             if desired_model_path.exists():
                 logger.warning(f'Cannot import because file to be imported here: {desired_model_path} already exists.')

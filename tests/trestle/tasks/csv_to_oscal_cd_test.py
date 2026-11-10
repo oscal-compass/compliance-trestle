@@ -1594,3 +1594,20 @@ def test_row_property_builder(tmp_path):
         raise AssertionError('invalid class OK?')
     except Exception:
         assert prop
+
+
+@set_cwd_unsafe(root_dir)
+def test_execute_merge_preserves_ir_rule_id_when_title_ne_description(tmp_path: pathlib.Path) -> None:
+    """Merge keeps IR Rule_Id props when Component_Title != Component_Description (#2379)."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['csv-file'] = 'tests/data/csv/title-ne-desc.csv'
+    section['component-definition'] = 'tests/data/csv/component-definitions/title-ne-desc/component-definition.json'
+    section['validate-controls'] = 'off'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    ir = cd.components[0].control_implementations[0].implemented_requirements[0]
+    assert ir.props[0].name == 'Rule_Id'
+    assert ir.props[0].value == 'rule_one'

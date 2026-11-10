@@ -374,6 +374,29 @@ def patch_mapping_confidence_score(model_name: str) -> None:
         json_data_put(model_name, data)
 
 
+def patch_mapping_collection_mappings(model_name: str) -> None:
+    """Patch mappings property in mapping-collection to avoid TypeAliasType generation in DMCG >= 0.91."""
+    if not model_name.endswith('oscal_mapping_schema.json'):
+        return
+
+    data = json_data_get(model_name)
+    modified = False
+
+    for key, defn in data['definitions'].items():
+        if key.endswith('mapping:mapping-collection') and 'properties' in defn:
+            if 'mappings' in defn['properties']:
+                mappings_prop = defn['properties']['mappings']
+                if 'anyOf' in mappings_prop:
+                    for variant in mappings_prop['anyOf']:
+                        if variant.get('type') == 'array' and 'minItems' in variant:
+                            del variant['minItems']
+                            modified = True
+                            logger.info(f'patch: {model_name} removed minItems from mappings array in {key}')
+
+    if modified:
+        json_data_put(model_name, data)
+
+
 def patch_control_selections(model_name: str) -> None:
     """Extract control-selections anyOf variants into named definitions.
 
@@ -716,6 +739,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_assessment_select_control(model_name)
         patch_mapping_select_control(model_name)
         patch_mapping_confidence_score(model_name)
+        patch_mapping_collection_mappings(model_name)
         patch_control_selections(model_name)
         patch_timing(model_name)
         patch_assessment_subject(model_name)

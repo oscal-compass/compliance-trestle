@@ -1,0 +1,3 @@
+$$Component_Title,$$Component_Description,$$Component_Type,$$Rule_Id,$$Rule_Description,$$Profile_Source,$$Profile_Description,$$Control_Id_List,$$Namespace
+Component title,Component description,Type,Rule identifier,Rule description,Profile source,Profile description,Control ids,Namespace
+My Component,"A long prose description that differs from the title.",software,rule_one,First rule,trestle://profiles/example/profile.json,Example profile controls,ac-1,https://example.com/ns
