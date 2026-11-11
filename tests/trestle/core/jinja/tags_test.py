@@ -34,11 +34,12 @@ JINJA_MD = 'jinja_markdown_include'
         ('MDSection_include_top_level.jinja.md', 'MDSection_include_top_level.md', False),
         ('MDSection_include_top_level_adjusted.jinja.md', 'MDSection_include_top_level_adjusted.md', False),
         ('MDSection_include_nested.jinja.md', 'MDSection_include_nested.md', False),
-        ('env_nested_c_c.jinja.md', 'env_nested_c_c.md', False),
-        ('env_nested_c_n.jinja.md', 'env_nested_c_n.md', False),
         ('env_include.jinja.md', 'env_include.md', False),
         ('env_include_adjusted.jinja.md', 'env_include_adjusted.md', False),
-        ('env_nested_c_c_double.jinja.md', 'env_nested_c_c_double.md', False),
+        # statement tags (nested includes) inside included markdown are rejected
+        ('env_nested_c_c.jinja.md', None, True),
+        ('env_nested_c_n.jinja.md', None, True),
+        ('env_nested_c_c_double.jinja.md', None, True),
     ],
 )
 def test_jinja_md(testdata_dir: pathlib.Path, template: str, expected: str, expect_exception: bool) -> None:
@@ -49,7 +50,7 @@ def test_jinja_md(testdata_dir: pathlib.Path, template: str, expected: str, expe
     )
     if expect_exception:
         with pytest.raises(Exception):
-            _ = jinja_env.get_template(template)
+            jinja_env.get_template(template).render()
         return
     template = jinja_env.get_template(template)
     output_str = template.render()
