@@ -49,14 +49,46 @@ When private IPs are allowed (default), trestle logs a warning when accessing th
 
 For additional security, you can restrict fetching to specific domains by configuring an allowed domains list. When configured, only URLs from the specified domains will be permitted.
 
+### Local File Access
+
+Trestle reads local files only under the following rules. The governing principle is that a document must never decide
+what trestle reads from the user's disk: a local file outside the trestle workspace may be read only if the user (or
+the calling program) named that file directly.
+
+**Allowed**
+
+1. Files inside the trestle workspace, however they are referenced (`trestle://…`, or a relative or absolute path that
+   resolves inside the workspace).
+1. A file named directly by the user on the command line, wherever it is, for example `trestle import -f /any/path/catalog.json`.
+   The user chose the file, so no restriction beyond the sensitive-file protection below applies.
+1. A file path passed by a calling program to the Python API, for example `Repository.load_and_import_model()`.
+1. `https://` and `sftp://` references from any source, including documents. These are not local files, and are
+   guarded by the URL protections above.
+
+**Not allowed**
+
+1. A reference found inside a document (for example a profile `imports[].href`, or the leveraged SSP href in an SSP
+   inheritance markdown file) that resolves to a local file outside the trestle workspace. This applies whether the
+   reference is an absolute path, a relative path using `..`, or a `file:///` URI.
+1. A reference inside the workspace that reaches outside it through a symbolic link. The resolved path is checked.
+
+To use a file that lives outside the workspace, run `trestle import` to bring it into the workspace and then refer to it
+as `trestle://…`.
+
+These rules close [GHSA-q5fj-wh7g-pjv7](https://github.com/oscal-compass/compliance-trestle/security/advisories/GHSA-q5fj-wh7g-pjv7),
+in which a crafted profile `href` could cause credential files such as `~/.netrc` to be read.
+
+**Out of scope.** These rules protect the confidentiality of local files. They do not verify that a permitted file is
+authentic or untampered with; use signatures for that. Remote content is covered by the SSRF protections above.
+
 ### Path Traversal Protection
 
 Trestle implements multiple layers of path traversal protection:
 
 1. **URL Path Validation**: Blocks `..` sequences in URL paths to prevent directory traversal
 1. **Cache Path Validation**: Ensures cached files remain within the designated cache directory
-1. **Workspace Boundary Enforcement**: Validates that local file operations stay within the trestle workspace
-1. **Sensitive File Protection**: Blocks access to sensitive system files even when outside-workspace access is allowed:
+1. **Workspace Boundary Enforcement**: Local files referenced from within documents must resolve inside the trestle workspace (see Local File Access above)
+1. **Sensitive File Protection**: Blocks access to sensitive system files even when the user names a path outside the workspace:
    - `/etc/passwd`, `/etc/shadow`, `/etc/group`, `/etc/sudoers`
    - SSH keys (`.ssh/`)
    - Cloud credentials (`.aws/`, `.docker/`, `.kube/`)

@@ -51,8 +51,14 @@ class Import(Pipeline.Filter):
         value_assigned_prefix: Optional[str] = None,
         value_not_assigned_prefix: Optional[str] = None,
         parent_url_root: Optional[str] = None,
+        allow_external: bool = False,
     ) -> None:
-        """Initialize and store trestle root for cache access."""
+        """Initialize and store trestle root for cache access.
+
+        allow_external permits this import's own href to be a local file outside the trestle workspace.  It must be
+        True only when the user or calling program named that href directly.  It is never inherited by the imports
+        found within the loaded profile, since those hrefs come from a document.
+        """
         self._trestle_root = trestle_root
         self._import = import_
         self._uuid_chain = uuid_chain
@@ -66,6 +72,7 @@ class Import(Pipeline.Filter):
         self.value_assigned_prefix = value_assigned_prefix
         self.value_not_assigned_prefix = value_not_assigned_prefix
         self._parent_url_root = parent_url_root
+        self._allow_external = allow_external
 
         if not self._import.href or not self._import.href.strip():
             raise TrestleError('Attempt to import via an empty href.')
@@ -101,7 +108,9 @@ class Import(Pipeline.Filter):
     def process(self, _=None) -> Iterator[cat.Catalog]:  # type: ignore
         """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
         logger.debug(f'import entering process with href {self._import.href}')
-        fetcher = cache.FetcherFactory.get_fetcher(self._trestle_root, self._import.href)
+        fetcher = cache.FetcherFactory.get_fetcher(
+            self._trestle_root, self._import.href, allow_external=self._allow_external
+        )
 
         model: Union[cat.Catalog, prof.Profile]
         model, model_type = fetcher.get_oscal()

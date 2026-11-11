@@ -47,13 +47,13 @@ class SSPInheritanceAPI:
         Write inheritance information to markdown.
 
         Args:
-            leveraged_ssp_reference: Location of the SSP to write inheritance information from.
+            leveraged_ssp_reference: Location of the SSP to write inheritance information from, as named by the user.
             catalog_api: Catalog API to filter inheritance information by catalog.
 
         Notes:
             If a catalog API is provided, the written controls in the markdown will be filtered by the catalog.
         """
-        leveraged_ssp: ossp.SystemSecurityPlan = self._fetch_leveraged_ssp(leveraged_ssp_reference)
+        leveraged_ssp: ossp.SystemSecurityPlan = self._fetch_leveraged_ssp(leveraged_ssp_reference, allow_external=True)
 
         if catalog_api is not None:
             control_imp: ossp.ControlImplementation = leveraged_ssp.control_implementation
@@ -120,10 +120,16 @@ class SSPInheritanceAPI:
 
         self._reconcile_components(ssp, leveraged_ssp, leveraged_components, leveraged_auth)
 
-    def _fetch_leveraged_ssp(self, leveraged_ssp_reference: str) -> ossp.SystemSecurityPlan:
-        """Fetch the leveraged SSP."""
+    def _fetch_leveraged_ssp(
+        self, leveraged_ssp_reference: str, allow_external: bool = False
+    ) -> ossp.SystemSecurityPlan:
+        """Fetch the leveraged SSP.
+
+        allow_external is True only when the user named the reference directly.  A reference read from the inheritance
+        markdown must be within the trestle workspace (import the SSP first).
+        """
         leveraged_ssp: ossp.SystemSecurityPlan
-        fetcher = FetcherFactory.get_fetcher(self._trestle_root, leveraged_ssp_reference)
+        fetcher = FetcherFactory.get_fetcher(self._trestle_root, leveraged_ssp_reference, allow_external=allow_external)
         try:
             leveraged_ssp, _ = fetcher.get_oscal()
         except TrestleError as e:

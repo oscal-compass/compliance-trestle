@@ -84,7 +84,7 @@ def get_catalog_fetcher(
         catalog_str = f'./catalogs/{cat_name}' if in_trestle else f'../{cat_name}'
     else:
         catalog_str = str(catalog_file)
-    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, catalog_str)
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, catalog_str, allow_external=True)
     return fetcher, catalog_data
 
 
@@ -493,7 +493,7 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
         as_file_uri('user/oscal_file.json'),
         as_file_uri('../user/oscal_file.json'),
     ]:
-        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
+        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri, allow_external=True)
         assert isinstance(fetcher, cache.LocalFetcher)
 
     # paths with drive letter

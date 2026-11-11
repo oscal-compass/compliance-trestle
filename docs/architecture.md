@@ -136,7 +136,7 @@ Auto-generated Pydantic v2 classes (via `scripts/gen_oscal.py` from NIST JSON sc
 
 `trestle/common/` provides shared utilities: constants, error types, file and model utilities, and load/validate helpers used throughout the codebase.
 
-`trestle/core/remote/cache.py` provides a `FetcherBase` hierarchy (`LocalFetcher`, `HTTPSFetcher`, `SFTPFetcher`) that resolves URI references in OSCAL documents — including remote catalog imports — to local cached copies. Security validation (`trestle/core/remote/security.py`) blocks private IP ranges and enforces HTTPS.
+`trestle/core/remote/cache.py` provides a `FetcherBase` hierarchy (`LocalFetcher`, `HTTPSFetcher`, `SFTPFetcher`) that resolves URI references in OSCAL documents — including remote catalog imports — to local cached copies. Security validation (`trestle/core/remote/security.py`) blocks private IP ranges and enforces HTTPS. A `LocalFetcher` confines local paths to the trestle workspace unless the caller passes `allow_external=True`, which is done only where the user or calling program named the file directly (for example `trestle import -f`). References read from within documents are never allowed outside the workspace.
 
 ### Transform & Task Pipeline (`trestle/transforms/`, `trestle/tasks/`)
 
