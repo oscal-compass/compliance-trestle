@@ -190,7 +190,6 @@ class LocalFetcher(FetcherBase):
         """
         super().__init__(trestle_root, uri, max_size_bytes)
 
-        original_uri = uri
         is_file_uri = uri.startswith(const.FILE_URI)
 
         # Handle as file:/// form
@@ -237,7 +236,6 @@ class LocalFetcher(FetcherBase):
         # A path the user or calling program named directly (allow_external=True) may be outside the workspace.
         # A path read from within a document must stay inside the workspace, so a document cannot cause
         # arbitrary local files to be read.  Sensitive system files are blocked in either case.
-        logger.info(f'Validating local file access: {original_uri}')
         PathSecurityValidator.validate_local_file_path(
             self._trestle_root, self._abs_path, allow_outside_workspace=allow_external
         )
