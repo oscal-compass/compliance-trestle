@@ -75,6 +75,7 @@ class ProfileResolver:
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
         value_not_assigned_prefix: Optional[str] = None,
+        allow_external: bool = False,
     ) -> Tuple[cat.Catalog, Optional[Dict[str, Any]]]:
         """
         Create the resolved profile catalog given a profile path along with inherited props.
@@ -89,6 +90,7 @@ class ProfileResolver:
             show_value_warnings: warn if prose references a value that has not been set
             value_assigned_prefix: Prefix placed in front of param string if a value was assigned
             value_not_assigned_prefix: Prefix placed in front of param string if a value was *not* assigned
+            allow_external: True only if the user named profile_path directly, allowing it to be outside the workspace
 
         Returns:
             The resolved profile catalog and a control dict of inherited props
@@ -109,6 +111,7 @@ class ProfileResolver:
             show_value_warnings,
             value_assigned_prefix,
             value_not_assigned_prefix,
+            allow_external=allow_external,
         )
         logger.debug('launch pipeline')
         resolved_profile_catalog = next(import_filter.process())
@@ -126,6 +129,7 @@ class ProfileResolver:
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
         value_not_assigned_prefix: Optional[str] = None,
+        allow_external: bool = False,
     ) -> cat.Catalog:
         """
         Create the resolved profile catalog given a profile path.
@@ -140,6 +144,7 @@ class ProfileResolver:
             show_value_warnings: warn if prose references a value that has not been set
             value_assigned_prefix: Prefix placed in front of param string if a value was assigned
             value_not_assigned_prefix: Prefix placed in front of param string if a value was *not* assigned
+            allow_external: True only if the user named profile_path directly, allowing it to be outside the workspace
 
         Returns:
             The resolved profile catalog
@@ -155,5 +160,6 @@ class ProfileResolver:
             show_value_warnings,
             value_assigned_prefix,
             value_not_assigned_prefix,
+            allow_external,
         )
         return resolved_profile_catalog

@@ -175,16 +175,21 @@ class LocalFetcher(FetcherBase):
     LocalFetcher does not do any caching and assumes the file is quickly accessible.
     """
 
-    def __init__(self, trestle_root: pathlib.Path, uri: str, max_size_bytes: Optional[int] = None) -> None:
+    def __init__(
+        self, trestle_root: pathlib.Path, uri: str, max_size_bytes: Optional[int] = None, allow_external: bool = False
+    ) -> None:
         """Initialize local fetcher.
 
         Args:
             trestle_root: trestle root path
-            uri: Reference to the file in the local filesystem to cache, which must be outside trestle_root.
+            uri: Reference to the file in the local filesystem to cache.
+            max_size_bytes: Optional maximum fetched object size.
+            allow_external: True only if the user or calling program named this path directly, in which case
+                it may be outside trestle_root.  Paths taken from within documents must leave this False so they
+                are confined to the trestle workspace.
         """
         super().__init__(trestle_root, uri, max_size_bytes)
 
-        original_uri = uri
         is_file_uri = uri.startswith(const.FILE_URI)
 
         # Handle as file:/// form
@@ -227,12 +232,13 @@ class LocalFetcher(FetcherBase):
         except Exception:
             raise TrestleError(f'The uri provided is invalid or unresolvable as a file path: {uri}')
 
-        # Security validation for file:// URIs and relative paths
-        # LocalFetcher is designed to access files outside workspace (e.g., test data, external catalogs)
-        # Security is provided by blocking sensitive system files, not workspace boundaries
-        # This prevents arbitrary file read vulnerabilities (PT-002) while allowing legitimate use
-        logger.info(f'Validating local file access: {original_uri}')
-        PathSecurityValidator.validate_local_file_path(self._trestle_root, self._abs_path, allow_outside_workspace=True)
+        # Security validation for file:// URIs and absolute or relative paths.
+        # A path the user or calling program named directly (allow_external=True) may be outside the workspace.
+        # A path read from within a document must stay inside the workspace, so a document cannot cause
+        # arbitrary local files to be read.  Sensitive system files are blocked in either case.
+        PathSecurityValidator.validate_local_file_path(
+            self._trestle_root, self._abs_path, allow_outside_workspace=allow_external
+        )
 
         # set the cached path to be the actual file path
         self._cached_object_path = self._abs_path
@@ -604,6 +610,7 @@ class FetcherFactory:
         uri: str,
         max_size_bytes: Optional[int] = None,
         block_private_ips: Optional[bool] = None,
+        allow_external: bool = False,
     ) -> Union[LocalFetcher, SFTPFetcher, HTTPSFetcher]:
         """Return an instantiated fetcher object based on the type of URI.
 
@@ -612,6 +619,8 @@ class FetcherFactory:
             uri: Reference to the remote object to cache.
             max_size_bytes: Optional maximum fetched object size.
             block_private_ips: Optional override for blocking private network addresses.
+            allow_external: True only if the user or calling program named a local path directly, allowing it to be
+                outside the trestle workspace.  Leave False for references read from within documents.
 
         Returns:
             fetcher object for the given URI.
@@ -626,4 +635,4 @@ class FetcherFactory:
         fetcher_type = fetcher_dict[uri_type]
         if cls.uri_type_is_not_local(uri_type):
             return fetcher_type(trestle_root, uri, max_size_bytes, block_private_ips)  # type: ignore
-        return fetcher_type(trestle_root, uri, max_size_bytes)  # type: ignore
+        return fetcher_type(trestle_root, uri, max_size_bytes, allow_external)  # type: ignore

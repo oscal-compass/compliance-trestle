@@ -47,7 +47,7 @@ def setup_test(
     new_catalog_dir.mkdir(parents=True, exist_ok=True)
 
     ssp_json = testdata_dir / 'author/ssp/ssp_example.json'
-    fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(ssp_json))
+    fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(ssp_json), allow_external=True)
     ssp_obj: SystemSecurityPlan
     ssp_obj, parent_alias = fetcher.get_oscal(True)
     ssp_obj.control_implementation.implemented_requirements[0].props = [

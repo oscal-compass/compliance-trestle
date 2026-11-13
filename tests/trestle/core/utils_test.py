@@ -17,6 +17,7 @@
 
 import copy
 import pathlib
+import shutil
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -341,7 +342,10 @@ def test_models_are_equivalent(simplified_nist_catalog: catalog.Catalog) -> None
 
 def test_get_title_from_source(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test get source title."""
-    prof_uri = str(test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json')
+    # the uri comes from within a document, so it must be inside the trestle workspace
+    prof_path = tmp_trestle_dir / 'simple_test_profile.json'
+    shutil.copy(test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json', prof_path)
+    prof_uri = str(prof_path)
     assert ModelUtils.get_title_from_model_uri(tmp_trestle_dir, prof_uri) == 'Trestle test profile'
     with pytest.raises(TrestleError):
         ModelUtils.get_title_from_model_uri(tmp_trestle_dir, 'foo_bar')

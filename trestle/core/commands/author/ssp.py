@@ -183,8 +183,8 @@ class SSPGenerate(AuthorCommonCommand):
             profile_path = trestle_root / local_path
             _, _, context.profile = ModelUtils.load_distributed(profile_path, trestle_root)
         else:
-            fetcher = FetcherFactory.get_fetcher(trestle_root, profile_href)
-            context.profile = fetcher.get_oscal()
+            fetcher = FetcherFactory.get_fetcher(trestle_root, profile_href, allow_external=True)
+            context.profile, _ = fetcher.get_oscal()
             profile_path = profile_href
 
         profile_resolver = ProfileResolver()
@@ -196,6 +196,7 @@ class SSPGenerate(AuthorCommonCommand):
             params_format='[.]',
             param_rep=ParameterRep.ASSIGNMENT_FORM,
             show_value_warnings=True,
+            allow_external=True,  # the profile was named by the user on the command line
         )
 
         catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)

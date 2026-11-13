@@ -84,7 +84,7 @@ def get_catalog_fetcher(
         catalog_str = f'./catalogs/{cat_name}' if in_trestle else f'../{cat_name}'
     else:
         catalog_str = str(catalog_file)
-    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, catalog_str)
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, catalog_str, allow_external=True)
     return fetcher, catalog_data
 
 
@@ -493,13 +493,13 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
         as_file_uri('user/oscal_file.json'),
         as_file_uri('../user/oscal_file.json'),
     ]:
-        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
+        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri, allow_external=True)
         assert isinstance(fetcher, cache.LocalFetcher)
 
     # paths with drive letter
     for uri in ['C:\\Users\\user\\this.json', 'C:/Users/user/this.json', 'C:file.json']:
         if file_utils.is_windows():
-            fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
+            fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri, allow_external=True)
             assert isinstance(fetcher, cache.LocalFetcher)
         else:
             with pytest.raises(TrestleError):
@@ -560,7 +560,7 @@ def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path) -> None:
 def test_fetcher_failures_windows(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
     """Test failures specific to Windows."""
     if file_utils.is_windows():
-        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
+        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri, allow_external=True)
         with pytest.raises(TrestleError, match='No such file'):
             _ = fetcher.get_oscal()
 
@@ -577,6 +577,6 @@ def test_fetcher_failure_windows_wrong_drive(tmp_trestle_dir: pathlib.Path) -> N
         path_str = str(catalog_file)[2:]
         bad_drive = 'X:' if drive_letter not in ['X', 'x'] else 'Y:'
         bad_uri = bad_drive + path_str
-        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, bad_uri)
+        fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, bad_uri, allow_external=True)
         with pytest.raises(TrestleError, match='No such file'):
             _ = fetcher.get_oscal()

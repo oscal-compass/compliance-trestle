@@ -475,7 +475,10 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
         repo.load_and_import_model(cat_path, cat_name)
         new_href = f'trestle://catalogs/{cat_name}/catalog.json'
     else:
-        new_href = str(cat_path.resolve())
+        # absolute path href; documents may only reference files inside the trestle workspace
+        workspace_cat_path = trestle_root / SIMPLIFIED_NIST_CATALOG_NAME
+        shutil.copy(cat_path, workspace_cat_path)
+        new_href = str(workspace_cat_path.resolve())
     assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0
 
 
