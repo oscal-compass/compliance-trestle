@@ -28,7 +28,29 @@ import socket
 from typing import Optional, Set
 from urllib import parse
 
+from trestle.common import const
 from trestle.common.err import TrestleError
+
+
+def get_max_remote_fetch_bytes_config() -> int:
+    """Get the maximum size in bytes of an object fetched from a remote source.
+
+    Returns:
+        The value of TRESTLE_MAX_REMOTE_FETCH_BYTES if set, otherwise const.DEFAULT_MAX_REMOTE_FETCH_BYTES.
+
+    Raises:
+        TrestleError: If the environment variable is set but is not a positive integer.
+    """
+    env_value = os.environ.get(const.MAX_REMOTE_FETCH_BYTES_ENV_VAR)
+    if env_value is None or env_value.strip() == '':
+        return const.DEFAULT_MAX_REMOTE_FETCH_BYTES
+    try:
+        max_bytes = int(env_value.strip())
+    except ValueError as e:
+        raise TrestleError(f'{const.MAX_REMOTE_FETCH_BYTES_ENV_VAR} must be a positive integer number of bytes.') from e
+    if max_bytes <= 0:
+        raise TrestleError(f'{const.MAX_REMOTE_FETCH_BYTES_ENV_VAR} must be a positive integer number of bytes.')
+    return max_bytes
 
 
 def get_block_private_ips_config() -> bool:

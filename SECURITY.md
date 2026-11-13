@@ -45,6 +45,20 @@ export TRESTLE_BLOCK_PRIVATE_IPS=true
 
 When private IPs are allowed (default), trestle logs a warning when accessing them to maintain visibility.
 
+#### Maximum Remote Object Size
+
+Objects fetched over `https://` or `sftp://` are streamed to disk and rejected once they exceed a size limit, so a
+malicious endpoint cannot exhaust memory or disk. The default limit is 1 GiB. It is a safety ceiling, not a measured
+limit. To set a different limit, for example a lower one on a memory-constrained CI runner, set the environment
+variable to a positive number of bytes:
+
+```bash
+export TRESTLE_MAX_REMOTE_FETCH_BYTES=104857600  # 100 MiB
+```
+
+An invalid value causes the fetch to fail rather than fall back to the default. Note that parsing an OSCAL document
+needs several times its size in memory.
+
 #### Domain Allowlist (Optional)
 
 For additional security, you can restrict fetching to specific domains by configuring an allowed domains list. When configured, only URLs from the specified domains will be permitted.
@@ -111,6 +125,7 @@ When using compliance-trestle to fetch remote OSCAL content:
 
 1. **Use HTTPS URLs** from trusted sources
 1. **Enable private IP blocking** (`TRESTLE_BLOCK_PRIVATE_IPS=true`) in production environments unless you specifically need to access private repositories
+1. **Lower the remote object size limit** (`TRESTLE_MAX_REMOTE_FETCH_BYTES`) on memory-constrained hosts such as CI runners, since the 1 GiB default is only a safety ceiling and parsing needs several times a document's size in memory
 1. **Configure domain allowlists** when fetching from a known set of trusted domains
 1. **Monitor logs** for warnings about private IP access
 1. **Keep trestle updated** to receive the latest security fixes

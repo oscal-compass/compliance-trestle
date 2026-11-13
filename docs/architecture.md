@@ -180,6 +180,7 @@ This section documents what users can and cannot expect regarding security from 
   - Remote resource retrieval (`trestle/core/remote/cache.py` and `trestle/core/remote/security.py`) enforces HTTPS/SFTP and includes Server-Side Request Forgery (SSRF) protections.
   - Cloud metadata service endpoints (e.g., `169.254.169.254`, `metadata.google.internal`) and loopback addresses are blocked unconditionally during remote fetches.
   - Optional blocking of RFC 1918 private IP address ranges can be configured via the `TRESTLE_BLOCK_PRIVATE_IPS` environment variable.
+  - Remote objects are streamed to disk and rejected once they exceed a size limit (1 GiB by default), which bounds memory and disk use against a malicious or compromised endpoint. The limit can be changed via the `TRESTLE_MAX_REMOTE_FETCH_BYTES` environment variable. It is a safety ceiling, and parsing a document needs several times its size in memory.
 - **Template Sandbox Execution:**
   - Jinja2 authoring templates (`trestle/core/commands/author/jinja.py`) execute within a `SandboxedEnvironment` to restrict access to dangerous Python attributes (`__class__`, `__globals__`, `__subclasses__`) and mitigate server-side template injection (SSTI) risks.
 - **Cryptographic Provenance & Integrity:**
