@@ -231,6 +231,14 @@ SFTP_URI = 'sftp://'
 
 HTTPS_URI = 'https://'
 
+# Default upper bound on the size of an object fetched from a remote (https or sftp) source.
+# This is a safety ceiling against unbounded responses (denial of service), not a measured limit:
+# it permits very large legitimate documents while preventing terabyte-scale transfers.
+# Override with the TRESTLE_MAX_REMOTE_FETCH_BYTES environment variable.
+DEFAULT_MAX_REMOTE_FETCH_BYTES: int = 1024 * 1024 * 1024
+
+MAX_REMOTE_FETCH_BYTES_ENV_VAR = 'TRESTLE_MAX_REMOTE_FETCH_BYTES'
+
 # extracts letter, colon and single slash
 WINDOWS_DRIVE_URI_REGEX = r'([A-Za-z]:[\\/]?)[^\\/]'
 
