@@ -65,7 +65,7 @@ class ImportCmd(CommandPlusDocs):
 
             content_type = FileContentType.to_content_type('.' + input_uri.split('.')[-1])
 
-            fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(input_uri))
+            fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(input_uri), allow_external=True)
 
             model_read, parent_alias = fetcher.get_oscal(True)
 

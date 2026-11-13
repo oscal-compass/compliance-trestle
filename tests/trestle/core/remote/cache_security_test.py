@@ -16,16 +16,21 @@
 """Security tests for cache path traversal vulnerabilities."""
 
 import pathlib
+import shutil
 import socket
 import sys
-from typing import List
+from typing import List, Tuple
 
 import pytest
 
 import tests.test_utils as test_utils
 
+import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.err import TrestleError
+from trestle.core import generators as gens
+from trestle.core.crm.ssp_inheritance_api import SSPInheritanceAPI
+from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote import cache
 from trestle.core.remote.cache import HTTPSFetcher, SFTPFetcher
 from trestle.core.remote.security import PathSecurityValidator, URLSecurityValidator
@@ -1330,3 +1335,104 @@ class TestIPv6TransitionFormSSRFBypass:
 
 
 # Made with Bob
+
+
+class TestExternalLocalFileAccess:
+    """Local files outside the workspace may only be read when the path was named directly by the user."""
+
+    @staticmethod
+    def _workspace_and_secret(tmp_path: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path]:
+        workspace = tmp_path / 'workspace'
+        test_utils.ensure_trestle_config_dir(workspace)
+        secret = tmp_path / '.netrc'
+        secret.write_text('machine example.com login victim password s3cr3t\n')
+        return workspace, secret
+
+    def test_document_reference_to_credential_file_is_blocked(self, tmp_path: pathlib.Path) -> None:
+        """The advisory scenario: a path from within a document must not read a file outside the workspace."""
+        workspace, secret = self._workspace_and_secret(tmp_path)
+        with pytest.raises(TrestleError, match='outside the trestle workspace is not allowed'):
+            cache.FetcherFactory.get_fetcher(workspace, str(secret))
+        with pytest.raises(TrestleError, match='outside the trestle workspace is not allowed'):
+            cache.LocalFetcher(workspace, str(secret))
+
+    def test_document_reference_with_traversal_is_blocked(self, tmp_path: pathlib.Path) -> None:
+        """A relative path climbing out of the workspace is blocked."""
+        workspace, _ = self._workspace_and_secret(tmp_path)
+        (tmp_path / 'outside.json').write_text('{}')
+        with pytest.raises(TrestleError, match='outside the trestle workspace is not allowed'):
+            cache.FetcherFactory.get_fetcher(workspace, '../outside.json')
+
+    def test_document_reference_via_symlink_is_blocked(self, tmp_path: pathlib.Path) -> None:
+        """A symlink inside the workspace pointing outside is blocked, because the resolved path is checked."""
+        workspace, secret = self._workspace_and_secret(tmp_path)
+        link = workspace / 'link.json'
+        try:
+            link.symlink_to(secret)
+        except OSError:
+            pytest.skip('symlinks not supported')
+        with pytest.raises(TrestleError, match='outside the trestle workspace is not allowed'):
+            cache.FetcherFactory.get_fetcher(workspace, str(link))
+
+    def test_document_reference_inside_workspace_is_allowed(self, tmp_path: pathlib.Path) -> None:
+        """A path inside the workspace is allowed."""
+        workspace, _ = self._workspace_and_secret(tmp_path)
+        inside = workspace / 'catalogs' / 'catalog.json'
+        inside.parent.mkdir()
+        inside.write_text('{}')
+        assert isinstance(cache.FetcherFactory.get_fetcher(workspace, str(inside)), cache.LocalFetcher)
+
+    def test_user_named_path_outside_workspace_is_allowed(self, tmp_path: pathlib.Path) -> None:
+        """A path named directly by the user may be outside the workspace."""
+        workspace, _ = self._workspace_and_secret(tmp_path)
+        outside = tmp_path / 'catalog.json'
+        outside.write_text('{}')
+        fetcher = cache.FetcherFactory.get_fetcher(workspace, str(outside), allow_external=True)
+        assert isinstance(fetcher, cache.LocalFetcher)
+
+    def test_profile_import_href_outside_workspace_is_blocked(self, tmp_path: pathlib.Path) -> None:
+        """An imports[].href inside a profile pointing outside the workspace is not read."""
+        workspace, secret = self._workspace_and_secret(tmp_path)
+        with pytest.raises(TrestleError, match='outside the trestle workspace is not allowed'):
+            next(Import(workspace, prof.Import1(href=str(secret), include_all={}), []).process())
+
+    def test_user_named_root_profile_outside_workspace_but_nested_href_blocked(self, tmp_path: pathlib.Path) -> None:
+        """A user-named root profile may be outside the workspace, but the hrefs inside it may not."""
+        workspace, secret = self._workspace_and_secret(tmp_path)
+        outside_profile = tmp_path / 'profile.json'
+        profile = gens.generate_sample_model(prof.Profile)
+        profile.imports = [prof.Import1(href=str(secret), include_all={})]
+        profile.oscal_write(outside_profile)
+
+        # without the flag the root profile itself is rejected
+        with pytest.raises(TrestleError, match='outside the trestle workspace is not allowed'):
+            ProfileResolver.get_resolved_profile_catalog(workspace, str(outside_profile))
+        # with the flag the root is read, but its nested import of the outside file is still rejected
+        with pytest.raises(TrestleError, match='outside the trestle workspace is not allowed') as exc:
+            ProfileResolver.get_resolved_profile_catalog(workspace, str(outside_profile), allow_external=True)
+        assert str(secret) in str(exc.value)
+
+    def test_user_named_root_profile_outside_workspace_resolves(self, tmp_path: pathlib.Path) -> None:
+        """A user-named root profile outside the workspace resolves when its imports are inside the workspace."""
+        workspace, _ = self._workspace_and_secret(tmp_path)
+        inside_cat = workspace / 'catalogs' / 'nist_cat' / 'catalog.json'
+        inside_cat.parent.mkdir(parents=True)
+        shutil.copy(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME, inside_cat)
+        outside_profile = tmp_path / 'profile.json'
+        profile = gens.generate_sample_model(prof.Profile)
+        profile.imports = [prof.Import1(href='trestle://catalogs/nist_cat/catalog.json', include_all={})]
+        profile.oscal_write(outside_profile)
+
+        resolved = ProfileResolver.get_resolved_profile_catalog(workspace, str(outside_profile), allow_external=True)
+        assert isinstance(resolved, cat.Catalog)
+
+    def test_leveraged_ssp_reference_from_markdown_must_be_in_workspace(self, tmp_path: pathlib.Path) -> None:
+        """The inheritance API allows a user-named SSP outside the workspace but not one read from markdown."""
+        workspace, secret = self._workspace_and_secret(tmp_path)
+        api = SSPInheritanceAPI(workspace / 'inheritance', workspace)
+        with pytest.raises(TrestleError, match='outside the trestle workspace is not allowed'):
+            api._fetch_leveraged_ssp(str(secret))
+        # allowed by path check when user-named; fails later because the file is not an SSP, not on the path check
+        with pytest.raises(TrestleError) as exc:
+            api._fetch_leveraged_ssp(str(secret), allow_external=True)
+        assert 'outside the trestle workspace' not in str(exc.value)

@@ -547,6 +547,8 @@ The `trestle href` command can also be used to change the value back to the inte
 The provided href can be of form `trestle://`, `https://`, `sftp://`, or `file:///`.  If `file:///` is used, the path provided must be absolute - and on Windows
 it must include the drive letter followed by a slash.  The only time a relative path is allowed is with the `trestle://` heading.
 
+**A local href (`file:///`, or an absolute or relative path) must refer to a file inside the trestle workspace.**  A reference in a profile to a local file outside the workspace is rejected, so that a profile cannot cause trestle to read arbitrary files on your system.  To use a file from elsewhere on disk, first bring it into the workspace with `trestle import -f <path> -o <name>`, and then set the href to the imported copy, for example `trestle href -n my_profile -i 0 -hr trestle://catalogs/<name>/catalog.json`.  Remote `https://` and `sftp://` hrefs are not affected.  See `SECURITY.md` for details.
+
 A username and password may be embedded in the url for `https://`, and a CA certificate path will be searched from environment variables `REQUESTS_CA_BUNDLE` and `CURL_CA_BUNDLE` in that order.
 
 Authorization for `sftp://` access relies on the user's private key being either active via `ssh-agent` or supplied via the environment variable `SSH_KEY`. In the latter case it must not require a passphrase prompt.

@@ -550,7 +550,9 @@ class PathSecurityValidator:
             if not allow_outside_workspace:
                 raise TrestleError(
                     f'Access to files outside the trestle workspace is not allowed: {file_path}. '
-                    'This is a security restriction to prevent arbitrary file access.'
+                    'A reference within a document may not point to a local file outside the workspace. '
+                    'Import the file with "trestle import -f <file> -o <name>" and change the reference to the '
+                    'imported copy, e.g. using "trestle href" to set a trestle:// href.'
                 ) from e
 
         # Additional checks for sensitive system files

@@ -262,7 +262,7 @@ class Repository:
         self, model_path: pathlib.Path, name: str, content_type: FileContentType = FileContentType.JSON
     ) -> ManagedOSCAL:
         """Load the model at the specified path into trestle with the specified name."""
-        fetcher = cache.FetcherFactory.get_fetcher(self.root_dir, str(model_path))
+        fetcher = cache.FetcherFactory.get_fetcher(self.root_dir, str(model_path), allow_external=True)
         model, _ = fetcher.get_oscal(True)
 
         return self.import_model(model, name, content_type)

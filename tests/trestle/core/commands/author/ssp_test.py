@@ -15,6 +15,7 @@
 
 import argparse
 import pathlib
+import shutil
 from typing import Dict, List
 
 from _pytest.monkeypatch import MonkeyPatch
@@ -270,6 +271,53 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
     co = header['control-origination']
     assert co[2] == 'Service Provider Corporate'
     assert len(co) == 3
+
+
+def _outside_workspace_dir(tmp_trestle_dir: pathlib.Path) -> pathlib.Path:
+    """Return a directory outside of the trestle workspace, which is the tmp_trestle_dir fixture."""
+    outside_dir = tmp_trestle_dir.parent / f'{tmp_trestle_dir.name}_outside'
+    outside_dir.mkdir()
+    assert not outside_dir.is_relative_to(tmp_trestle_dir)
+    return outside_dir
+
+
+def test_ssp_generate_with_user_named_external_profile(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp-generate accepts a profile named by the user as a uri that is outside the workspace."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    # the profile imports are trestle:// hrefs, so the profile can be moved outside of the workspace as is
+    outside_prof = _outside_workspace_dir(tmp_trestle_dir) / 'outside_profile.json'
+    shutil.copy(tmp_trestle_dir / f'profiles/{prof_name}/profile.json', outside_prof)
+    args.profile = outside_prof.resolve().as_uri()
+
+    assert SSPGenerate()._run(args) == 0
+    assert (tmp_trestle_dir / ssp_name / 'ac' / 'ac-1.md').exists()
+
+
+def test_ssp_generate_external_profile_with_external_nested_href_fails(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that an external profile named by the user cannot cause a file outside the workspace to be imported."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    outside_dir = _outside_workspace_dir(tmp_trestle_dir)
+    outside_cat = outside_dir / 'outside_catalog.json'
+    shutil.copy(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME, outside_cat)
+    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, prof_name, prof.Profile)
+    profile.imports[0].href = outside_cat.resolve().as_uri()
+    outside_prof = outside_dir / 'outside_profile.json'
+    profile.oscal_write(outside_prof)
+    args.profile = outside_prof.resolve().as_uri()
+
+    assert SSPGenerate()._run(args) == 1
+    assert not (tmp_trestle_dir / ssp_name / 'ac' / 'ac-1.md').exists()
+
+
+def test_ssp_generate_with_user_named_external_leveraged_ssp(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp-generate accepts a leveraged ssp named by the user that is outside the workspace."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, 'leveraged_ssp')
+    outside_ssp = _outside_workspace_dir(tmp_trestle_dir) / 'outside_ssp.json'
+    shutil.copy(tmp_trestle_dir / 'system-security-plans/leveraged_ssp/system-security-plan.json', outside_ssp)
+    args.leveraged_ssp = outside_ssp.resolve().as_uri()
+
+    assert SSPGenerate()._run(args) == 0
+    assert (tmp_trestle_dir / ssp_name / const.INHERITANCE_VIEW_DIR).exists()
 
 
 def test_ssp_generate_with_inheritance(tmp_trestle_dir: pathlib.Path) -> None:

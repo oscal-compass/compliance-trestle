@@ -109,6 +109,7 @@ def test_ok_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: path
     repo.load_and_import_model(cat_path, 'nist_cat')
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_incorrect_alter.json'
     repo.load_and_import_model(prof_path, 'incorrect_profile')
+    prof_path = tmp_trestle_dir / 'profiles/incorrect_profile/profile.json'
 
     # this originally failed but now it is OK based on OSCAL saying to default to starting or ending if no by_id
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
@@ -122,6 +123,7 @@ def test_ok_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
     repo.load_and_import_model(cat_path, 'nist_cat')
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_alter_props.json'
     repo.load_and_import_model(prof_path, 'profile_with_alter_props')
+    prof_path = tmp_trestle_dir / 'profiles/profile_with_alter_props/profile.json'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac_1 = catalog.groups[0].controls[0]
@@ -138,6 +140,7 @@ def test_profile_missing_position(tmp_trestle_dir: pathlib.Path) -> None:
     repo.load_and_import_model(cat_path, 'nist_cat')
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_missing_position.json'
     repo.load_and_import_model(prof_path, 'profile_missing_position')
+    prof_path = tmp_trestle_dir / 'profiles/profile_missing_position/profile.json'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     assert catalog
@@ -151,6 +154,7 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
 
     prof_d_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_d.json'
     repo.load_and_import_model(prof_d_path, 'test_profile_d')
+    prof_d_path = tmp_trestle_dir / 'profiles/test_profile_d/profile.json'
 
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_d_path)
 

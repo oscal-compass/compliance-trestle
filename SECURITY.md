@@ -49,14 +49,41 @@ When private IPs are allowed (default), trestle logs a warning when accessing th
 
 For additional security, you can restrict fetching to specific domains by configuring an allowed domains list. When configured, only URLs from the specified domains will be permitted.
 
+### Local File Access
+
+A document must never decide what trestle reads from the user's disk. A local file outside the trestle workspace may be
+read only if the user (or calling program) named that file directly.
+
+**Allowed**
+
+1. Files inside the trestle workspace, however referenced (`trestle://…`, or a relative or absolute path that resolves
+   inside it).
+1. A file named directly by the user, wherever it is, for example `trestle import -f /any/path/catalog.json`, or the
+   profile and leveraged SSP arguments of `trestle author ssp-generate`.
+1. A file path passed by a calling program to the Python API, for example `Repository.load_and_import_model()`.
+1. `https://` and `sftp://` references from any source. They are not local files and are covered by the URL protections
+   above.
+
+**Not allowed**
+
+1. A reference found inside a document (for example a profile `imports[].href`, or the leveraged SSP href in an SSP
+   inheritance markdown file) that resolves to a local file outside the workspace, whether given as an absolute path, a
+   `..` relative path, or a `file:///` URI.
+1. A reference that reaches outside the workspace through a symbolic link. The resolved path is checked.
+
+To use a file that lives outside the workspace, run `trestle import` to bring it in, then refer to it as `trestle://…`.
+
+These rules protect the confidentiality of local files. They do not verify that a permitted file is authentic or
+untampered with; use signatures for that.
+
 ### Path Traversal Protection
 
 Trestle implements multiple layers of path traversal protection:
 
 1. **URL Path Validation**: Blocks `..` sequences in URL paths to prevent directory traversal
 1. **Cache Path Validation**: Ensures cached files remain within the designated cache directory
-1. **Workspace Boundary Enforcement**: Validates that local file operations stay within the trestle workspace
-1. **Sensitive File Protection**: Blocks access to sensitive system files even when outside-workspace access is allowed:
+1. **Workspace Boundary Enforcement**: Local files referenced from within documents must resolve inside the trestle workspace (see Local File Access above)
+1. **Sensitive File Protection**: Blocks access to sensitive system files even when the user names a path outside the workspace:
    - `/etc/passwd`, `/etc/shadow`, `/etc/group`, `/etc/sudoers`
    - SSH keys (`.ssh/`)
    - Cloud credentials (`.aws/`, `.docker/`, `.kube/`)
