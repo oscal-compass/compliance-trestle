@@ -158,7 +158,13 @@
 <span class=normal>192</span>
 <span class=normal>193</span>
 <span class=normal>194</span>
-<span class=normal>195</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SSPInheritanceAPI</span><span class=p>:</span>
+<span class=normal>195</span>
+<span class=normal>196</span>
+<span class=normal>197</span>
+<span class=normal>198</span>
+<span class=normal>199</span>
+<span class=normal>200</span>
+<span class=normal>201</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SSPInheritanceAPI</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""API for updating inheritance information in SSPs through inheritance markdown."""</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>inheritance_md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -173,13 +179,13 @@
 <span class=sd>        Write inheritance information to markdown.</span>
 
 <span class=sd>        Args:</span>
-<span class=sd>            leveraged_ssp_reference: Location of the SSP to write inheritance information from.</span>
+<span class=sd>            leveraged_ssp_reference: Location of the SSP to write inheritance information from, as named by the user.</span>
 <span class=sd>            catalog_api: Catalog API to filter inheritance information by catalog.</span>
 
 <span class=sd>        Notes:</span>
 <span class=sd>            If a catalog API is provided, the written controls in the markdown will be filtered by the catalog.</span>
 <span class=sd>        """</span>
-        <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_fetch_leveraged_ssp</span><span class=p>(</span><span class=n>leveraged_ssp_reference</span><span class=p>)</span>
+        <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_fetch_leveraged_ssp</span><span class=p>(</span><span class=n>leveraged_ssp_reference</span><span class=p>,</span> <span class=n>allow_external</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=n>catalog_api</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>control_imp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ControlImplementation</span> <span class=o>=</span> <span class=n>leveraged_ssp</span><span class=o>.</span><span class=n>control_implementation</span>
@@ -246,10 +252,16 @@
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_reconcile_components</span><span class=p>(</span><span class=n>ssp</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=p>,</span> <span class=n>leveraged_components</span><span class=p>,</span> <span class=n>leveraged_auth</span><span class=p>)</span>
 
-    <span class=k>def</span><span class=w> </span><span class=nf>_fetch_leveraged_ssp</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>leveraged_ssp_reference</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>:</span>
-<span class=w>        </span><span class=sd>"""Fetch the leveraged SSP."""</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_fetch_leveraged_ssp</span><span class=p>(</span>
+        <span class=bp>self</span><span class=p>,</span> <span class=n>leveraged_ssp_reference</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>allow_external</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
+    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>:</span>
+<span class=w>        </span><span class=sd>"""Fetch the leveraged SSP.</span>
+
+<span class=sd>        allow_external is True only when the user named the reference directly.  A reference read from the inheritance</span>
+<span class=sd>        markdown must be within the trestle workspace (import the SSP first).</span>
+<span class=sd>        """</span>
         <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span>
-        <span class=n>fetcher</span> <span class=o>=</span> <span class=n>FetcherFactory</span><span class=o>.</span><span class=n>get_fetcher</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_trestle_root</span><span class=p>,</span> <span class=n>leveraged_ssp_reference</span><span class=p>)</span>
+        <span class=n>fetcher</span> <span class=o>=</span> <span class=n>FetcherFactory</span><span class=o>.</span><span class=n>get_fetcher</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_trestle_root</span><span class=p>,</span> <span class=n>leveraged_ssp_reference</span><span class=p>,</span> <span class=n>allow_external</span><span class=o>=</span><span class=n>allow_external</span><span class=p>)</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>leveraged_ssp</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>fetcher</span><span class=o>.</span><span class=n>get_oscal</span><span class=p>()</span>
         <span class=k>except</span> <span class=n>TrestleError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
@@ -419,7 +431,7 @@
     <span class=n>ssp</span><span class=o>.</span><span class=n>system_implementation</span><span class=o>.</span><span class=n>leveraged_authorizations</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>leveraged_auths</span><span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>_reconcile_components</span><span class=p>(</span><span class=n>ssp</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=p>,</span> <span class=n>leveraged_components</span><span class=p>,</span> <span class=n>leveraged_auth</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.crm.ssp_inheritance_api.SSPInheritanceAPI.write_inheritance_as_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>write_inheritance_as_markdown</span><span class=p>(</span><span class=n>leveraged_ssp_reference</span><span class=p>,</span> <span class=n>catalog_api</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.crm.ssp_inheritance_api.SSPInheritanceAPI.write_inheritance_as_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write inheritance information to markdown.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>leveraged_ssp_reference</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Location of the SSP to write inheritance information from.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>catalog_api</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<a class="autorefs autorefs-internal" title="CatalogAPI (trestle.core.catalog.catalog_api.CatalogAPI)" href=../../catalog/catalog_api/#trestle.core.catalog.catalog_api.CatalogAPI>CatalogAPI</a>]</code> </td> <td> <div class=doc-md-description> <p>Catalog API to filter inheritance information by catalog.</p> </div> </td> <td> <code>None</code> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>If a catalog API is provided, the written controls in the markdown will be filtered by the catalog.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/crm/ssp_inheritance_api.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>43</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.crm.ssp_inheritance_api.SSPInheritanceAPI.write_inheritance_as_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>write_inheritance_as_markdown</span><span class=p>(</span><span class=n>leveraged_ssp_reference</span><span class=p>,</span> <span class=n>catalog_api</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.crm.ssp_inheritance_api.SSPInheritanceAPI.write_inheritance_as_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write inheritance information to markdown.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>leveraged_ssp_reference</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Location of the SSP to write inheritance information from, as named by the user.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>catalog_api</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<a class="autorefs autorefs-internal" title="CatalogAPI (trestle.core.catalog.catalog_api.CatalogAPI)" href=../../catalog/catalog_api/#trestle.core.catalog.catalog_api.CatalogAPI>CatalogAPI</a>]</code> </td> <td> <div class=doc-md-description> <p>Catalog API to filter inheritance information by catalog.</p> </div> </td> <td> <code>None</code> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>If a catalog API is provided, the written controls in the markdown will be filtered by the catalog.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/crm/ssp_inheritance_api.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>43</span>
 <span class=normal>44</span>
 <span class=normal>45</span>
 <span class=normal>46</span>
@@ -456,13 +468,13 @@
 <span class=sd>    Write inheritance information to markdown.</span>
 
 <span class=sd>    Args:</span>
-<span class=sd>        leveraged_ssp_reference: Location of the SSP to write inheritance information from.</span>
+<span class=sd>        leveraged_ssp_reference: Location of the SSP to write inheritance information from, as named by the user.</span>
 <span class=sd>        catalog_api: Catalog API to filter inheritance information by catalog.</span>
 
 <span class=sd>    Notes:</span>
 <span class=sd>        If a catalog API is provided, the written controls in the markdown will be filtered by the catalog.</span>
 <span class=sd>    """</span>
-    <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_fetch_leveraged_ssp</span><span class=p>(</span><span class=n>leveraged_ssp_reference</span><span class=p>)</span>
+    <span class=n>leveraged_ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_fetch_leveraged_ssp</span><span class=p>(</span><span class=n>leveraged_ssp_reference</span><span class=p>,</span> <span class=n>allow_external</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
 
     <span class=k>if</span> <span class=n>catalog_api</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
         <span class=n>control_imp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ControlImplementation</span> <span class=o>=</span> <span class=n>leveraged_ssp</span><span class=o>.</span><span class=n>control_implementation</span>

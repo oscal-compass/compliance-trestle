@@ -241,7 +241,9 @@
 <span class=normal>618</span>
 <span class=normal>619</span>
 <span class=normal>620</span>
-<span class=normal>621</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>PathSecurityValidator</span><span class=p>:</span>
+<span class=normal>621</span>
+<span class=normal>622</span>
+<span class=normal>623</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>PathSecurityValidator</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""Validator for ensuring file paths remain within allowed boundaries."""</span>
 
     <span class=nd>@staticmethod</span>
@@ -416,7 +418,9 @@
             <span class=k>if</span> <span class=ow>not</span> <span class=n>allow_outside_workspace</span><span class=p>:</span>
                 <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
                     <span class=sa>f</span><span class=s1>'Access to files outside the trestle workspace is not allowed: </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1>. '</span>
-                    <span class=s1>'This is a security restriction to prevent arbitrary file access.'</span>
+                    <span class=s1>'A reference within a document may not point to a local file outside the workspace. '</span>
+                    <span class=s1>'Import the file with "trestle import -f &lt;file&gt; -o &lt;name&gt;" and change the reference to the '</span>
+                    <span class=s1>'imported copy, e.g. using "trestle href" to set a trestle:// href.'</span>
                 <span class=p>)</span> <span class=kn>from</span><span class=w> </span><span class=nn>e</span>
 
         <span class=c1># Additional checks for sensitive system files</span>
@@ -662,7 +666,9 @@
 <span class=normal>618</span>
 <span class=normal>619</span>
 <span class=normal>620</span>
-<span class=normal>621</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>621</span>
+<span class=normal>622</span>
+<span class=normal>623</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>validate_local_file_path</span><span class=p>(</span>
     <span class=n>workspace_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>file_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>allow_outside_workspace</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -698,7 +704,9 @@
         <span class=k>if</span> <span class=ow>not</span> <span class=n>allow_outside_workspace</span><span class=p>:</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span>
                 <span class=sa>f</span><span class=s1>'Access to files outside the trestle workspace is not allowed: </span><span class=si>{</span><span class=n>file_path</span><span class=si>}</span><span class=s1>. '</span>
-                <span class=s1>'This is a security restriction to prevent arbitrary file access.'</span>
+                <span class=s1>'A reference within a document may not point to a local file outside the workspace. '</span>
+                <span class=s1>'Import the file with "trestle import -f &lt;file&gt; -o &lt;name&gt;" and change the reference to the '</span>
+                <span class=s1>'imported copy, e.g. using "trestle href" to set a trestle:// href.'</span>
             <span class=p>)</span> <span class=kn>from</span><span class=w> </span><span class=nn>e</span>
 
     <span class=c1># Additional checks for sensitive system files</span>
