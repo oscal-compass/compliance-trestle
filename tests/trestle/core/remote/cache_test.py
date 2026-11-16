@@ -23,7 +23,7 @@ import secrets
 import string
 import time
 from types import SimpleNamespace
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 from urllib import parse
 
 from _pytest.monkeypatch import MonkeyPatch
@@ -264,14 +264,73 @@ def test_https_fetcher_streams_limited_response(tmp_trestle_dir: pathlib.Path, m
     assert response.closed
 
 
+def test_remote_fetchers_apply_default_size_limit(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Remote fetchers must be bounded and streamed even when no max_size_bytes is given."""
+    request_options: Dict[str, Any] = {}
+    response = _HTTPSResponse(200, [b'{}'])
+
+    def _get(url: str, **kwargs) -> _HTTPSResponse:
+        request_options.update(kwargs)
+        return response
+
+    monkeypatch.delenv(const.MAX_REMOTE_FETCH_BYTES_ENV_VAR, raising=False)
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+    monkeypatch.setattr(cache.requests, 'get', _get)
+    https_fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/catalog.json')
+    sftp_fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'sftp://example.com/catalog.json')
+
+    assert https_fetcher._max_size_bytes == const.DEFAULT_MAX_REMOTE_FETCH_BYTES
+    assert sftp_fetcher._max_size_bytes == const.DEFAULT_MAX_REMOTE_FETCH_BYTES
+
+    https_fetcher._do_fetch()
+    assert request_options['stream'] is True
+
+
+def test_remote_fetchers_size_limit_from_env(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """TRESTLE_MAX_REMOTE_FETCH_BYTES overrides the default; an explicit argument overrides both."""
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+    monkeypatch.setenv(const.MAX_REMOTE_FETCH_BYTES_ENV_VAR, '4096')
+
+    assert cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/c.json')._max_size_bytes == 4096
+    assert cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'sftp://example.com/c.json')._max_size_bytes == 4096
+    assert cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/c.json', 10)._max_size_bytes == 10
+
+
+def test_remote_fetcher_size_error_hints_env_var_only_when_configurable(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """The oversize error names the env var only when that variable could change the limit."""
+    monkeypatch.setattr(cache.URLSecurityValidator, 'validate_url', lambda self, url: None)
+    monkeypatch.setenv(const.MAX_REMOTE_FETCH_BYTES_ENV_VAR, '10')
+
+    default_limit = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/c.json')
+    with pytest.raises(TrestleError, match=const.MAX_REMOTE_FETCH_BYTES_ENV_VAR):
+        default_limit._enforce_max_size(11)
+
+    explicit_limit = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/c.json', 10)
+    with pytest.raises(TrestleError, match='exceeds maximum size of 10 bytes') as exc_info:
+        explicit_limit._enforce_max_size(11)
+    assert const.MAX_REMOTE_FETCH_BYTES_ENV_VAR not in str(exc_info.value)
+
+
+@pytest.mark.parametrize('value', ['abc', '0', '-5', '1.5'])
+def test_remote_fetchers_invalid_env_size_limit(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, value: str
+) -> None:
+    """An invalid TRESTLE_MAX_REMOTE_FETCH_BYTES must fail closed, not silently fall back."""
+    monkeypatch.setenv(const.MAX_REMOTE_FETCH_BYTES_ENV_VAR, value)
+    with pytest.raises(TrestleError, match='must be a positive integer'):
+        cache.FetcherFactory.get_fetcher(tmp_trestle_dir, 'https://example.com/c.json')
+
+
 def test_https_fetcher_wraps_response_read_failure(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Unexpected HTTPS response-read failures should retain fetch context."""
 
     class _UnreadableResponse:
         status_code = 200
+        headers: Dict[str, str] = {}
 
-        @property
-        def text(self) -> str:
+        def iter_content(self, chunk_size: int) -> List[bytes]:
             raise RuntimeError('simulated read failure')
 
         def close(self) -> None:
