@@ -62,7 +62,7 @@ fuzz = [
 # Type checking
 typing = [
     "mypy == 2.4.1",
-    "types-PyYAML == 6.0.12.20261103",
+    "types-PyYAML == 6.0.12.20261113",
     "types-paramiko == 5.1.0.20261030",
     "types-requests == 2.33.0.20261030",
     "types-setuptools == 84.2.0.20261104",
