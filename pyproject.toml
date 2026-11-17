@@ -42,7 +42,7 @@ dependencies = [
     "pydantic[email] == 2.14.3",
     "python-dotenv == 1.2.4",
     "python-frontmatter == 1.3.0",
-    "pywin32 == 311; platform_system == 'Windows'",
+    "pywin32 == 312; platform_system == 'Windows'",
     "defusedxml == 0.7.1",
     "openpyxl == 3.1.5",
     "Jinja2 == 3.1.6",
@@ -55,14 +55,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Fuzzing (Linux only — atheris has no macOS/Windows wheels; 3.0.0 is the latest version supporting Python 3.11)
+# Fuzzing (Linux only — atheris has no macOS/Windows wheels; 3.1.0 requires Python >= 3.12)
 fuzz = [
     "atheris == 3.1.0; sys_platform == 'linux'",
 ]
 # Type checking
 typing = [
     "mypy == 2.4.1",
-    "types-PyYAML == 6.0.12.20261103",
+    "types-PyYAML == 6.0.12.20261113",
     "types-paramiko == 5.1.0.20261030",
     "types-requests == 2.33.0.20261030",
     "types-setuptools == 84.2.0.20261104",
@@ -88,7 +88,7 @@ dev = [
     "pre-commit == 4.7.0",
     "python-semantic-release == 10.7.0",
     "pylint == 4.1.3",
-    "datamodel-code-generator[http] == 0.91.0",
+    "datamodel-code-generator[http] == 0.95.0",
     "gitpython == 3.2.1",
 ]
 
