@@ -141,7 +141,7 @@ class XlsxHelper:
             logger.warning('config missing')
             return False
         # config verbosity
-        quiet = task._config.get('quiet', False)
+        quiet = task._config.getboolean('quiet', False)
         task._verbose = not quiet
         # required for component-definition
         if not self.configure_cd(task):

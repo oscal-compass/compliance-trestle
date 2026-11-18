@@ -15,11 +15,14 @@
 """ocp4-cis-profile-to-oscal-cd task tests."""
 
 import configparser
+import logging
 import os
 import pathlib
 import uuid
 
 from _pytest.monkeypatch import MonkeyPatch
+
+import pytest
 
 from tests.test_utils import TEST_DIR, set_cwd_unsafe, text_files_similar
 
@@ -447,3 +450,22 @@ def test_ocp4_cis_profile_to_oscal_cd_bogus_rules_file(tmp_path: pathlib.Path):
     tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
+
+
+@pytest.mark.parametrize('quiet, verbose', [('false', True), ('true', False)])
+@set_cwd_unsafe(root_dir)
+def test_ocp4_cis_profile_to_oscal_cd_execute_quiet(
+    tmp_path: pathlib.Path, caplog: pytest.LogCaptureFixture, quiet: str, verbose: bool
+):
+    """Test execute call honors quiet as a boolean."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['quiet'] = quiet
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
+    with caplog.at_level(logging.INFO, logger=ocp4_cis_profile_to_oscal_cd.logger.name):
+        retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert any(record.getMessage().startswith('output: ') for record in caplog.records) is verbose

@@ -15,12 +15,15 @@
 """cis-xlsx-to-oscal-catalog task tests."""
 
 import configparser
+import logging
 import os
 import pathlib
 from typing import Dict
 from unittest import mock
 
 from openpyxl import load_workbook
+
+import pytest
 
 from tests.test_utils import TEST_DIR, set_cwd_unsafe
 
@@ -313,3 +316,18 @@ def _validate_rhel(tmp_path: pathlib.Path):
     assert (
         rs[0].description == 'CRYPTO-POLICIES(7):https://access.redhat.com/articles/3642912#what-polices-are-provided-1'
     )
+
+
+@pytest.mark.parametrize('quiet, verbose', [('false', True), ('true', False)])
+@set_cwd_unsafe(root_dir)
+def test_cis_xlsx_to_oscal_catalog_execute_quiet(
+    tmp_path: pathlib.Path, caplog: pytest.LogCaptureFixture, quiet: str, verbose: bool
+):
+    """Test execute call honors quiet as a boolean."""
+    section = _get_section(tmp_path, ocp_config)
+    section['quiet'] = quiet
+    tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
+    with caplog.at_level(logging.INFO, logger=cis_xlsx_to_oscal_catalog.logger.name):
+        retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert any(record.getMessage().startswith('output: ') for record in caplog.records) is verbose

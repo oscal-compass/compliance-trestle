@@ -18,6 +18,8 @@ import configparser
 import json
 import pathlib
 
+import pytest
+
 from tests.test_utils import TEST_DIR
 
 from trestle.tasks.aws_config_result_to_oscal_ar import AwsConfigResultToOscalAR
@@ -99,3 +101,12 @@ class TestAwsConfigResultToOscalAR:
         produced = list(output_dir.glob('*.oscal.json'))
         assert len(produced) == 1
         assert produced[0].name == 'aws-config-sample.oscal.json'
+
+    @pytest.mark.parametrize('quiet, verbose', [('false', True), ('true', False)])
+    def test_execute_honors_quiet_boolean(self, tmp_path, quiet, verbose):
+        output_dir = tmp_path / 'out'
+        config = _build_config(test_data_dir, output_dir)
+        config['quiet'] = quiet
+        task = AwsConfigResultToOscalAR(config)
+        assert task.execute() == TaskOutcome.SUCCESS
+        assert task._verbose is verbose
