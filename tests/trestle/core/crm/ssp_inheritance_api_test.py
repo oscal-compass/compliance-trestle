@@ -92,8 +92,8 @@ def test_update_ssp_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
     application_dir = inheritance_path.joinpath('Application')
     prep_dir(application_dir)
 
-    test_utils.load_from_json(tmp_trestle_dir, 'leveraged_ssp', leveraged_ssp, ossp.SystemSecurityPlan)
-    test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
+    test_utils.load_from_json_without_check(tmp_trestle_dir, 'leveraged_ssp', leveraged_ssp, ossp.SystemSecurityPlan)
+    test_utils.load_from_json_without_check(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
         tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
@@ -152,8 +152,8 @@ def test_no_leveraged_comps(tmp_trestle_dir: pathlib.Path) -> None:
     application_dir = inheritance_path.joinpath('Application')
     unmapped_prep_dir(application_dir)
 
-    test_utils.load_from_json(tmp_trestle_dir, 'leveraged_ssp', leveraged_ssp, ossp.SystemSecurityPlan)
-    test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
+    test_utils.load_from_json_without_check(tmp_trestle_dir, 'leveraged_ssp', leveraged_ssp, ossp.SystemSecurityPlan)
+    test_utils.load_from_json_without_check(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
         tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
