@@ -93,3 +93,25 @@ def test_href_failures(
     monkeypatch.setattr(sys, 'argv', cmd_string.split())
     rc = Trestle().run()
     assert rc == CmdReturnCodes.COMMAND_ERROR.value
+
+
+def test_href_negative_item(
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, simplified_nist_profile: profile.Profile, monkeypatch: MonkeyPatch
+) -> None:
+    """Test that a negative import number is rejected and does not change any href."""
+    models_path, profile_path = test_utils.prepare_trestle_project_dir(
+        tmp_path, FileContentType.JSON, simplified_nist_profile, test_utils.PROFILES_DIR
+    )
+
+    os.chdir(models_path)
+
+    orig_href = simplified_nist_profile.imports[0].href
+
+    cmd_string = 'trestle href -n my_test_model -hr trestle://catalogs/my_catalog/catalog.json -i -1'
+    monkeypatch.setattr(sys, 'argv', cmd_string.split())
+    rc = Trestle().run()
+    assert rc == CmdReturnCodes.COMMAND_ERROR.value
+
+    # confirm the profile was not modified
+    unchanged_profile: profile.Profile = profile.Profile.oscal_read(profile_path)
+    assert unchanged_profile.imports[0].href == orig_href
