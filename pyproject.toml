@@ -74,7 +74,7 @@ docs = [
     "mkdocs-awesome-pages-plugin == 2.10.1",
     "mkdocstrings[python] == 1.0.8",
     "mkdocs-htmlproofer-plugin == 1.6.0",
-    "mkdocs-material == 9.8.1",
+    "mkdocs-material == 9.8.2",
     "mkdocs-minify-plugin == 0.8.0",
     "mkdocs-git-revision-date-localized-plugin == 1.7.0",
     "pymdown-extensions == 13.1",
