@@ -178,6 +178,16 @@ class FetcherBase(ABC):
         return parser.parse_dict(model_dict[root_key], model_name), root_key
 
 
+def _reject_unc_path(uri: str) -> None:
+    r"""Reject UNC-style paths such as \\host\share or //host/share.
+
+    Resolving or opening a UNC path on Windows makes the OS contact the named host over SMB, which can leak the
+    current user's NTLM credentials to an attacker-controlled server.
+    """
+    if uri.strip().startswith(('\\\\', '//', '\\/', '/\\')):
+        raise TrestleError(f'UNC network paths are not supported: {uri}')
+
+
 class LocalFetcher(FetcherBase):
     r"""Fetcher for local content.
 
@@ -214,6 +224,7 @@ class LocalFetcher(FetcherBase):
 
             # if it has a drive letter don't add / to front
             uri = uri if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri) else '/' + uri
+            _reject_unc_path(uri)
         elif uri.startswith(const.TRESTLE_HREF_HEADING):
             # Extract the path after 'trestle://'
             trestle_path = uri[len(const.TRESTLE_HREF_HEADING) :]
@@ -231,6 +242,9 @@ class LocalFetcher(FetcherBase):
             return
 
         # now the URI should be either unix / style or windows C:/ style.  It may be relative.
+
+        # never allow UNC paths, which would trigger an SMB connection before any other check
+        _reject_unc_path(uri)
 
         if ':' in uri and platform.system() != const.WINDOWS_PLATFORM_STR:
             raise TrestleError(f'Cannot have : in uri on non-Windows system unless ftps, https or trestle: {uri}')
@@ -592,6 +606,7 @@ class FetcherFactory:
         # but it at least needs a filename with suffix
         # the most minimal allowed uri is of the form a.yml
         uri_clean = uri.strip()
+        _reject_unc_path(uri_clean)
         if uri_clean.startswith('ftp:'):
             raise TrestleError(f'Invalid uri {uri}  ftp is not supported.  Use sftp instead.')
         uri_len = len(uri_clean)
