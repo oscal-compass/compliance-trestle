@@ -39,7 +39,7 @@ dependencies = [
     "paramiko == 5.1.0",
     "ruamel.yaml == 0.19.1",
     "furl == 2.1.4",
-    "pydantic[email] == 2.14.3",
+    "pydantic[email] == 2.14.4",
     "python-dotenv == 1.2.4",
     "python-frontmatter == 1.3.0",
     "pywin32 == 312; platform_system == 'Windows'",
@@ -74,7 +74,7 @@ docs = [
     "mkdocs-awesome-pages-plugin == 2.10.1",
     "mkdocstrings[python] == 1.0.8",
     "mkdocs-htmlproofer-plugin == 1.6.0",
-    "mkdocs-material == 9.8.1",
+    "mkdocs-material == 9.8.2",
     "mkdocs-minify-plugin == 0.8.0",
     "mkdocs-git-revision-date-localized-plugin == 1.7.0",
     "pymdown-extensions == 13.1",
@@ -87,8 +87,8 @@ dev = [
     "compliance-trestle[typing,docs]",
     "pre-commit == 4.7.0",
     "python-semantic-release == 10.7.0",
-    "pylint == 4.1.3",
-    "datamodel-code-generator[http] == 0.95.0",
+    "pylint == 4.1.4",
+    "datamodel-code-generator[http] == 0.99.0",
     "gitpython == 3.2.1",
 ]
 
