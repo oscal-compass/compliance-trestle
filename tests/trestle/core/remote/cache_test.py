@@ -177,6 +177,21 @@ def test_local_fetcher_relative(tmp_trestle_dir: pathlib.Path) -> None:
     assert ModelUtils.models_are_equivalent(fetched_data, catalog_data)
 
 
+@pytest.mark.parametrize(
+    'uri',
+    [
+        r'\\attacker.example.com\share\catalog.json',
+        '//attacker.example.com/share/catalog.json',
+        r'\/attacker.example.com/share/catalog.json',
+        'file:////attacker.example.com/share/catalog.json',
+    ],
+)
+def test_unc_paths_rejected(tmp_trestle_dir: pathlib.Path, uri: str) -> None:
+    """Test that UNC paths, which could leak NTLM credentials on Windows, are rejected."""
+    with pytest.raises(TrestleError, match='UNC network paths are not supported'):
+        cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri, allow_external=True)
+
+
 def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the HTTPS fetcher failing."""
     monkeypatch.setenv('myusername', 'user123')
