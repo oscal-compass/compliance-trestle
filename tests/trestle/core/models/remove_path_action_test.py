@@ -95,3 +95,23 @@ def test_remove_path_magic_methods(tmp_path):
 
     action_desc = rpa.to_string()
     assert action_desc == f'{rpa.get_type()} {tmp_data_dir}'
+
+
+def test_remove_path_prunes_empty_parent_dirs(tmp_path: pathlib.Path) -> None:
+    """Test remove path deletes empty parent directories recursively."""
+    tmp_data_dir = tmp_path.joinpath('data')
+    nested_dir = tmp_data_dir.joinpath('nested1').joinpath('nested2')
+    tmp_data_file = nested_dir.joinpath('readme.md')
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    nested_dir.mkdir(exist_ok=True, parents=True)
+
+    with open(tmp_data_file, 'a+', encoding=const.FILE_ENCODING) as fp:
+        fp.write('DUMMY DATA')
+
+    rpa = RemovePathAction(tmp_data_file)
+    rpa.execute()
+
+    assert tmp_data_file.exists() is False
+    assert nested_dir.exists() is False
+    assert nested_dir.parent.exists() is False
+    assert tmp_data_dir.exists() is False
