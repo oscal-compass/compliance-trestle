@@ -57,3 +57,4 @@ tmp_bin_test
 
 # Local-only configuration docs
 manual-steps.md
+node_modules/
