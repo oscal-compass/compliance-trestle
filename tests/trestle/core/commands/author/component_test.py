@@ -309,6 +309,52 @@ def test_component_generate_all_title_path_traversal(tmp_trestle_dir: pathlib.Pa
     assert not escape_dir.exists()
 
 
+def test_component_generate_force_overwrite_allowed_dir(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """--force-overwrite clears a valid in-workspace output dir and regenerates the markdown."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    out_dir = tmp_trestle_dir / md_path
+    out_dir.mkdir(parents=True)
+    stale = out_dir / 'stale.txt'
+    stale.write_text('stale')
+
+    cmd = f'trestle author component-generate -n {comp_name} -o {md_path} --force-overwrite'
+    test_utils.execute_command_and_assert(cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assert not stale.exists()
+    assert (out_dir / 'comp_aa/comp_prof_aa/ac/ac-1.md').exists()
+
+
+@pytest.mark.parametrize('relative_output', [True, False])
+def test_component_generate_force_overwrite_outside_workspace(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, relative_output: bool
+) -> None:
+    """A rejected --output combined with --force-overwrite must not delete anything outside the workspace."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    canary = tmp_trestle_dir.parent / f'TRESTLE_CANARY_{relative_output}'
+    canary.mkdir()
+    (canary / 'important.txt').write_text('keep')
+    output = f'../{canary.name}' if relative_output else str(canary)
+
+    cmd = f'trestle author component-generate -n {comp_name} -o {output} --force-overwrite'
+    test_utils.execute_command_and_assert(cmd, CmdReturnCodes.COMMAND_ERROR.value, monkeypatch)
+    assert (canary / 'important.txt').read_text() == 'keep'
+
+
+def test_component_generate_force_overwrite_disallowed_name(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """A disallowed directory name must be rejected before --force-overwrite clears it."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    hidden = tmp_trestle_dir / '.hidden_not_allowed'
+    hidden.mkdir()
+    (hidden / 'important.txt').write_text('keep')
+
+    cmd = f'trestle author component-generate -n {comp_name} -o .hidden_not_allowed --force-overwrite'
+    test_utils.execute_command_and_assert(cmd, CmdReturnCodes.COMMAND_ERROR.value, monkeypatch)
+    assert (hidden / 'important.txt').read_text() == 'keep'
+
+
 def test_component_assemble_title_path_traversal(tmp_trestle_dir: pathlib.Path) -> None:
     """Assembling with a component title that escapes the markdown dir must be rejected."""
     from trestle.common.err import TrestleError
