@@ -39,6 +39,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
+from trestle.core.remote.security import PathSecurityValidator
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +87,10 @@ class ComponentGenerate(AuthorCommonCommand):
 
         rc = CmdReturnCodes.SUCCESS.value
         for component in as_list(component_def.components):
-            rc = self.component_generate_by_name(context, component, md_path / component.title)
+            component_md_path = md_path / component.title
+            # component.title is untrusted model content - ensure output stays within the markdown directory
+            PathSecurityValidator.validate_local_path(component_md_path, md_path)
+            rc = self.component_generate_by_name(context, component, component_md_path)
             if rc != CmdReturnCodes.SUCCESS.value:
                 break
         return rc
@@ -307,6 +311,8 @@ class ComponentAssemble(AuthorCommonCommand):
         md_dir: pathlib.Path, component: comp.DefinedComponent, context: ControlContext
     ) -> None:
         md_path = md_dir / component.title
+        # component.title is untrusted model content - ensure it stays within the markdown directory
+        PathSecurityValidator.validate_local_path(md_path, md_dir)
         sub_dirs = file_utils.iterdir_without_hidden_files(md_path)
         source_dirs = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
         for source_dir in source_dirs:

@@ -290,6 +290,39 @@ def test_component_generate_all_disallowed_dir_name(tmp_trestle_dir: pathlib.Pat
         generator.component_generate_all(tmp_trestle_dir, comp_name, '.hidden_not_allowed')
 
 
+@pytest.mark.parametrize('relative_title', [True, False])
+def test_component_generate_all_title_path_traversal(tmp_trestle_dir: pathlib.Path, relative_title: bool) -> None:
+    """A component title that escapes the markdown dir must be rejected and nothing written outside."""
+    from trestle.common.err import TrestleError
+    from trestle.core.commands.author.component import ComponentGenerate
+
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    comp_def, comp_def_path = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, comp_name, comp.ComponentDefinition
+    )
+    escape_dir = tmp_trestle_dir.parent / 'TRESTLE_ESCAPE'
+    comp_def.components[0].title = '../../TRESTLE_ESCAPE' if relative_title else str(escape_dir)
+    comp_def.oscal_write(comp_def_path)
+
+    with pytest.raises(TrestleError, match='Path traversal blocked'):
+        ComponentGenerate().component_generate_all(tmp_trestle_dir, comp_name, md_path)
+    assert not escape_dir.exists()
+
+
+def test_component_assemble_title_path_traversal(tmp_trestle_dir: pathlib.Path) -> None:
+    """Assembling with a component title that escapes the markdown dir must be rejected."""
+    from trestle.common.err import TrestleError
+    from trestle.core.commands.author.component import ComponentAssemble
+
+    md_dir = tmp_trestle_dir / md_path
+    md_dir.mkdir()
+    bad_comp = comp.DefinedComponent(
+        uuid='11111111-1111-4111-8111-111111111111', title='../..', type='service', description='x'
+    )
+    with pytest.raises(TrestleError, match='Path traversal blocked'):
+        ComponentAssemble._update_component_with_markdown(md_dir, bad_comp, None)  # type: ignore[arg-type]
+
+
 def test_component_get_name_from_non_trestle_uri() -> None:
     """ComponentGenerate._get_name_from_uri line 100 — non-TRESTLE URI returns empty string."""
     from trestle.core.commands.author.component import ComponentGenerate
