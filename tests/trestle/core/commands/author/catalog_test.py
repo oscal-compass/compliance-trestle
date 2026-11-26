@@ -636,6 +636,34 @@ def test_catalog_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     assert fc.files_unchanged()
 
 
+def test_catalog_assemble_output_path_traversal(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that catalog-assemble rejects an output name that escapes the catalogs directory."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+    test_utils.execute_command_and_assert('trestle author catalog-generate -n my_catalog -o md_catalog', 0, monkeypatch)
+
+    # directory outside the workspace that must survive the attack
+    victim = tmp_trestle_dir.parent / 'victim_dir'
+    victim.mkdir()
+    (victim / 'keep.txt').write_text('keep')
+
+    # relative traversal out of the workspace
+    rel = f'../../../{victim.name}'
+    test_utils.execute_command_and_assert(f'trestle author catalog-assemble -m md_catalog -o {rel}', 1, monkeypatch)
+    # traversal that stays in the workspace but leaves the catalogs directory
+    test_utils.execute_command_and_assert(
+        'trestle author catalog-assemble -m md_catalog -o ../profiles/x', 1, monkeypatch
+    )
+
+    # output name resolving to the catalogs directory itself would delete all catalogs
+    test_utils.execute_command_and_assert('trestle author catalog-assemble -m md_catalog -o .', 1, monkeypatch)
+    assert (tmp_trestle_dir / 'catalogs' / 'my_catalog' / 'catalog.json').exists()
+
+    assert (victim / 'keep.txt').exists()
+    assert not (victim / 'catalog.json').exists()
+    assert not (tmp_trestle_dir / 'profiles' / 'x').exists()
+
+
 def test_prune_written_controls(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test pruning of written controls."""
     catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
