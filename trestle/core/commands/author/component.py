@@ -61,10 +61,16 @@ class ComponentGenerate(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
 
+            # validate the output location BEFORE anything is deleted
+            if not file_utils.is_directory_name_allowed(args.output):
+                raise TrestleError(f'{args.output} is not an allowed directory name')
+            md_path = args.trestle_root / args.output
+            PathSecurityValidator.validate_local_path(md_path, args.trestle_root)
+
             if args.force_overwrite:
                 try:
                     logger.info(f'Overwriting the content in {args.output} folder.')
-                    clear_folder(pathlib.Path(args.output))
+                    clear_folder(md_path)
                 except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
 
