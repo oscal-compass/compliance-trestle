@@ -27,13 +27,7 @@
                   return '';
                 }
               });
-            </script> <p>Assemble markdown files of controls into a Component json file.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>153</span>
-<span class=normal>154</span>
-<span class=normal>155</span>
-<span class=normal>156</span>
-<span class=normal>157</span>
-<span class=normal>158</span>
-<span class=normal>159</span>
+            </script> <p>Assemble markdown files of controls into a Component json file.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>159</span>
 <span class=normal>160</span>
 <span class=normal>161</span>
 <span class=normal>162</span>
@@ -198,7 +192,13 @@
 <span class=normal>321</span>
 <span class=normal>322</span>
 <span class=normal>323</span>
-<span class=normal>324</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ComponentAssemble</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
+<span class=normal>324</span>
+<span class=normal>325</span>
+<span class=normal>326</span>
+<span class=normal>327</span>
+<span class=normal>328</span>
+<span class=normal>329</span>
+<span class=normal>330</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ComponentAssemble</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>"""Assemble markdown files of controls into a Component json file."""</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>'component-assemble'</span>
@@ -370,13 +370,7 @@
             <span class=c1># the imp_reqs need to be inserted into the correct control_implementation</span>
             <span class=k>for</span> <span class=n>imp_req</span> <span class=ow>in</span> <span class=n>imp_reqs</span><span class=p>:</span>
                 <span class=n>ControlInterface</span><span class=o>.</span><span class=n>insert_imp_req_into_component</span><span class=p>(</span><span class=n>component</span><span class=p>,</span> <span class=n>imp_req</span><span class=p>,</span> <span class=n>profile_title</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>trestle_root</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.component.ComponentAssemble-attributes>Attributes<a href=#trestle.core.commands.author.component.ComponentAssemble-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.component.ComponentAssemble.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'component-assemble'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.component.ComponentAssemble.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.component.ComponentAssemble-functions>Methods:<a href=#trestle.core.commands.author.component.ComponentAssemble-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.component.ComponentAssemble.assemble_comp_def_into_parent class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_comp_def_into_parent</span><span class=p>(</span><span class=n>parent_comp</span><span class=p>,</span> <span class=n>md_dir</span><span class=p>,</span> <span class=n>context</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.commands.author.component.ComponentAssemble.assemble_comp_def_into_parent class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble markdown content into provided component-definition model.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>261</span>
-<span class=normal>262</span>
-<span class=normal>263</span>
-<span class=normal>264</span>
-<span class=normal>265</span>
-<span class=normal>266</span>
-<span class=normal>267</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.component.ComponentAssemble-attributes>Attributes<a href=#trestle.core.commands.author.component.ComponentAssemble-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.component.ComponentAssemble.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'component-assemble'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.component.ComponentAssemble.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.component.ComponentAssemble-functions>Methods:<a href=#trestle.core.commands.author.component.ComponentAssemble-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.component.ComponentAssemble.assemble_comp_def_into_parent class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_comp_def_into_parent</span><span class=p>(</span><span class=n>parent_comp</span><span class=p>,</span> <span class=n>md_dir</span><span class=p>,</span> <span class=n>context</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.commands.author.component.ComponentAssemble.assemble_comp_def_into_parent class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble markdown content into provided component-definition model.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>267</span>
 <span class=normal>268</span>
 <span class=normal>269</span>
 <span class=normal>270</span>
@@ -401,7 +395,13 @@
 <span class=normal>289</span>
 <span class=normal>290</span>
 <span class=normal>291</span>
-<span class=normal>292</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>292</span>
+<span class=normal>293</span>
+<span class=normal>294</span>
+<span class=normal>295</span>
+<span class=normal>296</span>
+<span class=normal>297</span>
+<span class=normal>298</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>assemble_comp_def_into_parent</span><span class=p>(</span>
     <span class=n>parent_comp</span><span class=p>:</span> <span class=n>comp</span><span class=o>.</span><span class=n>ComponentDefinition</span><span class=p>,</span> <span class=n>md_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -433,13 +433,7 @@
         <span class=n>context</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=n>component</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Assembling markdown for component </span><span class=si>{</span><span class=n>component</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=n>ComponentAssemble</span><span class=o>.</span><span class=n>_update_component_with_markdown</span><span class=p>(</span><span class=n>md_dir</span><span class=p>,</span> <span class=n>component</span><span class=p>,</span> <span class=n>context</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.component.ComponentAssemble.assemble_component class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_component</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_comp_name</span><span class=p>,</span> <span class=n>md_name</span><span class=p>,</span> <span class=n>assem_comp_name</span><span class=p>,</span> <span class=n>regenerate</span><span class=p>,</span> <span class=n>version</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.commands.author.component.ComponentAssemble.assemble_component class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble the markdown directory into a json component-definition model file.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>The trestle root directory</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>parent_comp_name</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional name of component-definition used to generate markdown, default = assem_comp_name</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>md_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the directory containing the markdown control files for the component</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>assem_comp_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the assembled component-definiton. Can be same as the parent to overwrite</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>regenerate</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Whether to regenerate the uuid's in the component</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>version</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional version for the assembled component</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>0 on success, 1 otherwise</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>There must already be a component model and it will either be updated or a new json component created. The generated markdown has the current values for parameters of controls being imported, as set by the original catalog and any intermediate components. It also shows the current SetParameters being applied by this component. That list of SetParameters can be edited by changing the assigned values and adding or removing SetParameters from that list. During assembly that list will be used to create the SetParameters in the assembled component if the --set-parameters option is specified.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>185</span>
-<span class=normal>186</span>
-<span class=normal>187</span>
-<span class=normal>188</span>
-<span class=normal>189</span>
-<span class=normal>190</span>
-<span class=normal>191</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.component.ComponentAssemble.assemble_component class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_component</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>parent_comp_name</span><span class=p>,</span> <span class=n>md_name</span><span class=p>,</span> <span class=n>assem_comp_name</span><span class=p>,</span> <span class=n>regenerate</span><span class=p>,</span> <span class=n>version</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.commands.author.component.ComponentAssemble.assemble_component class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble the markdown directory into a json component-definition model file.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>The trestle root directory</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>parent_comp_name</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional name of component-definition used to generate markdown, default = assem_comp_name</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>md_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the directory containing the markdown control files for the component</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>assem_comp_name</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The name of the assembled component-definiton. Can be same as the parent to overwrite</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>regenerate</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Whether to regenerate the uuid's in the component</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>version</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>Optional version for the assembled component</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=int>int</span></code> </td> <td> <div class=doc-md-description> <p>0 on success, 1 otherwise</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>There must already be a component model and it will either be updated or a new json component created. The generated markdown has the current values for parameters of controls being imported, as set by the original catalog and any intermediate components. It also shows the current SetParameters being applied by this component. That list of SetParameters can be edited by changing the assigned values and adding or removing SetParameters from that list. During assembly that list will be used to create the SetParameters in the assembled component if the --set-parameters option is specified.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>191</span>
 <span class=normal>192</span>
 <span class=normal>193</span>
 <span class=normal>194</span>
@@ -507,7 +501,13 @@
 <span class=normal>256</span>
 <span class=normal>257</span>
 <span class=normal>258</span>
-<span class=normal>259</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>259</span>
+<span class=normal>260</span>
+<span class=normal>261</span>
+<span class=normal>262</span>
+<span class=normal>263</span>
+<span class=normal>264</span>
+<span class=normal>265</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>assemble_component</span><span class=p>(</span>
     <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
     <span class=n>parent_comp_name</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span>
@@ -714,7 +714,13 @@
 <span class=normal>147</span>
 <span class=normal>148</span>
 <span class=normal>149</span>
-<span class=normal>150</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ComponentGenerate</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
+<span class=normal>150</span>
+<span class=normal>151</span>
+<span class=normal>152</span>
+<span class=normal>153</span>
+<span class=normal>154</span>
+<span class=normal>155</span>
+<span class=normal>156</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ComponentGenerate</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>"""Generate component in markdown form from a component in the trestle workspace."""</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>'component-generate'</span>
@@ -731,10 +737,16 @@
         <span class=k>try</span><span class=p>:</span>
             <span class=n>log</span><span class=o>.</span><span class=n>set_log_level_from_args</span><span class=p>(</span><span class=n>args</span><span class=p>)</span>
 
+            <span class=c1># validate the output location BEFORE anything is deleted</span>
+            <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_directory_name_allowed</span><span class=p>(</span><span class=n>args</span><span class=o>.</span><span class=n>output</span><span class=p>):</span>
+                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>args</span><span class=o>.</span><span class=n>output</span><span class=si>}</span><span class=s1> is not an allowed directory name'</span><span class=p>)</span>
+            <span class=n>md_path</span> <span class=o>=</span> <span class=n>args</span><span class=o>.</span><span class=n>trestle_root</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span>
+            <span class=n>PathSecurityValidator</span><span class=o>.</span><span class=n>validate_local_path</span><span class=p>(</span><span class=n>md_path</span><span class=p>,</span> <span class=n>args</span><span class=o>.</span><span class=n>trestle_root</span><span class=p>)</span>
+
             <span class=k>if</span> <span class=n>args</span><span class=o>.</span><span class=n>force_overwrite</span><span class=p>:</span>
                 <span class=k>try</span><span class=p>:</span>
                     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Overwriting the content in </span><span class=si>{</span><span class=n>args</span><span class=o>.</span><span class=n>output</span><span class=si>}</span><span class=s1> folder.'</span><span class=p>)</span>
-                    <span class=n>clear_folder</span><span class=p>(</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>args</span><span class=o>.</span><span class=n>output</span><span class=p>))</span>
+                    <span class=n>clear_folder</span><span class=p>(</span><span class=n>md_path</span><span class=p>)</span>
                 <span class=k>except</span> <span class=n>TrestleError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>  <span class=c1># pragma: no cover</span>
                     <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Unable to overwrite contents in </span><span class=si>{</span><span class=n>args</span><span class=o>.</span><span class=n>output</span><span class=si>}</span><span class=s1> folder: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
 
@@ -818,27 +830,27 @@
             <span class=n>cat_api_dict</span><span class=p>[</span><span class=n>source_profile_uri</span><span class=p>]</span><span class=o>.</span><span class=n>update_context</span><span class=p>(</span><span class=n>context</span><span class=p>)</span>
             <span class=n>cat_api_dict</span><span class=p>[</span><span class=n>source_profile_uri</span><span class=p>]</span><span class=o>.</span><span class=n>write_catalog_as_markdown</span><span class=p>()</span>
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.component.ComponentGenerate-attributes>Attributes<a href=#trestle.core.commands.author.component.ComponentGenerate-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.component.ComponentGenerate.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'component-generate'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.component.ComponentGenerate.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.component.ComponentGenerate-functions>Methods:<a href=#trestle.core.commands.author.component.ComponentGenerate-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.component.ComponentGenerate.component_generate_all class="doc doc-heading"> <code class="highlight language-python"><span class=n>component_generate_all</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>comp_def_name</span><span class=p>,</span> <span class=n>markdown_dir_name</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.component.ComponentGenerate.component_generate_all class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate markdown for all components in comp def.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>76</span>
-<span class=normal>77</span>
-<span class=normal>78</span>
-<span class=normal>79</span>
-<span class=normal>80</span>
-<span class=normal>81</span>
-<span class=normal>82</span>
-<span class=normal>83</span>
-<span class=normal>84</span>
-<span class=normal>85</span>
-<span class=normal>86</span>
-<span class=normal>87</span>
-<span class=normal>88</span>
-<span class=normal>89</span>
-<span class=normal>90</span>
-<span class=normal>91</span>
-<span class=normal>92</span>
-<span class=normal>93</span>
-<span class=normal>94</span>
-<span class=normal>95</span>
-<span class=normal>96</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>component_generate_all</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>comp_def_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>markdown_dir_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.component.ComponentGenerate-attributes>Attributes<a href=#trestle.core.commands.author.component.ComponentGenerate-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.component.ComponentGenerate.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>'component-generate'</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.component.ComponentGenerate.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.component.ComponentGenerate-functions>Methods:<a href=#trestle.core.commands.author.component.ComponentGenerate-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.component.ComponentGenerate.component_generate_all class="doc doc-heading"> <code class="highlight language-python"><span class=n>component_generate_all</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>comp_def_name</span><span class=p>,</span> <span class=n>markdown_dir_name</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.component.ComponentGenerate.component_generate_all class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate markdown for all components in comp def.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 82</span>
+<span class=normal> 83</span>
+<span class=normal> 84</span>
+<span class=normal> 85</span>
+<span class=normal> 86</span>
+<span class=normal> 87</span>
+<span class=normal> 88</span>
+<span class=normal> 89</span>
+<span class=normal> 90</span>
+<span class=normal> 91</span>
+<span class=normal> 92</span>
+<span class=normal> 93</span>
+<span class=normal> 94</span>
+<span class=normal> 95</span>
+<span class=normal> 96</span>
+<span class=normal> 97</span>
+<span class=normal> 98</span>
+<span class=normal> 99</span>
+<span class=normal>100</span>
+<span class=normal>101</span>
+<span class=normal>102</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>component_generate_all</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>comp_def_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>markdown_dir_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""Generate markdown for all components in comp def."""</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_directory_name_allowed</span><span class=p>(</span><span class=n>markdown_dir_name</span><span class=p>):</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>markdown_dir_name</span><span class=si>}</span><span class=s1> is not an allowed directory name'</span><span class=p>)</span>
@@ -859,13 +871,7 @@
         <span class=k>if</span> <span class=n>rc</span> <span class=o>!=</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span><span class=p>:</span>
             <span class=k>break</span>
     <span class=k>return</span> <span class=n>rc</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.component.ComponentGenerate.component_generate_by_name class="doc doc-heading"> <code class="highlight language-python"><span class=n>component_generate_by_name</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>component</span><span class=p>,</span> <span class=n>markdown_dir_path</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.component.ComponentGenerate.component_generate_by_name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create markdown for the component using its source profiles.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>106</span>
-<span class=normal>107</span>
-<span class=normal>108</span>
-<span class=normal>109</span>
-<span class=normal>110</span>
-<span class=normal>111</span>
-<span class=normal>112</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.component.ComponentGenerate.component_generate_by_name class="doc doc-heading"> <code class="highlight language-python"><span class=n>component_generate_by_name</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>component</span><span class=p>,</span> <span class=n>markdown_dir_path</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.component.ComponentGenerate.component_generate_by_name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create markdown for the component using its source profiles.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/component.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>112</span>
 <span class=normal>113</span>
 <span class=normal>114</span>
 <span class=normal>115</span>
@@ -903,7 +909,13 @@
 <span class=normal>147</span>
 <span class=normal>148</span>
 <span class=normal>149</span>
-<span class=normal>150</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>component_generate_by_name</span><span class=p>(</span>
+<span class=normal>150</span>
+<span class=normal>151</span>
+<span class=normal>152</span>
+<span class=normal>153</span>
+<span class=normal>154</span>
+<span class=normal>155</span>
+<span class=normal>156</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>component_generate_by_name</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span> <span class=n>component</span><span class=p>:</span> <span class=n>comp</span><span class=o>.</span><span class=n>DefinedComponent</span><span class=p>,</span> <span class=n>markdown_dir_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""Create markdown for the component using its source profiles."""</span>
