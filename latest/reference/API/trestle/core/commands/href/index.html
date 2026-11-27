@@ -128,7 +128,9 @@
 <span class=normal>134</span>
 <span class=normal>135</span>
 <span class=normal>136</span>
-<span class=normal>137</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>HrefCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>137</span>
+<span class=normal>138</span>
+<span class=normal>139</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>HrefCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>"""Change href of import in profile to point to catalog in trestle workspace.</span>
 
 <span class=sd>    This command is needed when generating an SSP with a profile that imports a catalog from a temporary</span>
@@ -225,6 +227,8 @@
             <span class=k>for</span> <span class=n>ii</span><span class=p>,</span> <span class=n>import_</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>profile_data</span><span class=o>.</span><span class=n>imports</span><span class=p>):</span>
                 <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>ii</span><span class=si>:</span><span class=s1>2</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>import_</span><span class=o>.</span><span class=n>href</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
             <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
+        <span class=k>if</span> <span class=n>import_num</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Import number </span><span class=si>{</span><span class=n>import_num</span><span class=si>}</span><span class=s1> is negative.  Import numbers start at 0.'</span><span class=p>)</span>
         <span class=k>if</span> <span class=n>n_imports</span> <span class=o>&lt;=</span> <span class=n>import_num</span><span class=p>:</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Import number </span><span class=si>{</span><span class=n>import_num</span><span class=si>}</span><span class=s1> is too large.  This profile has only </span><span class=si>{</span><span class=n>n_imports</span><span class=si>}</span><span class=s1> imports.'</span><span class=p>)</span>
 
@@ -289,7 +293,9 @@
 <span class=normal>134</span>
 <span class=normal>135</span>
 <span class=normal>136</span>
-<span class=normal>137</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>137</span>
+<span class=normal>138</span>
+<span class=normal>139</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>change_import_href</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>profile_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>new_href</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>import_num</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>"""Change the href of the import in the profile to point to a catalog in a specific location.</span>
 
@@ -336,6 +342,8 @@
         <span class=k>for</span> <span class=n>ii</span><span class=p>,</span> <span class=n>import_</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>profile_data</span><span class=o>.</span><span class=n>imports</span><span class=p>):</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=n>ii</span><span class=si>:</span><span class=s1>2</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>import_</span><span class=o>.</span><span class=n>href</span><span class=si>}</span><span class=s1>'</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
+    <span class=k>if</span> <span class=n>import_num</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Import number </span><span class=si>{</span><span class=n>import_num</span><span class=si>}</span><span class=s1> is negative.  Import numbers start at 0.'</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>n_imports</span> <span class=o>&lt;=</span> <span class=n>import_num</span><span class=p>:</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>'Import number </span><span class=si>{</span><span class=n>import_num</span><span class=si>}</span><span class=s1> is too large.  This profile has only </span><span class=si>{</span><span class=n>n_imports</span><span class=si>}</span><span class=s1> imports.'</span><span class=p>)</span>
 
