@@ -87,3 +87,23 @@ def test_describe_failures(
     # no filename specified
     args = argparse.Namespace(file=None, element=None, trestle_root=tmp_path, verbose=1)
     assert DescribeCmd()._run(args) == 2
+
+
+def test_describe_single_value_element(
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, simplified_nist_catalog: oscatalog.Catalog
+) -> None:
+    """Test describe of an element path that points to a single value such as a string."""
+    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
+        tmp_path, FileContentType.JSON, simplified_nist_catalog, test_utils.CATALOGS_DIR
+    )
+
+    os.chdir(catalog_dir)
+    element_path = 'catalog.metadata.title'
+
+    results = DescribeCmd.describe(catalog_file.resolve(), element_path, tmp_path)
+    assert len(results) == 1
+    assert f'at element path {element_path} is of type str' in results[0]
+    assert results[0].endswith(f'with value: {simplified_nist_catalog.metadata.title}')
+
+    args = argparse.Namespace(file='catalog.json', element=element_path, verbose=1, trestle_root=tmp_path)
+    assert DescribeCmd()._run(args) == 0

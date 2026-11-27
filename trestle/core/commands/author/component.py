@@ -39,6 +39,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
+from trestle.core.remote.security import PathSecurityValidator
 
 logger = logging.getLogger(__name__)
 
@@ -60,10 +61,16 @@ class ComponentGenerate(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
 
+            # validate the output location BEFORE anything is deleted
+            if not file_utils.is_directory_name_allowed(args.output):
+                raise TrestleError(f'{args.output} is not an allowed directory name')
+            md_path = args.trestle_root / args.output
+            PathSecurityValidator.validate_local_path(md_path, args.trestle_root)
+
             if args.force_overwrite:
                 try:
                     logger.info(f'Overwriting the content in {args.output} folder.')
-                    clear_folder(pathlib.Path(args.output))
+                    clear_folder(md_path)
                 except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
 
@@ -86,7 +93,10 @@ class ComponentGenerate(AuthorCommonCommand):
 
         rc = CmdReturnCodes.SUCCESS.value
         for component in as_list(component_def.components):
-            rc = self.component_generate_by_name(context, component, md_path / component.title)
+            component_md_path = md_path / component.title
+            # component.title is untrusted model content - ensure output stays within the markdown directory
+            PathSecurityValidator.validate_local_path(component_md_path, md_path)
+            rc = self.component_generate_by_name(context, component, component_md_path)
             if rc != CmdReturnCodes.SUCCESS.value:
                 break
         return rc
@@ -307,6 +317,8 @@ class ComponentAssemble(AuthorCommonCommand):
         md_dir: pathlib.Path, component: comp.DefinedComponent, context: ControlContext
     ) -> None:
         md_path = md_dir / component.title
+        # component.title is untrusted model content - ensure it stays within the markdown directory
+        PathSecurityValidator.validate_local_path(md_path, md_dir)
         sub_dirs = file_utils.iterdir_without_hidden_files(md_path)
         source_dirs = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
         for source_dir in source_dirs:

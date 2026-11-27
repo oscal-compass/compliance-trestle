@@ -141,6 +141,12 @@ class DescribeCmd(CommandPlusDocs):
             text = f'Model file {file_path}{element_text} is a {cls._description_text(sub_model)}'
             text_out.append(text)
             logger.info(text)
+        elif not hasattr(type(sub_model), 'model_fields'):
+            # a single value such as a string or a number has no fields to list
+            text = f'Model file {file_path}{element_text} is of type '
+            text += f'{cls._clean_type_string(str(type(sub_model)))} with value: {sub_model}'
+            text_out.append(text)
+            logger.info(text)
         else:
             text = f'Model file {file_path}{element_text} is of type '
             text += f'{cls._clean_type_string(str(type(sub_model)))} and contains:'

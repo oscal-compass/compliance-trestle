@@ -126,6 +126,8 @@ class HrefCmd(CommandPlusDocs):
             for ii, import_ in enumerate(profile_data.imports):
                 logger.info(f'{ii:2}: {import_.href}')
             return CmdReturnCodes.SUCCESS.value
+        if import_num < 0:
+            raise TrestleError(f'Import number {import_num} is negative.  Import numbers start at 0.')
         if n_imports <= import_num:
             raise TrestleError(f'Import number {import_num} is too large.  This profile has only {n_imports} imports.')
 

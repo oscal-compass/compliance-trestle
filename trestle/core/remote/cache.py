@@ -42,7 +42,12 @@ from trestle.common import const, file_utils
 from trestle.common.err import TrestleError
 from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.remote.security import PathSecurityValidator, URLSecurityValidator, get_block_private_ips_config
+from trestle.core.remote.security import (
+    PathSecurityValidator,
+    URLSecurityValidator,
+    get_block_private_ips_config,
+    get_max_remote_fetch_bytes_config,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +71,8 @@ class FetcherBase(ABC):
         if max_size_bytes is not None and max_size_bytes <= 0:
             raise TrestleError('Maximum fetched object size must be greater than zero.')
         self._max_size_bytes = max_size_bytes
+        # True when the limit was not set by the caller, so TRESTLE_MAX_REMOTE_FETCH_BYTES can change it.
+        self._max_size_is_configurable = False
         # ensure trestle cache directory exists.
         self._trestle_cache_path.mkdir(exist_ok=True)
         self._expiration_seconds = const.DAY_SECONDS
@@ -132,7 +139,15 @@ class FetcherBase(ABC):
     def _enforce_max_size(self, size_bytes: int) -> None:
         """Reject an object that exceeds the configured maximum size."""
         if self._max_size_bytes is not None and size_bytes > self._max_size_bytes:
-            raise TrestleError(f'Remote object exceeds maximum size of {self._max_size_bytes} bytes: {self._uri}')
+            hint = (
+                f' To allow larger objects, set the {const.MAX_REMOTE_FETCH_BYTES_ENV_VAR} environment variable'
+                ' to a larger number of bytes.'
+                if self._max_size_is_configurable
+                else ''
+            )
+            raise TrestleError(
+                f'Remote object exceeds maximum size of {self._max_size_bytes} bytes: {self._uri}.{hint}'
+            )
 
     def get_oscal_with_model_type(
         self, model_type: Type[OscalBaseModel], force_update: bool = False
@@ -161,6 +176,16 @@ class FetcherBase(ABC):
         if model_name is None:
             raise TrestleError(f'Failed cache read of non top level model with root_key {root_key}')
         return parser.parse_dict(model_dict[root_key], model_name), root_key
+
+
+def _reject_unc_path(uri: str) -> None:
+    r"""Reject UNC-style paths such as \\host\share or //host/share.
+
+    Resolving or opening a UNC path on Windows makes the OS contact the named host over SMB, which can leak the
+    current user's NTLM credentials to an attacker-controlled server.
+    """
+    if uri.strip().startswith(('\\\\', '//', '\\/', '/\\')):
+        raise TrestleError(f'UNC network paths are not supported: {uri}')
 
 
 class LocalFetcher(FetcherBase):
@@ -199,6 +224,7 @@ class LocalFetcher(FetcherBase):
 
             # if it has a drive letter don't add / to front
             uri = uri if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri) else '/' + uri
+            _reject_unc_path(uri)
         elif uri.startswith(const.TRESTLE_HREF_HEADING):
             # Extract the path after 'trestle://'
             trestle_path = uri[len(const.TRESTLE_HREF_HEADING) :]
@@ -216,6 +242,9 @@ class LocalFetcher(FetcherBase):
             return
 
         # now the URI should be either unix / style or windows C:/ style.  It may be relative.
+
+        # never allow UNC paths, which would trigger an SMB connection before any other check
+        _reject_unc_path(uri)
 
         if ':' in uri and platform.system() != const.WINDOWS_PLATFORM_STR:
             raise TrestleError(f'Cannot have : in uri on non-Windows system unless ftps, https or trestle: {uri}')
@@ -263,9 +292,16 @@ class HTTPSFetcher(FetcherBase):
         max_size_bytes: Optional[int] = None,
         block_private_ips: Optional[bool] = None,
     ) -> None:
-        """Initialize HTTPS fetcher."""
+        """Initialize HTTPS fetcher.
+
+        If max_size_bytes is not given, TRESTLE_MAX_REMOTE_FETCH_BYTES or const.DEFAULT_MAX_REMOTE_FETCH_BYTES applies.
+        """
         logger.debug('Initializing HTTPSFetcher')
+        size_from_config = max_size_bytes is None
+        if size_from_config:
+            max_size_bytes = get_max_remote_fetch_bytes_config()
         super().__init__(trestle_root, uri, max_size_bytes)
+        self._max_size_is_configurable = size_from_config
 
         # Security validation: Check URL for SSRF vulnerabilities
         # Always blocks: loopback, link-local, cloud metadata endpoints
@@ -358,24 +394,13 @@ class HTTPSFetcher(FetcherBase):
             auth = HTTPBasicAuth(self._username, self._password)
 
         try:
-            response = requests.get(
-                self._url,
-                auth=auth,
-                verify=verify,
-                timeout=30,
-                allow_redirects=False,
-                stream=self._max_size_bytes is not None,
-            )
+            response = requests.get(self._url, auth=auth, verify=verify, timeout=30, allow_redirects=False, stream=True)
         except Exception as e:
             raise TrestleError(f'Cache update failure to connect via HTTPS: {self._url} ({e})')
 
         try:
             if response.status_code == 200:
-                if self._max_size_bytes is None:
-                    result = response.text
-                    self._cached_object_path.write_text(result, encoding=const.FILE_ENCODING)
-                else:
-                    self._write_limited_response(response)
+                self._write_limited_response(response)
             else:
                 raise TrestleError(f'GET returned code {response.status_code}: {self._uri}')
         except TrestleError:
@@ -423,11 +448,16 @@ class SFTPFetcher(FetcherBase):
         Args:
             trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
-            max_size_bytes: Optional maximum fetched object size.
+            max_size_bytes: Optional maximum fetched object size.  Defaults to TRESTLE_MAX_REMOTE_FETCH_BYTES
+                or const.DEFAULT_MAX_REMOTE_FETCH_BYTES.
             block_private_ips: Optional override for blocking private network addresses.
         """
         logger.debug(f'initialize SFTPFetcher for uri {uri}')
+        size_from_config = max_size_bytes is None
+        if size_from_config:
+            max_size_bytes = get_max_remote_fetch_bytes_config()
         super().__init__(trestle_root, uri, max_size_bytes)
+        self._max_size_is_configurable = size_from_config
 
         # Security validation: Check URL for SSRF vulnerabilities
         # Always blocks: loopback, link-local, cloud metadata endpoints
@@ -519,28 +549,23 @@ class SFTPFetcher(FetcherBase):
         remotepath = u.path[1:]
         localpath = self._cached_object_path
         try:
-            if self._max_size_bytes is None:
-                sftp_client.get(remotepath=remotepath, localpath=str(localpath))
-            else:
-                remote_size = sftp_client.stat(remotepath).st_size
-                if remote_size is not None:
-                    self._enforce_max_size(remote_size)
-                with tempfile.NamedTemporaryFile(dir=localpath.parent, delete=False) as temporary_file:
-                    temporary_path = pathlib.Path(temporary_file.name)
+            remote_size = sftp_client.stat(remotepath).st_size
+            if remote_size is not None:
+                self._enforce_max_size(remote_size)
+            with tempfile.NamedTemporaryFile(dir=localpath.parent, delete=False) as temporary_file:
+                temporary_path = pathlib.Path(temporary_file.name)
 
-                def _enforce_transfer_size(transferred: int, total: int) -> None:
-                    self._enforce_max_size(transferred)
-                    self._enforce_max_size(total)
+            def _enforce_transfer_size(transferred: int, total: int) -> None:
+                self._enforce_max_size(transferred)
+                self._enforce_max_size(total)
 
-                try:
-                    sftp_client.get(
-                        remotepath=remotepath, localpath=str(temporary_path), callback=_enforce_transfer_size
-                    )
-                    self._enforce_max_size(temporary_path.stat().st_size)
-                    temporary_path.replace(localpath)
-                finally:
-                    if temporary_path.exists():
-                        temporary_path.unlink()
+            try:
+                sftp_client.get(remotepath=remotepath, localpath=str(temporary_path), callback=_enforce_transfer_size)
+                self._enforce_max_size(temporary_path.stat().st_size)
+                temporary_path.replace(localpath)
+            finally:
+                if temporary_path.exists():
+                    temporary_path.unlink()
         except Exception as e:
             raise TrestleError(f'Error getting remote resource {self._uri} into cache {localpath}: {e}')
 
@@ -581,6 +606,7 @@ class FetcherFactory:
         # but it at least needs a filename with suffix
         # the most minimal allowed uri is of the form a.yml
         uri_clean = uri.strip()
+        _reject_unc_path(uri_clean)
         if uri_clean.startswith('ftp:'):
             raise TrestleError(f'Invalid uri {uri}  ftp is not supported.  Use sftp instead.')
         uri_len = len(uri_clean)
