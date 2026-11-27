@@ -692,7 +692,7 @@
         <span class=c1># enabled rules</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_enabled_rules</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_filter_rules</span><span class=p>(</span><span class=s1>'enabled-rules'</span><span class=p>,</span> <span class=s1>'enabled'</span><span class=p>)</span>
         <span class=c1># verbosity</span>
-        <span class=n>quiet</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>'quiet'</span><span class=p>,</span> <span class=kc>False</span><span class=p>)</span>
+        <span class=n>quiet</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>'quiet'</span><span class=p>,</span> <span class=kc>False</span><span class=p>)</span>
         <span class=n>verbose</span> <span class=o>=</span> <span class=ow>not</span> <span class=n>quiet</span>
         <span class=c1># output</span>
         <span class=n>overwrite</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=o>.</span><span class=n>getboolean</span><span class=p>(</span><span class=s1>'output-overwrite'</span><span class=p>,</span> <span class=kc>True</span><span class=p>)</span>
