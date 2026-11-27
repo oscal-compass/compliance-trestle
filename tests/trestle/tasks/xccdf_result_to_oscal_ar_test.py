@@ -21,6 +21,8 @@ import uuid
 
 from _pytest.monkeypatch import MonkeyPatch
 
+import pytest
+
 from tests.test_utils import TEST_DIR, set_cwd_unsafe, text_files_equal
 
 import trestle.tasks.xccdf_result_to_oscal_ar as xccdf_result_to_oscal_ar
@@ -515,3 +517,17 @@ def test_xccdf_execute_input_oscap_arf_result(tmp_path, monkeypatch: MonkeyPatch
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
         assert result
+
+
+@pytest.mark.parametrize('quiet, verbose', [('false', True), ('true', False)])
+@set_cwd_unsafe(root_dir)
+def test_xccdf_execute_quiet(tmp_path, quiet, verbose):
+    """Test execute call honors quiet as a boolean."""
+    config = setup_config(cf01)
+    section = config['task.xccdf-result-to-oscal-ar']
+    section['output-dir'] = str(tmp_path)
+    section['quiet'] = quiet
+    tgt = xccdf_result_to_oscal_ar.XccdfResultToOscalAR(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert tgt._verbose is verbose

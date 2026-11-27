@@ -124,7 +124,7 @@ class OscoResultToOscalAR(TaskBase):
             return TaskOutcome(mode + 'failure')
         # config optional overwrite & quiet
         self._overwrite = self._config.getboolean('output-overwrite', True)
-        quiet = self._config.get('quiet', False)
+        quiet = self._config.getboolean('quiet', False)
         self._verbose = not self._simulate and not quiet
         # config optional timestamp
         timestamp = self._config.get('timestamp')

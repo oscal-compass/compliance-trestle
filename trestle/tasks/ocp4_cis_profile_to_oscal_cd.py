@@ -198,7 +198,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         # enabled rules
         self._enabled_rules = self._get_filter_rules('enabled-rules', 'enabled')
         # verbosity
-        quiet = self._config.get('quiet', False)
+        quiet = self._config.getboolean('quiet', False)
         verbose = not quiet
         # output
         overwrite = self._config.getboolean('output-overwrite', True)
