@@ -290,6 +290,85 @@ def test_component_generate_all_disallowed_dir_name(tmp_trestle_dir: pathlib.Pat
         generator.component_generate_all(tmp_trestle_dir, comp_name, '.hidden_not_allowed')
 
 
+@pytest.mark.parametrize('relative_title', [True, False])
+def test_component_generate_all_title_path_traversal(tmp_trestle_dir: pathlib.Path, relative_title: bool) -> None:
+    """A component title that escapes the markdown dir must be rejected and nothing written outside."""
+    from trestle.common.err import TrestleError
+    from trestle.core.commands.author.component import ComponentGenerate
+
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    comp_def, comp_def_path = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, comp_name, comp.ComponentDefinition
+    )
+    escape_dir = tmp_trestle_dir.parent / 'TRESTLE_ESCAPE'
+    comp_def.components[0].title = '../../TRESTLE_ESCAPE' if relative_title else str(escape_dir)
+    comp_def.oscal_write(comp_def_path)
+
+    with pytest.raises(TrestleError, match='Path traversal blocked'):
+        ComponentGenerate().component_generate_all(tmp_trestle_dir, comp_name, md_path)
+    assert not escape_dir.exists()
+
+
+def test_component_generate_force_overwrite_allowed_dir(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """--force-overwrite clears a valid in-workspace output dir and regenerates the markdown."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    out_dir = tmp_trestle_dir / md_path
+    out_dir.mkdir(parents=True)
+    stale = out_dir / 'stale.txt'
+    stale.write_text('stale')
+
+    cmd = f'trestle author component-generate -n {comp_name} -o {md_path} --force-overwrite'
+    test_utils.execute_command_and_assert(cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assert not stale.exists()
+    assert (out_dir / 'comp_aa/comp_prof_aa/ac/ac-1.md').exists()
+
+
+@pytest.mark.parametrize('relative_output', [True, False])
+def test_component_generate_force_overwrite_outside_workspace(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, relative_output: bool
+) -> None:
+    """A rejected --output combined with --force-overwrite must not delete anything outside the workspace."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    canary = tmp_trestle_dir.parent / f'TRESTLE_CANARY_{relative_output}'
+    canary.mkdir()
+    (canary / 'important.txt').write_text('keep')
+    output = f'../{canary.name}' if relative_output else str(canary)
+
+    cmd = f'trestle author component-generate -n {comp_name} -o {output} --force-overwrite'
+    test_utils.execute_command_and_assert(cmd, CmdReturnCodes.COMMAND_ERROR.value, monkeypatch)
+    assert (canary / 'important.txt').read_text() == 'keep'
+
+
+def test_component_generate_force_overwrite_disallowed_name(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """A disallowed directory name must be rejected before --force-overwrite clears it."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    hidden = tmp_trestle_dir / '.hidden_not_allowed'
+    hidden.mkdir()
+    (hidden / 'important.txt').write_text('keep')
+
+    cmd = f'trestle author component-generate -n {comp_name} -o .hidden_not_allowed --force-overwrite'
+    test_utils.execute_command_and_assert(cmd, CmdReturnCodes.COMMAND_ERROR.value, monkeypatch)
+    assert (hidden / 'important.txt').read_text() == 'keep'
+
+
+def test_component_assemble_title_path_traversal(tmp_trestle_dir: pathlib.Path) -> None:
+    """Assembling with a component title that escapes the markdown dir must be rejected."""
+    from trestle.common.err import TrestleError
+    from trestle.core.commands.author.component import ComponentAssemble
+
+    md_dir = tmp_trestle_dir / md_path
+    md_dir.mkdir()
+    bad_comp = comp.DefinedComponent(
+        uuid='11111111-1111-4111-8111-111111111111', title='../..', type='service', description='x'
+    )
+    with pytest.raises(TrestleError, match='Path traversal blocked'):
+        ComponentAssemble._update_component_with_markdown(md_dir, bad_comp, None)  # type: ignore[arg-type]
+
+
 def test_component_get_name_from_non_trestle_uri() -> None:
     """ComponentGenerate._get_name_from_uri line 100 — non-TRESTLE URI returns empty string."""
     from trestle.core.commands.author.component import ComponentGenerate
