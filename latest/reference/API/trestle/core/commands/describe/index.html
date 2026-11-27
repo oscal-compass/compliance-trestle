@@ -143,7 +143,13 @@
 <span class=normal>152</span>
 <span class=normal>153</span>
 <span class=normal>154</span>
-<span class=normal>155</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>DescribeCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>155</span>
+<span class=normal>156</span>
+<span class=normal>157</span>
+<span class=normal>158</span>
+<span class=normal>159</span>
+<span class=normal>160</span>
+<span class=normal>161</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>DescribeCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>"""Describe contents of a model file including optional element path."""</span>
 
     <span class=c1># The only output is via log lines.  No other results or side-effects.</span>
@@ -252,6 +258,12 @@
             <span class=n>text</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'Model file </span><span class=si>{</span><span class=n>file_path</span><span class=si>}{</span><span class=n>element_text</span><span class=si>}</span><span class=s1> is a </span><span class=si>{</span><span class=bp>cls</span><span class=o>.</span><span class=n>_description_text</span><span class=p>(</span><span class=n>sub_model</span><span class=p>)</span><span class=si>}</span><span class=s1>'</span>
             <span class=n>text_out</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+        <span class=k>elif</span> <span class=ow>not</span> <span class=nb>hasattr</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>sub_model</span><span class=p>),</span> <span class=s1>'model_fields'</span><span class=p>):</span>
+            <span class=c1># a single value such as a string or a number has no fields to list</span>
+            <span class=n>text</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'Model file </span><span class=si>{</span><span class=n>file_path</span><span class=si>}{</span><span class=n>element_text</span><span class=si>}</span><span class=s1> is of type '</span>
+            <span class=n>text</span> <span class=o>+=</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>cls</span><span class=o>.</span><span class=n>_clean_type_string</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>sub_model</span><span class=p>)))</span><span class=si>}</span><span class=s1> with value: </span><span class=si>{</span><span class=n>sub_model</span><span class=si>}</span><span class=s1>'</span>
+            <span class=n>text_out</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+            <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>text</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'Model file </span><span class=si>{</span><span class=n>file_path</span><span class=si>}{</span><span class=n>element_text</span><span class=si>}</span><span class=s1> is of type '</span>
             <span class=n>text</span> <span class=o>+=</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>cls</span><span class=o>.</span><span class=n>_clean_type_string</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>sub_model</span><span class=p>)))</span><span class=si>}</span><span class=s1> and contains:'</span>
@@ -325,7 +337,13 @@
 <span class=normal>152</span>
 <span class=normal>153</span>
 <span class=normal>154</span>
-<span class=normal>155</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>155</span>
+<span class=normal>156</span>
+<span class=normal>157</span>
+<span class=normal>158</span>
+<span class=normal>159</span>
+<span class=normal>160</span>
+<span class=normal>161</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>describe</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>file_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>element_path_str</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>"""Describe the contents of the file.</span>
 
@@ -373,6 +391,12 @@
 
     <span class=k>if</span> <span class=nb>type</span><span class=p>(</span><span class=n>sub_model</span><span class=p>)</span> <span class=ow>is</span> <span class=nb>list</span><span class=p>:</span>
         <span class=n>text</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'Model file </span><span class=si>{</span><span class=n>file_path</span><span class=si>}{</span><span class=n>element_text</span><span class=si>}</span><span class=s1> is a </span><span class=si>{</span><span class=bp>cls</span><span class=o>.</span><span class=n>_description_text</span><span class=p>(</span><span class=n>sub_model</span><span class=p>)</span><span class=si>}</span><span class=s1>'</span>
+        <span class=n>text_out</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+        <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
+    <span class=k>elif</span> <span class=ow>not</span> <span class=nb>hasattr</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>sub_model</span><span class=p>),</span> <span class=s1>'model_fields'</span><span class=p>):</span>
+        <span class=c1># a single value such as a string or a number has no fields to list</span>
+        <span class=n>text</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>'Model file </span><span class=si>{</span><span class=n>file_path</span><span class=si>}{</span><span class=n>element_text</span><span class=si>}</span><span class=s1> is of type '</span>
+        <span class=n>text</span> <span class=o>+=</span> <span class=sa>f</span><span class=s1>'</span><span class=si>{</span><span class=bp>cls</span><span class=o>.</span><span class=n>_clean_type_string</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>sub_model</span><span class=p>)))</span><span class=si>}</span><span class=s1> with value: </span><span class=si>{</span><span class=n>sub_model</span><span class=si>}</span><span class=s1>'</span>
         <span class=n>text_out</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text</span><span class=p>)</span>
     <span class=k>else</span><span class=p>:</span>
