@@ -41,6 +41,7 @@ from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.remote import cache
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.oscal import assessment_plan, assessment_results, common, poam
 
 logger = logging.getLogger(__name__)
@@ -1008,7 +1009,12 @@ class ModelUtils:
         if not hasattr(model_class, '__module__') or model_class.__module__ not in const.MODEL_MODULE_LIST:
             raise TrestleError(f'Unable to determine model type for model {model_name} with class {model_class}')
         model_alias = const.MODEL_MODULE_TO_MODEL_TYPE[model_class.__module__]
+        model_type_dir = trestle_root / const.MODEL_TYPE_TO_MODEL_DIR[model_alias]
         model_dir = trestle_root / f'{const.MODEL_TYPE_TO_MODEL_DIR[model_alias]}/{model_name}'
+        # prevent path traversal out of the model type directory, e.g. via '../' in the model name
+        PathSecurityValidator.validate_local_path(model_dir, model_type_dir)
+        if model_dir.resolve() == model_type_dir.resolve():
+            raise TrestleError(f'Invalid model name "{model_name}": must name a directory within {model_type_dir}')
         return model_dir / model_alias
 
     @staticmethod
