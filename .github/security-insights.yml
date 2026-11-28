@@ -1,7 +1,7 @@
 header:
   schema-version: 2.0.0
-  last-updated: '2026-05-28'
-  last-reviewed: '2026-05-28'
+  last-updated: '2026-11-28'
+  last-reviewed: '2026-11-28'
   url: https://github.com/oscal-compass/compliance-trestle/blob/develop/.github/security-insights.yml
   project-si-source: https://raw.githubusercontent.com/oscal-compass/.github/refs/heads/main/.github/security-insights.yml
   comment: |
@@ -25,6 +25,7 @@ repository:
     primary:     true
   documentation:
     contributing-guide: https://github.com/oscal-compass/compliance-trestle/blob/develop/CONTRIBUTING.md
+    dependency-management-policy: https://github.com/oscal-compass/compliance-trestle/blob/develop/DEPENDENCY_POLICY.md
     security-policy: https://github.com/oscal-compass/community/blob/main/SECURITY.md
     review-policy: https://github.com/oscal-compass/compliance-trestle/blob/develop/docs/code-review-policy.md
   license:

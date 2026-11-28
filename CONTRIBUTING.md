@@ -35,6 +35,12 @@ labelled `enhancement` before sending a pull request so the feature can be discu
 you wasting your valuable time working on a feature that the project developers
 are not interested in accepting into the code base.
 
+### Adding or changing dependencies
+
+Pull requests that add, update or remove a third-party dependency (including GitHub Actions) must follow the
+[dependency management policy](DEPENDENCY_POLICY.md), which covers how dependencies are chosen, which licenses are
+allowed, and how dependencies are pinned and kept up to date.
+
 ### Fixing bugs
 
 If you would like to fix a bug, please [raise an issue](https://github.com/oscal-compass/compliance-trestle/issues) labelled `bug` before sending a
