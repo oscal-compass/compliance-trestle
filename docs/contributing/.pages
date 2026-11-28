@@ -1,6 +1,7 @@
 nav:
 - Overview: index.md
 - Code of Conduct: code_of_conduct.md
+- Dependency management policy: DEPENDENCY_POLICY.md
 - OSCAL object model: oscal_object_model.md
 - Website development: website.md
 - Developing trestle plugins: plugins.md

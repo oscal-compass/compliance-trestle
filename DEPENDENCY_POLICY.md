@@ -7,14 +7,17 @@ third-party dependencies, as required by [OSPS-DO-06.01](https://baseline.openss
 
 This policy covers every third-party component that trestle depends on:
 
-- Runtime dependencies declared in `[project].dependencies` of [`pyproject.toml`](pyproject.toml). They are installed
-  for every trestle user.
+- Runtime dependencies declared in `[project].dependencies` of
+  [`pyproject.toml`](https://github.com/oscal-compass/compliance-trestle/blob/develop/pyproject.toml). They are
+  installed for every trestle user.
 - Optional dependency groups (extras) declared in `[project.optional-dependencies]` of `pyproject.toml`, such as
   `fuzz`, `typing`, `docs` and `dev`.
 - Dependencies of the hatch environments used for testing and development (`[tool.hatch.envs.*]` in
   `pyproject.toml`).
-- GitHub Actions and container images used by the workflows in [`.github/workflows`](.github/workflows) and the
-  composite actions in [`.github/actions`](.github/actions).
+- GitHub Actions and container images used by the workflows in
+  [`.github/workflows`](https://github.com/oscal-compass/compliance-trestle/tree/develop/.github/workflows) and the
+  composite actions in
+  [`.github/actions`](https://github.com/oscal-compass/compliance-trestle/tree/develop/.github/actions).
 
 The [license](#license-requirements) and [vulnerability](#monitoring-for-vulnerabilities) requirements also apply to
 transitive dependencies, that is, the dependencies of trestle's dependencies.
@@ -43,7 +46,9 @@ A new dependency must meet all of the following:
    dependencies.
 
 The pull request that adds the dependency must say why it is needed and what alternatives were considered. Dependency
-changes are reviewed under the [code review policy](docs/code-review-policy.md), like every other change.
+changes are reviewed under the
+[code review policy](https://github.com/oscal-compass/compliance-trestle/blob/develop/docs/code-review-policy.md),
+like every other change.
 
 ## License requirements
 
@@ -59,8 +64,9 @@ Trestle is an Apache-2.0 licensed [CNCF](https://www.cncf.io/) project and follo
 - Any other license (for example MPL-2.0 or LGPL-2.1) needs a license exception approved by the CNCF Governing Board
   **before** the dependency is merged. A maintainer requests the exception through the
   [CNCF exception process](https://github.com/cncf/foundation/blob/main/policies-guidance/allowed-third-party-license-policy.md#process-for-applying-for-an-exception).
-- Approved exceptions are recorded in the [`.snyk`](.snyk) policy file with a link to the approved request, so that the
-  license check in CI accepts them.
+- Approved exceptions are recorded in the
+  [`.snyk`](https://github.com/oscal-compass/compliance-trestle/blob/develop/.snyk) policy file with a link to the
+  approved request, so that the license check in CI accepts them.
 - Dependencies with no license, or with a license that does not allow redistribution, are not allowed.
 
 ## Declaring dependencies
@@ -74,9 +80,9 @@ Trestle is an Apache-2.0 licensed [CNCF](https://www.cncf.io/) project and follo
 
 ## Updating dependencies
 
-- [Dependabot](.github/dependabot.yml) checks the `pip` and `github-actions` ecosystems every week and opens a pull
-  request for each new version. Its commits use the `fix(deps)` and `fix(deps-dev)` prefixes, so updates show up in the
-  release notes.
+- [Dependabot](https://github.com/oscal-compass/compliance-trestle/blob/develop/.github/dependabot.yml) checks the
+  `pip` and `github-actions` ecosystems every week and opens a pull request for each new version. Its commits use the
+  `fix(deps)` and `fix(deps-dev)` prefixes, so updates show up in the release notes.
 - Dependency update pull requests run the same pipeline as every other pull request: tests on the oldest and newest
   supported Python versions on Linux, macOS and Windows, linting, type checking and the documentation build. They are
   merged only when the pipeline passes.
@@ -90,16 +96,20 @@ Trestle is an Apache-2.0 licensed [CNCF](https://www.cncf.io/) project and follo
 - **Dependabot** proposes updates to the pinned dependencies every week, which brings in security fixes from new
   releases.
 - **Snyk** runs in the pull request pipeline for pull requests opened from branches of this repository, other than
-  Dependabot's (see [`.github/actions/snyk-test`](.github/actions/snyk-test)). It resolves the full dependency tree from
-  `pyproject.toml` and checks it for known vulnerabilities and license issues.
+  Dependabot's (see
+  [`.github/actions/snyk-test`](https://github.com/oscal-compass/compliance-trestle/tree/develop/.github/actions/snyk-test)).
+  It resolves the full dependency tree from `pyproject.toml` and checks it for known vulnerabilities and license
+  issues.
 - **OpenSSF Scorecard** and **CodeQL** run on the repository and report supply chain and code security findings.
 
 When a dependency has a known vulnerability:
 
 1. Upgrade to a version that fixes it as soon as one is available.
 1. If no fix is available, maintainers assess whether the vulnerability can be exploited through trestle. If the risk is
-   accepted, the finding may be ignored in [`.snyk`](.snyk) with a written reason and an `expires` date, so that it is
-   reviewed again. The ignore is removed once a fixed version is adopted.
+   accepted, the finding may be ignored in
+   [`.snyk`](https://github.com/oscal-compass/compliance-trestle/blob/develop/.snyk) with a written reason and an
+   `expires` date, so that it is reviewed again. The ignore is removed once a fixed version is adopted.
 1. If the vulnerability can be exploited through trestle, it is handled as a security issue in trestle itself.
 
-To report a vulnerability in trestle, follow the [security policy](SECURITY.md).
+To report a vulnerability in trestle, follow the
+[security policy](https://github.com/oscal-compass/compliance-trestle/blob/develop/SECURITY.md).
